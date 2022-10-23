@@ -5,7 +5,7 @@
 Besser man macht es objektorientiert mit Klassen.<br>
 Die macht es übersichtlicher und ausbaufähiger.<br>
 <hr><br>
-<pre><code><b><font color="0000BB">program</font></b> Project1;
+<pre><code=pascal><b><font color="0000BB">program</font></b> Project1;
 <br>
 <b><font color="0000BB">uses</font></b>
   unixtype,

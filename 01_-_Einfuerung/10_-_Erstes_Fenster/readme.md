@@ -6,7 +6,7 @@ Erstes Fenster mit <b>X11</b> wird erstellt.<br>
 Es wird nur ein einziges Eregniss gebraucht.<br>
 Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.<br>
 <hr><br>
-<pre><code><b><font color="0000BB">program</font></b> Project1;
+<pre><code=pascal><b><font color="0000BB">program</font></b> Project1;
 <br>
 <b><font color="0000BB">uses</font></b>
   unixtype,
