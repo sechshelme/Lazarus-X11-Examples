@@ -14,7 +14,8 @@ Das Tutorial findet man auch direkt bei den Sourcen auf GitHub: [Inhaltsverzeich
 
 | Datum | Änderungen 
 | :---: | ---
-| 23.10.2022 | Tutorial auf GIT-Hub einrichten.
+| 23.10.2022 | Tutorial - Erstes Fenster
+| 22.10.2022 | Tutorial auf GIT-Hub einrichten.
 
 <img src="image.png">
 

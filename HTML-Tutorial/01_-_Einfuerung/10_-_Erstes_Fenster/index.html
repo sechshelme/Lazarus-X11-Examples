@@ -1,4 +1,13 @@
+<!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8">
+    <title>10 - Erstes Fenster</title>
+    <style>
+      pre {background-color:#BBBBFF; color:#000000; font-family: Fixedsys,Courier,monospace; padding:10px;}
+    </style>
+  </head>
+  <body bgcolor="#DDDDFF">
     <b><h1>01 - Einfuerung</h1></b>
     <b><h2>10 - Erstes Fenster</h2></b>
 <img src="image.png" alt="Selfhtml"><br><br>
@@ -7,7 +16,7 @@ Es wird nur ein einziges Eregniss gebraucht.<br>
 Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.<br>
 <hr><br>
 <pre><code><b><font color="0000BB">program</font></b> Project1;
-<br>
+
 <b><font color="0000BB">uses</font></b>
   unixtype,
   ctypes,
@@ -15,13 +24,13 @@ Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.<br>
   xutil,
   keysym,
   x;
-<br>
+
 <b><font color="0000BB">var</font></b>
   dis: PDisplay;
   win: TWindow;
   Event: TXEvent;
   scr: cint;
-<br>
+
 <b><font color="0000BB">begin</font></b>
   <i><font color="#FFFF00">// Erstellt die Verbindung zum Server</font></i>
   dis := XOpenDisplay(<b><font color="0000BB">nil</font></b>);
@@ -30,21 +39,21 @@ Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.<br>
     Halt(<font color="#0077BB">1</font>);
   <b><font color="0000BB">end</font></b>;
   scr := DefaultScreen(dis);
-<br>
+
   <i><font color="#FFFF00">// Erstellt das Fenster</font></i>
   win := XCreateSimpleWindow(dis, RootWindow(dis, scr), <font color="#0077BB">10</font>, <font color="#0077BB">10</font>, <font color="#0077BB">320</font>, <font color="#0077BB">240</font>, <font color="#0077BB">1000</font>, BlackPixel(dis, scr), WhitePixel(dis, scr));
-<br>
+
   <i><font color="#FFFF00">// Wählt die gewünschten Ereignisse aus</font></i>
   <i><font color="#FFFF00">// Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.</font></i>
   XSelectInput(dis, win, KeyPressMask);
-<br>
+
   <i><font color="#FFFF00">// Fenster anzeigen</font></i>
   XMapWindow(dis, win);
-<br>
+
   <i><font color="#FFFF00">// Ereignisschleife</font></i>
   <b><font color="0000BB">while</font></b> (<b><font color="0000BB">True</font></b>) <b><font color="0000BB">do</font></b> <b><font color="0000BB">begin</font></b>
     XNextEvent(dis, @Event);
-<br>
+
     <b><font color="0000BB">case</font></b> Event._type <b><font color="0000BB">of</font></b>
       KeyPress: <b><font color="0000BB">begin</font></b>
         <i><font color="#FFFF00">// Beendet das Programm bei [ESC]</font></i>
@@ -53,11 +62,14 @@ Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.<br>
         <b><font color="0000BB">end</font></b>;
       <b><font color="0000BB">end</font></b>;
     <b><font color="0000BB">end</font></b>;
-<br>
+
   <b><font color="0000BB">end</font></b>;
-<br>
+
   <i><font color="#FFFF00">// Schliesst Verbindung zum Server</font></i>
   XCloseDisplay(dis);
 <b><font color="0000BB">end</font></b>.</code></pre>
-<br>
+
+    <br><br><br>
+<h2><a href="../../index.html">zurück</a></h2>
+  </body>
 </html>
