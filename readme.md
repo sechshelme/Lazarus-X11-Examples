@@ -6,11 +6,8 @@ Das Tutorial findet man auch direkt bei den Sourcen auf GitHub: [Inhaltsverzeich
 
 ## Externe Beispiele:
 
-[Rheinwerk openbook - Linux Programmierung Kapitel 14](https://openbook.rheinwerk-verlag.de/linux_unix_programmierung/Kap14-007.htm)
-
-[The X Window system](https://tronche.com/gui/x/xlib/)
-
-
+- [Rheinwerk openbook - Linux Programmierung Kapitel 14](https://openbook.rheinwerk-verlag.de/linux_unix_programmierung/Kap14-007.htm)
+- [The X Window system](https://tronche.com/gui/x/xlib/)
 
 ## Neuerungen:
 
