@@ -1,7 +1,8 @@
 //image image.png
 (*
-Besser man macht es objektorientiert mit Klassen.
-Die macht es übersichtlicher und ausbaufähiger.
+In den meisten Fällen ist es nötig, das man etwas auf das Fenster zeichnet.
+Hier im Beispiel ist es ein einfaches Rechteck, welches mit <b>XFillRectangle</b> gezeichnet wird.
+XFillRectangle(Display, Windows, GC, PosX, PosY, Breite, Höhe)
 *)
 //lineal
 //code+
@@ -41,11 +42,11 @@ type
     scr := DefaultScreen(dis);
 
     // Erstellt das Fenster
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1000, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
-    // <b>KeyPressMask</b> ist für Tastatur-Erreignisse.
-    XSelectInput(dis, win, KeyPressMask);
+    // Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.
+    XSelectInput(dis, win, KeyPressMask or ExposureMask);
 
     // Fenster anzeigen
     XMapWindow(dis, win);
@@ -67,6 +68,10 @@ type
       XNextEvent(dis, @Event);
 
       case Event._type of
+        Expose: begin
+          // Das Rechteck wird gezeichnet
+          XFillRectangle(dis, win, DefaultGC(dis, scr), 20, 20, 200, 200);
+        end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
           if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin

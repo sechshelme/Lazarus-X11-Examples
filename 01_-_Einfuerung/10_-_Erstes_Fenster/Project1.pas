@@ -32,7 +32,7 @@ begin
   scr := DefaultScreen(dis);
 
   // Erstellt das Fenster
-  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1000, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
   // Wählt die gewünschten Ereignisse aus
   // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.

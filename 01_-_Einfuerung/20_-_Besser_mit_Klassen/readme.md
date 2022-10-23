@@ -41,7 +41,7 @@ Die macht es übersichtlicher und ausbaufähiger.<br>
     scr := DefaultScreen(dis);
 <br>
     <i><font color="#FFFF00">// Erstellt das Fenster</font></i>
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), <font color="#0077BB">10</font>, <font color="#0077BB">10</font>, <font color="#0077BB">320</font>, <font color="#0077BB">240</font>, <font color="#0077BB">1000</font>, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), <font color="#0077BB">10</font>, <font color="#0077BB">10</font>, <font color="#0077BB">320</font>, <font color="#0077BB">240</font>, <font color="#0077BB">1</font>, BlackPixel(dis, scr), WhitePixel(dis, scr));
 <br>
     <i><font color="#FFFF00">// Wählt die gewünschten Ereignisse aus</font></i>
     <i><font color="#FFFF00">// Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.</font></i>

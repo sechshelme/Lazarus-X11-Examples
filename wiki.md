@@ -4,6 +4,7 @@ Hinweis: Die Sourcen auf GitHub sind aktueller als das Wiki.<br>
 Auch befinden sich Beispiele auf GitHub, welche im Wiki nicht dokumentiert sind.<br>
 ## Tutorial
 * [Einfuerung](#einfuerung)
+* [Grafische_Ausgabe](#grafische-ausgabe)
 * [Tastatur](#tastatur)
  [testlink](#radiobutton)
 ### Einfuerung
@@ -11,7 +12,10 @@ Auch befinden sich Beispiele auf GitHub, welche im Wiki nicht dokumentiert sind.
 | :---: | ---
 | [Erstes Fenster](01_-_Einfuerung/10_-_Erstes_Fenster/readme.md) | <img src="01_-_Einfuerung/10_-_Erstes_Fenster/image.png" height="100px">
 | [Besser mit Klassen](01_-_Einfuerung/20_-_Besser_mit_Klassen/readme.md) | <img src="01_-_Einfuerung/20_-_Besser_mit_Klassen/image.png" height="100px">
+### Grafische Ausgabe
+| Link | Beschreibung
+| :---: | ---
+| [Erstes Rechteck](02_-_Grafische_Ausgabe/10_-_Erstes_Rechteck/readme.md) | <img src="02_-_Grafische_Ausgabe/10_-_Erstes_Rechteck/image.png" height="100px">
 ### Tastatur
 | Link | Beschreibung
 | :---: | ---
-| [Tastatur Event](04_-_Tastatur/20_-_Tastatur_Event/readme.md) | <img src="04_-_Tastatur/20_-_Tastatur_Event/image.png" height="100px">

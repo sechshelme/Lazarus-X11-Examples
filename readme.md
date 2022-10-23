@@ -6,7 +6,8 @@ Das Tutorial findet man auch direkt bei den Sourcen auf GitHub: [Inhaltsverzeich
 
 ## Externe Beispiele:
 
-// https://github.com/romiras/turbo-pascal-archive/tree/master/User%20Interface
+[Rheinwerk openbook - Linux Programmierung Kapitel 14](https://openbook.rheinwerk-verlag.de/linux_unix_programmierung/Kap14-007.htm)
+[The X Window system](https://tronche.com/gui/x/xlib/)
 
 
 
@@ -14,6 +15,7 @@ Das Tutorial findet man auch direkt bei den Sourcen auf GitHub: [Inhaltsverzeich
 
 | Datum | Änderungen 
 | :---: | ---
+| 23.10.2022 | Tutorial - Erstes Rechteck zeichnen
 | 23.10.2022 | Tutorial - Erstes Fenster
 | 22.10.2022 | Tutorial auf GIT-Hub einrichten.
 
