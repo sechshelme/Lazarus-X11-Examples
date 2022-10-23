@@ -1,5 +1,5 @@
 <html>
-    <b><h1>01 - Einfuerung</h1></b>
+    <b><h1>01 - Einfuehrung</h1></b>
     <b><h2>20 - Besser mit Klassen</h2></b>
 <img src="image.png" alt="Selfhtml"><br><br>
 Besser man macht es objektorientiert mit Klassen.<br>

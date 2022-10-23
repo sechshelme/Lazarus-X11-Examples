@@ -1,5 +1,5 @@
 <html>
-    <b><h1>01 - Einfuerung</h1></b>
+    <b><h1>01 - Einfuehrung</h1></b>
     <b><h2>10 - Erstes Fenster</h2></b>
 <img src="image.png" alt="Selfhtml"><br><br>
 Erstes Fenster mit <b>X11</b> wird erstellt.<br>
