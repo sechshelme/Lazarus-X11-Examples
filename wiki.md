@@ -16,6 +16,9 @@ Auch befinden sich Beispiele auf GitHub, welche im Wiki nicht dokumentiert sind.
 | Link | Beschreibung
 | :---: | ---
 | [Erstes Rechteck](02_-_Grafische_Ausgabe/10_-_Erstes_Rechteck/readme.md) | <img src="02_-_Grafische_Ausgabe/10_-_Erstes_Rechteck/image.png" height="100px">
+| [Grafikprimitiven (Kopie)](02_-_Grafische_Ausgabe/20_-_Grafikprimitiven (Kopie)/readme.md) | <img src="02_-_Grafische_Ausgabe/20_-_Grafikprimitiven (Kopie)/image.png" height="100px">
+| [Rechtecke](02_-_Grafische_Ausgabe/20_-_Rechtecke/readme.md) | <img src="02_-_Grafische_Ausgabe/20_-_Rechtecke/image.png" height="100px">
+| [Linien](02_-_Grafische_Ausgabe/22_-_Linien/readme.md) | <img src="02_-_Grafische_Ausgabe/22_-_Linien/image.png" height="100px">
 ### Tastatur
 | Link | Beschreibung
 | :---: | ---
