@@ -1,6 +1,5 @@
-<html>
-    <b><h1>01 - Einfuehrung</h1></b>
-    <b><h2>10 - Erstes Fenster</h2></b>
+# 01 - Einfuehrung
+## 10 - Erstes Fenster
 <img src="image.png" alt="Selfhtml"><br><br>
 Erstes Fenster mit <b>X11</b> wird erstellt.<br>
 Es wird nur ein einziges Eregniss gebraucht.<br>
@@ -60,4 +59,3 @@ Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.<br>
   XCloseDisplay(dis);
 <b><font color="0000BB">end</font></b>.</code></pre>
 <br>
-</html>

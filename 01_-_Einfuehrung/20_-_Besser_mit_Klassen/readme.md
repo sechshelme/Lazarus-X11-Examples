@@ -1,6 +1,5 @@
-<html>
-    <b><h1>01 - Einfuehrung</h1></b>
-    <b><h2>20 - Besser mit Klassen</h2></b>
+# 01 - Einfuehrung
+## 20 - Besser mit Klassen
 <img src="image.png" alt="Selfhtml"><br><br>
 Besser man macht es objektorientiert mit Klassen.<br>
 Die macht es übersichtlicher und ausbaufähiger.<br>
@@ -87,4 +86,3 @@ Die macht es übersichtlicher und ausbaufähiger.<br>
   MyWindows.Free;
 <b><font color="0000BB">end</font></b>.</code></pre>
 <br>
-</html>

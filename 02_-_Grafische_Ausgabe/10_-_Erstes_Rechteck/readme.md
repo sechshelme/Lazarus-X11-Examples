@@ -1,6 +1,5 @@
-<html>
-    <b><h1>02 - Grafische Ausgabe</h1></b>
-    <b><h2>10 - Erstes Rechteck</h2></b>
+# 02 - Grafische Ausgabe
+## 10 - Erstes Rechteck
 <img src="image.png" alt="Selfhtml"><br><br>
 In den meisten Fällen ist es nötig, das man etwas auf das Fenster zeichnet.<br>
 Hier im Beispiel ist es ein einfaches Rechteck, welches mit <b>XFillRectangle</b> gezeichnet wird.<br>
@@ -92,4 +91,3 @@ XFillRectangle(Display, Windows, GC, PosX, PosY, Breite, Höhe)<br>
   MyWindows.Free;
 <b><font color="0000BB">end</font></b>.</code></pre>
 <br>
-</html>

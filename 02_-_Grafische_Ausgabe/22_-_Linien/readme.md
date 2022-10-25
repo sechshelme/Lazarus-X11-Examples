@@ -1,6 +1,5 @@
-<html>
-    <b><h1>02 - Grafische Ausgabe</h1></b>
-    <b><h2>22 - Linien</h2></b>
+# 02 - Grafische Ausgabe
+## 22 - Linien
 <img src="image.png" alt="Selfhtml"><br><br>
 Verschiedene Varinaten um Linien zu zeichen.<br>
 <br>
@@ -108,4 +107,3 @@ Verschiedene Varinaten um Linien zu zeichen.<br>
   MyWindows.Free;
 <b><font color="0000BB">end</font></b>.</code></pre>
 <br>
-</html>
