@@ -1,88 +1,93 @@
 # 01 - Einfuehrung
 ## 20 - Besser mit Klassen
+
 <img src="image.png" alt="Selfhtml"><br><br>
-Besser man macht es objektorientiert mit Klassen.<br>
-Die macht es übersichtlicher und ausbaufähiger.<br>
+Besser man macht es objektorientiert mit Klassen.
+Die macht es übersichtlicher und ausbaufähiger.
 <hr><br>
-<pre><code=pascal><b><font color="0000BB">program</font></b> Project1;
-<br>
-<b><font color="0000BB">uses</font></b>
+
+```pascal
+program Project1;
+
+uses
   unixtype,
   ctypes,
   xlib,
   xutil,
   keysym,
   x;
-<br>
-<b><font color="0000BB">type</font></b>
-  TMyWin = <b><font color="0000BB">class</font></b>(TObject)
-  <b><font color="0000BB">private</font></b>
+
+type
+  TMyWin = class(TObject)
+  private
     dis: PDisplay;
     scr: cint;
     depth: cint;
     rootwin, win: TWindow;
-  <b><font color="0000BB">public</font></b>
-    <b><font color="0000BB">constructor</font></b> Create;
-    <b><font color="0000BB">destructor</font></b> Destroy; <b><font color="0000BB">override</font></b>;
-    <b><font color="0000BB">procedure</font></b> Run;
-  <b><font color="0000BB">end</font></b>;
-<br>
-  <b><font color="0000BB">constructor</font></b> TMyWin.Create;
-  <b><font color="0000BB">begin</font></b>
-    <b><font color="0000BB">inherited</font></b> Create;
-<br>
-    <i><font color="#FFFF00">// Erstellt die Verbindung zum Server</font></i>
-    dis := XOpenDisplay(<b><font color="0000BB">nil</font></b>);
-    <b><font color="0000BB">if</font></b> dis = <b><font color="0000BB">nil</font></b> <b><font color="0000BB">then</font></b> <b><font color="0000BB">begin</font></b>
-      WriteLn(<font color="#FF0000">'Kann nicht das Display öffnen'</font>);
-      Halt(<font color="#0077BB">1</font>);
-    <b><font color="0000BB">end</font></b>;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Run;
+  end;
+
+  constructor TMyWin.Create;
+  begin
+    inherited Create;
+
+    // Erstellt die Verbindung zum Server
+    dis := XOpenDisplay(nil);
+    if dis = nil then begin
+      WriteLn('Kann nicht das Display öffnen');
+      Halt(1);
+    end;
     scr := DefaultScreen(dis);
-<br>
-    <i><font color="#FFFF00">// Erstellt das Fenster</font></i>
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), <font color="#0077BB">10</font>, <font color="#0077BB">10</font>, <font color="#0077BB">320</font>, <font color="#0077BB">240</font>, <font color="#0077BB">1</font>, BlackPixel(dis, scr), WhitePixel(dis, scr));
-<br>
-    <i><font color="#FFFF00">// Wählt die gewünschten Ereignisse aus</font></i>
-    <i><font color="#FFFF00">// Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.</font></i>
+
+    // Erstellt das Fenster
+    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+
+    // Wählt die gewünschten Ereignisse aus
+    // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
     XSelectInput(dis, win, KeyPressMask);
-<br>
-    <i><font color="#FFFF00">// Fenster anzeigen</font></i>
+
+    // Fenster anzeigen
     XMapWindow(dis, win);
-  <b><font color="0000BB">end</font></b>;
-<br>
-  <b><font color="0000BB">destructor</font></b> TMyWin.Destroy;
-  <b><font color="0000BB">begin</font></b>
-    <i><font color="#FFFF00">// Schliesst Verbindung zum Server</font></i>
+  end;
+
+  destructor TMyWin.Destroy;
+  begin
+    // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
-    <b><font color="0000BB">inherited</font></b> Destroy;
-  <b><font color="0000BB">end</font></b>;
-<br>
-  <b><font color="0000BB">procedure</font></b> TMyWin.Run;
-  <b><font color="0000BB">var</font></b>
+    inherited Destroy;
+  end;
+
+  procedure TMyWin.Run;
+  var
     Event: TXEvent;
-  <b><font color="0000BB">begin</font></b>
-    <i><font color="#FFFF00">// Ereignisschleife</font></i>
-    <b><font color="0000BB">while</font></b> (<b><font color="0000BB">True</font></b>) <b><font color="0000BB">do</font></b> <b><font color="0000BB">begin</font></b>
+  begin
+    // Ereignisschleife
+    while (True) do begin
       XNextEvent(dis, @Event);
-<br>
-      <b><font color="0000BB">case</font></b> Event._type <b><font color="0000BB">of</font></b>
-        KeyPress: <b><font color="0000BB">begin</font></b>
-          <i><font color="#FFFF00">// Beendet das Programm bei [ESC]</font></i>
-          <b><font color="0000BB">if</font></b> XLookupKeysym(@Event.xkey, <font color="#0077BB">0</font>) = XK_Escape <b><font color="0000BB">then</font></b> <b><font color="0000BB">begin</font></b>
-            <b><font color="0000BB">Break</font></b>;
-          <b><font color="0000BB">end</font></b>;
-        <b><font color="0000BB">end</font></b>;
-      <b><font color="0000BB">end</font></b>;
-<br>
-    <b><font color="0000BB">end</font></b>;
-  <b><font color="0000BB">end</font></b>;
-<br>
-<b><font color="0000BB">var</font></b>
+
+      case Event._type of
+        KeyPress: begin
+          // Beendet das Programm bei [ESC]
+          if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
+            Break;
+          end;
+        end;
+      end;
+
+    end;
+  end;
+
+var
   MyWindows: TMyWin;
-<br>
-<b><font color="0000BB">begin</font></b>
+
+begin
   MyWindows := TMyWin.Create;
   MyWindows.Run;
   MyWindows.Free;
-<b><font color="0000BB">end</font></b>.</code></pre>
-<br>
+end.
+```
+
+

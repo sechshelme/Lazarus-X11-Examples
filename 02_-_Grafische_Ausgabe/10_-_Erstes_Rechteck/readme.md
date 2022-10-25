@@ -1,93 +1,98 @@
 # 02 - Grafische Ausgabe
 ## 10 - Erstes Rechteck
+
 <img src="image.png" alt="Selfhtml"><br><br>
-In den meisten Fällen ist es nötig, das man etwas auf das Fenster zeichnet.<br>
-Hier im Beispiel ist es ein einfaches Rechteck, welches mit <b>XFillRectangle</b> gezeichnet wird.<br>
-XFillRectangle(Display, Windows, GC, PosX, PosY, Breite, Höhe)<br>
+In den meisten Fällen ist es nötig, das man etwas auf das Fenster zeichnet.
+Hier im Beispiel ist es ein einfaches Rechteck, welches mit <b>XFillRectangle</b> gezeichnet wird.
+XFillRectangle(Display, Windows, GC, PosX, PosY, Breite, Höhe)
 <hr><br>
-<pre><code=pascal><b><font color="0000BB">program</font></b> Project1;
-<br>
-<b><font color="0000BB">uses</font></b>
+
+```pascal
+program Project1;
+
+uses
   unixtype,
   ctypes,
   xlib,
   xutil,
   keysym,
   x;
-<br>
-<b><font color="0000BB">type</font></b>
-  TMyWin = <b><font color="0000BB">class</font></b>(TObject)
-  <b><font color="0000BB">private</font></b>
+
+type
+  TMyWin = class(TObject)
+  private
     dis: PDisplay;
     scr: cint;
     depth: cint;
     rootwin, win: TWindow;
-  <b><font color="0000BB">public</font></b>
-    <b><font color="0000BB">constructor</font></b> Create;
-    <b><font color="0000BB">destructor</font></b> Destroy; <b><font color="0000BB">override</font></b>;
-    <b><font color="0000BB">procedure</font></b> Run;
-  <b><font color="0000BB">end</font></b>;
-<br>
-  <b><font color="0000BB">constructor</font></b> TMyWin.Create;
-  <b><font color="0000BB">begin</font></b>
-    <b><font color="0000BB">inherited</font></b> Create;
-<br>
-    <i><font color="#FFFF00">// Erstellt die Verbindung zum Server</font></i>
-    dis := XOpenDisplay(<b><font color="0000BB">nil</font></b>);
-    <b><font color="0000BB">if</font></b> dis = <b><font color="0000BB">nil</font></b> <b><font color="0000BB">then</font></b> <b><font color="0000BB">begin</font></b>
-      WriteLn(<font color="#FF0000">'Kann nicht das Display öffnen'</font>);
-      Halt(<font color="#0077BB">1</font>);
-    <b><font color="0000BB">end</font></b>;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Run;
+  end;
+
+  constructor TMyWin.Create;
+  begin
+    inherited Create;
+
+    // Erstellt die Verbindung zum Server
+    dis := XOpenDisplay(nil);
+    if dis = nil then begin
+      WriteLn('Kann nicht das Display öffnen');
+      Halt(1);
+    end;
     scr := DefaultScreen(dis);
-<br>
-    <i><font color="#FFFF00">// Erstellt das Fenster</font></i>
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), <font color="#0077BB">10</font>, <font color="#0077BB">10</font>, <font color="#0077BB">320</font>, <font color="#0077BB">240</font>, <font color="#0077BB">1</font>, BlackPixel(dis, scr), WhitePixel(dis, scr));
-<br>
-    <i><font color="#FFFF00">// Wählt die gewünschten Ereignisse aus</font></i>
-    <i><font color="#FFFF00">// Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.</font></i>
-    XSelectInput(dis, win, KeyPressMask <b><font color="0000BB">or</font></b> ExposureMask);
-<br>
-    <i><font color="#FFFF00">// Fenster anzeigen</font></i>
+
+    // Erstellt das Fenster
+    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+
+    // Wählt die gewünschten Ereignisse aus
+    // Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.
+    XSelectInput(dis, win, KeyPressMask or ExposureMask);
+
+    // Fenster anzeigen
     XMapWindow(dis, win);
-  <b><font color="0000BB">end</font></b>;
-<br>
-  <b><font color="0000BB">destructor</font></b> TMyWin.Destroy;
-  <b><font color="0000BB">begin</font></b>
-    <i><font color="#FFFF00">// Schliesst Verbindung zum Server</font></i>
+  end;
+
+  destructor TMyWin.Destroy;
+  begin
+    // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
-    <b><font color="0000BB">inherited</font></b> Destroy;
-  <b><font color="0000BB">end</font></b>;
-<br>
-  <b><font color="0000BB">procedure</font></b> TMyWin.Run;
-  <b><font color="0000BB">var</font></b>
+    inherited Destroy;
+  end;
+
+  procedure TMyWin.Run;
+  var
     Event: TXEvent;
-  <b><font color="0000BB">begin</font></b>
-    <i><font color="#FFFF00">// Ereignisschleife</font></i>
-    <b><font color="0000BB">while</font></b> (<b><font color="0000BB">True</font></b>) <b><font color="0000BB">do</font></b> <b><font color="0000BB">begin</font></b>
+  begin
+    // Ereignisschleife
+    while (True) do begin
       XNextEvent(dis, @Event);
-<br>
-      <b><font color="0000BB">case</font></b> Event._type <b><font color="0000BB">of</font></b>
-        Expose: <b><font color="0000BB">begin</font></b>
-          <i><font color="#FFFF00">// Das Rechteck wird gezeichnet</font></i>
-          XFillRectangle(dis, win, DefaultGC(dis, scr), <font color="#0077BB">20</font>, <font color="#0077BB">20</font>, <font color="#0077BB">200</font>, <font color="#0077BB">200</font>);
-        <b><font color="0000BB">end</font></b>;
-        KeyPress: <b><font color="0000BB">begin</font></b>
-          <i><font color="#FFFF00">// Beendet das Programm bei [ESC]</font></i>
-          <b><font color="0000BB">if</font></b> XLookupKeysym(@Event.xkey, <font color="#0077BB">0</font>) = XK_Escape <b><font color="0000BB">then</font></b> <b><font color="0000BB">begin</font></b>
-            <b><font color="0000BB">Break</font></b>;
-          <b><font color="0000BB">end</font></b>;
-        <b><font color="0000BB">end</font></b>;
-      <b><font color="0000BB">end</font></b>;
-<br>
-    <b><font color="0000BB">end</font></b>;
-  <b><font color="0000BB">end</font></b>;
-<br>
-<b><font color="0000BB">var</font></b>
+
+      case Event._type of
+        Expose: begin
+          // Das Rechteck wird gezeichnet
+          XFillRectangle(dis, win, DefaultGC(dis, scr), 20, 20, 200, 200);
+        end;
+        KeyPress: begin
+          // Beendet das Programm bei [ESC]
+          if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
+            Break;
+          end;
+        end;
+      end;
+
+    end;
+  end;
+
+var
   MyWindows: TMyWin;
-<br>
-<b><font color="0000BB">begin</font></b>
+
+begin
   MyWindows := TMyWin.Create;
   MyWindows.Run;
   MyWindows.Free;
-<b><font color="0000BB">end</font></b>.</code></pre>
-<br>
+end.
+```
+
+

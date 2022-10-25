@@ -1,134 +1,139 @@
 # 02 - Grafische Ausgabe
 ## 20 - Grafikprimitiven (Kopie)
+
 <img src="image.png" alt="Selfhtml"><br><br>
-In den meisten Fällen ist es nötig, das man etwas auf das Fenster zeichnet.<br>
-Hier im Beispiel ist es ein einfaches Rechteck, welches mit <b>XFillRectangle</b> gezeichnet wird.<br>
-XFillRectangle(Display, Windows, GC, PosX, PosY, Breite, Höhe)<br>
+In den meisten Fällen ist es nötig, das man etwas auf das Fenster zeichnet.
+Hier im Beispiel ist es ein einfaches Rechteck, welches mit <b>XFillRectangle</b> gezeichnet wird.
+XFillRectangle(Display, Windows, GC, PosX, PosY, Breite, Höhe)
 <hr><br>
-<pre><code=pascal><b><font color="0000BB">program</font></b> Project1;
-<br>
-<b><font color="0000BB">uses</font></b>
+
+```pascal
+program Project1;
+
+uses
   unixtype,
   ctypes,
   xlib,
   xutil,
   keysym,
   x;
-<br>
-<b><font color="0000BB">type</font></b>
-  TMyWin = <b><font color="0000BB">class</font></b>(TObject)
-  <b><font color="0000BB">private</font></b>
+
+type
+  TMyWin = class(TObject)
+  private
     dis: PDisplay;
     scr: cint;
     depth: cint;
     rootwin, win: TWindow;
     gc: TGC;
-  <b><font color="0000BB">public</font></b>
-    <b><font color="0000BB">constructor</font></b> Create;
-    <b><font color="0000BB">destructor</font></b> Destroy; <b><font color="0000BB">override</font></b>;
-    <b><font color="0000BB">procedure</font></b> Run;
-  <b><font color="0000BB">end</font></b>;
-<br>
-  <b><font color="0000BB">constructor</font></b> TMyWin.Create;
-  <b><font color="0000BB">begin</font></b>
-    <b><font color="0000BB">inherited</font></b> Create;
-<br>
-    <i><font color="#FFFF00">// Erstellt die Verbindung zum Server</font></i>
-    dis := XOpenDisplay(<b><font color="0000BB">nil</font></b>);
-    <b><font color="0000BB">if</font></b> dis = <b><font color="0000BB">nil</font></b> <b><font color="0000BB">then</font></b> <b><font color="0000BB">begin</font></b>
-      WriteLn(<font color="#FF0000">'Kann nicht das Display öffnen'</font>);
-      Halt(<font color="#0077BB">1</font>);
-    <b><font color="0000BB">end</font></b>;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Run;
+  end;
+
+  constructor TMyWin.Create;
+  begin
+    inherited Create;
+
+    // Erstellt die Verbindung zum Server
+    dis := XOpenDisplay(nil);
+    if dis = nil then begin
+      WriteLn('Kann nicht das Display öffnen');
+      Halt(1);
+    end;
     scr := DefaultScreen(dis);
     gc := DefaultGC(dis, scr);
-<br>
-    <i><font color="#FFFF00">// Erstellt das Fenster</font></i>
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), <font color="#0077BB">10</font>, <font color="#0077BB">10</font>, <font color="#0077BB">320</font>, <font color="#0077BB">240</font>, <font color="#0077BB">1</font>, BlackPixel(dis, scr), WhitePixel(dis, scr));
-<br>
-    <i><font color="#FFFF00">// Wählt die gewünschten Ereignisse aus</font></i>
-    <i><font color="#FFFF00">// Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.</font></i>
-    XSelectInput(dis, win, KeyPressMask <b><font color="0000BB">or</font></b> ExposureMask);
-<br>
-    <i><font color="#FFFF00">// Fenster anzeigen</font></i>
+
+    // Erstellt das Fenster
+    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+
+    // Wählt die gewünschten Ereignisse aus
+    // Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.
+    XSelectInput(dis, win, KeyPressMask or ExposureMask);
+
+    // Fenster anzeigen
     XMapWindow(dis, win);
-  <b><font color="0000BB">end</font></b>;
-<br>
-  <b><font color="0000BB">destructor</font></b> TMyWin.Destroy;
-  <b><font color="0000BB">begin</font></b>
-    <i><font color="#FFFF00">// Schliesst Verbindung zum Server</font></i>
+  end;
+
+  destructor TMyWin.Destroy;
+  begin
+    // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
-    <b><font color="0000BB">inherited</font></b> Destroy;
-  <b><font color="0000BB">end</font></b>;
-<br>
-  <b><font color="0000BB">procedure</font></b> TMyWin.Run;
-  <b><font color="0000BB">var</font></b>
+    inherited Destroy;
+  end;
+
+  procedure TMyWin.Run;
+  var
     Event: TXEvent;
-    poly: <b><font color="0000BB">array</font></b>[<font color="#0077BB">0</font>..<font color="#0077BB">3</font>] <b><font color="0000BB">of</font></b> TXPoint;
-    punkte: <b><font color="0000BB">array</font></b>[<font color="#0077BB">0</font>..<font color="#0077BB">49</font>] <b><font color="0000BB">of</font></b> TXPoint;
+    poly: array[0..3] of TXPoint;
+    punkte: array[0..49] of TXPoint;
     i: integer;
-  <b><font color="0000BB">begin</font></b>
-    <i><font color="#FFFF00">// Ereignisschleife</font></i>
-    <b><font color="0000BB">while</font></b> (<b><font color="0000BB">True</font></b>) <b><font color="0000BB">do</font></b> <b><font color="0000BB">begin</font></b>
+  begin
+    // Ereignisschleife
+    while (True) do begin
       XNextEvent(dis, @Event);
-<br>
-      <b><font color="0000BB">case</font></b> Event._type <b><font color="0000BB">of</font></b>
-        Expose: <b><font color="0000BB">begin</font></b>
-          <i><font color="#FFFF00">// Das Rechteck wird gezeichnet</font></i>
+
+      case Event._type of
+        Expose: begin
+          // Das Rechteck wird gezeichnet
           XClearWindow(dis, win);
-          <i><font color="#FFFF00">// Ein Rechteck zeichnen</font></i>
-          XDrawRectangle(dis, win, gc, <font color="#0077BB">10</font>, <font color="#0077BB">50</font>, <font color="#0077BB">50</font>, <font color="#0077BB">50</font>);
-          <i><font color="#FFFF00">// Einen rechteckigen Bereich mit Farbe füllen</font></i>
-          XFillRectangle(dis, win, gc, <font color="#0077BB">110</font>, <font color="#0077BB">50</font>, <font color="#0077BB">50</font>, <font color="#0077BB">50</font>);
-          <i><font color="#FFFF00">// Einen Kreis zeichnen</font></i>
-          XDrawArc(dis, win, gc, <font color="#0077BB">210</font>, <font color="#0077BB">50</font>, <font color="#0077BB">50</font>, <font color="#0077BB">50</font>, <font color="#0077BB">0</font>, <font color="#0077BB">360</font> * <font color="#0077BB">64</font>);
-          <i><font color="#FFFF00">// Einen Kreisbereich füllen</font></i>
-          XFillArc(dis, win, gc, <font color="#0077BB">310</font>, <font color="#0077BB">50</font>, <font color="#0077BB">50</font>, <font color="#0077BB">50</font>, <font color="#0077BB">0</font>, <font color="#0077BB">360</font> * <font color="#0077BB">64</font>);
-          <i><font color="#FFFF00">// Eine Ellipse zeichnen</font></i>
-          XDrawArc(dis, win, gc, <font color="#0077BB">410</font>, <font color="#0077BB">50</font>, <font color="#0077BB">60</font>, <font color="#0077BB">40</font>, <font color="#0077BB">0</font>, <font color="#0077BB">360</font> * <font color="#0077BB">64</font>);
-          <i><font color="#FFFF00">// Einen Ellipsenbereich füllen</font></i>
-          XFillArc(dis, win, gc, <font color="#0077BB">510</font>, <font color="#0077BB">50</font>, <font color="#0077BB">60</font>, <font color="#0077BB">40</font>, <font color="#0077BB">0</font>, <font color="#0077BB">360</font> * <font color="#0077BB">64</font>);
-          <i><font color="#FFFF00">// Einen Halbkreis zeichnen</font></i>
-          XDrawArc(dis, win, gc, <font color="#0077BB">10</font>, <font color="#0077BB">200</font>, <font color="#0077BB">60</font>, <font color="#0077BB">40</font>, <font color="#0077BB">90</font> * <font color="#0077BB">64</font>, <font color="#0077BB">180</font> * <font color="#0077BB">64</font>);
-          <i><font color="#FFFF00">// Einen Halbkreis füllen</font></i>
-          XFillArc(dis, win, gc, <font color="#0077BB">110</font>, <font color="#0077BB">200</font>, <font color="#0077BB">60</font>, <font color="#0077BB">40</font>, <font color="#0077BB">90</font> * <font color="#0077BB">64</font>, <font color="#0077BB">180</font> * <font color="#0077BB">64</font>);
-          <i><font color="#FFFF00">// Einen bestimmten Bereich im Polygon (in diesem Fall ein</font></i>
-          <i><font color="#FFFF00">// Dreieck füllen ausgefuelltes Polygon bzw. Dreieck</font></i>
-          <i><font color="#FFFF00">// geschlossenes Dreieck</font></i>
-          poly[<font color="#0077BB">0</font>].x := <font color="#0077BB">200</font>;
-          poly[<font color="#0077BB">0</font>].y := <font color="#0077BB">200</font>;
-          poly[<font color="#0077BB">1</font>].x := <font color="#0077BB">300</font>;
-          poly[<font color="#0077BB">1</font>].y := <font color="#0077BB">300</font>;
-          poly[<font color="#0077BB">2</font>].x := <font color="#0077BB">400</font>;
-          poly[<font color="#0077BB">2</font>].y := <font color="#0077BB">200</font>;
-          poly[<font color="#0077BB">3</font>].x := <font color="#0077BB">200</font>;
-          poly[<font color="#0077BB">3</font>].y := <font color="#0077BB">200</font>;
-          XFillPolygon(dis, win, gc, poly, <font color="#0077BB">4</font>, <font color="#0077BB">0</font>, CoordModeOrigin);
-          <i><font color="#FFFF00">// Eine schräge Linie mit Punkten</font></i>
-          <i><font color="#FFFF00">// Ein paar Felder belegen</font></i>
-          <i><font color="#FFFF00">// Eine Schräge mithilfe von Punkten zeichnen</font></i>
-          <b><font color="0000BB">for</font></b> i := <font color="#0077BB">0</font> <b><font color="0000BB">to</font></b> <font color="#0077BB">49</font> <b><font color="0000BB">do</font></b> <b><font color="0000BB">begin</font></b>
-            punkte[i].x := <font color="#0077BB">470</font> + i;
-            punkte[i].y := <font color="#0077BB">200</font> + i;
-          <b><font color="0000BB">end</font></b>;
-          XDrawPoints(dis, win, gc, punkte, <font color="#0077BB">50</font>, CoordModeOrigin);
-        <b><font color="0000BB">end</font></b>;
-        KeyPress: <b><font color="0000BB">begin</font></b>
-          <i><font color="#FFFF00">// Beendet das Programm bei [ESC]</font></i>
-          <b><font color="0000BB">if</font></b> XLookupKeysym(@Event.xkey, <font color="#0077BB">0</font>) = XK_Escape <b><font color="0000BB">then</font></b> <b><font color="0000BB">begin</font></b>
-            <b><font color="0000BB">Break</font></b>;
-          <b><font color="0000BB">end</font></b>;
-        <b><font color="0000BB">end</font></b>;
-      <b><font color="0000BB">end</font></b>;
-<br>
-    <b><font color="0000BB">end</font></b>;
-  <b><font color="0000BB">end</font></b>;
-<br>
-<b><font color="0000BB">var</font></b>
+          // Ein Rechteck zeichnen
+          XDrawRectangle(dis, win, gc, 10, 50, 50, 50);
+          // Einen rechteckigen Bereich mit Farbe füllen
+          XFillRectangle(dis, win, gc, 110, 50, 50, 50);
+          // Einen Kreis zeichnen
+          XDrawArc(dis, win, gc, 210, 50, 50, 50, 0, 360 * 64);
+          // Einen Kreisbereich füllen
+          XFillArc(dis, win, gc, 310, 50, 50, 50, 0, 360 * 64);
+          // Eine Ellipse zeichnen
+          XDrawArc(dis, win, gc, 410, 50, 60, 40, 0, 360 * 64);
+          // Einen Ellipsenbereich füllen
+          XFillArc(dis, win, gc, 510, 50, 60, 40, 0, 360 * 64);
+          // Einen Halbkreis zeichnen
+          XDrawArc(dis, win, gc, 10, 200, 60, 40, 90 * 64, 180 * 64);
+          // Einen Halbkreis füllen
+          XFillArc(dis, win, gc, 110, 200, 60, 40, 90 * 64, 180 * 64);
+          // Einen bestimmten Bereich im Polygon (in diesem Fall ein
+          // Dreieck füllen ausgefuelltes Polygon bzw. Dreieck
+          // geschlossenes Dreieck
+          poly[0].x := 200;
+          poly[0].y := 200;
+          poly[1].x := 300;
+          poly[1].y := 300;
+          poly[2].x := 400;
+          poly[2].y := 200;
+          poly[3].x := 200;
+          poly[3].y := 200;
+          XFillPolygon(dis, win, gc, poly, 4, 0, CoordModeOrigin);
+          // Eine schräge Linie mit Punkten
+          // Ein paar Felder belegen
+          // Eine Schräge mithilfe von Punkten zeichnen
+          for i := 0 to 49 do begin
+            punkte[i].x := 470 + i;
+            punkte[i].y := 200 + i;
+          end;
+          XDrawPoints(dis, win, gc, punkte, 50, CoordModeOrigin);
+        end;
+        KeyPress: begin
+          // Beendet das Programm bei [ESC]
+          if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
+            Break;
+          end;
+        end;
+      end;
+
+    end;
+  end;
+
+var
   MyWindows: TMyWin;
-<br>
-<b><font color="0000BB">begin</font></b>
+
+begin
   MyWindows := TMyWin.Create;
   MyWindows.Run;
   MyWindows.Free;
-<b><font color="0000BB">end</font></b>.</code></pre>
-<br>
+end.
+```
+
+
