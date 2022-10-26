@@ -7,8 +7,7 @@ Verschiedene Varinaten um Rechtecke zu zeichnen:
 
 - [XDrawRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XDrawRectangle.html)
 - [XFillRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillRectangle.html)
-- [XFillPolygon](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillPolygon.html)
-Für ein nicht ausgefülltes Polygon nimmt man **XDrawLines**.
+- [XFillPolygon](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillPolygon.html) (Für ein nicht ausgefülltes Polygon nimmt man **XDrawLines**.)
 ---
 
 ```pascal
