@@ -1,10 +1,11 @@
 # 01 - Einfuehrung
 ## 20 - Besser mit Klassen
 
-<img src="image.png" alt="Selfhtml"><br><br>
+![image.png](image.png)
+
 Besser man macht es objektorientiert mit Klassen.
 Die macht es übersichtlicher und ausbaufähiger.
-<hr><br>
+---
 
 ```pascal
 program Project1;

@@ -1,8 +1,9 @@
 //image image.png
 (*
-In den meisten Fällen ist es nötig, das man etwas auf das Fenster zeichnet.
-Hier im Beispiel ist es ein einfaches Rechteck, welches mit <b>XFillRectangle</b> gezeichnet wird.
-XFillRectangle(Display, Windows, GC, PosX, PosY, Breite, Höhe)
+Kreise und Elipsen zeichnen
+
+- [XDrawArc](https://tronche.com/gui/x/xlib/graphics/drawing/XDrawArc.html)
+- [XFill](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillArc.html)
 *)
 //lineal
 //code+
@@ -21,8 +22,7 @@ type
   private
     dis: PDisplay;
     scr: cint;
-    depth: cint;
-    rootwin, win: TWindow;
+    win: TWindow;
     gc: TGC;
   public
     constructor Create;
@@ -71,12 +71,20 @@ type
 
       case Event._type of
         Expose: begin
-          // Bildschirm löschen
           XClearWindow(dis, win);
-          // Ein Rechteck zeichnen
-          XDrawRectangle(dis, win, gc, 10, 50, 50, 50);
-          // Einen rechteckigen Bereich mit Farbe füllen
-          XFillRectangle(dis, win, gc, 110, 50, 50, 50);
+
+          // Einen Kreis zeichnen
+          XDrawArc(dis, win, gc, 10, 30, 50, 50, 0, 360 * 64);
+          // Einen Kreisbereich füllen
+          XFillArc(dis, win, gc, 110, 30, 50, 50, 0, 360 * 64);
+          // Eine Ellipse zeichnen
+          XDrawArc(dis, win, gc, 60, 90, 60, 40, 0, 360 * 64);
+          // Einen Ellipsenbereich füllen
+          XFillArc(dis, win, gc, 160, 90, 60, 40, 0, 360 * 64);
+          // Einen Halbkreis zeichnen
+          XDrawArc(dis, win, gc, 110, 150, 60, 40, 90 * 64, 180 * 64);
+          // Einen Halbkreis füllen
+          XFillArc(dis, win, gc, 210, 150, 60, 40, 90 * 64, 180 * 64);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]

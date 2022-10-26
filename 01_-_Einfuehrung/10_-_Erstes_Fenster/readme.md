@@ -1,11 +1,12 @@
 # 01 - Einfuehrung
 ## 10 - Erstes Fenster
 
-<img src="image.png" alt="Selfhtml"><br><br>
+![image.png](image.png)
+
 Erstes Fenster mit <b>X11</b> wird erstellt.
 Es wird nur ein einziges Eregniss gebraucht.
 Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.
-<hr><br>
+---
 
 ```pascal
 program Project1;

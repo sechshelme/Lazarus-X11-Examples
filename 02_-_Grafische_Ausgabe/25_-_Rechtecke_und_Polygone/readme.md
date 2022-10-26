@@ -1,11 +1,15 @@
 # 02 - Grafische Ausgabe
-## 20 - Rechtecke
+## 25 - Rechtecke und Polygone
 
-<img src="image.png" alt="Selfhtml"><br><br>
-In den meisten Fällen ist es nötig, das man etwas auf das Fenster zeichnet.
-Hier im Beispiel ist es ein einfaches Rechteck, welches mit <b>XFillRectangle</b> gezeichnet wird.
-XFillRectangle(Display, Windows, GC, PosX, PosY, Breite, Höhe)
-<hr><br>
+![image.png](image.png)
+
+Verschiedene Varinaten um Rechtecke zu zeichnen:
+
+- [XDrawRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XDrawRectangle.html)
+- [XFillRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillRectangle.html)
+- [XFillPolygon](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillPolygon.html)
+Für ein nicht ausgefülltes Polygon nimmt man **XDrawLines**.
+---
 
 ```pascal
 program Project1;
@@ -23,8 +27,7 @@ type
   private
     dis: PDisplay;
     scr: cint;
-    depth: cint;
-    rootwin, win: TWindow;
+    win: TWindow;
     gc: TGC;
   public
     constructor Create;
@@ -64,9 +67,18 @@ type
   end;
 
   procedure TMyWin.Run;
+  const
+    maxSektoren = 8;
   var
     Event: TXEvent;
+    punkte: array[0..maxSektoren] of TXPoint;
+    i: integer;
   begin
+    for i := 0 to maxSektoren - 1 do begin
+      punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 200;
+      punkte[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 170;
+    end;
+
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
@@ -79,6 +91,10 @@ type
           XDrawRectangle(dis, win, gc, 10, 50, 50, 50);
           // Einen rechteckigen Bereich mit Farbe füllen
           XFillRectangle(dis, win, gc, 110, 50, 50, 50);
+
+          // Ein Polygon
+          XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
+
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]

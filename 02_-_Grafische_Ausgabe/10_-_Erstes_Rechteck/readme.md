@@ -1,11 +1,12 @@
 # 02 - Grafische Ausgabe
 ## 10 - Erstes Rechteck
 
-<img src="image.png" alt="Selfhtml"><br><br>
+![image.png](image.png)
+
 In den meisten Fällen ist es nötig, das man etwas auf das Fenster zeichnet.
 Hier im Beispiel ist es ein einfaches Rechteck, welches mit <b>XFillRectangle</b> gezeichnet wird.
 XFillRectangle(Display, Windows, GC, PosX, PosY, Breite, Höhe)
-<hr><br>
+---
 
 ```pascal
 program Project1;

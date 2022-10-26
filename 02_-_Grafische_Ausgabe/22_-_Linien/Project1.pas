@@ -1,9 +1,10 @@
 //image image.png
 (*
-Verschiedene Varinaten um Linien zu zeichen.
+Verschiedene Varinaten um Linien zu zeichnen:
 
 - [XDrawLine](https://tronche.com/gui/x/xlib/graphics/drawing/XDrawLine.html)
 - [XDrawLines](https://tronche.com/gui/x/xlib/graphics/drawing/XDrawLines.html)
+**XDrawLines** Ist auch geeignet um eine unausgefülltes Polygon zu zeichnen.
 *)
 //lineal
 //code+
@@ -22,8 +23,7 @@ type
   private
     dis: PDisplay;
     scr: cint;
-    depth: cint;
-    rootwin, win: TWindow;
+    win: TWindow;
     gc: TGC;
   public
     constructor Create;
@@ -67,12 +67,13 @@ type
     maxSektoren = 8;
   var
     Event: TXEvent;
-    punkte: array[0..maxSektoren] of TXPoint;
+    Points: array[0..maxSektoren] of TXPoint;
     i: integer;
   begin
+    // Punkte in Kreisanordnung berechnen
     for i := 0 to maxSektoren - 1 do begin
-      punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 200;
-      punkte[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 110;
+      Points[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 200;
+      Points[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 110;
     end;
 
     // Ereignisschleife
@@ -83,10 +84,12 @@ type
         Expose: begin
           // Bildschirm löschen
           XClearWindow(dis, win);
+
           // Eine einfache Linie
           XDrawLine(dis, win, gc, 10, 60, 110, 160);
+
           // Ein Linien-Array
-          XDrawLines(dis, win, gc, @punkte, Length(punkte) - 1, 0);
+          XDrawLines(dis, win, gc, @Points, Length(Points) - 1, 0);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
