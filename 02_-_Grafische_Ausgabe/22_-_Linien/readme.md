@@ -6,8 +6,6 @@
 Verschiedene Varinaten um Linien zu zeichnen:
 
 - [XDrawLine](https://tronche.com/gui/x/xlib/graphics/drawing/XDrawLine.html)
-- [XDrawLines](https://tronche.com/gui/x/xlib/graphics/drawing/XDrawLines.html)
-**XDrawLines** Ist auch geeignet um eine unausgefülltes Polygon zu zeichnen.
 ---
 
 ```pascal

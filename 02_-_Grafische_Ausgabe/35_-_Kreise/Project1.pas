@@ -1,6 +1,6 @@
 //image image.png
 (*
-Kreise und Elipsen zeichnen
+Kreise und Elipsen zeichnen:
 
 - [XDrawArc](https://tronche.com/gui/x/xlib/graphics/drawing/XDrawArc.html)
 - [XFill](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillArc.html)

@@ -13,6 +13,7 @@ Das Tutorial findet man auch direkt bei den Sourcen auf GitHub: [Inhaltsverzeich
 
 | Datum | Änderungen 
 | :---: | ---
+| 25.10.2022 | Tutorial - Grafikprimitive
 | 24.10.2022 | Tutorial - Erstes Rechteck zeichnen
 | 23.10.2022 | Tutorial - Erstes Fenster
 | 22.10.2022 | Tutorial auf GIT-Hub einrichten.
