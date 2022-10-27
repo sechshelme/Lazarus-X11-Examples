@@ -58,12 +58,6 @@ end;
 procedure TButton.Paint(dis: PDisplay; win: TDrawable; gc: TGC);
 begin
   XSetForeground(dis, gc, Color);
-  //if IsMouseDown then  begin
-  //  XSetForeground(dis, gc, $FF00);
-  //end else begin
-  //  XSetForeground(dis, gc, $00);
-  //end;
-  XSetForeground(dis, gc, Color);
   XDrawRectangle(dis, win, gc, Left, Top, Width, Height);
   XSetForeground(dis, gc, $00);
   XDrawString(dis, win, gc, Left + 5, Top + 13, PChar(Caption), Length(Caption));

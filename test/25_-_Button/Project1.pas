@@ -153,7 +153,6 @@ type
           for i := 0 to Length(Button) - 1 do begin
             Button[i].Paint(dis, win, gc);
           end;
-          //          WriteLn('state=', Event.xbutton.state, ' button=', Event.xbutton.button);
         end;
       end;
     end;
