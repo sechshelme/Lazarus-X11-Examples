@@ -91,7 +91,6 @@ begin
     if OnClick <> nil then begin
       OnClick(self);
     end;
-  end else begin
   end;
   IsMouseDown := False;
   Color := $00;
