@@ -71,8 +71,12 @@ type
     XMapWindow(dis, win);
     for i := 0 to Length(Button) - 1 do begin
       Button[i] := TButton.Create(5 + i * 60, 5, 50, 15);
+      Button[i].win := win;
+      Button[i].dis := dis;
+      Button[i].gc := gc;
+
       str(i, s);
-      Button[i].Caption := 'Button' + s;
+      Button[i].Caption := 'Button' + s + '12345678';
 
       Button[i].OnClick := @ButtonClick;
     end;
@@ -120,7 +124,7 @@ type
           XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
 
           for i := 0 to Length(Button) - 1 do begin
-            Button[i].Paint(dis, win, gc);
+            Button[i].Paint;
           end;
         end;
         KeyPress: begin
@@ -135,7 +139,7 @@ type
             Button[i].MouseDown(Event.xbutton.x, Event.xbutton.y);
           end;
           for i := 0 to Length(Button) - 1 do begin
-            Button[i].Paint(dis, win, gc);
+            Button[i].Paint;
           end;
         end;
         MotionNotify: begin
@@ -143,7 +147,7 @@ type
             Button[i].MouseMove(Event.xbutton.x, Event.xbutton.y);
           end;
           for i := 0 to Length(Button) - 1 do begin
-            Button[i].Paint(dis, win, gc);
+            Button[i].Paint;
           end;
         end;
         ButtonRelease: begin
@@ -151,7 +155,7 @@ type
             Button[i].MouseUp(Event.xbutton.x, Event.xbutton.y);
           end;
           for i := 0 to Length(Button) - 1 do begin
-            Button[i].Paint(dis, win, gc);
+            Button[i].Paint;
           end;
         end;
       end;

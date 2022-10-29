@@ -25,12 +25,17 @@ type
     IsMouseDown: boolean;
     Left, Top, Width, Height: integer;
     Color: culong;
+    r: TRegion;
+
   public
+    dis: PDisplay;
+    win: TDrawable;
+    gc: TGC;
     property Caption: string read FCaption write FCaption;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
     constructor Create(ALeft, ATop, AWidth, AHeight: integer);
     destructor Destroy; override;
-    procedure Paint(dis: PDisplay; win: TDrawable; gc: TGC);
+    procedure Paint;
     procedure MouseDown(x, y: integer);
     procedure MouseMove(x, y: integer);
     procedure MouseUp(x, y: integer);
@@ -55,8 +60,25 @@ begin
   inherited Destroy;
 end;
 
-procedure TButton.Paint(dis: PDisplay; win: TDrawable; gc: TGC);
+procedure TButton.Paint;
+var
+  rect: TXRectangle;
+
 begin
+  r := XCreateRegion;
+
+  rect.x := Left;
+  rect.y := Top;
+  rect.Width := Width;
+  rect.Height := Height;
+  XUnionRectWithRegion(@rect, r, r);
+  //                    XRectInRegion(r, 50,50,150,150);
+
+  XSetRegion(dis, gc, r);
+  XDestroyRegion(r);
+
+
+
   XSetForeground(dis, gc, Color);
   XDrawRectangle(dis, win, gc, Left, Top, Width, Height);
   XSetForeground(dis, gc, $00);
