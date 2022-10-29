@@ -64,8 +64,8 @@ type
   procedure TMyWin.Run;
   var
     Event: TXEvent;
-    r: TRegion;
-    rect: TXRectangle;
+    Region: TRegion;
+    Rect: TXRectangle;
     i: integer;
   begin
     // Ereignisschleife
@@ -76,23 +76,25 @@ type
         Expose: begin
           XClearWindow(dis, win);
 
-          r := XCreateRegion;
+          Region := XCreateRegion;
 
-          rect.x := 50;
-          rect.y := 50;
-          rect.Width := 100;
-          rect.Height := 100;
-          XUnionRectWithRegion(@rect, r, r);
+          Rect.x := 50;
+          Rect.y := 50;
+          Rect.Width := 100;
+          Rect.Height := 100;
+          XUnionRectWithRegion(@Rect, Region, Region);
 
-          rect.x := 160;
-          rect.y := 100;
-          rect.Width := 100;
-          rect.Height := 100;
-          XUnionRectWithRegion(@rect, r, r);
-//                    XRectInRegion(r, 50,50,150,150);
+          Rect.x := 160;
+          Rect.y := 100;
+          Rect.Width := 100;
+          Rect.Height := 100;
+          XUnionRectWithRegion(@Rect, Region, Region);
+//          XOffsetRegion(Region, -50,-50);
+          XShrinkRegion(Region, 30,30);
+//                    XRectInRegion(Region, 50,50,150,150);
 
-          XSetRegion(dis, gc, r);
-          XDestroyRegion(r);
+          XSetRegion(dis, gc, Region);
+          XDestroyRegion(Region);
 
 
           // Einen Kreis zeichnen

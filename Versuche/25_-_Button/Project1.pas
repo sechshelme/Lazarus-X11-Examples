@@ -29,9 +29,11 @@ type
     scr: cint;
     win: TWindow;
     gc: TGC;
+    Width, Height: integer;
 
     Button: array[0..3] of TButton;
     procedure ButtonClick(Sender: TObject);
+    procedure Paint;
   public
     constructor Create;
     destructor Destroy; override;
@@ -43,11 +45,48 @@ type
     WriteLn(TButton(Sender).Caption);
   end;
 
+  procedure TMyWin.Paint;
+  const
+    maxSektoren = 8;
+  var
+    punkte: array[0..maxSektoren] of TXPoint;
+    i: integer;
+    Region: TRegion;
+    Rect: TXRectangle;
+  begin
+    Region := XCreateRegion;
+    Rect.x := 0;
+    Rect.y := 0;
+    Rect.Width := Width;
+    Rect.Height := Height;
+    XUnionRectWithRegion(@Rect, Region, Region);
+    XSetRegion(dis, gc, Region);
+    XDestroyRegion(Region);
+
+    for i := 0 to maxSektoren - 1 do begin
+      punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 200;
+      punkte[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 170;
+    end;
+
+    XClearWindow(dis, win);
+    // Ein Rechteck zeichnen
+    XSetForeground(dis, gc, $00);
+    XDrawRectangle(dis, win, gc, 10, 50, 50, 50);
+    // Einen rechteckigen Bereich mit Farbe füllen
+    XFillRectangle(dis, win, gc, 110, 50, 50, 50);
+
+    // Ein Polygon
+    XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
+
+    for i := 0 to Length(Button) - 1 do begin
+      Button[i].Paint;
+    end;
+  end;
+
   constructor TMyWin.Create;
   var
     i: integer;
     s: string;
-
   begin
     inherited Create;
 
@@ -65,19 +104,19 @@ type
 
     // Wählt die gewünschten Ereignisse aus
     // Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.
-    XSelectInput(dis, win, KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or StructureNotifyMask or PointerMotionMask);
+    XSelectInput(dis, win, KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or StructureNotifyMask or PointerMotionMask or StructureNotifyMask);
 
     // Fenster anzeigen
     XMapWindow(dis, win);
+    //    XSetWindowBackground(dis, win,$BBBBBB);
     for i := 0 to Length(Button) - 1 do begin
-      Button[i] := TButton.Create(5 + i * 60, 5, 50, 15);
-      Button[i].win := win;
-      Button[i].dis := dis;
-      Button[i].gc := gc;
+      Button[i] := TButton.Create(dis, win, gc);
+      Button[i].Width := 70;
+      Button[i].Left := 5 + i * (Button[0].Width + 5);
+      Button[i].Top := 5;
 
       str(i, s);
-      Button[i].Caption := 'Button' + s + '12345678';
-
+      Button[i].Caption := 'Button' + s;
       Button[i].OnClick := @ButtonClick;
     end;
   end;
@@ -95,37 +134,22 @@ type
   end;
 
   procedure TMyWin.Run;
-  const
-    maxSektoren = 8;
   var
     Event: TXEvent;
-    punkte: array[0..maxSektoren] of TXPoint;
     i: integer;
   begin
-    for i := 0 to maxSektoren - 1 do begin
-      punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 200;
-      punkte[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 170;
-    end;
-
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
 
       case Event._type of
         Expose: begin
+          Paint;
           // Bildschirm löschen
-          XClearWindow(dis, win);
-          // Ein Rechteck zeichnen
-          XDrawRectangle(dis, win, gc, 10, 50, 50, 50);
-          // Einen rechteckigen Bereich mit Farbe füllen
-          XFillRectangle(dis, win, gc, 110, 50, 50, 50);
-
-          // Ein Polygon
-          XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
-
-          for i := 0 to Length(Button) - 1 do begin
-            Button[i].Paint;
-          end;
+        end;
+        ConfigureNotify: begin
+          Width := Event.xconfigure.Width;
+          Height := Event.xconfigure.Height;
         end;
         KeyPress: begin
 

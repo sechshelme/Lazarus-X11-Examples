@@ -20,20 +20,28 @@ type
 
   TButton = class(TObject)
   private
-    FCaption: string;
     FOnClick: TNotifyEvent;
-    IsMouseDown: boolean;
-    Left, Top, Width, Height: integer;
-    Color: culong;
+    FCaption: string;
+    FHeight, FLeft, FTop, FWidth: cint;
+    IsMouseDown, IsButtonDown: boolean;
+
+    ColLeftTop, ColRightBottom, Color: culong;
+
     r: TRegion;
 
-  public
     dis: PDisplay;
     win: TDrawable;
     gc: TGC;
+
+  public
+    property Left: cint read FLeft write FLeft;
+    property Top: cint read FTop write FTop;
+    property Width: cint read FWidth write FWidth;
+    property Height: cint read FHeight write FHeight;
+
     property Caption: string read FCaption write FCaption;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
-    constructor Create(ALeft, ATop, AWidth, AHeight: integer);
+    constructor Create(Adis: PDisplay; Awin: TDrawable; Agc: TGC);
     destructor Destroy; override;
     procedure Paint;
     procedure MouseDown(x, y: integer);
@@ -45,14 +53,23 @@ implementation
 
 { TButton }
 
-constructor TButton.Create(ALeft, ATop, AWidth, AHeight: integer);
+constructor TButton.Create(Adis: PDisplay; Awin: TDrawable; Agc: TGC);
 begin
   IsMouseDown := False;
-  Left := ALeft;
-  Top := ATop;
-  Width := AWidth;
-  Height := AHeight;
+  IsButtonDown := False;
+  Left := 0;
+  Top := 0;
+  Width := 75;
+  Height := 25;
   OnClick := nil;
+
+  Color := $00;
+  ColLeftTop := $DDDDDD;
+  ColRightBottom := $333333;
+
+  dis := Adis;
+  win := Awin;
+  gc := Agc;
 end;
 
 destructor TButton.Destroy;
@@ -63,36 +80,86 @@ end;
 procedure TButton.Paint;
 var
   rect: TXRectangle;
+  poly: array[0..5] of TXPoint;
+  i: integer;
+const
+  b = 2;
+
+  function p(x, y: cint): TXPoint; inline;
+  begin
+    Result.x := x;
+    Result.y := y;
+  end;
 
 begin
-  r := XCreateRegion;
+  if IsButtonDown then begin
+    Color := $BBBBBB;
+    ColRightBottom := $EEEEEE;
+    ColLeftTop := $333333;
+    IsButtonDown := True;
+  end else begin
+    Color := $BBBBBB;
+    ColRightBottom := $333333;
+    ColLeftTop := $EEEEEE;
+  end;
 
   rect.x := Left;
   rect.y := Top;
   rect.Width := Width;
   rect.Height := Height;
+  r := XCreateRegion;
   XUnionRectWithRegion(@rect, r, r);
-  //                    XRectInRegion(r, 50,50,150,150);
-
   XSetRegion(dis, gc, r);
   XDestroyRegion(r);
 
+  XSetForeground(dis, gc, ColLeftTop);
+  poly[0] := p(0, 0);
+  poly[1] := p(Width - 1, 0);
+  poly[2] := p(Width - 1 - b, b);
+  poly[3] := p(b, b);
+  poly[4] := p(b, Height - 1 - b);
+  poly[5] := p(0, Height - 1);
+  for i := 0 to Length(poly) - 1 do begin
+    Inc(poly[i].x, Left);
+    Inc(poly[i].y, Top);
+  end;
+  XFillPolygon(dis, win, gc, @poly, Length(poly), 0, CoordModeOrigin);
 
+  XSetForeground(dis, gc, ColRightBottom);
+  poly[0] := p(Width - 1, 0);
+  poly[1] := p(Width - 1, Height - 1);
+  poly[2] := p(0, Height - 1);
+  poly[3] := p(b, Height - 1 - b);
+  poly[4] := p(Width - 1 - b, Height - 1 - b);
+  poly[5] := p(Width - 1 - b, b);
+  for i := 0 to Length(poly) - 1 do begin
+    Inc(poly[i].x, Left);
+    Inc(poly[i].y, Top);
+  end;
+  XFillPolygon(dis, win, gc, @poly, Length(poly), 0, CoordModeOrigin);
 
   XSetForeground(dis, gc, Color);
-  XDrawRectangle(dis, win, gc, Left, Top, Width, Height);
+  XFillRectangle(dis, win, gc, Left + b, Top + b, Width - 2 * b - 1, Height - 2 * b - 1);
+
   XSetForeground(dis, gc, $00);
-  XDrawString(dis, win, gc, Left + 5, Top + 13, PChar(Caption), Length(Caption));
+  XDrawRectangle(dis, win, gc, Left, Top, Width - 1, Height - 1);
+  XSetForeground(dis, gc, $00);
+  if IsButtonDown then begin
+    XDrawString(dis, win, gc, Left + 8 + b, Top + 15 + b, PChar(Caption), Length(Caption));
+  end else begin
+    XDrawString(dis, win, gc, Left + 7 + b, Top + 14 + b, PChar(Caption), Length(Caption));
+  end;
 end;
 
 procedure TButton.MouseDown(x, y: integer);
 begin
   if (x > Left) and (x < Left + Width) and (y > Top) and (y < Top + Height) then begin
-    Color := $FF00;
     IsMouseDown := True;
+    IsButtonDown := True;
   end else begin
-    Color := $00;
+    //    Color := $00;
     IsMouseDown := False;
+    IsButtonDown := False;
   end;
 end;
 
@@ -100,9 +167,9 @@ procedure TButton.MouseMove(x, y: integer);
 begin
   if IsMouseDown then begin
     if (x > Left) and (x < Left + Width) and (y > Top) and (y < Top + Height) then begin
-      Color := $FF00;
+      IsButtonDown := True;
     end else begin
-      Color := $FF;
+      IsButtonDown := False;
     end;
   end;
 end;
@@ -115,7 +182,7 @@ begin
     end;
   end;
   IsMouseDown := False;
-  Color := $00;
+  IsButtonDown := False;
 end;
 
 end.
