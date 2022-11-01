@@ -26,8 +26,7 @@ type
     IsMouseDown, IsButtonDown: boolean;
 
     ColLeftTop, ColRightBottom, Color: culong;
-
-    r: TRegion;
+    Region: TRegion;
 
     dis: PDisplay;
     win: TDrawable;
@@ -44,6 +43,7 @@ type
     constructor Create(Adis: PDisplay; Awin: TDrawable; Agc: TGC);
     destructor Destroy; override;
     procedure Paint;
+    procedure Resize;
     procedure MouseDown(x, y: integer);
     procedure MouseMove(x, y: integer);
     procedure MouseUp(x, y: integer);
@@ -70,16 +70,17 @@ begin
   dis := Adis;
   win := Awin;
   gc := Agc;
+  Region := XCreateRegion;
 end;
 
 destructor TButton.Destroy;
 begin
+  XDestroyRegion(Region);
   inherited Destroy;
 end;
 
 procedure TButton.Paint;
 var
-  rect: TXRectangle;
   poly: array[0..5] of TXPoint;
   i: integer;
 const
@@ -92,6 +93,9 @@ const
   end;
 
 begin
+  //  Resize;
+  XSetRegion(dis, gc, Region);
+
   if IsButtonDown then begin
     Color := $BBBBBB;
     ColRightBottom := $EEEEEE;
@@ -102,15 +106,6 @@ begin
     ColRightBottom := $333333;
     ColLeftTop := $EEEEEE;
   end;
-
-  rect.x := Left;
-  rect.y := Top;
-  rect.Width := Width;
-  rect.Height := Height;
-  r := XCreateRegion;
-  XUnionRectWithRegion(@rect, r, r);
-  XSetRegion(dis, gc, r);
-  XDestroyRegion(r);
 
   XSetForeground(dis, gc, ColLeftTop);
   poly[0] := p(0, 0);
@@ -151,13 +146,24 @@ begin
   end;
 end;
 
+procedure TButton.Resize;
+var
+  rect: TXRectangle;
+begin
+  rect.x := Left;
+  rect.y := Top;
+  rect.Width := Width;
+  rect.Height := Height;
+  XUnionRectWithRegion(@rect, Region, Region);
+end;
+
 procedure TButton.MouseDown(x, y: integer);
 begin
-  if (x > Left) and (x < Left + Width) and (y > Top) and (y < Top + Height) then begin
+  if XPointInRegion(Region, x, y) then begin
+    //  if (x > Left) and (x < Left + Width) and (y > Top) and (y < Top + Height) then begin
     IsMouseDown := True;
     IsButtonDown := True;
   end else begin
-    //    Color := $00;
     IsMouseDown := False;
     IsButtonDown := False;
   end;
@@ -166,7 +172,8 @@ end;
 procedure TButton.MouseMove(x, y: integer);
 begin
   if IsMouseDown then begin
-    if (x > Left) and (x < Left + Width) and (y > Top) and (y < Top + Height) then begin
+    if XPointInRegion(Region, x, y) then begin
+      //    if (x > Left) and (x < Left + Width) and (y > Top) and (y < Top + Height) then begin
       IsButtonDown := True;
     end else begin
       IsButtonDown := False;
@@ -176,7 +183,8 @@ end;
 
 procedure TButton.MouseUp(x, y: integer);
 begin
-  if (x > Left) and (x < Left + Width) and (y > Top) and (y < Top + Height) then begin
+  if XPointInRegion(Region, x, y) then begin
+    //  if (x > Left) and (x < Left + Width) and (y > Top) and (y < Top + Height) then begin
     if OnClick <> nil then begin
       OnClick(self);
     end;

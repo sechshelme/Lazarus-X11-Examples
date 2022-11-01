@@ -150,6 +150,10 @@ type
         ConfigureNotify: begin
           Width := Event.xconfigure.Width;
           Height := Event.xconfigure.Height;
+          WriteLn('resize');
+          for i := 0 to Length(Button) - 1 do begin
+            Button[i].Resize;
+          end;
         end;
         KeyPress: begin
 
