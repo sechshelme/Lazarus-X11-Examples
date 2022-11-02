@@ -16,24 +16,22 @@ type
   private
     ColLeftTop, ColRightBottom: culong;
   public
-
-    constructor Create(Adis: PDisplay; Awin: TDrawable; Agc: TGC);
+    constructor Create(TheOwner: TX11Component;Adis: PDisplay; Awin: TDrawable; Agc: TGC);
     destructor Destroy; override;
-    procedure Paint;
+    procedure Paint; override;
   end;
 
 implementation
 
 { TX11Button }
 
-constructor TX11Button.Create(Adis: PDisplay; Awin: TDrawable; Agc: TGC);
+constructor TX11Button.Create(TheOwner: TX11Component; Adis: PDisplay;
+  Awin: TDrawable; Agc: TGC);
 begin
-  inherited Create(Adis,Awin,Agc);
+  inherited Create(TheOwner, Adis,Awin,Agc);
 
   IsMouseDown := False;
   IsButtonDown := False;
-  Left := 0;
-  Top := 0;
   Width := 75;
   Height := 25;
   OnClick := nil;

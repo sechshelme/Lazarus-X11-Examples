@@ -28,7 +28,7 @@
         <Mode0 Name="default"/>
       </Modes>
     </RunParams>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="Project1.pas"/>
         <IsPartOfProject Value="True"/>
@@ -43,6 +43,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="X11Component"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="x11form.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="X11Form"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

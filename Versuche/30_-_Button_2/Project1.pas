@@ -17,7 +17,9 @@ uses
   xutil,
   keysym,
   x,
-  X11Button, X11Component;
+  X11Button,
+  X11Component,
+  X11Form;
 
 type
 
@@ -31,6 +33,7 @@ type
     gc: TGC;
     Width, Height: integer;
 
+    Form: TX11Form;
     Button: array[0..3] of TX11Button;
     procedure ButtonClick(Sender: TObject);
     procedure Paint;
@@ -78,9 +81,10 @@ type
     // Ein Polygon
     XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
 
-    for i := 0 to Length(Button) - 1 do begin
-      Button[i].Paint;
-    end;
+    //for i := 0 to Length(Button) - 1 do begin
+    //  Button[i].Paint;
+    //end;
+    //Form.Paint;
   end;
 
   constructor TMyWin.Create;
@@ -109,8 +113,16 @@ type
     // Fenster anzeigen
     XMapWindow(dis, win);
     //    XSetWindowBackground(dis, win,$BBBBBB);
+
+    Form := TX11Form.Create(nil, dis, win, gc);
+    with Form do begin
+      Color := $666666;
+      Left:=100;
+      Top:=100;
+    end;
+
     for i := 0 to Length(Button) - 1 do begin
-      Button[i] := TX11Button.Create(dis, win, gc);
+      Button[i] := TX11Button.Create(Form, dis, win, gc);
       Button[i].Width := 70;
       Button[i].Left := 5 + i * (Button[0].Width + 5);
       Button[i].Top := 5;
@@ -119,9 +131,9 @@ type
       Button[i].Caption := 'Button' + s;
       Button[i].OnClick := @ButtonClick;
     end;
-    Button[1].Color:=$8888FF;
-    Button[2].Color:=$88FF88;
-    Button[3].Color:=$FF8888;
+    Button[1].Color := $8888FF;
+    Button[2].Color := $88FF88;
+    Button[3].Color := $FF8888;
   end;
 
   destructor TMyWin.Destroy;
@@ -131,6 +143,7 @@ type
     for i := 0 to Length(Button) - 1 do begin
       Button[i].Free;
     end;
+    Form.Free;
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;
@@ -144,19 +157,28 @@ type
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
-
       case Event._type of
         Expose: begin
           Paint;
           // Bildschirm löschen
         end;
+      end;
+
+      Form.EventHandle(Event);
+
+      case Event._type of
+        //Expose: begin
+        //  Paint;
+        //  // Bildschirm löschen
+        //end;
         ConfigureNotify: begin
           Width := Event.xconfigure.Width;
           Height := Event.xconfigure.Height;
-//          WriteLn('resize');
+          //          WriteLn('resize');
           for i := 0 to Length(Button) - 1 do begin
             Button[i].Resize;
           end;
+          Form.Resize;
         end;
         KeyPress: begin
 
@@ -165,30 +187,30 @@ type
             Break;
           end;
         end;
-        ButtonPress: begin
-          for i := 0 to Length(Button) - 1 do begin
-            Button[i].MouseDown(Event.xbutton.x, Event.xbutton.y);
-          end;
-          for i := 0 to Length(Button) - 1 do begin
-            Button[i].Paint;
-          end;
-        end;
-        MotionNotify: begin
-          for i := 0 to Length(Button) - 1 do begin
-            Button[i].MouseMove(Event.xbutton.x, Event.xbutton.y);
-          end;
-          for i := 0 to Length(Button) - 1 do begin
-            Button[i].Paint;
-          end;
-        end;
-        ButtonRelease: begin
-          for i := 0 to Length(Button) - 1 do begin
-            Button[i].MouseUp(Event.xbutton.x, Event.xbutton.y);
-          end;
-          for i := 0 to Length(Button) - 1 do begin
-            Button[i].Paint;
-          end;
-        end;
+        //ButtonPress: begin
+        //  for i := 0 to Length(Button) - 1 do begin
+        //    Button[i].MouseDown(Event.xbutton.x, Event.xbutton.y);
+        //  end;
+        //  for i := 0 to Length(Button) - 1 do begin
+        //    Button[i].Paint;
+        //  end;
+        //end;
+        //MotionNotify: begin
+        //  for i := 0 to Length(Button) - 1 do begin
+        //    Button[i].MouseMove(Event.xbutton.x, Event.xbutton.y);
+        //  end;
+        //  for i := 0 to Length(Button) - 1 do begin
+        //    Button[i].Paint;
+        //  end;
+        //end;
+        //ButtonRelease: begin
+        //  for i := 0 to Length(Button) - 1 do begin
+        //    Button[i].MouseUp(Event.xbutton.x, Event.xbutton.y);
+        //  end;
+        //  for i := 0 to Length(Button) - 1 do begin
+        //    Button[i].Paint;
+        //  end;
+        //end;
       end;
     end;
   end;
