@@ -26,19 +26,14 @@ type
 
   { TMyWin }
 
-  TMyWin = class(TObject)
+  TMyWin = class(TX11Window)
   private
-    dis: PDisplay;
-    scr: cint;
-    win: TWindow;
-    gc: TGC;
-    Width, Height: integer;
+//    Width, Height: integer;
 
-    Window,
     Form: TX11Form;
     Button: array[0..3] of TX11Button;
     procedure ButtonClick(Sender: TObject);
-    procedure Paint;
+    procedure Paint; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -56,9 +51,10 @@ type
   var
     punkte: array[0..maxSektoren] of TXPoint;
     i: integer;
-    Region: TRegion;
+//    Region: TRegion;
     Rect: TXRectangle;
   begin
+    inherited Paint;
     Region := XCreateRegion;
     Rect.x := 0;
     Rect.y := 0;
@@ -91,41 +87,10 @@ type
   begin
     inherited Create;
 
-    // Erstellt die Verbindung zum Server
-    dis := XOpenDisplay(nil);
-    if dis = nil then begin
-      WriteLn('Kann nicht das Display öffnen');
-      Halt(1);
-    end;
-    scr := DefaultScreen(dis);
-    gc := DefaultGC(dis, scr);
-
-    // Erstellt das Fenster
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-
-    // Wählt die gewünschten Ereignisse aus
-    // Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.
-    XSelectInput(dis, win, KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or StructureNotifyMask or PointerMotionMask or StructureNotifyMask);
-
-    // Fenster anzeigen
-    XMapWindow(dis, win);
-    //    XSetWindowBackground(dis, win,$BBBBBB);
-
-    Window := TX11Form.Create(nil);
-    Window.dis := dis;
-    Window.win := win;
-    Window.gc := gc;
-    with Window do begin
-      Color := $222222;
-      Left := 10;
-      Top := 10;
-      Height:=100;
-    end;
-
-    Form := TX11Form.Create(Window);
-//    Form.dis := dis;
-//    Form.win := win;
-//    Form.gc := gc;
+    Form := TX11Form.Create(Self);
+    Form.dis := dis;
+    Form.win := win;
+    Form.gc := gc;
     with Form do begin
       Color := $666666;
       Left := 10;
@@ -158,7 +123,6 @@ type
     end;
     Form.Free;
     // Schliesst Verbindung zum Server
-    XCloseDisplay(dis);
     inherited Destroy;
   end;
 
@@ -166,17 +130,20 @@ type
   var
     Event: TXEvent;
   begin
+//    inherited Run;
+//    exit;
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
       case Event._type of
         Expose: begin
-                    Paint;
+//                    Paint;
           // Bildschirm löschen
         end;
       end;
 
-      Window.EventHandle(Event);
+      Form.EventHandle(Event);
+//      EventHandle(Event);
 
       case Event._type of
         ConfigureNotify: begin

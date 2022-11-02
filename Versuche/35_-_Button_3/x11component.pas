@@ -107,17 +107,17 @@ var
   i: integer;
   x, y: cint;
 begin
+  exit;
   case Event._type of
     Expose: begin
-      Paint;
-      WriteLn('paint' + self.ClassName);
+//      Paint;
+//      WriteLn('paint' + self.ClassName);
       // Bildschirm löschen
     end;
   end;
   for i := 0 to Length(ComponentList) - 1 do begin
     ComponentList[i].EventHandle(Event);
   end;
-
   x := Event.xbutton.x;
   y := Event.xbutton.y;
   case Event._type of
