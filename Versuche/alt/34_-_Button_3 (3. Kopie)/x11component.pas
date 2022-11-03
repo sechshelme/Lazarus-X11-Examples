@@ -32,8 +32,6 @@ type
     dis: PDisplay;
     win: TDrawable;
     gc: TGC;
-    LastWindowWidth, LastWindowHeight: cint;
-    Anchors: set of (akTop, akLeft, akRight, akBottom);
     property Name: string read FName write FName;
     property Parent: TX11Component read FParent write FParent;
     property Caption: string read FCaption write FCaption;
@@ -48,7 +46,7 @@ type
     destructor Destroy; override;
     procedure EventHandle(Event: TXEvent); virtual;
     procedure Paint; virtual;
-    procedure Resize(AWidth, AHeight: cint);
+    procedure Resize;
   end;
 
 implementation
@@ -79,14 +77,12 @@ var
 begin
   FParent := TheOwner;
 
-  Anchors := [akTop, akLeft];
   Color := $BBBBBB;
+
   Left := 0;
   Top := 0;
   Width := 320;
   Height := 200;
-  LastWindowWidth := Width;
-  LastWindowHeight := Height;
 
   Region := XCreateRegion;
   Name := 'X11Component';
@@ -123,13 +119,17 @@ begin
   IsInRegion := XPointInRegion(Region, x, y);
   case Event._type of
     Expose: begin
-      Paint;
+      //      Paint;
       // Bildschirm löschen
     end;
     ConfigureNotify: begin
-      Resize(Event.xconfigure.Width, Event.xconfigure.Height);
-      LastWindowWidth := Event.xconfigure.Width;
-      LastWindowHeight := Event.xconfigure.Height;
+            Width := Event.xconfigure.Width;
+            Height := Event.xconfigure.Height;
+      //          WriteLn('resize');
+      //for i := 0 to Length(Button) - 1 do begin
+      //  Button[i].Resize;
+      //end;
+      Resize;
     end;
     KeyPress: begin
       if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
@@ -184,56 +184,21 @@ begin
   end;
 end;
 
-procedure TX11Component.Resize(AWidth, AHeight: cint);
+procedure TX11Component.Resize;
 var
   rect: TXRectangle;
-  d: cint;
-  mody: boolean;
 begin
-  mody := False;
-
-//  if LastWindowWidth <> AWidth then begin
-    mody := True;
-    d := AWidth - LastWindowWidth;
-    if akRight in Anchors then begin
-      if akLeft in Anchors then begin
-        FWidth := FWidth + d;
-      end else begin
-        FLeft := FLeft + d;
-      end;
-    end;
-//  end;
-
-//  if LastWindowHeight <> AHeight then begin
-    mody := True;
-    d := AHeight - LastWindowHeight;
-    if akBottom in Anchors then begin
-      if akTop in Anchors then begin
-        FHeight := FHeight + d;
-      end else begin
-        FTop := FTop + d;
-      end;
-    end;
-//  end;
-
-  if mody then begin
-    rect.x := FLeft;
-    rect.y := FTop;
-    rect.Width := FWidth;
-    rect.Height := FHeight;
-
-    if XEmptyRegion(Region) = 0 then begin
-      XDestroyRegion(Region);
-    end;
-    Region := XCreateRegion;
-    XUnionRectWithRegion(@rect, Region, Region);
-
-    if (Parent <> nil) and (XEmptyRegion(Parent.Region) = 0) then begin
-      XIntersectRegion(Region, Parent.Region, Region);
-    end;
-
-    Paint;
+  rect.x := Left;
+  rect.y := Top;
+  rect.Width := Width;
+  rect.Height := Height;
+  if XEmptyRegion(Region)=0 then begin
+    XDestroyRegion(Region);
   end;
+  Region := XCreateRegion;
+
+  XUnionRectWithRegion(@rect, Region, Region);
+  Paint;
 end;
 
 end.

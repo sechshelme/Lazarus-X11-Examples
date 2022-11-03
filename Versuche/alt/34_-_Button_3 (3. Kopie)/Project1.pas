@@ -58,7 +58,7 @@ var
 
   procedure TMyWin.CloseButtonMouseMove(Sender: TObject; X, Y: integer);
   begin
-    WriteLn('move: ', x, '  ', y);
+    WriteLn('move: ',x,'  ',y);
   end;
 
   constructor TMyWin.Create(TheOwner: TX11Component);
@@ -74,8 +74,6 @@ var
       Left := 10;
       Top := 10;
       Height := 100;
-      Width := 330;
-//      Anchors:=[akTop,akLeft, akRight, akBottom];
     end;
 
     PanelSub := TX11Panel.Create(Panel);
@@ -84,13 +82,11 @@ var
       Left := 10;
       Top := 10;
       Height := 50;
-      Width := 1310;
-//                  Anchors:=[akTop,akLeft, akRight, akBottom];
     end;
 
     for i := 0 to Length(Button) - 1 do begin
       Button[i] := TX11Button.Create(PanelSub);
-      Button[i].Width := 80;
+      Button[i].Width := 70;
       Button[i].Left := 5 + i * (Button[0].Width + 5);
       Button[i].Top := 5;
 
@@ -107,10 +103,6 @@ var
     with CloseButton do begin
       Left := 100;
       Top := 100;
-      Width := 60;
-      Height := 25;
-      Anchors := [akRight, akBottom];
-//            Anchors:=[akTop,akLeft, akRight, akBottom];
       Caption := 'Close';
       OnClick := @CloseButtonClick;
       OnMouseMove := @CloseButtonMouseMove;
@@ -136,10 +128,10 @@ var
   var
     punkte: array[0..maxSektoren] of TXPoint;
     i: integer;
-    //      Region2: TRegion;
-    //    Rect: TXRectangle;
+//      Region2: TRegion;
+//    Rect: TXRectangle;
   begin
-    inherited Paint;
+      inherited Paint;
     color := $FF00;
     //Region2 := XCreateRegion;
     //Rect.x := 0;
@@ -151,16 +143,18 @@ var
     //XDestroyRegion(Region2);
 
     for i := 0 to maxSektoren - 1 do begin
-      punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 250;
-      punkte[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 220;
+      punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 200;
+      punkte[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 170;
     end;
+
+    WriteLn('mywin');
 
     //      XClearWindow(dis, win);
     // Ein Rechteck zeichnen
     XSetForeground(dis, gc, $FF00FF);
-    XDrawRectangle(dis, win, gc, 10, 150, 50, 50);
+    XDrawRectangle(dis, win, gc, 10, 50, 50, 50);
     // Einen rechteckigen Bereich mit Farbe füllen
-    XFillRectangle(dis, win, gc, 110, 150, 50, 50);
+    XFillRectangle(dis, win, gc, 110, 50, 50, 50);
 
     // Ein Polygon
     XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);

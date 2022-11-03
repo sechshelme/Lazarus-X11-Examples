@@ -38,7 +38,7 @@ begin
   gc := DefaultGC(dis, scr);
 
   // Erstellt das Fenster
-  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
   // Wählt die gewünschten Ereignisse aus
   // Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.
@@ -46,7 +46,6 @@ begin
 
   // Fenster anzeigen
   XMapWindow(dis, win);
-  Anchors := [akTop, akLeft, akRight, akBottom];
 end;
 
 destructor TX11Window.Destroy;

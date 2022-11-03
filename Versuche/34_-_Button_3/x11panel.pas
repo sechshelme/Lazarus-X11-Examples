@@ -1,4 +1,4 @@
-unit X11Form;
+unit X11Panel;
 
 {$mode ObjFPC}{$H+}
 
@@ -9,7 +9,7 @@ uses
   X11Component;
 
 type
-  TX11Form = class(TX11Component)
+  TX11Panel = class(TX11Component)
   end;
 
 implementation
