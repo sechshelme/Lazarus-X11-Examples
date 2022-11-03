@@ -26,16 +26,21 @@ type
 
   { TMyWin }
 
-  TMyWin = class(TX11Window)
+  TMyWin = class(TX11Component)
   private
+//    dis: PDisplay;
+    scr: cint;
+  //  win: TWindow;
+//    gc: TGC;
 //    Width, Height: integer;
 
-    Form: TX11Form;
+    Panel,
+    PanelSub: TX11Form;
     Button: array[0..3] of TX11Button;
     procedure ButtonClick(Sender: TObject);
-    procedure Paint; override;
+    procedure Paint;
   public
-    constructor Create;
+    constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
     procedure Run;
   end;
@@ -54,7 +59,6 @@ type
 //    Region: TRegion;
     Rect: TXRectangle;
   begin
-    inherited Paint;
     Region := XCreateRegion;
     Rect.x := 0;
     Rect.y := 0;
@@ -80,18 +84,43 @@ type
     XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
   end;
 
-  constructor TMyWin.Create;
+    constructor TMyWin.Create(TheOwner: TX11Component);
   var
     i: integer;
     s: string;
   begin
-    inherited Create;
+    inherited Create(TheOwner);
 
-    Form := TX11Form.Create(Self);
-    Form.dis := dis;
-    Form.win := win;
-    Form.gc := gc;
-    with Form do begin
+    // Erstellt die Verbindung zum Server
+    dis := XOpenDisplay(nil);
+    if dis = nil then begin
+      WriteLn('Kann nicht das Display öffnen');
+      Halt(1);
+    end;
+    scr := DefaultScreen(dis);
+    gc := DefaultGC(dis, scr);
+
+    // Erstellt das Fenster
+    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+
+    // Wählt die gewünschten Ereignisse aus
+    // Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.
+    XSelectInput(dis, win, KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or StructureNotifyMask or PointerMotionMask or StructureNotifyMask);
+
+    // Fenster anzeigen
+    XMapWindow(dis, win);
+    //    XSetWindowBackground(dis, win,$BBBBBB);
+
+    Panel := TX11Form.Create(Self);
+    with Panel do begin
+      Color := $222222;
+      Left := 10;
+      Top := 10;
+      Height:=100;
+    end;
+
+    PanelSub := TX11Form.Create(Panel);
+    with PanelSub do begin
       Color := $666666;
       Left := 10;
       Top := 10;
@@ -99,7 +128,7 @@ type
     end;
 
     for i := 0 to Length(Button) - 1 do begin
-      Button[i] := TX11Button.Create(Form);
+      Button[i] := TX11Button.Create(PanelSub);
       Button[i].Width := 70;
       Button[i].Left := 5 + i * (Button[0].Width + 5);
       Button[i].Top := 5;
@@ -121,8 +150,9 @@ type
     for i := 0 to Length(Button) - 1 do begin
       Button[i].Free;
     end;
-    Form.Free;
+    PanelSub.Free;
     // Schliesst Verbindung zum Server
+    XCloseDisplay(dis);
     inherited Destroy;
   end;
 
@@ -130,20 +160,17 @@ type
   var
     Event: TXEvent;
   begin
-//    inherited Run;
-//    exit;
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
       case Event._type of
         Expose: begin
-//                    Paint;
+                    Paint;
           // Bildschirm löschen
         end;
       end;
 
-      Form.EventHandle(Event);
-//      EventHandle(Event);
+      EventHandle(Event);
 
       case Event._type of
         ConfigureNotify: begin
@@ -165,7 +192,7 @@ var
   MyWindows: TMyWin;
 
 begin
-  MyWindows := TMyWin.Create;
+  MyWindows := TMyWin.Create(nil);
   MyWindows.Run;
   MyWindows.Free;
 end.

@@ -4,28 +4,30 @@ unit X11Window;
 
 interface
 
-uses unixtype, ctypes, xlib, xutil, keysym, x,
-  X11Component;
+uses
+  unixtype, ctypes, xlib, xutil, keysym, x,
+  X11Button, X11Component, X11Form;
 
 type
 
   { TX11Window }
 
   TX11Window = class(TX11Component)
+  private
+    scr: cint;
+
   public
-    constructor Create;
+    constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
     procedure Run;
   end;
 
 implementation
 
-{ TX11Window }
-
-constructor TX11Window.Create;
-var     scr: cint;
+constructor TX11Window.Create(TheOwner: TX11Component);
 begin
-//  inherited Create(Self);
+  inherited Create(TheOwner);
+
   // Erstellt die Verbindung zum Server
   dis := XOpenDisplay(nil);
   if dis = nil then begin
@@ -45,10 +47,12 @@ begin
   // Fenster anzeigen
   XMapWindow(dis, win);
   //    XSetWindowBackground(dis, win,$BBBBBB);
+
 end;
 
 destructor TX11Window.Destroy;
 begin
+  // Schliesst Verbindung zum Server
   XCloseDisplay(dis);
   inherited Destroy;
 end;
@@ -60,28 +64,7 @@ begin
   // Ereignisschleife
   while (True) do begin
     XNextEvent(dis, @Event);
-    case Event._type of
-      Expose: begin
-        //          Paint;
-        // Bildschirm löschen
-      end;
-    end;
-
     EventHandle(Event);
-
-    case Event._type of
-      ConfigureNotify: begin
-//        Width := Event.xconfigure.Width;
-//        Height := Event.xconfigure.Height;
-      end;
-      KeyPress: begin
-
-        // Beendet das Programm bei [ESC]
-        if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
-          Break;
-        end;
-      end;
-    end;
   end;
 end;
 
