@@ -6,6 +6,7 @@
 Erstes Fenster mit **X11** wird erstellt.
 Es wird nur ein einziges Eregniss gebraucht.
 Ein Tastatur-Event, welches **[ESC]** abfängt und das Programm beendet.
+---
 
 ```pascal
 program Project1;
