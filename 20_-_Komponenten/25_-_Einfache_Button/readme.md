@@ -4,7 +4,6 @@
 ![image.png](image.png)
 
 Dieses Beispiel zeigt, wie man auf einfache Art einen **Button** in das Fenster integrieren kann.
----
 
 ```pascal
 program Project1;

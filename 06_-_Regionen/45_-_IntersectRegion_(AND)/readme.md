@@ -4,7 +4,6 @@
 ![image.png](image.png)
 
 Zwei Regionen mit **AND** Verknüpfen
----
 
 ```pascal
 program Project1;

@@ -5,7 +5,6 @@
 
 Besser man macht es objektorientiert mit Klassen.
 Die macht es übersichtlicher und ausbaufähiger.
----
 
 ```pascal
 program Project1;

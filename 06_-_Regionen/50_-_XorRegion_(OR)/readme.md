@@ -4,7 +4,6 @@
 ![image.png](image.png)
 
 Zwei Regionen mit **XOR** Verknüpfen
----
 
 ```pascal
 program Project1;
