@@ -1,6 +1,6 @@
 //image image.png
 (*
-2 Regionen mit **AND** Verknüpfen
+2 Regionen mit **XOR** Verknüpfen
 *)
 //lineal
 //code+
