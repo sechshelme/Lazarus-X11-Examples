@@ -51,7 +51,7 @@ type
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
-    // Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.
+    // Es werden die Ereignisse **KeyPressMask** und **ExposureMask** für die grafische Auzsgabe gebraucht.
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
 
     // Fenster anzeigen

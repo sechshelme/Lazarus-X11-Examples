@@ -4,7 +4,7 @@
 ![image.png](image.png)
 
 In den meisten Fällen ist es nötig, das man etwas auf das Fenster zeichnet.
-Hier im Beispiel ist es ein einfaches Rechteck, welches mit <b>XFillRectangle</b> gezeichnet wird.
+Hier im Beispiel ist es ein einfaches Rechteck, welches mit **XFillRectangle** gezeichnet wird.
 XFillRectangle(Display, Windows, GC, PosX, PosY, Breite, Höhe)
 ---
 
@@ -48,7 +48,7 @@ type
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
-    // Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.
+    // Es werden die Ereignisse **KeyPressMask** und **ExposureMask** für die grafische Auzsgabe gebraucht.
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
 
     // Fenster anzeigen

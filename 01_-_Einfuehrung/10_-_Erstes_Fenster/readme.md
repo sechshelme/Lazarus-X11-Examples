@@ -3,9 +3,9 @@
 
 ![image.png](image.png)
 
-Erstes Fenster mit <b>X11</b> wird erstellt.
+Erstes Fenster mit **X11** wird erstellt.
 Es wird nur ein einziges Eregniss gebraucht.
-Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.
+Ein Tastatur-Event, welches **[ESC]** abfängt und das Programm beendet.
 ---
 
 ```pascal
@@ -38,7 +38,7 @@ begin
   win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
   // Wählt die gewünschten Ereignisse aus
-  // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
+  // Es wird nur das Tastendrückereigniss **KeyPressMask** gebraucht.
   XSelectInput(dis, win, KeyPressMask);
 
   // Fenster anzeigen
