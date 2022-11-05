@@ -1,16 +1,9 @@
-# 02 - Grafische Ausgabe
-## 25 - Rechtecke und Polygone
-
-![image.png](image.png)
-
-Verschiedene Varinaten um Rechtecke zu zeichnen:
-
-- [XDrawRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XDrawRectangle.html)
-- [XFillRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillRectangle.html)
-- [XFillPolygon](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillPolygon.html) (Für ein nicht ausgefülltes Polygon nimmt man **XDrawLines**.)
----
-
-```pascal
+//image image.png
+(*
+2 Regionen mit **AND** Verknüpfen
+*)
+//lineal
+//code+
 program Project1;
 
 uses
@@ -66,36 +59,61 @@ type
   end;
 
   procedure TMyWin.Run;
-  const
-    maxSektoren = 8;
   var
     Event: TXEvent;
-    punkte: array[0..maxSektoren] of TXPoint;
+    Region1, Region2, Region3: TRegion;
+    r: TXRectangle;
     i: integer;
-  begin
-    for i := 0 to maxSektoren - 1 do begin
-      punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 200;
-      punkte[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 170;
+
+    function Rect(Left, Top, Width, Height: cshort): TXRectangle;
+    begin
+      Result.x := Left;
+      Result.y := Top;
+      Result.Width := Width;
+      Result.Height := Height;
     end;
 
-    // Ereignisschleife
-    while (True) do begin
+  begin
+    while True do begin
       XNextEvent(dis, @Event);
 
       case Event._type of
         Expose: begin
-          // Bildschirm löschen
           XClearWindow(dis, win);
-          // Ein Rechteck zeichnen
-          XDrawRectangle(dis, win, gc, 10, 50, 50, 50);
-          // Einen rechteckigen Bereich mit Farbe füllen
-          XFillRectangle(dis, win, gc, 110, 50, 50, 50);
 
-          // Ein Polygon
-          XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
+          // Region 1
+          Region1 := XCreateRegion;
+          r := Rect(10, 10, 100, 100);
+          WriteLn(XEmptyRegion(Region1));
+          XUnionRectWithRegion(@r, Region1, Region1);
+          WriteLn(XEmptyRegion(Region1));
+
+          // Region 2
+          Region2 := XCreateRegion;
+          r := Rect(60, 60, 100, 100);
+          XUnionRectWithRegion(@r, Region2, Region2);
+
+          // Die beiden Regionen als **and** verknüpfen.
+          Region3 := XCreateRegion;
+          XIntersectRegion(Region1, Region2, Region3);
+
+          // Die verknüpfte Region am Display übergeben
+          XSetRegion(dis, gc, Region3);
+
+          // Regionen freigeben
+          XDestroyRegion(Region1);
+          XDestroyRegion(Region2);
+          XDestroyRegion(Region3);
+
+          // Kreise als Demo zeichnen
+          for i := 0 to 1000 do begin
+            XSetForeground(dis, gc, Random($FFFFFF));
+            XDrawArc(dis, win, gc, random(500) - 200, random(500) - 200, 150, 150, 0, 360 * 64);
+          end;
 
         end;
         KeyPress: begin
+
           // Beendet das Programm bei [ESC]
           if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
             Break;
@@ -114,6 +132,4 @@ begin
   MyWindows.Run;
   MyWindows.Free;
 end.
-```
-
-
+//code-

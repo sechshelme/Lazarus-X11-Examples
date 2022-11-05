@@ -1,5 +1,5 @@
-# 02 - Grafische Ausgabe
-## 35 - Kreise
+# 06 - Regionen
+## 40 - Sprossen Fenster
 
 ![image.png](image.png)
 
@@ -67,6 +67,18 @@ type
   procedure TMyWin.Run;
   var
     Event: TXEvent;
+    Region: TRegion;
+    r: TXRectangle;
+    i: integer;
+
+    function Rect(Left, Top, Width, Height: cshort): TXRectangle;
+    begin
+      Result.x := Left;
+      Result.y := Top;
+      Result.Width := Width;
+      Result.Height := Height;
+    end;
+
   begin
     // Ereignisschleife
     while (True) do begin
@@ -76,18 +88,35 @@ type
         Expose: begin
           XClearWindow(dis, win);
 
+          Region := XCreateRegion;
+
+          r := Rect(10, 10, 100, 100);
+          WriteLn(XEmptyRegion(Region));
+          XUnionRectWithRegion(@r, Region, Region);
+          WriteLn(XEmptyRegion(Region));
+
+          r := Rect(115, 10, 100, 100);
+          XUnionRectWithRegion(@r, Region, Region);
+
+          r := Rect(10, 115, 100, 100);
+          XUnionRectWithRegion(@r, Region, Region);
+
+          r := Rect(115, 115, 100, 100);
+          XUnionRectWithRegion(@r, Region, Region);
+                    XOffsetRegion(Region, 50,50);
+//          XShrinkRegion(Region, 45, 45);
+          //                    XRectInRegion(Region, 50,50,150,150);
+
+          XSetRegion(dis, gc, Region);
+          XDestroyRegion(Region);
+
+
           // Einen Kreis zeichnen
-          XDrawArc(dis, win, gc, 10, 30, 50, 50, 0, 360 * 64);
-          // Einen Kreisbereich füllen
-          XFillArc(dis, win, gc, 110, 30, 50, 50, 0, 360 * 64);
-          // Eine Ellipse zeichnen
-          XDrawArc(dis, win, gc, 60, 90, 60, 40, 0, 360 * 64);
-          // Einen Ellipsenbereich füllen
-          XFillArc(dis, win, gc, 160, 90, 60, 40, 0, 360 * 64);
-          // Einen Halbkreis zeichnen
-          XDrawArc(dis, win, gc, 110, 150, 60, 40, 90 * 64, 180 * 64);
-          // Einen Halbkreis füllen
-          XFillArc(dis, win, gc, 210, 150, 60, 40, 90 * 64, 180 * 64);
+          for i := 0 to 100 do begin
+            XSetForeground(dis, gc, Random( $FFFFFF));
+            XDrawArc(dis, win, gc, random(500)-200, random(500)-200, 150, 150, 0, 360 * 64);
+          end;
+
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]

@@ -10,7 +10,7 @@ uses
 type
 
   TNotifyEvent = procedure(Sender: TObject) of object;
-
+  TMouseMoveEvent = procedure(Sender: TObject; X, Y: integer) of object;
   { TX11Component }
 
   TX11Component = class(TObject)
@@ -18,6 +18,7 @@ type
     FCaption: string;
     FColor: culong;
     FHeight, FLeft, FTop, FWidth: cint;
+    FOnMouseMove: TMouseMoveEvent;
     FName: string;
     FParent: TX11Component;
     ComponentList: array of TX11Component;
@@ -27,10 +28,15 @@ type
   protected
     IsMouseDown, IsButtonDown: boolean;
     Region: TRegion;
+    procedure DoOnEventHandle(Event: TXEvent); virtual;
+    procedure DoOnPaint; virtual;
+    procedure DoOnResize(AWidth, AHeight: cint); virtual;
   public
     dis: PDisplay;
     win: TDrawable;
     gc: TGC;
+    LastWindowWidth, LastWindowHeight: cint;
+    Anchors: set of (akTop, akLeft, akRight, akBottom);
     property Name: string read FName write FName;
     property Parent: TX11Component read FParent write FParent;
     property Caption: string read FCaption write FCaption;
@@ -40,11 +46,9 @@ type
     property Width: cint read FWidth write FWidth;
     property Height: cint read FHeight write FHeight;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
+    property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
-    procedure EventHandle(Event: TXEvent);
-    procedure Paint; virtual;
-    procedure Resize;
   end;
 
 implementation
@@ -75,12 +79,14 @@ var
 begin
   FParent := TheOwner;
 
+  Anchors := [akTop, akLeft];
   Color := $BBBBBB;
-
   Left := 0;
   Top := 0;
   Width := 320;
   Height := 200;
+  LastWindowWidth := Width;
+  LastWindowHeight := Height;
 
   Region := XCreateRegion;
   Name := 'X11Component';
@@ -102,104 +108,131 @@ begin
   inherited Destroy;
 end;
 
-procedure TX11Component.EventHandle(Event: TXEvent);
+procedure TX11Component.DoOnEventHandle(Event: TXEvent);
 var
   i: integer;
   x, y: cint;
+  IsInRegion: TBoolResult;
 begin
-  case Event._type of
-    Expose: begin
-      Paint;
-      WriteLn('paint' + self.ClassName);
-      // Bildschirm löschen
-    end;
-  end;
   for i := 0 to Length(ComponentList) - 1 do begin
-    ComponentList[i].EventHandle(Event);
+    ComponentList[i].DoOnEventHandle(Event);
   end;
 
   x := Event.xbutton.x;
   y := Event.xbutton.y;
+  IsInRegion := XPointInRegion(Region, x, y);
   case Event._type of
     Expose: begin
-      //      Paint;
-      // Bildschirm löschen
+      DoOnPaint;
     end;
     ConfigureNotify: begin
-      //      Width := Event.xconfigure.Width;
-      //      Height := Event.xconfigure.Height;
-      //          WriteLn('resize');
-      //for i := 0 to Length(Button) - 1 do begin
-      //  Button[i].Resize;
-      //end;
-      Resize;
+      DoOnResize(Event.xconfigure.Width, Event.xconfigure.Height);
+      LastWindowWidth := Event.xconfigure.Width;
+      LastWindowHeight := Event.xconfigure.Height;
     end;
     KeyPress: begin
-
-      // Beendet das Programm bei [ESC]
       if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
-        //        Break;
+        // Taste auswerten
       end;
     end;
     ButtonPress: begin
-      if XPointInRegion(Region, x, y) then begin
-        //  if (x > Left) and (x < Left + Width) and (y > Top) and (y < Top + Height) then begin
+      if IsInRegion then begin
         IsMouseDown := True;
         IsButtonDown := True;
       end else begin
         IsMouseDown := False;
         IsButtonDown := False;
       end;
-      Paint;
+      DoOnPaint;
     end;
     MotionNotify: begin
+      if IsInRegion and (OnMouseMove <> nil) then begin
+        OnMouseMove(self, x, y);
+      end;
       if IsMouseDown then begin
-        if XPointInRegion(Region, x, y) then begin
-          //    if (x > Left) and (x < Left + Width) and (y > Top) and (y < Top + Height) then begin
+        if IsInRegion then begin
           IsButtonDown := True;
         end else begin
           IsButtonDown := False;
         end;
-        Paint;
+        DoOnPaint;
       end;
     end;
     ButtonRelease: begin
-      if XPointInRegion(Region, x, y) then begin
-        //  if (x > Left) and (x < Left + Width) and (y > Top) and (y < Top + Height) then begin
+      if IsInRegion then begin
         if OnClick <> nil then begin
           OnClick(self);
         end;
       end;
       IsMouseDown := False;
       IsButtonDown := False;
-      Paint;
+      DoOnPaint;
     end;
   end;
-
 end;
 
-procedure TX11Component.Paint;
+procedure TX11Component.DoOnPaint;
 var
   i: integer;
 begin
   XSetRegion(dis, gc, Region);
   XSetForeground(dis, gc, Color);
-  XFillRectangle(dis, win, gc, Left, Top, Width - 1, Height);
+  XFillRectangle(dis, win, gc, Left, Top, Width, Height);
   for i := 0 to Length(ComponentList) - 1 do begin
-    ComponentList[i].Paint;
+    ComponentList[i].DoOnPaint;
   end;
 end;
 
-procedure TX11Component.Resize;
+procedure TX11Component.DoOnResize(AWidth, AHeight: cint);
 var
   rect: TXRectangle;
+  d: cint;
+  mody: boolean;
 begin
-  rect.x := Left;
-  rect.y := Top;
-  rect.Width := Width;
-  rect.Height := Height;
-  XUnionRectWithRegion(@rect, Region, Region);
-  Paint;
+  mody := False;
+
+  //  if LastWindowWidth <> AWidth then begin
+  mody := True;
+  d := AWidth - LastWindowWidth;
+  if akRight in Anchors then begin
+    if akLeft in Anchors then begin
+      FWidth := FWidth + d;
+    end else begin
+      FLeft := FLeft + d;
+    end;
+  end;
+  //  end;
+
+  //  if LastWindowHeight <> AHeight then begin
+  mody := True;
+  d := AHeight - LastWindowHeight;
+  if akBottom in Anchors then begin
+    if akTop in Anchors then begin
+      FHeight := FHeight + d;
+    end else begin
+      FTop := FTop + d;
+    end;
+  end;
+  //  end;
+
+  if mody then begin
+    rect.x := FLeft;
+    rect.y := FTop;
+    rect.Width := FWidth;
+    rect.Height := FHeight;
+
+    if XEmptyRegion(Region) = 0 then begin
+      XDestroyRegion(Region);
+    end;
+    Region := XCreateRegion;
+    XUnionRectWithRegion(@rect, Region, Region);
+
+    if (Parent <> nil) and (XEmptyRegion(Parent.Region) = 0) then begin
+      XIntersectRegion(Region, Parent.Region, Region);
+    end;
+
+    DoOnPaint;
+  end;
 end;
 
 end.

@@ -1,5 +1,5 @@
-# 02 - Grafische Ausgabe
-## 35 - Kreise
+# 06 - Regionen
+## 35 - Region
 
 ![image.png](image.png)
 
@@ -67,6 +67,9 @@ type
   procedure TMyWin.Run;
   var
     Event: TXEvent;
+    Region: TRegion;
+    Rect: TXRectangle;
+    i: integer;
   begin
     // Ereignisschleife
     while (True) do begin
@@ -76,18 +79,32 @@ type
         Expose: begin
           XClearWindow(dis, win);
 
+          Region := XCreateRegion;
+
+          Rect.x := 50;
+          Rect.y := 50;
+          Rect.Width := 100;
+          Rect.Height := 100;
+          XUnionRectWithRegion(@Rect, Region, Region);
+
+          Rect.x := 160;
+          Rect.y := 100;
+          Rect.Width := 100;
+          Rect.Height := 100;
+          XUnionRectWithRegion(@Rect, Region, Region);
+//          XOffsetRegion(Region, -50,-50);
+          XShrinkRegion(Region, 30,30);
+//                    XRectInRegion(Region, 50,50,150,150);
+
+          XSetRegion(dis, gc, Region);
+          XDestroyRegion(Region);
+
+
           // Einen Kreis zeichnen
-          XDrawArc(dis, win, gc, 10, 30, 50, 50, 0, 360 * 64);
-          // Einen Kreisbereich füllen
-          XFillArc(dis, win, gc, 110, 30, 50, 50, 0, 360 * 64);
-          // Eine Ellipse zeichnen
-          XDrawArc(dis, win, gc, 60, 90, 60, 40, 0, 360 * 64);
-          // Einen Ellipsenbereich füllen
-          XFillArc(dis, win, gc, 160, 90, 60, 40, 0, 360 * 64);
-          // Einen Halbkreis zeichnen
-          XDrawArc(dis, win, gc, 110, 150, 60, 40, 90 * 64, 180 * 64);
-          // Einen Halbkreis füllen
-          XFillArc(dis, win, gc, 210, 150, 60, 40, 90 * 64, 180 * 64);
+          for i := 0 to 1000 do begin
+            XDrawArc(dis, win, gc, random(500), random(500), 50, 50, 0, 360 * 64);
+          end;
+
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]

@@ -1,13 +1,12 @@
-//image image.png
-(*
-Verschiedene Varinaten um Rechtecke zu zeichnen:
+# 20 - Komponenten
+## 25 - Einfache Button
 
-- [XDrawRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XDrawRectangle.html)
-- [XFillRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillRectangle.html)
-- [XFillPolygon](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillPolygon.html) (Für ein nicht ausgefülltes Polygon nimmt man **XDrawLines**.)
-*)
-//lineal
-//code+
+![image.png](image.png)
+
+Dieses Beispiel zeigt, wie man auf einfache Art einen **Button** in das Fenster integrieren kann.
+---
+
+```pascal
 program Project1;
 
 uses
@@ -17,37 +16,32 @@ uses
   xutil,
   keysym,
   x,
-  X11Button,
-  X11Component,
-  X11Form,
-  X11Window;
+  Button;
 
 type
 
   { TMyWin }
 
-  TMyWin = class(TX11Component)
+  TMyWin = class(TObject)
   private
-//    dis: PDisplay;
+    dis: PDisplay;
     scr: cint;
-  //  win: TWindow;
-//    gc: TGC;
-//    Width, Height: integer;
+    win: TWindow;
+    gc: TGC;
+    Width, Height: integer;
 
-    Panel,
-    PanelSub: TX11Form;
-    Button: array[0..3] of TX11Button;
+    Button: array[0..3] of TButton;
     procedure ButtonClick(Sender: TObject);
     procedure Paint;
   public
-    constructor Create(TheOwner: TX11Component);
+    constructor Create;
     destructor Destroy; override;
     procedure Run;
   end;
 
   procedure TMyWin.ButtonClick(Sender: TObject);
   begin
-    WriteLn(TX11Button(Sender).Caption);
+    WriteLn(TButton(Sender).Caption);
   end;
 
   procedure TMyWin.Paint;
@@ -56,7 +50,7 @@ type
   var
     punkte: array[0..maxSektoren] of TXPoint;
     i: integer;
-//    Region: TRegion;
+    Region: TRegion;
     Rect: TXRectangle;
   begin
     Region := XCreateRegion;
@@ -84,12 +78,12 @@ type
     XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
   end;
 
-    constructor TMyWin.Create(TheOwner: TX11Component);
+  constructor TMyWin.Create;
   var
     i: integer;
     s: string;
   begin
-    inherited Create(TheOwner);
+    inherited Create;
 
     // Erstellt die Verbindung zum Server
     dis := XOpenDisplay(nil);
@@ -109,38 +103,18 @@ type
 
     // Fenster anzeigen
     XMapWindow(dis, win);
-    //    XSetWindowBackground(dis, win,$BBBBBB);
 
-    Panel := TX11Form.Create(Self);
-    with Panel do begin
-      Color := $222222;
-      Left := 10;
-      Top := 10;
-      Height:=100;
-    end;
-
-    PanelSub := TX11Form.Create(Panel);
-    with PanelSub do begin
-      Color := $666666;
-      Left := 10;
-      Top := 10;
-      Height:=50;
-    end;
-
+    // Buttons erzeugen
     for i := 0 to Length(Button) - 1 do begin
-      Button[i] := TX11Button.Create(PanelSub);
+      Button[i] := TButton.Create(dis, win, gc);
       Button[i].Width := 70;
       Button[i].Left := 5 + i * (Button[0].Width + 5);
       Button[i].Top := 5;
 
       str(i, s);
       Button[i].Caption := 'Button' + s;
-      Button[i].Name := 'Button' + s;
       Button[i].OnClick := @ButtonClick;
     end;
-    Button[1].Color := $8888FF;
-    Button[2].Color := $88FF88;
-    Button[3].Color := $FF8888;
   end;
 
   destructor TMyWin.Destroy;
@@ -150,7 +124,6 @@ type
     for i := 0 to Length(Button) - 1 do begin
       Button[i].Free;
     end;
-    PanelSub.Free;
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;
@@ -159,24 +132,20 @@ type
   procedure TMyWin.Run;
   var
     Event: TXEvent;
+    i: integer;
   begin
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
-      case Event._type of
-        Expose: begin
-                    Paint;
-          // Bildschirm löschen
-        end;
-      end;
-
-      EventHandle(Event);
 
       case Event._type of
         ConfigureNotify: begin
           Width := Event.xconfigure.Width;
           Height := Event.xconfigure.Height;
         end;
+         Expose: begin
+           Paint;
+         end;
         KeyPress: begin
 
           // Beendet das Programm bei [ESC]
@@ -185,6 +154,10 @@ type
           end;
         end;
       end;
+
+      for i := 0 to Length(Button) - 1 do begin
+        Button[i].EventHandle(Event);
+      end;
     end;
   end;
 
@@ -192,8 +165,10 @@ var
   MyWindows: TMyWin;
 
 begin
-  MyWindows := TMyWin.Create(nil);
+  MyWindows := TMyWin.Create;
   MyWindows.Run;
   MyWindows.Free;
 end.
-//code-
+```
+
+
