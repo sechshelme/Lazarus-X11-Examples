@@ -28,11 +28,14 @@ Auch befinden sich Beispiele auf GitHub, welche im Wiki nicht dokumentiert sind.
 | Link | Beschreibung
 | :---: | ---
 | [Region](06_-_Regionen/00_-_Region/readme.md) | <img src="06_-_Regionen/00_-_Region/image.png" height="100px">
-| [Sprossen Fenster](06_-_Regionen/05_-_Sprossen_Fenster/readme.md) | <img src="06_-_Regionen/05_-_Sprossen_Fenster/image.png" height="100px">
+| [Pruefen ob Region vorhanden](06_-_Regionen/05_-_Pruefen_ob_Region_vorhanden/readme.md) | <img src="06_-_Regionen/05_-_Pruefen_ob_Region_vorhanden/image.png" height="100px">
+| [Regionen verschieben](06_-_Regionen/07_-_Regionen_verschieben/readme.md) | <img src="06_-_Regionen/07_-_Regionen_verschieben/image.png" height="100px">
 | [UnionRegion (OR)](06_-_Regionen/10_-_UnionRegion_(OR)/readme.md) | <img src="06_-_Regionen/10_-_UnionRegion_(OR)/image.png" height="100px">
 | [IntersectRegion (AND)](06_-_Regionen/15_-_IntersectRegion_(AND)/readme.md) | <img src="06_-_Regionen/15_-_IntersectRegion_(AND)/image.png" height="100px">
 | [XorRegion (XOR)](06_-_Regionen/20_-_XorRegion_(XOR)/readme.md) | <img src="06_-_Regionen/20_-_XorRegion_(XOR)/image.png" height="100px">
 | [Subtractregion (minus)](06_-_Regionen/25_-_Subtractregion_(minus)/readme.md) | <img src="06_-_Regionen/25_-_Subtractregion_(minus)/image.png" height="100px">
+| [Rechteckige Regionen](06_-_Regionen/30_-_Rechteckige_Regionen/readme.md) | <img src="06_-_Regionen/30_-_Rechteckige_Regionen/image.png" height="100px">
+| [Ist Punkt in Region](06_-_Regionen/35_-_Ist_Punkt_in_Region/readme.md) | <img src="06_-_Regionen/35_-_Ist_Punkt_in_Region/image.png" height="100px">
 ### Komponenten
 | Link | Beschreibung
 | :---: | ---

@@ -1,12 +1,10 @@
 # 06 - Regionen
-## 05 - Sprossen Fenster
+## 30 - Rechteckige Regionen
 
 ![image.png](image.png)
 
-Kreise und Elipsen zeichnen:
-
-- [XDrawArc](https://tronche.com/gui/x/xlib/graphics/drawing/XDrawArc.html)
-- [XFill](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillArc.html)
+Einfache rechteckige Regionen
+Dabei ist es möglich durch mehrmaliges generieren von Rechteckregionen, das sie sich addieren.
 
 ---
 
@@ -91,29 +89,29 @@ type
 
           Region := XCreateRegion;
 
+          // -- Mehrere Rechtecke addieren sich
+          // 1. Region
           r := Rect(10, 10, 100, 100);
-          WriteLn(XEmptyRegion(Region));
           XUnionRectWithRegion(@r, Region, Region);
-          WriteLn(XEmptyRegion(Region));
 
+          // 2. Region
           r := Rect(115, 10, 100, 100);
           XUnionRectWithRegion(@r, Region, Region);
 
+          // 3. Region
           r := Rect(10, 115, 100, 100);
           XUnionRectWithRegion(@r, Region, Region);
 
+          // 4. Region
           r := Rect(115, 115, 100, 100);
           XUnionRectWithRegion(@r, Region, Region);
-                    XOffsetRegion(Region, 50,50);
-//          XShrinkRegion(Region, 45, 45);
-          //                    XRectInRegion(Region, 50,50,150,150);
 
+          // Region in Display
           XSetRegion(dis, gc, Region);
           XDestroyRegion(Region);
 
-
-          // Einen Kreis zeichnen
-          for i := 0 to 100 do begin
+          // Kreise zeichnen
+          for i := 0 to 1000 do begin
             XSetForeground(dis, gc, Random( $FFFFFF));
             XDrawArc(dis, win, gc, random(500)-200, random(500)-200, 150, 150, 0, 360 * 64);
           end;

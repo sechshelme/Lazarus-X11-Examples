@@ -1,12 +1,9 @@
 # 06 - Regionen
-## 05 - Sprossen Fenster
+## 07 - Regionen verschieben
 
 ![image.png](image.png)
 
-Kreise und Elipsen zeichnen:
 
-- [XDrawArc](https://tronche.com/gui/x/xlib/graphics/drawing/XDrawArc.html)
-- [XFill](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillArc.html)
 
 ---
 

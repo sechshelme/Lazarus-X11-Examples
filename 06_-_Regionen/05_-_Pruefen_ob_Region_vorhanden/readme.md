@@ -1,12 +1,10 @@
 # 06 - Regionen
-## 05 - Sprossen Fenster
+## 05 - Pruefen ob Region vorhanden
 
 ![image.png](image.png)
 
-Kreise und Elipsen zeichnen:
-
-- [XDrawArc](https://tronche.com/gui/x/xlib/graphics/drawing/XDrawArc.html)
-- [XFill](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillArc.html)
+Einfache rechteckige Regionen
+Dabei ist es möglich durch mehrmaliges generieren von Rechteckregionen, das sie sich addieren.
 
 ---
 
@@ -91,22 +89,11 @@ type
 
           Region := XCreateRegion;
 
+          // Test Region
           r := Rect(10, 10, 100, 100);
-          WriteLn(XEmptyRegion(Region));
+          WriteLn(XEmptyRegion(Region)); // Noch keine Daten in der Region
           XUnionRectWithRegion(@r, Region, Region);
-          WriteLn(XEmptyRegion(Region));
-
-          r := Rect(115, 10, 100, 100);
-          XUnionRectWithRegion(@r, Region, Region);
-
-          r := Rect(10, 115, 100, 100);
-          XUnionRectWithRegion(@r, Region, Region);
-
-          r := Rect(115, 115, 100, 100);
-          XUnionRectWithRegion(@r, Region, Region);
-                    XOffsetRegion(Region, 50,50);
-//          XShrinkRegion(Region, 45, 45);
-          //                    XRectInRegion(Region, 50,50,150,150);
+          WriteLn(XEmptyRegion(Region)); // Daten vorhanden in der Region
 
           XSetRegion(dis, gc, Region);
           XDestroyRegion(Region);
