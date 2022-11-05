@@ -3,7 +3,7 @@
 
 ![image.png](image.png)
 
-2 Regionen mit **XOR** Verknüpfen
+Zwei Regionen mit **XOR** Verknüpfen
 ---
 
 ```pascal

@@ -3,7 +3,7 @@
 
 ![image.png](image.png)
 
-2 Regionen mit **AND** Verknüpfen
+Zwei Regionen mit **AND** Verknüpfen
 ---
 
 ```pascal
