@@ -1,5 +1,5 @@
 # 01 - Einfuehrung
-## 00 - Einführung in X11
+## 00 - Einfuehrung in X11
 
 ![X11.png](X11.png)
 

@@ -13,7 +13,7 @@ Und das andere gibt einen String aus.
 Das **XNextEvent** überhaupt auf ein Ereigniss reagiert, muss man es mit **XSelectInput** festlegen.
 Dies geschieht so: **XSelectInput(dis, win, KeyPressMask or ExposureMask);**
 
-Diese Kombinationen sind mit **XNextEvent** und **XSelectInput** möglich: [https://tronche.com/gui/x/xlib/events/processing-overview.html](Events)
+Diese Kombinationen sind mit **XNextEvent** und **XSelectInput** möglich: (Events)[https://tronche.com/gui/x/xlib/events/processing-overview.html]
 *)
 //code+
 program Project1;
