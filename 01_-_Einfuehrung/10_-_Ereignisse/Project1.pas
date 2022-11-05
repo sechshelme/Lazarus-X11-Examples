@@ -49,7 +49,7 @@ type
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
-    // Es wird nur das Tastendrückereigniss **KeyPressMask* und **ExposureMask** gebraucht.
+    // Es wird nur das Tastendrückereigniss **KeyPressMask** und **ExposureMask** gebraucht.
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
 
     // Fenster anzeigen
