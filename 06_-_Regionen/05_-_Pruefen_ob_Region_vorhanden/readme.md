@@ -3,8 +3,7 @@
 
 ![image.png](image.png)
 
-Einfache rechteckige Regionen
-Dabei ist es möglich durch mehrmaliges generieren von Rechteckregionen, das sie sich addieren.
+Mit **XEmptyRegion(Region)** kann man prüfen, ob ein Punkt sich in der Region befindet.
 
 ---
 
@@ -99,7 +98,7 @@ type
           XDestroyRegion(Region);
 
 
-          // Einen Kreis zeichnen
+          // Kreise zeichnen
           for i := 0 to 100 do begin
             XSetForeground(dis, gc, Random( $FFFFFF));
             XDrawArc(dis, win, gc, random(500)-200, random(500)-200, 150, 150, 0, 360 * 64);
