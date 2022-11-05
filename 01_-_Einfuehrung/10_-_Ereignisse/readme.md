@@ -11,6 +11,12 @@ In diesem Beispiel hat es genau zwei Erreigniss.
 Eines fängt die Tastatur ab und überprüft, ob **[ESC]** gedrückt wird.
 Und das andere gibt einen String aus.
 
+**XNextEvent(dis, @Event);** wartet, bis ein Ereigniss eintritt, in diesem Beispiel **Tastatur** und **Zeichnen**. Das Ergniss steht in **Event** plus noch zusätliche Daten, wie MausPos, Fenstergrösse, etc.
+Das **XNextEvent** überhaupt auf ein Ereigniss reagiert, muss man es mit **XSelectInput** festlegen.
+Dies geschieht so: **XSelectInput(dis, win, KeyPressMask or ExposureMask);**
+
+Diese Kombinationen sind mit **XNextEvent** und **XSelectInput** möglich: [https://tronche.com/gui/x/xlib/events/processing-overview.html](Events)
+
 ```pascal
 program Project1;
 
@@ -51,7 +57,7 @@ type
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
-    // Es wird nur das Tastendrückereigniss **KeyPressMask** und **ExposureMask** gebraucht.
+    // Es wird nur das Tastendrückereigniss "KeyPressMask" und "ExposureMask" gebraucht.
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
 
     // Fenster anzeigen
