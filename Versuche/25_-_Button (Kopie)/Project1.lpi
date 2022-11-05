@@ -6,7 +6,6 @@
       <Flags>
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
-        <MainUnitHasScaledStatement Value="False"/>
         <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
@@ -29,31 +28,16 @@
         <Mode0 Name="default"/>
       </Modes>
     </RunParams>
-    <Units Count="5">
+    <Units Count="2">
       <Unit0>
         <Filename Value="Project1.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="x11button.pas"/>
+        <Filename Value="button.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="X11Button"/>
+        <UnitName Value="Button"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="x11component.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X11Component"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="x11form.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X11Form"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="x11window.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X11Window"/>
-      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -67,7 +51,6 @@
     </SearchPaths>
     <Linking>
       <Debugging>
-        <GenerateDebugInfo Value="False"/>
         <DebugInfoType Value="dsDwarf2Set"/>
       </Debugging>
     </Linking>

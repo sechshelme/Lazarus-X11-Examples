@@ -5,7 +5,12 @@ unit Button;
 interface
 
 uses
-  unixtype, ctypes, xlib, xutil, keysym, x;
+  unixtype,
+  ctypes,
+  xlib,
+  xutil,
+  keysym,
+  x;
 
 type
 
@@ -26,6 +31,7 @@ type
     dis: PDisplay;
     win: TDrawable;
     gc: TGC;
+
   public
     property Left: cint read FLeft write FLeft;
     property Top: cint read FTop write FTop;
@@ -38,7 +44,9 @@ type
     destructor Destroy; override;
     procedure Paint;
     procedure Resize;
-    procedure EventHandle(Event: TXEvent); virtual;
+    procedure MouseDown(x, y: integer);
+    procedure MouseMove(x, y: integer);
+    procedure MouseUp(x, y: integer);
   end;
 
 implementation
@@ -99,16 +107,13 @@ begin
     ColLeftTop := $EEEEEE;
   end;
 
-  XSetForeground(dis, gc, Color);
-  XFillRectangle(dis, win, gc, Left, Top, Width - 1, Height - 1);
-
   XSetForeground(dis, gc, ColLeftTop);
-  poly[0] := p(1, 1);
-  poly[1] := p(Width - 1, 1);
-  poly[2] := p(Width - 1 - b, b + 1);
-  poly[3] := p(b + 1, b);
-  poly[4] := p(b + 1, Height - 1 - b + 1);
-  poly[5] := p(1, Height - 1);
+  poly[0] := p(0, 0);
+  poly[1] := p(Width - 1, 0);
+  poly[2] := p(Width - 1 - b, b);
+  poly[3] := p(b, b);
+  poly[4] := p(b, Height - 1 - b);
+  poly[5] := p(0, Height - 1);
   for i := 0 to Length(poly) - 1 do begin
     Inc(poly[i].x, Left);
     Inc(poly[i].y, Top);
@@ -116,20 +121,24 @@ begin
   XFillPolygon(dis, win, gc, @poly, Length(poly), 0, CoordModeOrigin);
 
   XSetForeground(dis, gc, ColRightBottom);
-  poly[0] := p(Width - 1, 1);
+  poly[0] := p(Width - 1, 0);
   poly[1] := p(Width - 1, Height - 1);
-  poly[2] := p(1, Height - 1);
-  poly[3] := p(b + 1, Height - 1 - b);
+  poly[2] := p(0, Height - 1);
+  poly[3] := p(b, Height - 1 - b);
   poly[4] := p(Width - 1 - b, Height - 1 - b);
-  poly[5] := p(Width - 1 - b, b + 1);
+  poly[5] := p(Width - 1 - b, b);
   for i := 0 to Length(poly) - 1 do begin
     Inc(poly[i].x, Left);
     Inc(poly[i].y, Top);
   end;
   XFillPolygon(dis, win, gc, @poly, Length(poly), 0, CoordModeOrigin);
 
+  XSetForeground(dis, gc, Color);
+  XFillRectangle(dis, win, gc, Left + b, Top + b, Width - 2 * b - 1, Height - 2 * b - 1);
+
   XSetForeground(dis, gc, $00);
   XDrawRectangle(dis, win, gc, Left, Top, Width - 1, Height - 1);
+  XSetForeground(dis, gc, $00);
   if IsButtonDown then begin
     XDrawString(dis, win, gc, Left + 8 + b, Top + 15 + b, PChar(Caption), Length(Caption));
   end else begin
@@ -148,53 +157,40 @@ begin
   XUnionRectWithRegion(@rect, Region, Region);
 end;
 
-procedure TButton.EventHandle(Event: TXEvent);
-var
-  x, y: cint;
-  IsInRegion: TBoolResult;
+procedure TButton.MouseDown(x, y: integer);
 begin
-  x := Event.xbutton.x;
-  y := Event.xbutton.y;
-  IsInRegion := XPointInRegion(Region, x, y);
+  if XPointInRegion(Region, x, y) then begin
+    //  if (x > Left) and (x < Left + Width) and (y > Top) and (y < Top + Height) then begin
+    IsMouseDown := True;
+    IsButtonDown := True;
+  end else begin
+    IsMouseDown := False;
+    IsButtonDown := False;
+  end;
+end;
 
-  case Event._type of
-    Expose: begin
-      Paint;
-    end;
-    ConfigureNotify: begin
-      Resize;
-    end;
-    ButtonPress: begin
-      if IsInRegion then begin
-        IsMouseDown := True;
-        IsButtonDown := True;
-      end else begin
-        IsMouseDown := False;
-        IsButtonDown := False;
-      end;
-      Paint;
-    end;
-    MotionNotify: begin
-      if IsMouseDown then begin
-        if IsInRegion then begin
-          IsButtonDown := True;
-        end else begin
-          IsButtonDown := False;
-        end;
-        Paint;
-      end;
-    end;
-    ButtonRelease: begin
-      if IsInRegion then begin
-        if OnClick <> nil then begin
-          OnClick(self);
-        end;
-      end;
-      IsMouseDown := False;
+procedure TButton.MouseMove(x, y: integer);
+begin
+  if IsMouseDown then begin
+    if XPointInRegion(Region, x, y) then begin
+      //    if (x > Left) and (x < Left + Width) and (y > Top) and (y < Top + Height) then begin
+      IsButtonDown := True;
+    end else begin
       IsButtonDown := False;
-      Paint;
     end;
   end;
+end;
+
+procedure TButton.MouseUp(x, y: integer);
+begin
+  if XPointInRegion(Region, x, y) then begin
+    //  if (x > Left) and (x < Left + Width) and (y > Top) and (y < Top + Height) then begin
+    if OnClick <> nil then begin
+      OnClick(self);
+    end;
+  end;
+  IsMouseDown := False;
+  IsButtonDown := False;
 end;
 
 end.

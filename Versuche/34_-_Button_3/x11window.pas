@@ -63,7 +63,7 @@ begin
   // Ereignisschleife
   while not AppClose do begin
     XNextEvent(dis, @Event);
-    EventHandle(Event);
+    DoOnEventHandle(Event);
   end;
 end;
 

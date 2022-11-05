@@ -34,11 +34,12 @@ type
     procedure ButtonClick(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
     procedure CloseButtonMouseMove(Sender: TObject; X, Y: integer);
+    protected
+      procedure DoOnPaint; override;
+      procedure DoOnEventHandle(Event: TXEvent); override;
   public
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
-    procedure Paint; override;
-    procedure EventHandle(Event: TXEvent); override;
   end;
 
 var
@@ -80,7 +81,7 @@ var
 
     PanelSub := TX11Panel.Create(Panel);
     with PanelSub do begin
-      Color := $666666;
+      Color := $999999;
       Left := 10;
       Top := 10;
       Height := 50;
@@ -130,7 +131,7 @@ var
     inherited Destroy;
   end;
 
-  procedure TMyWin.Paint;
+  procedure TMyWin.DoOnPaint;
   const
     maxSektoren = 8;
   var
@@ -139,7 +140,7 @@ var
     //      Region2: TRegion;
     //    Rect: TXRectangle;
   begin
-    inherited Paint;
+    inherited DoOnPaint;
     color := $FF00;
     //Region2 := XCreateRegion;
     //Rect.x := 0;
@@ -166,9 +167,9 @@ var
     XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
   end;
 
-  procedure TMyWin.EventHandle(Event: TXEvent);
+  procedure TMyWin.DoOnEventHandle(Event: TXEvent);
   begin
-    inherited EventHandle(Event);
+    inherited DoOnEventHandle(Event);
     case Event._type of
       KeyPress: begin
         if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin

@@ -17,10 +17,7 @@ uses
   xutil,
   keysym,
   x,
-  X11Button,
-  X11Component,
-  X11Form,
-  X11Window;
+  Button;
 
 type
 
@@ -34,9 +31,7 @@ type
     gc: TGC;
     Width, Height: integer;
 
-    Window,
-    Form: TX11Form;
-    Button: array[0..3] of TX11Button;
+    Button: array[0..3] of TButton;
     procedure ButtonClick(Sender: TObject);
     procedure Paint;
   public
@@ -47,7 +42,7 @@ type
 
   procedure TMyWin.ButtonClick(Sender: TObject);
   begin
-    WriteLn(TX11Button(Sender).Caption);
+    WriteLn(TButton(Sender).Caption);
   end;
 
   procedure TMyWin.Paint;
@@ -82,6 +77,10 @@ type
 
     // Ein Polygon
     XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
+
+    for i := 0 to Length(Button) - 1 do begin
+      Button[i].Paint;
+    end;
   end;
 
   constructor TMyWin.Create;
@@ -110,43 +109,16 @@ type
     // Fenster anzeigen
     XMapWindow(dis, win);
     //    XSetWindowBackground(dis, win,$BBBBBB);
-
-    Window := TX11Form.Create(nil);
-    Window.dis := dis;
-    Window.win := win;
-    Window.gc := gc;
-    with Window do begin
-      Color := $222222;
-      Left := 10;
-      Top := 10;
-      Height:=100;
-    end;
-
-    Form := TX11Form.Create(Window);
-//    Form.dis := dis;
-//    Form.win := win;
-//    Form.gc := gc;
-    with Form do begin
-      Color := $666666;
-      Left := 10;
-      Top := 10;
-      Height:=50;
-    end;
-
     for i := 0 to Length(Button) - 1 do begin
-      Button[i] := TX11Button.Create(Form);
+      Button[i] := TButton.Create(dis, win, gc);
       Button[i].Width := 70;
       Button[i].Left := 5 + i * (Button[0].Width + 5);
       Button[i].Top := 5;
 
       str(i, s);
       Button[i].Caption := 'Button' + s;
-      Button[i].Name := 'Button' + s;
       Button[i].OnClick := @ButtonClick;
     end;
-    Button[1].Color := $8888FF;
-    Button[2].Color := $88FF88;
-    Button[3].Color := $FF8888;
   end;
 
   destructor TMyWin.Destroy;
@@ -156,7 +128,6 @@ type
     for i := 0 to Length(Button) - 1 do begin
       Button[i].Free;
     end;
-    Form.Free;
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;
@@ -165,29 +136,54 @@ type
   procedure TMyWin.Run;
   var
     Event: TXEvent;
+    i: integer;
   begin
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
+
       case Event._type of
         Expose: begin
-                    Paint;
+          Paint;
           // Bildschirm löschen
         end;
-      end;
-
-      Window.EventHandle(Event);
-
-      case Event._type of
         ConfigureNotify: begin
           Width := Event.xconfigure.Width;
           Height := Event.xconfigure.Height;
+          WriteLn('resize');
+          for i := 0 to Length(Button) - 1 do begin
+            Button[i].Resize;
+          end;
         end;
         KeyPress: begin
 
           // Beendet das Programm bei [ESC]
           if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
             Break;
+          end;
+        end;
+        ButtonPress: begin
+          for i := 0 to Length(Button) - 1 do begin
+            Button[i].MouseDown(Event.xbutton.x, Event.xbutton.y);
+          end;
+          for i := 0 to Length(Button) - 1 do begin
+            Button[i].Paint;
+          end;
+        end;
+        MotionNotify: begin
+          for i := 0 to Length(Button) - 1 do begin
+            Button[i].MouseMove(Event.xbutton.x, Event.xbutton.y);
+          end;
+          for i := 0 to Length(Button) - 1 do begin
+            Button[i].Paint;
+          end;
+        end;
+        ButtonRelease: begin
+          for i := 0 to Length(Button) - 1 do begin
+            Button[i].MouseUp(Event.xbutton.x, Event.xbutton.y);
+          end;
+          for i := 0 to Length(Button) - 1 do begin
+            Button[i].Paint;
           end;
         end;
       end;

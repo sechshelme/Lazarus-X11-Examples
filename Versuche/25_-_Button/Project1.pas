@@ -1,10 +1,6 @@
 //image image.png
 (*
-Verschiedene Varinaten um Rechtecke zu zeichnen:
-
-- [XDrawRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XDrawRectangle.html)
-- [XFillRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillRectangle.html)
-- [XFillPolygon](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillPolygon.html) (Für ein nicht ausgefülltes Polygon nimmt man **XDrawLines**.)
+Dieses Beispiel zeigt, wie man auf einfache Art einen **Button** in das Fenster integrieren kann.
 *)
 //lineal
 //code+
@@ -77,10 +73,6 @@ type
 
     // Ein Polygon
     XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
-
-    for i := 0 to Length(Button) - 1 do begin
-      Button[i].Paint;
-    end;
   end;
 
   constructor TMyWin.Create;
@@ -108,7 +100,8 @@ type
 
     // Fenster anzeigen
     XMapWindow(dis, win);
-    //    XSetWindowBackground(dis, win,$BBBBBB);
+
+    // Buttons erzeugen
     for i := 0 to Length(Button) - 1 do begin
       Button[i] := TButton.Create(dis, win, gc);
       Button[i].Width := 70;
@@ -143,18 +136,13 @@ type
       XNextEvent(dis, @Event);
 
       case Event._type of
-        Expose: begin
-          Paint;
-          // Bildschirm löschen
-        end;
         ConfigureNotify: begin
           Width := Event.xconfigure.Width;
           Height := Event.xconfigure.Height;
-          WriteLn('resize');
-          for i := 0 to Length(Button) - 1 do begin
-            Button[i].Resize;
-          end;
         end;
+         Expose: begin
+           Paint;
+         end;
         KeyPress: begin
 
           // Beendet das Programm bei [ESC]
@@ -162,30 +150,10 @@ type
             Break;
           end;
         end;
-        ButtonPress: begin
-          for i := 0 to Length(Button) - 1 do begin
-            Button[i].MouseDown(Event.xbutton.x, Event.xbutton.y);
-          end;
-          for i := 0 to Length(Button) - 1 do begin
-            Button[i].Paint;
-          end;
-        end;
-        MotionNotify: begin
-          for i := 0 to Length(Button) - 1 do begin
-            Button[i].MouseMove(Event.xbutton.x, Event.xbutton.y);
-          end;
-          for i := 0 to Length(Button) - 1 do begin
-            Button[i].Paint;
-          end;
-        end;
-        ButtonRelease: begin
-          for i := 0 to Length(Button) - 1 do begin
-            Button[i].MouseUp(Event.xbutton.x, Event.xbutton.y);
-          end;
-          for i := 0 to Length(Button) - 1 do begin
-            Button[i].Paint;
-          end;
-        end;
+      end;
+
+      for i := 0 to Length(Button) - 1 do begin
+        Button[i].EventHandle(Event);
       end;
     end;
   end;

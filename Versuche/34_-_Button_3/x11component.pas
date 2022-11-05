@@ -28,6 +28,9 @@ type
   protected
     IsMouseDown, IsButtonDown: boolean;
     Region: TRegion;
+    procedure DoOnEventHandle(Event: TXEvent); virtual;
+    procedure DoOnPaint; virtual;
+    procedure DoOnResize(AWidth, AHeight: cint); virtual;
   public
     dis: PDisplay;
     win: TDrawable;
@@ -46,9 +49,6 @@ type
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
-    procedure EventHandle(Event: TXEvent); virtual;
-    procedure Paint; virtual;
-    procedure Resize(AWidth, AHeight: cint);
   end;
 
 implementation
@@ -108,14 +108,14 @@ begin
   inherited Destroy;
 end;
 
-procedure TX11Component.EventHandle(Event: TXEvent);
+procedure TX11Component.DoOnEventHandle(Event: TXEvent);
 var
   i: integer;
   x, y: cint;
-  IsInRegion: boolean;
+  IsInRegion: TBoolResult;
 begin
   for i := 0 to Length(ComponentList) - 1 do begin
-    ComponentList[i].EventHandle(Event);
+    ComponentList[i].DoOnEventHandle(Event);
   end;
 
   x := Event.xbutton.x;
@@ -123,17 +123,16 @@ begin
   IsInRegion := XPointInRegion(Region, x, y);
   case Event._type of
     Expose: begin
-      Paint;
-      // Bildschirm löschen
+      DoOnPaint;
     end;
     ConfigureNotify: begin
-      Resize(Event.xconfigure.Width, Event.xconfigure.Height);
+      DoOnResize(Event.xconfigure.Width, Event.xconfigure.Height);
       LastWindowWidth := Event.xconfigure.Width;
       LastWindowHeight := Event.xconfigure.Height;
     end;
     KeyPress: begin
       if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
-        //        Break;
+        // Taste auswerten
       end;
     end;
     ButtonPress: begin
@@ -144,7 +143,7 @@ begin
         IsMouseDown := False;
         IsButtonDown := False;
       end;
-      Paint;
+      DoOnPaint;
     end;
     MotionNotify: begin
       if IsInRegion and (OnMouseMove <> nil) then begin
@@ -156,7 +155,7 @@ begin
         end else begin
           IsButtonDown := False;
         end;
-        Paint;
+        DoOnPaint;
       end;
     end;
     ButtonRelease: begin
@@ -167,24 +166,24 @@ begin
       end;
       IsMouseDown := False;
       IsButtonDown := False;
-      Paint;
+      DoOnPaint;
     end;
   end;
 end;
 
-procedure TX11Component.Paint;
+procedure TX11Component.DoOnPaint;
 var
   i: integer;
 begin
   XSetRegion(dis, gc, Region);
   XSetForeground(dis, gc, Color);
-  XFillRectangle(dis, win, gc, Left, Top, Width - 1, Height);
+  XFillRectangle(dis, win, gc, Left, Top, Width - 1, Height - 1);
   for i := 0 to Length(ComponentList) - 1 do begin
-    ComponentList[i].Paint;
+    ComponentList[i].DoOnPaint;
   end;
 end;
 
-procedure TX11Component.Resize(AWidth, AHeight: cint);
+procedure TX11Component.DoOnResize(AWidth, AHeight: cint);
 var
   rect: TXRectangle;
   d: cint;
@@ -192,29 +191,29 @@ var
 begin
   mody := False;
 
-//  if LastWindowWidth <> AWidth then begin
-    mody := True;
-    d := AWidth - LastWindowWidth;
-    if akRight in Anchors then begin
-      if akLeft in Anchors then begin
-        FWidth := FWidth + d;
-      end else begin
-        FLeft := FLeft + d;
-      end;
+  //  if LastWindowWidth <> AWidth then begin
+  mody := True;
+  d := AWidth - LastWindowWidth;
+  if akRight in Anchors then begin
+    if akLeft in Anchors then begin
+      FWidth := FWidth + d;
+    end else begin
+      FLeft := FLeft + d;
     end;
-//  end;
+  end;
+  //  end;
 
-//  if LastWindowHeight <> AHeight then begin
-    mody := True;
-    d := AHeight - LastWindowHeight;
-    if akBottom in Anchors then begin
-      if akTop in Anchors then begin
-        FHeight := FHeight + d;
-      end else begin
-        FTop := FTop + d;
-      end;
+  //  if LastWindowHeight <> AHeight then begin
+  mody := True;
+  d := AHeight - LastWindowHeight;
+  if akBottom in Anchors then begin
+    if akTop in Anchors then begin
+      FHeight := FHeight + d;
+    end else begin
+      FTop := FTop + d;
     end;
-//  end;
+  end;
+  //  end;
 
   if mody then begin
     rect.x := FLeft;
@@ -232,7 +231,7 @@ begin
       XIntersectRegion(Region, Parent.Region, Region);
     end;
 
-    Paint;
+    DoOnPaint;
   end;
 end;
 

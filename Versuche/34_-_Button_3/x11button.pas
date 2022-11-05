@@ -15,10 +15,11 @@ type
   TX11Button = class(TX11Component)
   private
     ColLeftTop, ColRightBottom: culong;
+  protected
+    procedure DoOnPaint; override;
   public
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
-    procedure Paint; override;
   end;
 
 implementation
@@ -44,7 +45,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TX11Button.Paint;
+procedure TX11Button.DoOnPaint;
 var
   poly: array[0..5] of TXPoint;
   i: integer;
@@ -58,7 +59,7 @@ const
   end;
 
 begin
-  inherited Paint;
+  inherited DoOnPaint;
 
   if IsButtonDown then begin
     ColRightBottom := $EEEEEE;
@@ -69,12 +70,12 @@ begin
   end;
 
   XSetForeground(dis, gc, ColLeftTop);
-  poly[0] := p(0, 0);
-  poly[1] := p(Width - 1, 0);
-  poly[2] := p(Width - 1 - b, b);
-  poly[3] := p(b, b);
-  poly[4] := p(b, Height - 1 - b);
-  poly[5] := p(0, Height - 1);
+  poly[0] := p(1, 1);
+  poly[1] := p(Width - 1, 1);
+  poly[2] := p(Width - 1 - b, b + 1);
+  poly[3] := p(b + 1, b);
+  poly[4] := p(b + 1, Height - 1 - b + 1);
+  poly[5] := p(1, Height - 1);
   for i := 0 to Length(poly) - 1 do begin
     Inc(poly[i].x, Left);
     Inc(poly[i].y, Top);
@@ -82,12 +83,12 @@ begin
   XFillPolygon(dis, win, gc, @poly, Length(poly), 0, CoordModeOrigin);
 
   XSetForeground(dis, gc, ColRightBottom);
-  poly[0] := p(Width - 1, 0);
+  poly[0] := p(Width - 1, 1);
   poly[1] := p(Width - 1, Height - 1);
-  poly[2] := p(0, Height - 1);
-  poly[3] := p(b, Height - 1 - b);
+  poly[2] := p(1, Height - 1);
+  poly[3] := p(b + 1, Height - 1 - b);
   poly[4] := p(Width - 1 - b, Height - 1 - b);
-  poly[5] := p(Width - 1 - b, b);
+  poly[5] := p(Width - 1 - b, b + 1);
   for i := 0 to Length(poly) - 1 do begin
     Inc(poly[i].x, Left);
     Inc(poly[i].y, Top);
@@ -96,7 +97,6 @@ begin
 
   XSetForeground(dis, gc, $00);
   XDrawRectangle(dis, win, gc, Left, Top, Width - 1, Height - 1);
-  XSetForeground(dis, gc, $00);
   if IsButtonDown then begin
     XDrawString(dis, win, gc, Left + 8 + b, Top + 15 + b, PChar(Caption), Length(Caption));
   end else begin
