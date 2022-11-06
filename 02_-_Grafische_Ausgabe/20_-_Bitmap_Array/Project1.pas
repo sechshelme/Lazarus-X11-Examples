@@ -20,7 +20,9 @@ uses
 type
   TBitMapData = record
     Width, Height: integer;
-    Data: PChar;
+    Data : array of record
+    b, g, r, a: byte;
+    end;
   end;
 
   { TMyWin }
@@ -44,7 +46,6 @@ type
   constructor TMyWin.Create;
   var
     x, y: integer;
-    p: PChar;
 
   begin
 
@@ -52,7 +53,7 @@ type
     with BitmapData do begin
       Width := 512;
       Height := 512;
-      Getmem(Data, Width * Height * 4);
+      //      Getmem(Data, Width * Height * 4);
 
       // Erstellt die Verbindung zum Server
       dis := XOpenDisplay(nil);
@@ -70,20 +71,16 @@ type
         Halt(1);
       end;
 
-      p := Data;
+      SetLength(Data, Height * Height);
       for y := 0 to Height - 1 do begin
         for x := 0 to Width - 1 do begin
-          p^ := char(x * y);
-          Inc(p);
-          p^ := char(y);
-          Inc(p);
-          p^ := char(x);
-          Inc(p);
-          p^ := #00;
-          Inc(p);
+          Data[y * Width + x].b := x * y;
+          Data[y * Width + x].g := y;
+          Data[y * Width + x].r := x;
+          Data[y * Width + x].a := $00;
         end;
       end;
-      image := XCreateImage(dis, visual, DefaultDepth(dis, scr), ZPixmap, 0, Data, Width, Height, 32, 0);
+      image := XCreateImage(dis, visual, DefaultDepth(dis, scr), ZPixmap, 0,@Data[0], Width, Height, 32, 0);
     end;
 
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
@@ -94,7 +91,6 @@ type
   begin
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
-    Freemem(BitmapData.Data);
     inherited Destroy;
   end;
 
