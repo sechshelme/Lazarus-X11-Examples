@@ -22,6 +22,8 @@ type
     Width, Height: integer;
   end;
 
+  TByteArray = array of byte;
+
   { TMyWin }
 
   TMyWin = class(TObject)
@@ -33,19 +35,53 @@ type
     BitmapData: TBitMapData;
     visual: PVisual;
     image: PXImage;
+    function CreateTrueColorImage(Adis: PDisplay; Avisual: PVisual; AWidth, AHeight: integer): PXImage;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Run;
   end;
 
-  constructor TMyWin.Create;
+  //function TMyWin.CreateTrueColorImage(Adis: PDisplay; Avisual: PVisual; AWidth, AHeight: integer): PXImage;
+  //var
+  //  image32: array of byte;
+  //  i, j, z: integer;
+  //begin
+  //  z := 0;
+  //  SetLength(image32, AWidth * AHeight * 4);
+  //  for i := 0 to AHeight - 1 do begin
+  //    for j := 0 to AWidth - 1 do begin
+  //        image32[z] := i * j;
+  //        Inc(z);
+  //        image32[z] := i * j;
+  //        Inc(z);
+  //        image32[z] := i * j;
+  //        Inc(z);
+  //      Inc(z);
+  //    end;
+  //  end;
+  //  Result := XCreateImage(Adis, Avisual, DefaultDepth(dis, DefaultScreen(Adis)), ZPixmap, 0, PChar(image32), AWidth, AHeight, 32, 0);
+  //end;
+  function TMyWin.CreateTrueColorImage(Adis: PDisplay; Avisual: PVisual; AWidth, AHeight: integer): PXImage;
   var
     image32: array of array of record
-      b, g, r, a: byte;
+    r, g, b, a: byte;
     end;
     x, y: integer;
+  begin
+    SetLength(image32, AWidth, AHeight);
+    for y := 0 to AHeight - 1 do begin
+      for x := 0 to AWidth - 1 do begin
+        image32[y, x].r := $BB;
+        image32[y, x].g := $BB;
+        image32[y, x].b := $BB;
+        image32[y, x].a := $BB;
+      end;
+    end;
+    Result := XCreateImage(Adis, Avisual, DefaultDepth(dis, DefaultScreen(Adis)), ZPixmap, 0, PChar(image32), AWidth, AHeight, 32, 0);
+  end;
 
+  constructor TMyWin.Create;
   begin
     inherited Create;
     with BitmapData do begin
@@ -69,19 +105,11 @@ type
       Halt(1);
     end;
 
-    SetLength(image32, BitmapData.Width, BitmapData.Height);
-    for y := 0 to BitmapData.Height - 1 do begin
-      for x := 0 to BitmapData.Width - 1 do begin
-        image32[y, x].r := $00;
-        image32[y, x].g := $FF;
-        image32[y, x].b := $00;
-        image32[y, x].a := $FF;
-      end;
-    end;
-    image := XCreateImage(dis, visual, DefaultDepth(dis, DefaultScreen(dis)), ZPixmap, 0, PChar(image32), BitmapData.Width, BitmapData.Height, 32, 0);
-    ;
+    image := CreateTrueColorImage(dis, visual, BitmapData.Width, BitmapData.Height);
 
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
+
+    // Fenster anzeigen
     XMapWindow(dis, win);
   end;
 
