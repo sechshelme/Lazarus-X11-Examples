@@ -19,7 +19,7 @@ uses
 
 type
   TBitMapData = record
-    Width, Height: integer;
+    Width, Height: cuint;
     Data: PChar;
   end;
 
@@ -34,6 +34,7 @@ type
     BitmapData: TBitMapData;
     visual: PVisual;
     image: PXImage;
+    bitmap: PPixmap;
   public
     constructor Create;
     destructor Destroy; override;
@@ -46,16 +47,22 @@ type
     TByteArray = array of byte;
     PByteArray = ^TByteArray;
   var
-    x, y: integer;
+    x, y: cint;
     p: PChar;
+    rc: cint;
+    PH, PW: Pcuint;
+    PY, PX: Pcint;
 
   begin
-
     inherited Create;
     with BitmapData do begin
-      Width := 512;
-      Height := 512;
-      Getmem(Data, Width * Height * 4);
+//      XReadBitmapFile(dis, win, gc, 'X11.bmp', w, h, br);
+
+
+
+//      Width := 512;
+//      Height := 512;
+//      Getmem(Data, Width * Height * 4);
 
       // Erstellt die Verbindung zum Server
       dis := XOpenDisplay(nil);
@@ -65,6 +72,7 @@ type
       end;
       scr := DefaultScreen(dis);
       gc := DefaultGC(dis, scr);
+      XSync(dis, False);
       win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
       visual := DefaultVisual(dis, scr);
@@ -73,22 +81,35 @@ type
         Halt(1);
       end;
 
-      p := Data;
-      for y := 0 to Height - 1 do begin
-        for x := 0 to Width - 1 do begin
-          p^ := char(x * y);
-          Inc(p);
-          p^ := char(y);
-          Inc(p);
-          p^ := char(x);
-          Inc(p);
-          p^ := #00;
-          Inc(p);
-        end;
-      end;
-      WriteLn(DefaultDepth(dis, DefaultScreen(dis)));
+      //p := Data;
+      //for y := 0 to Height - 1 do begin
+      //  for x := 0 to Width - 1 do begin
+      //    p^ := char(x * y);
+      //    Inc(p);
+      //    p^ := char(y);
+      //    Inc(p);
+      //    p^ := char(x);
+      //    Inc(p);
+      //    p^ := #00;
+      //    Inc(p);
+      //  end;
+      //end;
+      New(PH);
+      New(PW);
+//      PH^:=Height;
+//      PW^:=Width;
+      New(PX);
+      New(PY);
+      Getmem(bitmap,1024);
+      rc:=XReadBitmapFile(dis, win, 'icon.bmp', PW, PH, bitmap,PX,PY );
+//      rc:=XReadBitmapFile(dis, win, 'icon.bmp', @Width, @Height, bitmap,@x,@y );
+      WriteLn(rc);
+
+
       image := XCreateImage(dis, visual, DefaultDepth(dis, scr), ZPixmap, 0, Data, Width, Height, 32, 0);
     end;
+
+
 
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
     XMapWindow(dis, win);
@@ -105,6 +126,7 @@ type
   procedure TMyWin.Run;
   var
     Event: TXEvent;
+    mage: TDrawable;
   begin
     // Ereignisschleife
     while (True) do begin
@@ -113,9 +135,9 @@ type
       case Event._type of
         Expose: begin
           XClearWindow(dis, win);
-          XPutImage(dis, win, gc, image, 0, 0, 10, 10, BitmapData.Width, BitmapData.Height);
+          XCopyPlane(dis,mage,win,gc,0,0,8,8,8,8,1);
+//          XPutImage(dis, win, gc, image, 0, 0, 10, 10, BitmapData.Width, BitmapData.Height);
 
-//                    (dis,win,gc,'image.png', w,h, br);                           XReadBitmapFile
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
