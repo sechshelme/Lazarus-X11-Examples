@@ -20,6 +20,7 @@ uses
 type
   TBitMapData = record
     Width, Height: integer;
+    Data: PChar;
   end;
 
   { TMyWin }
@@ -39,47 +40,55 @@ type
     procedure Run;
   end;
 
+
   constructor TMyWin.Create;
+  type
+    TByteArray = array of byte;
+    PByteArray = ^TByteArray;
   var
-    image32: array of array of record
-      b, g, r, a: byte;
-    end;
     x, y: integer;
+    p: PChar;
 
   begin
+
     inherited Create;
     with BitmapData do begin
-      Width := 256;
-      Height := 256;
-    end;
+      Width := 512;
+      Height := 512;
+      Getmem(Data, Width * Height * 4);
 
-    // Erstellt die Verbindung zum Server
-    dis := XOpenDisplay(nil);
-    if dis = nil then begin
-      WriteLn('Kann nicht das Display öffnen');
-      Halt(1);
-    end;
-    scr := DefaultScreen(dis);
-    gc := DefaultGC(dis, scr);
-
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-    visual := DefaultVisual(dis, scr);
-    if visual^.c_class <> TrueColor then begin
-      WriteLn('Kein TrueColor Modus');
-      Halt(1);
-    end;
-
-    SetLength(image32, BitmapData.Width, BitmapData.Height);
-    for y := 0 to BitmapData.Height - 1 do begin
-      for x := 0 to BitmapData.Width - 1 do begin
-        image32[y, x].r := $00;
-        image32[y, x].g := $FF;
-        image32[y, x].b := $00;
-        image32[y, x].a := $FF;
+      // Erstellt die Verbindung zum Server
+      dis := XOpenDisplay(nil);
+      if dis = nil then begin
+        WriteLn('Kann nicht das Display öffnen');
+        Halt(1);
       end;
+      scr := DefaultScreen(dis);
+      gc := DefaultGC(dis, scr);
+
+      win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+      visual := DefaultVisual(dis, scr);
+      if visual^.c_class <> TrueColor then begin
+        WriteLn('Kein TrueColor Modus');
+        Halt(1);
+      end;
+
+      p := Data;
+      for y := 0 to Height - 1 do begin
+        for x := 0 to Width - 1 do begin
+          p^ := char(x * y);
+          Inc(p);
+          p^ := char(y);
+          Inc(p);
+          p^ := char(x);
+          Inc(p);
+          p^ := #00;
+          Inc(p);
+        end;
+      end;
+      WriteLn(DefaultDepth(dis, DefaultScreen(dis)));
+      image := XCreateImage(dis, visual, DefaultDepth(dis, scr), ZPixmap, 0, Data, Width, Height, 32, 0);
     end;
-    image := XCreateImage(dis, visual, DefaultDepth(dis, DefaultScreen(dis)), ZPixmap, 0, PChar(image32), BitmapData.Width, BitmapData.Height, 32, 0);
-    ;
 
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
     XMapWindow(dis, win);
@@ -89,6 +98,7 @@ type
   begin
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
+    Freemem(BitmapData.Data);
     inherited Destroy;
   end;
 
@@ -103,7 +113,7 @@ type
       case Event._type of
         Expose: begin
           XClearWindow(dis, win);
-          XPutImage(dis, win, gc, image, 0, 0, 0, 0, BitmapData.Width, BitmapData.Height);
+          XPutImage(dis, win, gc, image, 0, 0, 10, 10, BitmapData.Width, BitmapData.Height);
 
           //          XReadBitmapFile(dis,win,gc,'image.png', w,h, br);
         end;
