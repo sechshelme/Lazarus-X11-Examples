@@ -9,12 +9,16 @@ uses
 
 type
 
+  TAnchorKind = (akTop, akLeft, akRight, akBottom);
+  TAnchors = set of TAnchorKind;
+
   TNotifyEvent = procedure(Sender: TObject) of object;
   TMouseMoveEvent = procedure(Sender: TObject; X, Y: integer) of object;
   { TX11Component }
 
   TX11Component = class(TObject)
   private
+    FAnchors: TAnchors;
     FCaption: string;
     FColor: culong;
     FHeight, FLeft, FTop, FWidth: cint;
@@ -36,7 +40,7 @@ type
     win: TDrawable;
     gc: TGC;
     LastWindowWidth, LastWindowHeight: cint;
-    Anchors: set of (akTop, akLeft, akRight, akBottom);
+    property Anchors: TAnchors read FAnchors write FAnchors;
     property Name: string read FName write FName;
     property Parent: TX11Component read FParent write FParent;
     property Caption: string read FCaption write FCaption;
@@ -81,8 +85,8 @@ begin
   OnClick := nil;
   OnMouseMove := nil;
 
-  Anchors := [akTop, akLeft];
-  Color := $BBBBBB;
+  FColor:=$BBBBBB;
+  Anchors:=[akLeft, akTop];
   Left := 0;
   Top := 0;
   Width := 320;

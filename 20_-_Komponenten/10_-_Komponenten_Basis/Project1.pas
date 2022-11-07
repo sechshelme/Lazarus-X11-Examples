@@ -28,15 +28,15 @@ type
 
   TMyWin = class(TX11Window)
   private
-    Panel, PanelSub: TX11Panel;
+    Panel, PanelSub1, PanelSub2: TX11Panel;
     Button: array[0..3] of TX11Button;
     CloseButton: TX11Button;
     procedure ButtonClick(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
     procedure CloseButtonMouseMove(Sender: TObject; X, Y: integer);
-    protected
-      procedure DoOnPaint; override;
-      procedure DoOnEventHandle(var Event: TXEvent); override;
+  protected
+    procedure DoOnPaint; override;
+    procedure DoOnEventHandle(var Event: TXEvent); override;
   public
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
@@ -69,32 +69,44 @@ var
   begin
     inherited Create(TheOwner);
 
+    Color := $999999;
+
     Panel := TX11Panel.Create(Self);
     with Panel do begin
-      Color := $444444;
       Left := 10;
       Top := 10;
-      Height := 100;
       Width := 530;
-      BorderWidth:=4;
-//      Anchors:=[akTop,akLeft, akRight, akBottom];
+      Height := 100;
+      BorderWidth := 4;
     end;
 
-    PanelSub := TX11Panel.Create(Panel);
-    with PanelSub do begin
+    PanelSub1 := TX11Panel.Create(Panel);
+    with PanelSub1 do begin
       Color := $999999;
       Left := 10;
       Top := 10;
-      Height := 50;
-      Width := 410;
-//                  Anchors:=[akTop,akLeft, akRight, akBottom];
+      Width := 370;
+      Height := Panel.Height - 20;
+      Bevel := bvLowred;
+      //                  Anchors:=[akTop,akLeft, akRight, akBottom];
+    end;
+
+    PanelSub2 := TX11Panel.Create(Panel);
+    with PanelSub2 do begin
+      Color := $999999;
+      Left := 390;
+      Top := 10;
+      Width := Panel.Width - PanelSub1.Width - 30;
+      Height := Panel.Height - 20;
+      Bevel := bvLowred;
+//      Anchors := [akTop, akLeft, akRight];
     end;
 
     for i := 0 to Length(Button) - 1 do begin
-      Button[i] := TX11Button.Create(PanelSub);
+      Button[i] := TX11Button.Create(PanelSub1);
       Button[i].Width := 80;
-      Button[i].Left := 5 + i * (Button[0].Width + 5);
-      Button[i].Top := 5;
+      Button[i].Left := 10 + i * (Button[0].Width + 5);
+      Button[i].Top := 10;
 
       str(i, s);
       Button[i].Caption := 'Button' + s;
@@ -112,7 +124,7 @@ var
       Width := 60;
       Height := 25;
       Anchors := [akRight, akBottom];
-//            Anchors:=[akTop,akLeft, akRight, akBottom];
+      //            Anchors:=[akTop,akLeft, akRight, akBottom];
       Caption := 'Close';
       OnClick := @CloseButtonClick;
       OnMouseMove := @CloseButtonMouseMove;
@@ -126,7 +138,7 @@ var
     for i := 0 to Length(Button) - 1 do begin
       Button[i].Free;
     end;
-    PanelSub.Free;
+    PanelSub1.Free;
     Panel.Free;
     CloseButton.Free;
     inherited Destroy;
@@ -140,7 +152,6 @@ var
     i: integer;
   begin
     inherited DoOnPaint;
-    color := $FF00;
     XSetRegion(dis, gc, Region);
 
     for i := 0 to maxSektoren - 1 do begin

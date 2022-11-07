@@ -81,19 +81,19 @@ type
         Halt(1);
       end;
 
-      //p := Data;
-      //for y := 0 to Height - 1 do begin
-      //  for x := 0 to Width - 1 do begin
-      //    p^ := char(x * y);
-      //    Inc(p);
-      //    p^ := char(y);
-      //    Inc(p);
-      //    p^ := char(x);
-      //    Inc(p);
-      //    p^ := #00;
-      //    Inc(p);
-      //  end;
-      //end;
+      p := Data;
+      for y := 0 to Height - 1 do begin
+        for x := 0 to Width - 1 do begin
+          p^ := char(x * y);
+          Inc(p);
+          p^ := char(y);
+          Inc(p);
+          p^ := char(x);
+          Inc(p);
+          p^ := #00;
+          Inc(p);
+        end;
+      end;
       New(PH);
       New(PW);
 //      PH^:=Height;
@@ -101,7 +101,7 @@ type
       New(PX);
       New(PY);
       Getmem(bitmap,1024);
-      rc:=XReadBitmapFile(dis, win, 'icon.bmp', PW, PH, bitmap,PX,PY );
+//      rc:=XReadBitmapFile(dis, win, 'icon.bmp', PW, PH, bitmap,PX,PY );
 //      rc:=XReadBitmapFile(dis, win, 'icon.bmp', @Width, @Height, bitmap,@x,@y );
       WriteLn(rc);
 
@@ -135,7 +135,7 @@ type
       case Event._type of
         Expose: begin
           XClearWindow(dis, win);
-          XCopyPlane(dis,mage,win,gc,0,0,8,8,8,8,1);
+//          XCopyPlane(dis,mage,win,gc,0,0,8,8,8,8,1);
 //          XPutImage(dis, win, gc, image, 0, 0, 10, 10, BitmapData.Width, BitmapData.Height);
 
         end;

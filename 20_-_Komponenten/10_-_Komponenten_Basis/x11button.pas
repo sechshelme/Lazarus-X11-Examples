@@ -41,11 +41,13 @@ begin
   inherited DoOnPaint;
 
   if IsButtonDown then begin
-    ColRightBottom := $EEEEEE;
-    ColLeftTop := $333333;
+    Bevel := bvLowred;
+    //    ColRightBottom := $EEEEEE;
+    //    ColLeftTop := $333333;
   end else begin
-    ColRightBottom := $333333;
-    ColLeftTop := $EEEEEE;
+    Bevel := bvRaised;
+    //    ColRightBottom := $333333;
+    //    ColLeftTop := $EEEEEE;
   end;
 
   XSetForeground(dis, gc, $00);
