@@ -19,6 +19,7 @@ type
     AppClose: boolean; static;
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
+    procedure DoOnEventHandle(var Event: TXEvent); override;
     procedure Run;
   end;
 
@@ -38,11 +39,16 @@ begin
   gc := DefaultGC(dis, scr);
 
   // Erstellt das Fenster
-  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  LastWindowWidth := 640;
+  LastWindowHeight := 480;
+  Width := LastWindowWidth;
+  Height := LastWindowHeight;
+
+  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, LastWindowWidth, LastWindowHeight, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
   // Wählt die gewünschten Ereignisse aus
   // Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.
-  XSelectInput(dis, win, KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or StructureNotifyMask or PointerMotionMask or StructureNotifyMask);
+  XSelectInput(dis, win, KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or SubstructureNotifyMask or StructureNotifyMask or PointerMotionMask);
 
   // Fenster anzeigen
   XMapWindow(dis, win);
@@ -54,6 +60,35 @@ begin
   // Schliesst Verbindung zum Server
   XCloseDisplay(dis);
   inherited Destroy;
+end;
+
+procedure TX11Window.DoOnEventHandle(var Event: TXEvent);
+begin
+//  inherited DoOnEventHandle(Event);
+  case Event._type of
+    CreateNotify: begin
+      WriteLn('create');
+    end;
+    ConfigureNotify: begin
+      LastWindowWidth := Event.xconfigure.Width;
+      LastWindowHeight := Event.xconfigure.Height;
+//      Width := LastWindowWidth;
+//      Height := LastWindowHeight;
+    end;
+  end;
+  DoOnResize(Event.xconfigure.Width,Event.xconfigure.height);
+//  WriteLn(LastWindowHeight);
+  inherited DoOnEventHandle(Event);
+  case Event._type of
+    CreateNotify: begin
+    end;
+    ConfigureNotify: begin
+//      Width := LastWindowWidth;
+//      Height := LastWindowHeight;
+    end;
+  end;
+//  inherited DoOnEventHandle(Event);
+
 end;
 
 procedure TX11Window.Run;

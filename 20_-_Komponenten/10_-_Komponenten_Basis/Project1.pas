@@ -78,6 +78,8 @@ var
       Width := 530;
       Height := 100;
       BorderWidth := 4;
+      Anchors := [akRight, akBottom];
+      Anchors := [akTop, akLeft, akRight, akBottom];
     end;
 
     PanelSub1 := TX11Panel.Create(Panel);
@@ -99,7 +101,7 @@ var
       Width := Panel.Width - PanelSub1.Width - 30;
       Height := Panel.Height - 20;
       Bevel := bvLowred;
-//      Anchors := [akTop, akLeft, akRight];
+      //      Anchors := [akTop, akLeft, akRight];
     end;
 
     for i := 0 to Length(Button) - 1 do begin

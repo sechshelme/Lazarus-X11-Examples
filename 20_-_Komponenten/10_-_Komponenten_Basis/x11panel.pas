@@ -75,7 +75,6 @@ begin
     end;
     XFillPolygon(dis, win, gc, @poly, Length(poly), 0, CoordModeOrigin);
 
-    WriteLn(bevel);
     if Bevel = bvRaised then begin
       XSetForeground(dis, gc, ColRightBottom);
     end else begin

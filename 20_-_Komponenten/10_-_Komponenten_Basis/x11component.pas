@@ -27,8 +27,10 @@ type
     FParent: TX11Component;
     ComponentList: array of TX11Component;
     FOnClick: TNotifyEvent;
+    procedure SetHeight(AHeight: cint);
     procedure SetTop(ATop: cint);
     procedure SetLeft(ALeft: cint);
+    procedure SetWidth(AWidth: cint);
   protected
     IsMouseDown, IsButtonDown: boolean;
     Region: TRegion;
@@ -39,7 +41,8 @@ type
     dis: PDisplay;
     win: TDrawable;
     gc: TGC;
-    LastWindowWidth, LastWindowHeight: cint;
+    class var LastWindowWidth: cint;
+    class var LastWindowHeight: cint;
     property Anchors: TAnchors read FAnchors write FAnchors;
     property Name: string read FName write FName;
     property Parent: TX11Component read FParent write FParent;
@@ -47,8 +50,8 @@ type
     property Color: culong read FColor write FColor;
     property Left: cint read FLeft write SetLeft;
     property Top: cint read FTop write SetTop;
-    property Width: cint read FWidth write FWidth;
-    property Height: cint read FHeight write FHeight;
+    property Width: cint read FWidth write SetWidth;
+    property Height: cint read FHeight write SetHeight;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     constructor Create(TheOwner: TX11Component);
@@ -68,6 +71,12 @@ begin
   end;
 end;
 
+procedure TX11Component.SetHeight(AHeight: cint);
+begin
+  FHeight := AHeight;
+  //  LastWindowHeight := FHeight;
+end;
+
 procedure TX11Component.SetLeft(ALeft: cint);
 begin
   if Parent = nil then begin
@@ -75,6 +84,12 @@ begin
   end else begin
     FLeft := Parent.FLeft + ALeft;
   end;
+end;
+
+procedure TX11Component.SetWidth(AWidth: cint);
+begin
+  FWidth := AWidth;
+  //  LastWindowWidth := FWidth;
 end;
 
 constructor TX11Component.Create(TheOwner: TX11Component);
@@ -85,14 +100,12 @@ begin
   OnClick := nil;
   OnMouseMove := nil;
 
-  FColor:=$BBBBBB;
-  Anchors:=[akLeft, akTop];
+  FColor := $BBBBBB;
+  Anchors := [akLeft, akTop];
   Left := 0;
   Top := 0;
   Width := 320;
   Height := 200;
-  LastWindowWidth := Width;
-  LastWindowHeight := Height;
 
   Region := XCreateRegion;
   Name := 'X11Component';
@@ -133,8 +146,6 @@ begin
     end;
     ConfigureNotify: begin
       DoOnResize(Event.xconfigure.Width, Event.xconfigure.Height);
-      LastWindowWidth := Event.xconfigure.Width;
-      LastWindowHeight := Event.xconfigure.Height;
     end;
     KeyPress: begin
       if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
@@ -203,6 +214,7 @@ begin
   //  if LastWindowWidth <> AWidth then begin
   mody := True;
   d := AWidth - LastWindowWidth;
+    WriteLn(d);
   if akRight in Anchors then begin
     if akLeft in Anchors then begin
       FWidth := FWidth + d;
@@ -227,8 +239,18 @@ begin
   if mody then begin
     rect.x := FLeft;
     rect.y := FTop;
-    rect.Width := FWidth;
-    rect.Height := FHeight;
+
+    if FWidth < 0 then  begin
+      rect.Width := 0;
+    end else begin
+      rect.Width := FWidth;
+    end;
+
+    if FHeight < 0 then  begin
+      rect.Height := 0;
+    end else begin
+      rect.Height := FHeight;
+    end;
 
     if XEmptyRegion(Region) = 0 then begin
       XDestroyRegion(Region);
@@ -240,8 +262,11 @@ begin
       XIntersectRegion(Region, Parent.Region, Region);
     end;
 
+    LastWindowWidth := AWidth;
+    LastWindowHeight := AHeight;
     DoOnPaint;
   end;
 end;
+
 
 end.
