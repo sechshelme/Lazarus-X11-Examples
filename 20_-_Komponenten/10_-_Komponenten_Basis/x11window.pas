@@ -64,7 +64,7 @@ end;
 
 procedure TX11Window.DoOnEventHandle(var Event: TXEvent);
 begin
-//  inherited DoOnEventHandle(Event);
+  inherited DoOnEventHandle(Event);
   case Event._type of
     CreateNotify: begin
       WriteLn('create');
@@ -72,22 +72,22 @@ begin
     ConfigureNotify: begin
       LastWindowWidth := Event.xconfigure.Width;
       LastWindowHeight := Event.xconfigure.Height;
-//      Width := LastWindowWidth;
-//      Height := LastWindowHeight;
+      WriteLn('Event.xconfigure.Width ',Event.xconfigure.Width);
+      Width := LastWindowWidth;
+      Height := LastWindowHeight;
     end;
   end;
-  DoOnResize(Event.xconfigure.Width,Event.xconfigure.height);
-//  WriteLn(LastWindowHeight);
-  inherited DoOnEventHandle(Event);
+  DoOnResize(Event.xconfigure.Width, Event.xconfigure.Height);
+  //  inherited DoOnEventHandle(Event);
   case Event._type of
     CreateNotify: begin
     end;
     ConfigureNotify: begin
-//      Width := LastWindowWidth;
-//      Height := LastWindowHeight;
+      //      Width := LastWindowWidth;
+      //      Height := LastWindowHeight;
     end;
   end;
-//  inherited DoOnEventHandle(Event);
+  //  inherited DoOnEventHandle(Event);
 
 end;
 

@@ -214,7 +214,9 @@ begin
   //  if LastWindowWidth <> AWidth then begin
   mody := True;
   d := AWidth - LastWindowWidth;
-    WriteLn(d);
+  WriteLn('AWidth ',AWidth);
+  WriteLn('LastWindowWidth ',LastWindowWidth);
+  WriteLn('d ',d);
   if akRight in Anchors then begin
     if akLeft in Anchors then begin
       FWidth := FWidth + d;
