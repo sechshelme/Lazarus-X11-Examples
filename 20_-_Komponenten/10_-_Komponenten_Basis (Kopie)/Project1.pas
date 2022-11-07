@@ -75,8 +75,7 @@ var
       Left := 10;
       Top := 10;
       Height := 100;
-      Width := 530;
-      BorderWidth:=4;
+      Width := 330;
 //      Anchors:=[akTop,akLeft, akRight, akBottom];
     end;
 
@@ -86,7 +85,7 @@ var
       Left := 10;
       Top := 10;
       Height := 50;
-      Width := 410;
+      Width := 1310;
 //                  Anchors:=[akTop,akLeft, akRight, akBottom];
     end;
 
@@ -138,16 +137,26 @@ var
   var
     punkte: array[0..maxSektoren] of TXPoint;
     i: integer;
+    //      Region2: TRegion;
+    //    Rect: TXRectangle;
   begin
     inherited DoOnPaint;
     color := $FF00;
+    //Region2 := XCreateRegion;
+    //Rect.x := 0;
+    //Rect.y := 0;
+    //Rect.Width := Width;
+    //Rect.Height := Height;
+    //XUnionRectWithRegion(@Rect, Region2, Region2);
     XSetRegion(dis, gc, Region);
+    //XDestroyRegion(Region2);
 
     for i := 0 to maxSektoren - 1 do begin
       punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 250;
       punkte[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 220;
     end;
 
+    //      XClearWindow(dis, win);
     // Ein Rechteck zeichnen
     XSetForeground(dis, gc, $FF00FF);
     XDrawRectangle(dis, win, gc, 10, 150, 50, 50);

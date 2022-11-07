@@ -38,7 +38,7 @@ type
     destructor Destroy; override;
     procedure Paint;
     procedure Resize;
-    procedure EventHandle(Event: TXEvent); virtual;
+    procedure EventHandle(var Event: TXEvent); virtual;
   end;
 
 implementation
@@ -148,7 +148,7 @@ begin
   XUnionRectWithRegion(@rect, Region, Region);
 end;
 
-procedure TButton.EventHandle(Event: TXEvent);
+procedure TButton.EventHandle(var Event: TXEvent);
 var
   x, y: cint;
   IsInRegion: TBoolResult;
@@ -185,7 +185,7 @@ begin
       end;
     end;
     ButtonRelease: begin
-      if IsInRegion then begin
+      if IsMouseDown and IsInRegion then begin
         if OnClick <> nil then begin
           OnClick(self);
         end;

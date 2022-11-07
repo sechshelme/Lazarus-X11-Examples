@@ -78,8 +78,6 @@ var
   s: string;
 begin
   FParent := TheOwner;
-  OnClick := nil;
-  OnMouseMove := nil;
 
   Anchors := [akTop, akLeft];
   Color := $BBBBBB;
@@ -153,10 +151,10 @@ begin
       end;
       if IsMouseDown then begin
         if IsInRegion then begin
-          //   if not IsButtonDown then DoOnPaint;
+       //   if not IsButtonDown then DoOnPaint;
           IsButtonDown := True;
         end else begin
-          //    if IsButtonDown then DoOnPaint;
+      //    if IsButtonDown then DoOnPaint;
           IsButtonDown := False;
         end;
         DoOnPaint;
@@ -185,7 +183,6 @@ begin
   for i := 0 to Length(ComponentList) - 1 do begin
     ComponentList[i].DoOnPaint;
   end;
-  XSetRegion(dis, gc, Region);
 end;
 
 procedure TX11Component.DoOnResize(AWidth, AHeight: cint);

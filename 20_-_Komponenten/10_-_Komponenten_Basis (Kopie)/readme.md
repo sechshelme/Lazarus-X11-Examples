@@ -1,13 +1,17 @@
-//image image.png
-(*
+# 20 - Komponenten
+## 10 - Komponenten Basis
+
+![image.png](image.png)
+
 Verschiedene Varinaten um Rechtecke zu zeichnen:
 
 - [XDrawRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XDrawRectangle.html)
 - [XFillRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillRectangle.html)
 - [XFillPolygon](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillPolygon.html) (Für ein nicht ausgefülltes Polygon nimmt man **XDrawLines**.)
-*)
-//lineal
-//code+
+
+---
+
+```pascal
 program Project1;
 
 uses
@@ -36,7 +40,7 @@ type
     procedure CloseButtonMouseMove(Sender: TObject; X, Y: integer);
     protected
       procedure DoOnPaint; override;
-      procedure DoOnEventHandle(var Event: TXEvent); override;
+      procedure DoOnEventHandle(Event: TXEvent); override;
   public
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
@@ -75,8 +79,7 @@ var
       Left := 10;
       Top := 10;
       Height := 100;
-      Width := 530;
-      BorderWidth:=4;
+      Width := 330;
 //      Anchors:=[akTop,akLeft, akRight, akBottom];
     end;
 
@@ -86,7 +89,7 @@ var
       Left := 10;
       Top := 10;
       Height := 50;
-      Width := 410;
+      Width := 1310;
 //                  Anchors:=[akTop,akLeft, akRight, akBottom];
     end;
 
@@ -138,16 +141,26 @@ var
   var
     punkte: array[0..maxSektoren] of TXPoint;
     i: integer;
+    //      Region2: TRegion;
+    //    Rect: TXRectangle;
   begin
     inherited DoOnPaint;
     color := $FF00;
+    //Region2 := XCreateRegion;
+    //Rect.x := 0;
+    //Rect.y := 0;
+    //Rect.Width := Width;
+    //Rect.Height := Height;
+    //XUnionRectWithRegion(@Rect, Region2, Region2);
     XSetRegion(dis, gc, Region);
+    //XDestroyRegion(Region2);
 
     for i := 0 to maxSektoren - 1 do begin
       punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 250;
       punkte[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 220;
     end;
 
+    //      XClearWindow(dis, win);
     // Ein Rechteck zeichnen
     XSetForeground(dis, gc, $FF00FF);
     XDrawRectangle(dis, win, gc, 10, 150, 50, 50);
@@ -158,7 +171,7 @@ var
     XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
   end;
 
-  procedure TMyWin.DoOnEventHandle(var Event: TXEvent);
+  procedure TMyWin.DoOnEventHandle(Event: TXEvent);
   begin
     inherited DoOnEventHandle(Event);
     case Event._type of
@@ -175,4 +188,6 @@ begin
   MyWindows.Run;
   MyWindows.Free;
 end.
-//code-
+```
+
+
