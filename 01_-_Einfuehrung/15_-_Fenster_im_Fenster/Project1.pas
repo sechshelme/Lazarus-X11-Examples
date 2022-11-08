@@ -41,7 +41,8 @@ begin
 
   Subwin1 := XCreateSimpleWindow(dis, win, 100, 100, 320, 240, 10, BlackPixel(dis, scr), WhitePixel(dis, scr));
   Subwin2 := XCreateSimpleWindow(dis, win, 250, 100, 320, 240, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
-
+      XSetWindowBorderWidth(dis, Subwin2, 15);
+      XSetIconName(dis, win, 'Hakko');
   // Wählt die gewünschten Ereignisse aus
   // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
   XSelectInput(dis, win, KeyPressMask or ExposureMask or PointerMotionMask);

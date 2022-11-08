@@ -42,12 +42,8 @@ begin
 
   if IsButtonDown then begin
     Bevel := bvLowred;
-    //    ColRightBottom := $EEEEEE;
-    //    ColLeftTop := $333333;
   end else begin
     Bevel := bvRaised;
-    //    ColRightBottom := $333333;
-    //    ColLeftTop := $EEEEEE;
   end;
 
   XSetForeground(dis, gc, $00);

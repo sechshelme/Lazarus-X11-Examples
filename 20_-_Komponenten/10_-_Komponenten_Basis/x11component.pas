@@ -41,8 +41,8 @@ type
     dis: PDisplay;
     win: TDrawable;
     gc: TGC;
-    class var LastWindowWidth: cint;
-    class var LastWindowHeight: cint;
+    LastWindowWidth: cint; static;
+    LastWindowHeight: cint; static;
     property Anchors: TAnchors read FAnchors write FAnchors;
     property Name: string read FName write FName;
     property Parent: TX11Component read FParent write FParent;
@@ -168,10 +168,8 @@ begin
       end;
       if IsMouseDown then begin
         if IsInRegion then begin
-          //   if not IsButtonDown then DoOnPaint;
           IsButtonDown := True;
         end else begin
-          //    if IsButtonDown then DoOnPaint;
           IsButtonDown := False;
         end;
         DoOnPaint;
@@ -194,13 +192,9 @@ procedure TX11Component.DoOnPaint;
 var
   i: integer;
 begin
-  XSetRegion(dis, gc, Region);
-  XSetForeground(dis, gc, Color);
-  XFillRectangle(dis, win, gc, Left, Top, Width, Height);
   for i := 0 to Length(ComponentList) - 1 do begin
     ComponentList[i].DoOnPaint;
   end;
-  XSetRegion(dis, gc, Region);
 end;
 
 procedure TX11Component.DoOnResize(AWidth, AHeight: cint);
@@ -214,9 +208,9 @@ begin
   //  if LastWindowWidth <> AWidth then begin
   mody := True;
   d := AWidth - LastWindowWidth;
-  WriteLn('AWidth ',AWidth);
-  WriteLn('LastWindowWidth ',LastWindowWidth);
-  WriteLn('d ',d);
+  WriteLn('AWidth ', AWidth);
+  WriteLn('LastWindowWidth ', LastWindowWidth);
+  WriteLn('d ', d);
   if akRight in Anchors then begin
     if akLeft in Anchors then begin
       FWidth := FWidth + d;

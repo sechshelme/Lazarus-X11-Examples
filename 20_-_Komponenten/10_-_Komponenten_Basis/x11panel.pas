@@ -55,7 +55,11 @@ var
   end;
 
 begin
+  XSetRegion(dis, gc, Region);
+  XSetForeground(dis, gc, Color);
+  XFillRectangle(dis, win, gc, Left, Top, Width, Height);
   inherited DoOnPaint;
+  XSetRegion(dis, gc, Region);
 
   if Bevel <> bvNone then begin
     if Bevel = bvRaised then begin
