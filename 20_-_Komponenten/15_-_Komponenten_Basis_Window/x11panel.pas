@@ -36,7 +36,6 @@ implementation
 constructor TX11Panel.Create(TheOwner: TX11Component);
 begin
   inherited Create(TheOwner);
-  //  Color := $888888;
   ColRightBottom := $333333;
   ColLeftTop := $EEEEEE;
   FBorderWidth := 3;
@@ -55,11 +54,9 @@ var
   end;
 
 begin
-  XSetRegion(dis, gc, Region);
   XSetForeground(dis, gc, Color);
-  XFillRectangle(dis, win, gc, Left, Top, Width, Height);
+  XFillRectangle(dis, win, gc, 0, 0, Width, Height);
   inherited DoOnPaint;
-  XSetRegion(dis, gc, Region);
 
   if Bevel <> bvNone then begin
     if Bevel = bvRaised then begin
@@ -73,10 +70,6 @@ begin
     poly[3] := p(BorderWidth, BorderWidth);
     poly[4] := p(BorderWidth, Height - BorderWidth + 1);
     poly[5] := p(0, Height - 1);
-    for i := 0 to Length(poly) - 1 do begin
-      Inc(poly[i].x, Left);
-      Inc(poly[i].y, Top);
-    end;
     XFillPolygon(dis, win, gc, @poly, Length(poly), 0, CoordModeOrigin);
 
     if Bevel = bvRaised then begin
@@ -90,12 +83,7 @@ begin
     poly[3] := p(BorderWidth + 1, Height - BorderWidth);
     poly[4] := p(Width - BorderWidth, Height - BorderWidth);
     poly[5] := p(Width - BorderWidth, BorderWidth + 1);
-    for i := 0 to Length(poly) - 1 do begin
-      Inc(poly[i].x, Left);
-      Inc(poly[i].y, Top);
-    end;
     XFillPolygon(dis, win, gc, @poly, Length(poly), 0, CoordModeOrigin);
-
   end;
 end;
 

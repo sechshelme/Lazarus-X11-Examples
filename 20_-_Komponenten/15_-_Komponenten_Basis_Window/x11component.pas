@@ -24,12 +24,15 @@ type
     FAnchors: TAnchors;
     FCaption: string;
     FColor: culong;
-    FHeight, FLeft, FTop, FWidth: cint;
+    FHeight, FLeft, FTop, FWidth, FWindowBorderWidth: cint;
     FOnMouseMove: TMouseMoveEvent;
     FName: string;
     FParent: TX11Component;
     ComponentList: array of TX11Component;
     FOnClick: TNotifyEvent;
+    procedure SetCaption(AValue: string);
+    procedure SetColor(AColor: culong);
+    procedure SetWindowBorderWidth(AWindowBorderWidth: cint);
     procedure SetHeight(AHeight: cint);
     procedure SetTop(ATop: cint);
     procedure SetLeft(ALeft: cint);
@@ -42,25 +45,23 @@ type
     gc: TGC; static;
 
     IsMouseDown, IsButtonDown: boolean;
-    Region: TRegion;
     procedure DoOnEventHandle(var Event: TXEvent); virtual;
     procedure DoOnPaint; virtual;
     procedure DoOnResize(AWidth, AHeight: cint); virtual;
   public
-    LastWindowWidth: cint; static;
-    LastWindowHeight: cint; static;
     property Anchors: TAnchors read FAnchors write FAnchors;
     property Name: string read FName write FName;
     property Parent: TX11Component read FParent write FParent;
-    property Caption: string read FCaption write FCaption;
-    property Color: culong read FColor write FColor;
+    property Caption: string read FCaption write SetCaption;
+    property WindowBorderWidth: cint read FWindowBorderWidth write SetWindowBorderWidth;
+    property Color: culong read FColor write SetColor;
     property Left: cint read FLeft write SetLeft;
     property Top: cint read FTop write SetTop;
     property Width: cint read FWidth write SetWidth;
     property Height: cint read FHeight write SetHeight;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
-    constructor Create(TheOwner: TX11Component);
+    constructor Create(TheOwner: TX11Component; NewWindow: boolean = False);
     destructor Destroy; override;
   end;
 
@@ -70,50 +71,77 @@ implementation
 
 procedure TX11Component.SetTop(ATop: cint);
 begin
-  if Parent = nil then begin
+  if FTop <> ATop then begin
     FTop := ATop;
-  end else begin
-    FTop := Parent.FTop + ATop;
+    XMoveWindow(dis, win, FLeft, FTop);
   end;
 end;
 
 procedure TX11Component.SetHeight(AHeight: cint);
 begin
-  FHeight := AHeight;
-  //  LastWindowHeight := FHeight;
+  if FHeight <> AHeight then begin
+    FHeight := AHeight;
+    XMoveResizeWindow(dis, win, FLeft, FTop, FWidth, FHeight);
+  end;
 end;
 
 procedure TX11Component.SetLeft(ALeft: cint);
 begin
-  if Parent = nil then begin
+  if FLeft <> ALeft then begin
     FLeft := ALeft;
-  end else begin
-    FLeft := Parent.FLeft + ALeft;
+    XMoveWindow(dis, win, FLeft, FTop);
   end;
 end;
 
 procedure TX11Component.SetWidth(AWidth: cint);
 begin
-  FWidth := AWidth;
-  //  LastWindowWidth := FWidth;
+  if FWidth <> AWidth then begin
+    FWidth := AWidth;
+    XMoveResizeWindow(dis, win, FLeft, FTop, FWidth, FHeight);
+  end;
 end;
 
-constructor TX11Component.Create(TheOwner: TX11Component);
+procedure TX11Component.SetWindowBorderWidth(AWindowBorderWidth: cint);
+begin
+  if FWindowBorderWidth <> AWindowBorderWidth then begin
+    FWindowBorderWidth := AWindowBorderWidth;
+    XSetWindowBorder(dis,win, FWindowBorderWidth);
+  end;
+end;
+
+procedure TX11Component.SetCaption(AValue: string);
+begin
+  if FCaption <> AValue then begin
+    XStoreName(dis, win, PChar(AValue));
+    FCaption := AValue;
+  end;
+end;
+
+procedure TX11Component.SetColor(AColor: culong);
+begin
+  if FColor <> AColor then begin
+    FColor := AColor;
+    XSetBackground(dis,gc,AColor);
+  end;
+end;
+
+constructor TX11Component.Create(TheOwner: TX11Component; NewWindow: boolean);
 var
   s: string;
 begin
+  inherited Create;
+
   FParent := TheOwner;
   OnClick := nil;
   OnMouseMove := nil;
 
   FColor := $BBBBBB;
   Anchors := [akLeft, akTop];
-  Left := 0;
-  Top := 0;
-  Width := 320;
-  Height := 200;
+  FLeft := 0;
+  FTop := 0;
+  FWidth := 320;
+  FHeight := 200;
 
-  Region := XCreateRegion;
   Name := 'X11Component';
 
   if TheOwner <> nil then begin
@@ -121,24 +149,29 @@ begin
     TheOwner.ComponentList[Length(TheOwner.ComponentList) - 1] := Self;
     str(Length(TheOwner.ComponentList), s);
     FName += s;
-    win := XCreateSimpleWindow(dis, TheOwner.win, 10, 10, LastWindowWidth, LastWindowHeight, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    if NewWindow then begin
+      win := XCreateSimpleWindow(dis, RootWin, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    end else begin
+      win := XCreateSimpleWindow(dis, TheOwner.win, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    end;
   end else begin
-    win := XCreateSimpleWindow(dis, RootWin, 10, 10, LastWindowWidth, LastWindowHeight, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    win := XCreateSimpleWindow(dis, RootWin, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
   end;
+  XStoreName(dis, win, 'none');
+  XSetBackground(dis,gc,$FF);
+  XSetForeground(dis,gc,$FF00);
 
   // Wählt die gewünschten Ereignisse aus
   XSelectInput(dis, win, EventMask);
 
   // Fenster anzeigen
   XMapWindow(dis, win);
-
 end;
 
 destructor TX11Component.Destroy;
 var
   i: integer;
 begin
-  XDestroyRegion(Region);
   for i := 0 to Length(ComponentList) - 1 do begin
     if ComponentList[i] <> nil then  begin
       ComponentList[i].Free;
@@ -160,7 +193,8 @@ begin
 
   x := Event.xbutton.x;
   y := Event.xbutton.y;
-  IsInRegion := XPointInRegion(Region, x, y);
+  //  IsInRegion := XPointInRegion(Region, x, y);
+  IsInRegion := (x >= 0) and (x < FWidth) and (y >= 0) and (y < FHeight);
   case Event._type of
     Expose: begin
       DoOnPaint;
@@ -174,37 +208,43 @@ begin
       end;
     end;
     ButtonPress: begin
-      if IsInRegion then begin
-        IsMouseDown := True;
-        IsButtonDown := True;
-      end else begin
-        IsMouseDown := False;
-        IsButtonDown := False;
-      end;
-      DoOnPaint;
-    end;
-    MotionNotify: begin
-      if IsInRegion and (OnMouseMove <> nil) then begin
-        OnMouseMove(self, x, y);
-      end;
-      if IsMouseDown then begin
+      if Event.xbutton.window = win then begin
         if IsInRegion then begin
+          IsMouseDown := True;
           IsButtonDown := True;
         end else begin
+          IsMouseDown := False;
           IsButtonDown := False;
         end;
         DoOnPaint;
       end;
     end;
-    ButtonRelease: begin
-      if IsMouseDown and IsInRegion then begin
-        if OnClick <> nil then begin
-          OnClick(self);
+    MotionNotify: begin
+      if Event.xbutton.window = win then begin
+        if IsInRegion and (OnMouseMove <> nil) then begin
+          OnMouseMove(self, x, y);
+        end;
+        if IsMouseDown then begin
+          if IsInRegion then begin
+            IsButtonDown := True;
+          end else begin
+            IsButtonDown := False;
+          end;
+          DoOnPaint;
         end;
       end;
-      IsMouseDown := False;
-      IsButtonDown := False;
-      DoOnPaint;
+    end;
+    ButtonRelease: begin
+      if Event.xbutton.window = win then begin
+        if IsMouseDown and IsInRegion then begin
+          if OnClick <> nil then begin
+            OnClick(self);
+          end;
+        end;
+        IsMouseDown := False;
+        IsButtonDown := False;
+        DoOnPaint;
+      end;
     end;
   end;
 end;
@@ -220,7 +260,6 @@ end;
 
 procedure TX11Component.DoOnResize(AWidth, AHeight: cint);
 var
-  rect: TXRectangle;
   d: cint;
   mody: boolean;
 begin
@@ -228,7 +267,7 @@ begin
 
   //  if LastWindowWidth <> AWidth then begin
   mody := True;
-  d := AWidth - LastWindowWidth;
+  //  d := AWidth - LastWindowWidth;
   //WriteLn('AWidth ', AWidth);
   //  WriteLn('LastWindowWidth ', LastWindowWidth);
   //  WriteLn('d ', d);
@@ -243,7 +282,7 @@ begin
 
   //  if LastWindowHeight <> AHeight then begin
   mody := True;
-  d := AHeight - LastWindowHeight;
+  //  d := AHeight - LastWindowHeight;
   if akBottom in Anchors then begin
     if akTop in Anchors then begin
       FHeight := FHeight + d;
@@ -254,33 +293,6 @@ begin
   //  end;
 
   if mody then begin
-    rect.x := FLeft;
-    rect.y := FTop;
-
-    if FWidth < 0 then  begin
-      rect.Width := 0;
-    end else begin
-      rect.Width := FWidth;
-    end;
-
-    if FHeight < 0 then  begin
-      rect.Height := 0;
-    end else begin
-      rect.Height := FHeight;
-    end;
-
-    if XEmptyRegion(Region) = 0 then begin
-      XDestroyRegion(Region);
-    end;
-    Region := XCreateRegion;
-    XUnionRectWithRegion(@rect, Region, Region);
-
-    if (Parent <> nil) and (XEmptyRegion(Parent.Region) = 0) then begin
-      XIntersectRegion(Region, Parent.Region, Region);
-    end;
-
-    LastWindowWidth := AWidth;
-    LastWindowHeight := AHeight;
     DoOnPaint;
   end;
 end;

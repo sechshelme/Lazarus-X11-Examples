@@ -1,6 +1,10 @@
 //image image.png
 (*
-Verschiedene Varinaten um Linien zu zeichnen:
+Verschiedene Varinaten um Rechtecke zu zeichnen:
+
+- [XDrawRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XDrawRectangle.html)
+- [XFillRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillRectangle.html)
+- [XFillPolygon](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillPolygon.html) (Für ein nicht ausgefülltes Polygon nimmt man **XDrawLines**.)
 *)
 //lineal
 //code+
@@ -63,13 +67,12 @@ type
     maxSektoren = 8;
   var
     Event: TXEvent;
-    Points: array[0..maxSektoren] of TXPoint;
+    punkte: array[0..maxSektoren] of TXPoint;
     i: integer;
   begin
-    // Punkte in Kreisanordnung berechnen
     for i := 0 to maxSektoren - 1 do begin
-      Points[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 200;
-      Points[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 110;
+      punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 200;
+      punkte[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 170;
     end;
 
     // Ereignisschleife
@@ -80,12 +83,17 @@ type
         Expose: begin
           // Bildschirm löschen
           XClearWindow(dis, win);
+          // Ein Rechteck zeichnen
+          XDrawRectangle(dis, win, gc, 10, 50, 50, 50);
+          // Einen rechteckigen Bereich mit Farbe füllen
+          XSetLineAttributes(dis,gc,3,LineDoubleDash,CapNotLast,JoinBevel);
+          XSetFillStyle(dis,gc,FillStippled);
 
-          // Eine einfache Linie
-          XDrawLine(dis, win, gc, 10, 60, 110, 160);
+          XFillRectangle(dis, win, gc, 110, 50, 50, 50);
 
-          // Ein Linien-Array
-          XDrawLines(dis, win, gc, @Points, Length(Points) - 1, 0);
+          // Ein Polygon
+          XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
+
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]

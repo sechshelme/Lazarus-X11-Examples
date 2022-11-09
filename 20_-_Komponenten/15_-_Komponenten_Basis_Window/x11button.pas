@@ -38,20 +38,20 @@ end;
 
 procedure TX11Button.DoOnPaint;
 begin
-  inherited DoOnPaint;
-
   if IsButtonDown then begin
     Bevel := bvLowred;
   end else begin
     Bevel := bvRaised;
   end;
 
+  inherited DoOnPaint;
+
   XSetForeground(dis, gc, $00);
-  XDrawRectangle(dis, win, gc, Left, Top, Width - 1, Height - 1);
+  XDrawRectangle(dis, win, gc, 0, 0, Width - 1, Height - 1);
   if IsButtonDown then begin
-    XDrawString(dis, win, gc, Left + 8 + BorderWidth, Top + 15 + BorderWidth, PChar(Caption), Length(Caption));
+    XDrawString(dis, win, gc, 8 + BorderWidth, 15 + BorderWidth, PChar(Caption), Length(Caption));
   end else begin
-    XDrawString(dis, win, gc, Left + 7 + BorderWidth, Top + 14 + BorderWidth, PChar(Caption), Length(Caption));
+    XDrawString(dis, win, gc, 7 + BorderWidth, 14 + BorderWidth, PChar(Caption), Length(Caption));
   end;
 end;
 

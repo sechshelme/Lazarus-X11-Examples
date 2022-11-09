@@ -20,20 +20,24 @@ uses
   X11Button,
   X11Component,
   X11Panel,
-  X11Window, X11Desktop;
+  X11Window,
+  X11Desktop;
 
 type
 
-  { TMyWin }
+  { TMyDesktop }
 
-  TMyWin = class(TX11Desktop)
+  TMyDesktop = class(TX11Desktop)
   private
     Panel, PanelSub1, PanelSub2: TX11Panel;
     Button: array[0..3] of TX11Button;
     CloseButton: TX11Button;
+    SubWin: TX11Window;
+    SubWinButton: TX11Button;
     procedure ButtonClick(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
     procedure CloseButtonMouseMove(Sender: TObject; X, Y: integer);
+    procedure SubWinButtonClick(Sender: TObject);
   protected
     procedure DoOnPaint; override;
     procedure DoOnEventHandle(var Event: TXEvent); override;
@@ -43,33 +47,54 @@ type
   end;
 
 var
-  MyWindows: TMyWin;
+  MyDesktop: TMyDesktop;
 
   { TMyWin }
 
-  procedure TMyWin.ButtonClick(Sender: TObject);
+  procedure TMyDesktop.ButtonClick(Sender: TObject);
   begin
     WriteLn(TX11Button(Sender).Caption);
   end;
 
-  procedure TMyWin.CloseButtonClick(Sender: TObject);
+  procedure TMyDesktop.CloseButtonClick(Sender: TObject);
   begin
     AppClose := True;
   end;
 
-  procedure TMyWin.CloseButtonMouseMove(Sender: TObject; X, Y: integer);
+  procedure TMyDesktop.CloseButtonMouseMove(Sender: TObject; X, Y: integer);
   begin
     WriteLn('move: ', x, '  ', y);
   end;
 
-  constructor TMyWin.Create(TheOwner: TX11Component);
+  procedure TMyDesktop.SubWinButtonClick(Sender: TObject);
+  begin
+    WriteLn('Hello World');
+  end;
+
+  constructor TMyDesktop.Create(TheOwner: TX11Component);
   var
     i: integer;
     s: string;
   begin
     inherited Create(TheOwner);
+    Color:=$FF;
 
-    Color := $999999;
+    Caption := 'Mein Fenster';
+
+    SubWin := TX11Window.Create(Self, True);
+    with SubWin do begin
+      Height := 45;
+      Width := 95;
+    end;
+
+    SubWinButton := TX11Button.Create(SubWin);
+    with SubWinButton do begin
+      Left := 10;
+      Top := 10;
+      Caption := 'Hallo';
+      OnClick := @SubWinButtonClick;
+    end;
+
 
     Panel := TX11Panel.Create(Self);
     with Panel do begin
@@ -78,8 +103,8 @@ var
       Width := 530;
       Height := 100;
       BorderWidth := 4;
-      Anchors := [akRight, akBottom];
-      Anchors := [akTop, akLeft, akRight, akBottom];
+      //      Anchors := [akRight, akBottom];
+      //      Anchors := [akTop, akLeft, akRight, akBottom];
     end;
 
     PanelSub1 := TX11Panel.Create(Panel);
@@ -123,9 +148,9 @@ var
     with CloseButton do begin
       Left := 100;
       Top := 100;
-      Width := 60;
-      Height := 25;
-      Anchors := [akRight, akBottom];
+      Width := 120;
+      Height := 50;
+      //      Anchors := [akRight, akBottom];
       //            Anchors:=[akTop,akLeft, akRight, akBottom];
       Caption := 'Close';
       OnClick := @CloseButtonClick;
@@ -133,12 +158,12 @@ var
     end;
   end;
 
-  destructor TMyWin.Destroy;
+  destructor TMyDesktop.Destroy;
   begin
     inherited Destroy;
   end;
 
-  procedure TMyWin.DoOnPaint;
+  procedure TMyDesktop.DoOnPaint;
   const
     maxSektoren = 8;
   var
@@ -146,24 +171,21 @@ var
     i: integer;
   begin
     inherited DoOnPaint;
-    XSetRegion(dis, gc, Region);
 
     for i := 0 to maxSektoren - 1 do begin
       punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 250;
       punkte[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 220;
     end;
 
-    // Ein Rechteck zeichnen
     XSetForeground(dis, gc, $FF00FF);
     XDrawRectangle(dis, win, gc, 10, 150, 50, 50);
-    // Einen rechteckigen Bereich mit Farbe füllen
     XFillRectangle(dis, win, gc, 110, 150, 50, 50);
 
     // Ein Polygon
     XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
   end;
 
-  procedure TMyWin.DoOnEventHandle(var Event: TXEvent);
+  procedure TMyDesktop.DoOnEventHandle(var Event: TXEvent);
   begin
     inherited DoOnEventHandle(Event);
     case Event._type of
@@ -176,8 +198,8 @@ var
   end;
 
 begin
-  MyWindows := TMyWin.Create(nil);
-  MyWindows.Run;
-  MyWindows.Free;
+  MyDesktop := TMyDesktop.Create(nil);
+  MyDesktop.Run;
+  MyDesktop.Free;
 end.
 //code-

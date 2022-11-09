@@ -77,15 +77,15 @@ begin
         end;
       end;
       MotionNotify: begin
-        if Event.xbutton.window = win then begin
-          //          WriteLn('root');
-        end;
-        if Event.xbutton.window = Subwin1 then begin
-          //          WriteLn('Sub1');
-        end;
-        if Event.xbutton.window = Subwin2 then begin
-          //          WriteLn('Sub2');
-        end;
+        //if Event.xbutton.window = win then begin
+        //            WriteLn('root');
+        //end;
+        //if Event.xbutton.window = Subwin1 then begin
+        //            WriteLn('Sub1');
+        //end;
+        //if Event.xbutton.window = Subwin2 then begin
+        //            WriteLn('Sub2');
+        //end;
       end;
       ButtonPress: begin
         Write('press: ');
@@ -102,13 +102,15 @@ begin
       ButtonRelease: begin
         Write('up: ');
         if Event.xbutton.window = win then begin
-          WriteLn('win');
+          WriteLn('win     ',Event.xbutton.x,'   ',Event.xbutton.y, '   ');
         end;
         if Event.xbutton.window = Subwin1 then begin
           WriteLn('Subwin1');
+          WriteLn('win     ',Event.xbutton.x,'   ',Event.xbutton.y, '   ');
         end;
         if Event.xbutton.window = Subwin2 then begin
           WriteLn('Subwin2');
+          WriteLn('win     ',Event.xbutton.x,'   ',Event.xbutton.y, '   ');
         end;
       end;
 

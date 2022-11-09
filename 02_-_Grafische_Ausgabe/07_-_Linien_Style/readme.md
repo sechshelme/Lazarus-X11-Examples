@@ -1,9 +1,15 @@
-//image image.png
-(*
+# 02 - Grafische Ausgabe
+## 05 - Linien
+
+![image.png](image.png)
+
 Verschiedene Varinaten um Linien zu zeichnen:
-*)
-//lineal
-//code+
+
+- [XDrawLine](https://tronche.com/gui/x/xlib/graphics/drawing/XDrawLine.html)
+
+---
+
+```pascal
 program Project1;
 
 uses
@@ -44,7 +50,7 @@ type
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
-    // Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.
+    // Es werden die Ereignisse **KeyPressMask** und **ExposureMask** für die grafische Auzsgabe gebraucht.
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
 
     // Fenster anzeigen
@@ -106,4 +112,6 @@ begin
   MyWindows.Run;
   MyWindows.Free;
 end.
-//code-
+```
+
+

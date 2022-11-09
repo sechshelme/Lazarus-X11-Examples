@@ -1,9 +1,17 @@
-//image image.png
-(*
-Verschiedene Varinaten um Linien zu zeichnen:
-*)
-//lineal
-//code+
+# 02 - Grafische Ausgabe
+## 10 - Rechtecke und Polygone
+
+![image.png](image.png)
+
+Verschiedene Varinaten um Rechtecke zu zeichnen:
+
+- [XDrawRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XDrawRectangle.html)
+- [XFillRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillRectangle.html)
+- [XFillPolygon](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillPolygon.html) (Für ein nicht ausgefülltes Polygon nimmt man **XDrawLines**.)
+
+---
+
+```pascal
 program Project1;
 
 uses
@@ -44,7 +52,7 @@ type
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
-    // Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.
+    // Es werden die Ereignisse **KeyPressMask** und **ExposureMask** für die grafische Auzsgabe gebraucht.
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
 
     // Fenster anzeigen
@@ -63,13 +71,12 @@ type
     maxSektoren = 8;
   var
     Event: TXEvent;
-    Points: array[0..maxSektoren] of TXPoint;
+    punkte: array[0..maxSektoren] of TXPoint;
     i: integer;
   begin
-    // Punkte in Kreisanordnung berechnen
     for i := 0 to maxSektoren - 1 do begin
-      Points[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 200;
-      Points[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 110;
+      punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 200;
+      punkte[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 170;
     end;
 
     // Ereignisschleife
@@ -80,12 +87,14 @@ type
         Expose: begin
           // Bildschirm löschen
           XClearWindow(dis, win);
+          // Ein Rechteck zeichnen
+          XDrawRectangle(dis, win, gc, 10, 50, 50, 50);
+          // Einen rechteckigen Bereich mit Farbe füllen
+          XFillRectangle(dis, win, gc, 110, 50, 50, 50);
 
-          // Eine einfache Linie
-          XDrawLine(dis, win, gc, 10, 60, 110, 160);
+          // Ein Polygon
+          XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
 
-          // Ein Linien-Array
-          XDrawLines(dis, win, gc, @Points, Length(Points) - 1, 0);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
@@ -106,4 +115,6 @@ begin
   MyWindows.Run;
   MyWindows.Free;
 end.
-//code-
+```
+
+
