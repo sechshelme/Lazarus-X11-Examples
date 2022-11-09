@@ -128,7 +128,7 @@ begin
   XDestroyRegion(Region);
   for i := 0 to Length(ComponentList) - 1 do begin
     if ComponentList[i] <> nil then  begin
-//    ComponentList[i].Free;
+      ComponentList[i].Free;
     end;
   end;
   inherited Destroy;

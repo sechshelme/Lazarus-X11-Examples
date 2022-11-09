@@ -134,15 +134,7 @@ var
   end;
 
   destructor TMyWin.Destroy;
-  var
-    i: integer;
   begin
-    for i := 0 to Length(Button) - 1 do begin
-      Button[i].Free;
-    end;
-    PanelSub1.Free;
-    Panel.Free;
-    CloseButton.Free;
     inherited Destroy;
   end;
 

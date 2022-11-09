@@ -7,6 +7,9 @@ interface
 uses
   unixtype, ctypes, xlib, xutil, keysym, x;
 
+const
+  EventMask=KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or SubstructureNotifyMask or StructureNotifyMask or PointerMotionMask;
+
 type
 
   TAnchorKind = (akTop, akLeft, akRight, akBottom);
@@ -32,15 +35,18 @@ type
     procedure SetLeft(ALeft: cint);
     procedure SetWidth(AWidth: cint);
   protected
+    win: TDrawable;
+    dis: PDisplay; static;
+    scr: cint; static;
+    RootWin:TWindow;static;
+    gc: TGC;       static;
+
     IsMouseDown, IsButtonDown: boolean;
     Region: TRegion;
     procedure DoOnEventHandle(var Event: TXEvent); virtual;
     procedure DoOnPaint; virtual;
     procedure DoOnResize(AWidth, AHeight: cint); virtual;
   public
-    dis: PDisplay;
-    win: TDrawable;
-    gc: TGC;
     LastWindowWidth: cint; static;
     LastWindowHeight: cint; static;
     property Anchors: TAnchors read FAnchors write FAnchors;
@@ -113,9 +119,9 @@ begin
   if TheOwner <> nil then begin
     SetLength(TheOwner.ComponentList, Length(TheOwner.ComponentList) + 1);
     TheOwner.ComponentList[Length(TheOwner.ComponentList) - 1] := Self;
-    dis := TheOwner.dis;
+//    dis := TheOwner.dis;
     win := TheOwner.win;
-    gc := TheOwner.gc;
+//    gc := TheOwner.gc;
     str(Length(TheOwner.ComponentList), s);
     FName += s;
   end;
@@ -128,7 +134,7 @@ begin
   XDestroyRegion(Region);
   for i := 0 to Length(ComponentList) - 1 do begin
     if ComponentList[i] <> nil then  begin
-//      ComponentList[i].Free;
+      ComponentList[i].Free;
     end;
   end;
   inherited Destroy;
@@ -215,9 +221,9 @@ begin
   //  if LastWindowWidth <> AWidth then begin
   mody := True;
   d := AWidth - LastWindowWidth;
-  WriteLn('AWidth ', AWidth);
-  WriteLn('LastWindowWidth ', LastWindowWidth);
-  WriteLn('d ', d);
+  //WriteLn('AWidth ', AWidth);
+//  WriteLn('LastWindowWidth ', LastWindowWidth);
+//  WriteLn('d ', d);
   if akRight in Anchors then begin
     if akLeft in Anchors then begin
       FWidth := FWidth + d;

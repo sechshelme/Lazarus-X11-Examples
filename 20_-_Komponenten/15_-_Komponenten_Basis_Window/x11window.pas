@@ -14,7 +14,6 @@ type
 
   TX11Window = class(TX11Component)
   private
-    scr: cint;
   public
     AppClose: boolean; static;
     constructor Create(TheOwner: TX11Component);
@@ -29,26 +28,18 @@ constructor TX11Window.Create(TheOwner: TX11Component);
 begin
   inherited Create(TheOwner);
 
-  // Erstellt die Verbindung zum Server
-  dis := XOpenDisplay(nil);
-  if dis = nil then begin
-    WriteLn('Kann nicht das Display öffnen');
-    Halt(1);
-  end;
-  scr := DefaultScreen(dis);
-  gc := DefaultGC(dis, scr);
-
   // Erstellt das Fenster
   LastWindowWidth := 640;
   LastWindowHeight := 480;
   Width := LastWindowWidth;
   Height := LastWindowHeight;
 
-  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, LastWindowWidth, LastWindowHeight, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+RootWin:=  RootWindow(dis, scr);
+  win := XCreateSimpleWindow(dis,RootWin , 10, 10, LastWindowWidth, LastWindowHeight, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
   // Wählt die gewünschten Ereignisse aus
   // Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.
-  XSelectInput(dis, win, KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or SubstructureNotifyMask or StructureNotifyMask or PointerMotionMask);
+  XSelectInput(dis, win, EventMask);
 
   // Fenster anzeigen
   XMapWindow(dis, win);
