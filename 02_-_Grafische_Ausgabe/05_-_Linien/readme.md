@@ -5,8 +5,6 @@
 
 Verschiedene Varinaten um Linien zu zeichnen:
 
-- [XDrawLine](https://tronche.com/gui/x/xlib/graphics/drawing/XDrawLine.html)
-
 ---
 
 ```pascal

@@ -1,5 +1,5 @@
 # 02 - Grafische Ausgabe
-## 10 - Rechtecke und Polygone
+## 11 - Rechtecke Style
 
 ![image.png](image.png)
 
@@ -90,6 +90,9 @@ type
           // Ein Rechteck zeichnen
           XDrawRectangle(dis, win, gc, 10, 50, 50, 50);
           // Einen rechteckigen Bereich mit Farbe füllen
+          XSetLineAttributes(dis,gc,3,LineDoubleDash,CapNotLast,JoinBevel);
+          XSetFillStyle(dis,gc,FillStippled);
+
           XFillRectangle(dis, win, gc, 110, 50, 50, 50);
 
           // Ein Polygon

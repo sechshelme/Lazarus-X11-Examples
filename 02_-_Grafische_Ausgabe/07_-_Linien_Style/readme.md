@@ -1,11 +1,9 @@
 # 02 - Grafische Ausgabe
-## 05 - Linien
+## 07 - Linien Style
 
 ![image.png](image.png)
 
 Verschiedene Varinaten um Linien zu zeichnen:
-
-- [XDrawLine](https://tronche.com/gui/x/xlib/graphics/drawing/XDrawLine.html)
 
 ---
 
@@ -87,10 +85,13 @@ type
           // Bildschirm löschen
           XClearWindow(dis, win);
 
+          XSetLineAttributes(dis,gc,10,LineSolid,CapButt,JoinBevel);
+
           // Eine einfache Linie
           XDrawLine(dis, win, gc, 10, 60, 110, 160);
 
           // Ein Linien-Array
+          XSetLineAttributes(dis,gc,3,LineDoubleDash,CapNotLast,JoinBevel);
           XDrawLines(dis, win, gc, @Points, Length(Points) - 1, 0);
         end;
         KeyPress: begin

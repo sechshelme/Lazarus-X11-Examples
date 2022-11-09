@@ -1,5 +1,5 @@
 # 01 - Einfuehrung
-## 03 - Erstes Fenster
+## 15 - Fenster im Fenster Vwersuche
 
 ![image.png](image.png)
 
@@ -22,9 +22,12 @@ uses
 
 var
   dis: PDisplay;
-  win: TWindow;
+  win, Subwin1, Subwin2, rw: TWindow;
   Event: TXEvent;
   scr: cint;
+  gc: TGC;
+  i: integer;
+  t: PXTextProperty;
 
 begin
   // Erstellt die Verbindung zum Server
@@ -34,22 +37,70 @@ begin
     Halt(1);
   end;
   scr := DefaultScreen(dis);
+  gc := DefaultGC(dis, scr);
+  WriteLn(scr);
+
+  rw:=RootWindow(dis, scr);
 
   // Erstellt das Fenster
-  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  win := XCreateSimpleWindow(dis, rw, 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
+  Subwin1 := XCreateSimpleWindow(dis, win, 100, 100, 320, 240, 10, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  Subwin2 := XCreateSimpleWindow(dis, win, 250, 100, 320, 240, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
+      XSetWindowBorderWidth(dis, Subwin2, 15);
+      XSetStandardProperties(dis,win,'Hello','1234',0,nil,0,nil);
   // Wählt die gewünschten Ereignisse aus
   // Es wird nur das Tastendrückereigniss **KeyPressMask** gebraucht.
-  XSelectInput(dis, win, KeyPressMask);
+  XSelectInput(dis, win, KeyPressMask or ExposureMask or PointerMotionMask);
+  XSelectInput(dis, Subwin1, KeyPressMask or ExposureMask or PointerMotionMask);
+  XSelectInput(dis, Subwin2, KeyPressMask or ExposureMask or PointerMotionMask);
 
   // Fenster anzeigen
   XMapWindow(dis, win);
+  XMapWindow(dis, Subwin1);
+  XMapWindow(dis, Subwin2);
+
+  i:=XDisplayHeight(dis, scr);
+  WriteLn( i);
+  i:=XDisplayWidth(dis, scr);
+  WriteLn( i);
+  i:=XDefaultDepth(dis, scr);
+  WriteLn( i);
+  i:=XDisplayCells(dis, scr);
+  WriteLn( i);
+
 
   // Ereignisschleife
   while (True) do begin
     XNextEvent(dis, @Event);
 
     case Event._type of
+      Expose: begin
+        XClearWindow(dis, Subwin1);
+        for i := 0 to 100 do begin
+          XSetForeground(dis, gc, $FF);
+          XDrawArc(dis, win, gc, random(500) - 200, random(500) - 200, 150, 150, 0, 360 * 64);
+
+          XSetForeground(dis, gc, $FF shl 8);
+          XDrawArc(dis, Subwin1, gc, random(500) - 200, random(500) - 200, 150, 150, 0, 360 * 64);
+
+          XSetForeground(dis, gc, $FF shl 16);
+          XDrawArc(dis, Subwin2, gc, random(500) - 200, random(500) - 200, 150, 150, 0, 360 * 64);
+        end;
+      end;
+      MotionNotify: begin
+
+        if Event.xbutton.window = win then begin
+          WriteLn('root');
+        end;
+        if Event.xbutton.window = Subwin1 then begin
+          WriteLn('Sub1');
+        end;
+        if Event.xbutton.window = Subwin2 then begin
+          WriteLn('Sub2');
+        end;
+      end;
+
       KeyPress: begin
         // Beendet das Programm bei [ESC]
         if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin

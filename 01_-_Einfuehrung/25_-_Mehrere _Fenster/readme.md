@@ -1,5 +1,5 @@
 # 01 - Einfuehrung
-## 03 - Erstes Fenster
+## 25 - Mehrere  Fenster
 
 ![image.png](image.png)
 
@@ -22,7 +22,7 @@ uses
 
 var
   dis: PDisplay;
-  win: TWindow;
+  win1,win2 :TWindow;
   Event: TXEvent;
   scr: cint;
 
@@ -36,20 +36,27 @@ begin
   scr := DefaultScreen(dis);
 
   // Erstellt das Fenster
-  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  win1 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+//  win2 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  win2 := XCreateSimpleWindow(dis, win1, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
   // Wählt die gewünschten Ereignisse aus
   // Es wird nur das Tastendrückereigniss **KeyPressMask** gebraucht.
-  XSelectInput(dis, win, KeyPressMask);
+  XSelectInput(dis, win1, KeyPressMask or ExposureMask);
+  XSelectInput(dis, win2, KeyPressMask or ExposureMask);
 
   // Fenster anzeigen
-  XMapWindow(dis, win);
+  XMapWindow(dis, win1);
+  XMapWindow(dis, win2);
 
   // Ereignisschleife
   while (True) do begin
     XNextEvent(dis, @Event);
 
     case Event._type of
+      Expose:begin
+//        XSetForeground(dis, gc, Random(Random($FF));
+        end;
       KeyPress: begin
         // Beendet das Programm bei [ESC]
         if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin

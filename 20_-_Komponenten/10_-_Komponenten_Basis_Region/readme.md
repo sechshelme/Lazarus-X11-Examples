@@ -1,5 +1,5 @@
 # 20 - Komponenten
-## 10 - Komponenten Basis
+## 10 - Komponenten Basis Region
 
 ![image.png](image.png)
 
@@ -15,6 +15,7 @@ Verschiedene Varinaten um Rechtecke zu zeichnen:
 program Project1;
 
 uses
+  heaptrc,
   unixtype,
   ctypes,
   xlib,
@@ -32,15 +33,15 @@ type
 
   TMyWin = class(TX11Window)
   private
-    Panel, PanelSub: TX11Panel;
+    Panel, PanelSub1, PanelSub2: TX11Panel;
     Button: array[0..3] of TX11Button;
     CloseButton: TX11Button;
     procedure ButtonClick(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
     procedure CloseButtonMouseMove(Sender: TObject; X, Y: integer);
-    protected
-      procedure DoOnPaint; override;
-      procedure DoOnEventHandle(Event: TXEvent); override;
+  protected
+    procedure DoOnPaint; override;
+    procedure DoOnEventHandle(var Event: TXEvent); override;
   public
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
@@ -73,31 +74,46 @@ var
   begin
     inherited Create(TheOwner);
 
+    Color := $999999;
+
     Panel := TX11Panel.Create(Self);
     with Panel do begin
-      Color := $444444;
       Left := 10;
       Top := 10;
+      Width := 530;
       Height := 100;
-      Width := 330;
-//      Anchors:=[akTop,akLeft, akRight, akBottom];
+      BorderWidth := 4;
+      Anchors := [akRight, akBottom];
+      Anchors := [akTop, akLeft, akRight, akBottom];
     end;
 
-    PanelSub := TX11Panel.Create(Panel);
-    with PanelSub do begin
+    PanelSub1 := TX11Panel.Create(Panel);
+    with PanelSub1 do begin
       Color := $999999;
       Left := 10;
       Top := 10;
-      Height := 50;
-      Width := 1310;
-//                  Anchors:=[akTop,akLeft, akRight, akBottom];
+      Width := 370;
+      Height := Panel.Height - 20;
+      Bevel := bvLowred;
+      //                  Anchors:=[akTop,akLeft, akRight, akBottom];
+    end;
+
+    PanelSub2 := TX11Panel.Create(Panel);
+    with PanelSub2 do begin
+      Color := $999999;
+      Left := 390;
+      Top := 10;
+      Width := Panel.Width - PanelSub1.Width - 30;
+      Height := Panel.Height - 20;
+      Bevel := bvLowred;
+      //      Anchors := [akTop, akLeft, akRight];
     end;
 
     for i := 0 to Length(Button) - 1 do begin
-      Button[i] := TX11Button.Create(PanelSub);
+      Button[i] := TX11Button.Create(PanelSub1);
       Button[i].Width := 80;
-      Button[i].Left := 5 + i * (Button[0].Width + 5);
-      Button[i].Top := 5;
+      Button[i].Left := 10 + i * (Button[0].Width + 5);
+      Button[i].Top := 10;
 
       str(i, s);
       Button[i].Caption := 'Button' + s;
@@ -115,7 +131,7 @@ var
       Width := 60;
       Height := 25;
       Anchors := [akRight, akBottom];
-//            Anchors:=[akTop,akLeft, akRight, akBottom];
+      //            Anchors:=[akTop,akLeft, akRight, akBottom];
       Caption := 'Close';
       OnClick := @CloseButtonClick;
       OnMouseMove := @CloseButtonMouseMove;
@@ -126,12 +142,12 @@ var
   var
     i: integer;
   begin
-    for i := 0 to Length(Button) - 1 do begin
-      Button[i].Free;
-    end;
-    PanelSub.Free;
-    Panel.Free;
-    CloseButton.Free;
+    //for i := 0 to Length(Button) - 1 do begin
+    //  Button[i].Free;
+    //end;
+    //PanelSub1.Free;
+    //Panel.Free;
+    //CloseButton.Free;
     inherited Destroy;
   end;
 
@@ -141,26 +157,15 @@ var
   var
     punkte: array[0..maxSektoren] of TXPoint;
     i: integer;
-    //      Region2: TRegion;
-    //    Rect: TXRectangle;
   begin
     inherited DoOnPaint;
-    color := $FF00;
-    //Region2 := XCreateRegion;
-    //Rect.x := 0;
-    //Rect.y := 0;
-    //Rect.Width := Width;
-    //Rect.Height := Height;
-    //XUnionRectWithRegion(@Rect, Region2, Region2);
     XSetRegion(dis, gc, Region);
-    //XDestroyRegion(Region2);
 
     for i := 0 to maxSektoren - 1 do begin
       punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 250;
       punkte[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 220;
     end;
 
-    //      XClearWindow(dis, win);
     // Ein Rechteck zeichnen
     XSetForeground(dis, gc, $FF00FF);
     XDrawRectangle(dis, win, gc, 10, 150, 50, 50);
@@ -171,7 +176,7 @@ var
     XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
   end;
 
-  procedure TMyWin.DoOnEventHandle(Event: TXEvent);
+  procedure TMyWin.DoOnEventHandle(var Event: TXEvent);
   begin
     inherited DoOnEventHandle(Event);
     case Event._type of
@@ -183,10 +188,29 @@ var
     end;
   end;
 
+//  PROCEDURE THeapView.Update;
+//var
+//  status : TFPCHeapStatus;
+//BEGIN
+//   status:=GetFPCHeapStatus;
+//   If (OldMem <> status.CurrHeapUsed) Then Begin                 { Memory differs }
+//     OldMem := status.CurrHeapUsed;                              { Hold memory avail }
+//     DrawView;                                        { Now redraw }
+//   End;
+//END;
+
+var
+  status : TFPCHeapStatus;
+
 begin
+  status:=GetFPCHeapStatus;
+  WriteLn('Heap:', status.CurrHeapFree);
+
   MyWindows := TMyWin.Create(nil);
+  WriteLn('Heap:', status.CurrHeapSize);
   MyWindows.Run;
   MyWindows.Free;
+  WriteLn('Heap:', status.CurrHeapSize);
 end.
 ```
 

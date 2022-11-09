@@ -1,5 +1,5 @@
-# 06 - Regionen
-## 30 - Rechteckige Regionen
+# 02 - Grafische Ausgabe
+## 35 - Bereich kopieren
 
 ![image.png](image.png)
 
@@ -66,8 +66,6 @@ type
   procedure TMyWin.Run;
   var
     Event: TXEvent;
-    Region: TRegion;
-    r: TXRectangle;
     i: integer;
 
     function Rect(Left, Top, Width, Height: cshort): TXRectangle;
@@ -87,34 +85,16 @@ type
         Expose: begin
           XClearWindow(dis, win);
 
-          Region := XCreateRegion;
-
-          // -- Mehrere Rechtecke addieren sich
-          // 1. Region
-          r := Rect(10, 10, 100, 100);
-          XUnionRectWithRegion(@r, Region, Region);
-
-          // 2. Region
-          r := Rect(115, 10, 100, 100);
-          XUnionRectWithRegion(@r, Region, Region);
-
-          // 3. Region
-          r := Rect(10, 115, 100, 100);
-          XUnionRectWithRegion(@r, Region, Region);
-
-          // 4. Region
-          r := Rect(115, 115, 100, 100);
-          XUnionRectWithRegion(@r, Region, Region);
-
-          // Region in Display
-          XSetRegion(dis, gc, Region);
-          XDestroyRegion(Region);
-
           // Kreise zeichnen
-          for i := 0 to 1000 do begin
-            XSetForeground(dis, gc, Random( $FFFFFF));
-            XDrawArc(dis, win, gc, random(500)-200, random(500)-200, 150, 150, 0, 360 * 64);
+          for i := 0 to 20 do begin
+            XSetForeground(dis, gc, Random($FFFFFF));
+            XDrawArc(dis, win, gc, random(500) - 200, random(500) - 200, 150, 150, 0, 360 * 64);
+            XDrawRectangle(dis, win, gc, 10, 10, 100, 100);
+            XDrawRectangle(dis, win, gc, 150, 10, 100, 100);
           end;
+
+          // Bereich kopieren
+          XCopyArea(dis, win, win, gc, 10, 10, 100, 100, 150, 10);
 
         end;
         KeyPress: begin

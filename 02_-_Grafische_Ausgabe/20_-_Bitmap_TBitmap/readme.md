@@ -1,5 +1,5 @@
 # 02 - Grafische Ausgabe
-## 15 - Kreise
+## 20 - Bitmap TBitmap
 
 ![image.png](image.png)
 
@@ -14,6 +14,7 @@ Kreise und Elipsen zeichnen:
 program Project1;
 
 uses
+  Graphics,
   unixtype,
   ctypes,
   xlib,
@@ -22,20 +23,32 @@ uses
   x;
 
 type
+
   TMyWin = class(TObject)
   private
     dis: PDisplay;
     scr: cint;
     win: TWindow;
     gc: TGC;
+    visual: PVisual;
+    image: PXImage;
+    Bitmap: TBitmap;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Run;
   end;
 
+
   constructor TMyWin.Create;
+  var
+    x, y: integer;
+    p: PChar;
+
   begin
+    Bitmap := TBitmap.Create;
+    Bitmap.LoadFromFile('X11.bmp');
+
     inherited Create;
 
     // Erstellt die Verbindung zum Server
@@ -46,15 +59,19 @@ type
     end;
     scr := DefaultScreen(dis);
     gc := DefaultGC(dis, scr);
+    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
-    // Erstellt das Fenster
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    visual := DefaultVisual(dis, scr);
+    if visual^.c_class <> TrueColor then begin
+      WriteLn('Kein TrueColor Modus');
+      Halt(1);
+    end;
 
-    // Wählt die gewünschten Ereignisse aus
-    // Es werden die Ereignisse **KeyPressMask** und **ExposureMask** für die grafische Auzsgabe gebraucht.
+    with Bitmap do begin
+      image := XCreateImage(dis, visual, DefaultDepth(dis, scr), ZPixmap, 0, PChar(RawImage.Data), Width, Height, 32, 0);
+    end;
+
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
-
-    // Fenster anzeigen
     XMapWindow(dis, win);
   end;
 
@@ -62,6 +79,7 @@ type
   begin
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
+    Bitmap.Free;
     inherited Destroy;
   end;
 
@@ -76,19 +94,7 @@ type
       case Event._type of
         Expose: begin
           XClearWindow(dis, win);
-
-          // Einen Kreis zeichnen
-          XDrawArc(dis, win, gc, 10, 30, 50, 50, 0, 360 * 64);
-          // Einen Kreisbereich füllen
-          XFillArc(dis, win, gc, 110, 30, 50, 50, 0, 360 * 64);
-          // Eine Ellipse zeichnen
-          XDrawArc(dis, win, gc, 60, 90, 60, 40, 0, 360 * 64);
-          // Einen Ellipsenbereich füllen
-          XFillArc(dis, win, gc, 160, 90, 60, 40, 0, 360 * 64);
-          // Einen Halbkreis zeichnen
-          XDrawArc(dis, win, gc, 110, 150, 60, 40, 90 * 64, 180 * 64);
-          // Einen Halbkreis füllen
-          XFillArc(dis, win, gc, 210, 150, 60, 40, 90 * 64, 180 * 64);
+          XPutImage(dis, win, gc, image, 0, 0, 10, 10, Bitmap.Width, Bitmap.Height);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
