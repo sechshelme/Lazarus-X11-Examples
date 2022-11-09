@@ -11,6 +11,7 @@ Verschiedene Varinaten um Rechtecke zu zeichnen:
 program Project1;
 
 uses
+  heaptrc,
   unixtype,
   ctypes,
   xlib,
@@ -183,9 +184,28 @@ var
     end;
   end;
 
+//  PROCEDURE THeapView.Update;
+//var
+//  status : TFPCHeapStatus;
+//BEGIN
+//   status:=GetFPCHeapStatus;
+//   If (OldMem <> status.CurrHeapUsed) Then Begin                 { Memory differs }
+//     OldMem := status.CurrHeapUsed;                              { Hold memory avail }
+//     DrawView;                                        { Now redraw }
+//   End;
+//END;
+
+var
+  status : TFPCHeapStatus;
+
 begin
+  status:=GetFPCHeapStatus;
+  WriteLn('Heap:', status.CurrHeapFree);
+
   MyWindows := TMyWin.Create(nil);
+  WriteLn('Heap:', status.CurrHeapSize);
   MyWindows.Run;
   MyWindows.Free;
+  WriteLn('Heap:', status.CurrHeapSize);
 end.
 //code-
