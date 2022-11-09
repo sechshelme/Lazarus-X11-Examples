@@ -26,30 +26,19 @@ implementation
 
 constructor TX11Window.Create(TheOwner: TX11Component);
 begin
-  inherited Create(TheOwner);
 
   // Erstellt das Fenster
   LastWindowWidth := 640;
   LastWindowHeight := 480;
   Width := LastWindowWidth;
   Height := LastWindowHeight;
-
-RootWin:=  RootWindow(dis, scr);
-  win := XCreateSimpleWindow(dis,RootWin , 10, 10, LastWindowWidth, LastWindowHeight, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-
-  // Wählt die gewünschten Ereignisse aus
-  // Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.
-  XSelectInput(dis, win, EventMask);
-
-  // Fenster anzeigen
-  XMapWindow(dis, win);
   Anchors := [akTop, akLeft, akRight, akBottom];
+  inherited Create(TheOwner);
+
 end;
 
 destructor TX11Window.Destroy;
 begin
-  // Schliesst Verbindung zum Server
-  XCloseDisplay(dis);
   inherited Destroy;
 end;
 

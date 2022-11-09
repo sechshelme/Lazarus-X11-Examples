@@ -29,12 +29,14 @@ begin
   end;
   scr := DefaultScreen(dis);
   gc := DefaultGC(dis, scr);
+  RootWin:=  RootWindow(dis, scr);
 
   inherited Create(TheOwner);
 end;
 
 destructor TX11Desktop.Destroy;
 begin
+  XCloseDisplay(dis);
   inherited Destroy;
 end;
 

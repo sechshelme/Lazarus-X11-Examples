@@ -8,7 +8,7 @@ uses
   unixtype, ctypes, xlib, xutil, keysym, x;
 
 const
-  EventMask=KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or SubstructureNotifyMask or StructureNotifyMask or PointerMotionMask;
+  EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or SubstructureNotifyMask or StructureNotifyMask or PointerMotionMask;
 
 type
 
@@ -38,8 +38,8 @@ type
     win: TDrawable;
     dis: PDisplay; static;
     scr: cint; static;
-    RootWin:TWindow;static;
-    gc: TGC;       static;
+    RootWin: TWindow; static;
+    gc: TGC; static;
 
     IsMouseDown, IsButtonDown: boolean;
     Region: TRegion;
@@ -119,12 +119,19 @@ begin
   if TheOwner <> nil then begin
     SetLength(TheOwner.ComponentList, Length(TheOwner.ComponentList) + 1);
     TheOwner.ComponentList[Length(TheOwner.ComponentList) - 1] := Self;
-//    dis := TheOwner.dis;
-    win := TheOwner.win;
-//    gc := TheOwner.gc;
     str(Length(TheOwner.ComponentList), s);
     FName += s;
+    win := XCreateSimpleWindow(dis, TheOwner.win, 10, 10, LastWindowWidth, LastWindowHeight, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  end else begin
+    win := XCreateSimpleWindow(dis, RootWin, 10, 10, LastWindowWidth, LastWindowHeight, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
   end;
+
+  // Wählt die gewünschten Ereignisse aus
+  XSelectInput(dis, win, EventMask);
+
+  // Fenster anzeigen
+  XMapWindow(dis, win);
+
 end;
 
 destructor TX11Component.Destroy;
@@ -137,6 +144,7 @@ begin
       ComponentList[i].Free;
     end;
   end;
+
   inherited Destroy;
 end;
 
@@ -222,8 +230,8 @@ begin
   mody := True;
   d := AWidth - LastWindowWidth;
   //WriteLn('AWidth ', AWidth);
-//  WriteLn('LastWindowWidth ', LastWindowWidth);
-//  WriteLn('d ', d);
+  //  WriteLn('LastWindowWidth ', LastWindowWidth);
+  //  WriteLn('d ', d);
   if akRight in Anchors then begin
     if akLeft in Anchors then begin
       FWidth := FWidth + d;
