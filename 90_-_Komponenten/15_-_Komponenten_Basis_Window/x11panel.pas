@@ -55,7 +55,7 @@ var
 
 begin
   XSetForeground(dis, gc, Color);
-  XFillRectangle(dis, win, gc, 0, 0, Width, Height);
+  XFillRectangle(dis, Window, gc, 0, 0, Width, Height);
   inherited DoOnPaint;
 
   if Bevel <> bvNone then begin
@@ -70,7 +70,7 @@ begin
     poly[3] := p(BorderWidth, BorderWidth);
     poly[4] := p(BorderWidth, Height - BorderWidth + 1);
     poly[5] := p(0, Height - 1);
-    XFillPolygon(dis, win, gc, @poly, Length(poly), 0, CoordModeOrigin);
+    XFillPolygon(dis, Window, gc, @poly, Length(poly), 0, CoordModeOrigin);
 
     if Bevel = bvRaised then begin
       XSetForeground(dis, gc, ColRightBottom);
@@ -83,7 +83,7 @@ begin
     poly[3] := p(BorderWidth + 1, Height - BorderWidth);
     poly[4] := p(Width - BorderWidth, Height - BorderWidth);
     poly[5] := p(Width - BorderWidth, BorderWidth + 1);
-    XFillPolygon(dis, win, gc, @poly, Length(poly), 0, CoordModeOrigin);
+    XFillPolygon(dis, Window, gc, @poly, Length(poly), 0, CoordModeOrigin);
   end;
 end;
 

@@ -47,11 +47,11 @@ begin
   inherited DoOnPaint;
 
   XSetForeground(dis, gc, $00);
-  XDrawRectangle(dis, win, gc, 0, 0, Width - 1, Height - 1);
+  XDrawRectangle(dis, Window, gc, 0, 0, Width - 1, Height - 1);
   if IsButtonDown then begin
-    XDrawString(dis, win, gc, 8 + BorderWidth, 15 + BorderWidth, PChar(Caption), Length(Caption));
+    XDrawString(dis, Window, gc, 8 + BorderWidth, 15 + BorderWidth, PChar(Caption), Length(Caption));
   end else begin
-    XDrawString(dis, win, gc, 7 + BorderWidth, 14 + BorderWidth, PChar(Caption), Length(Caption));
+    XDrawString(dis, Window, gc, 7 + BorderWidth, 14 + BorderWidth, PChar(Caption), Length(Caption));
   end;
 end;
 

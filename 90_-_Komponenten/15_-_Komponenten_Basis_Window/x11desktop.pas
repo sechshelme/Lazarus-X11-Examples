@@ -10,9 +10,12 @@ uses
 
 type
 
+  { TX11Desktop }
+
   TX11Desktop = class(TX11Window)
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
+    procedure DoOnEventHandle(var Event: TXEvent); override;
   end;
 
 implementation
@@ -29,7 +32,7 @@ begin
   end;
   scr := DefaultScreen(dis);
   gc := DefaultGC(dis, scr);
-  RootWin:=  RootWindow(dis, scr);
+  RootWin := RootWindow(dis, scr);
 
   inherited Create(TheOwner);
 end;
@@ -38,6 +41,25 @@ destructor TX11Desktop.Destroy;
 begin
   XCloseDisplay(dis);
   inherited Destroy;
+end;
+
+procedure TX11Desktop.DoOnEventHandle(var Event: TXEvent);
+var
+  i: integer;
+begin
+  case Event._type of
+    DestroyNotify: begin
+      WriteLn(Event.xbutton.window);;
+      for i := 0 to Length(ComponentList) - 1 do begin
+        if Event.xbutton.window = ComponentList[i].Window then begin
+          ComponentList[i].Free;
+          WriteLn('gefunden');
+          Break;
+        end;
+      end;
+    end;
+  end;
+  inherited DoOnEventHandle(Event);
 end;
 
 end.

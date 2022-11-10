@@ -25,10 +25,10 @@ type
     FCaption: string;
     FColor: culong;
     FHeight, FLeft, FTop, FWidth, FWindowBorderWidth: cint;
+    FWindow: TDrawable;
     FOnMouseMove: TMouseMoveEvent;
     FName: string;
     FParent: TX11Component;
-    ComponentList: array of TX11Component;
     FOnClick: TNotifyEvent;
     procedure SetCaption(AValue: string);
     procedure SetColor(AColor: culong);
@@ -38,7 +38,6 @@ type
     procedure SetLeft(ALeft: cint);
     procedure SetWidth(AWidth: cint);
   protected
-    win: TDrawable;
     dis: PDisplay; static;
     scr: cint; static;
     RootWin: TWindow; static;
@@ -49,6 +48,8 @@ type
     procedure DoOnPaint; virtual;
     procedure DoOnResize(AWidth, AHeight: cint); virtual;
   public
+    ComponentList: array of TX11Component;
+    property Window: TDrawable read FWindow;
     property Anchors: TAnchors read FAnchors write FAnchors;
     property Name: string read FName write FName;
     property Parent: TX11Component read FParent write FParent;
@@ -63,6 +64,7 @@ type
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     constructor Create(TheOwner: TX11Component; NewWindow: boolean = False);
     destructor Destroy; override;
+    procedure Close;
   end;
 
 implementation
@@ -73,7 +75,7 @@ procedure TX11Component.SetTop(ATop: cint);
 begin
   if FTop <> ATop then begin
     FTop := ATop;
-    XMoveWindow(dis, win, FLeft, FTop);
+    XMoveWindow(dis, Window, FLeft, FTop);
   end;
 end;
 
@@ -81,7 +83,7 @@ procedure TX11Component.SetHeight(AHeight: cint);
 begin
   if FHeight <> AHeight then begin
     FHeight := AHeight;
-    XMoveResizeWindow(dis, win, FLeft, FTop, FWidth, FHeight);
+    XMoveResizeWindow(dis, Window, FLeft, FTop, FWidth, FHeight);
   end;
 end;
 
@@ -89,7 +91,7 @@ procedure TX11Component.SetLeft(ALeft: cint);
 begin
   if FLeft <> ALeft then begin
     FLeft := ALeft;
-    XMoveWindow(dis, win, FLeft, FTop);
+    XMoveWindow(dis, Window, FLeft, FTop);
   end;
 end;
 
@@ -97,7 +99,7 @@ procedure TX11Component.SetWidth(AWidth: cint);
 begin
   if FWidth <> AWidth then begin
     FWidth := AWidth;
-    XMoveResizeWindow(dis, win, FLeft, FTop, FWidth, FHeight);
+    XMoveResizeWindow(dis, Window, FLeft, FTop, FWidth, FHeight);
   end;
 end;
 
@@ -105,14 +107,14 @@ procedure TX11Component.SetWindowBorderWidth(AWindowBorderWidth: cint);
 begin
   if FWindowBorderWidth <> AWindowBorderWidth then begin
     FWindowBorderWidth := AWindowBorderWidth;
-    XSetWindowBorder(dis,win, FWindowBorderWidth);
+    XSetWindowBorder(dis, Window, FWindowBorderWidth);
   end;
 end;
 
 procedure TX11Component.SetCaption(AValue: string);
 begin
   if FCaption <> AValue then begin
-    XStoreName(dis, win, PChar(AValue));
+    XStoreName(dis, Window, PChar(AValue));
     FCaption := AValue;
   end;
 end;
@@ -121,13 +123,14 @@ procedure TX11Component.SetColor(AColor: culong);
 begin
   if FColor <> AColor then begin
     FColor := AColor;
-    XSetBackground(dis,gc,AColor);
+    XSetBackground(dis, gc, AColor);
   end;
 end;
 
 constructor TX11Component.Create(TheOwner: TX11Component; NewWindow: boolean);
 var
   s: string;
+  size_hints: TXSizeHints;
 begin
   inherited Create;
 
@@ -150,22 +153,34 @@ begin
     str(Length(TheOwner.ComponentList), s);
     FName += s;
     if NewWindow then begin
-      win := XCreateSimpleWindow(dis, RootWin, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
+      FWindow := XCreateSimpleWindow(dis, RootWin, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
     end else begin
-      win := XCreateSimpleWindow(dis, TheOwner.win, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
+      FWindow := XCreateSimpleWindow(dis, TheOwner.Window, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
     end;
   end else begin
-    win := XCreateSimpleWindow(dis, RootWin, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    FWindow := XCreateSimpleWindow(dis, RootWin, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
   end;
-  XStoreName(dis, win, 'none');
-  XSetBackground(dis,gc,$FF);
-  XSetForeground(dis,gc,$FF00);
+  with  size_hints do begin
+    flags := PSize or PMinSize or PMaxSize;
+    //    flags:=0;
+    min_width := FWidth;
+    max_width := FWidth;
+    min_height := FHeight;
+    max_height := FHeight;
+    x := 300;
+    y := 200;
+  end;
+  XSetStandardProperties(dis, Window, 'none', 'none', None, nil, 0, @size_hints);
+
+  XStoreName(dis, Window, 'none');
+  XSetBackground(dis, gc, $FF);
+  XSetForeground(dis, gc, $FF00);
 
   // Wählt die gewünschten Ereignisse aus
-  XSelectInput(dis, win, EventMask);
+  XSelectInput(dis, Window, EventMask);
 
   // Fenster anzeigen
-  XMapWindow(dis, win);
+  XMapWindow(dis, Window);
 end;
 
 destructor TX11Component.Destroy;
@@ -173,12 +188,33 @@ var
   i: integer;
 begin
   for i := 0 to Length(ComponentList) - 1 do begin
-    if ComponentList[i] <> nil then  begin
-      ComponentList[i].Free;
+    if ComponentList[0] <> nil then  begin
+      ComponentList[0].Free;
+    end;
+  end;
+  SetLength(ComponentList, 0);
+  if Parent <> nil then begin
+    for i := 0 to Length(Parent.ComponentList) - 1 do begin
+      if Parent.ComponentList[i] = self then begin
+        WriteLn('delete');
+        Delete(Parent.ComponentList, i, 1);
+        Break;
+      end;
     end;
   end;
 
+  XDestroyWindow(dis, FWindow);
+
   inherited Destroy;
+end;
+
+procedure TX11Component.Close;
+var
+  e: TXEvent;
+begin
+  e._type := DestroyNotify;
+  e.xbutton.window := Window;
+  XSendEvent(dis, Window, True, StructureNotifyMask, @e);
 end;
 
 procedure TX11Component.DoOnEventHandle(var Event: TXEvent);
@@ -208,7 +244,8 @@ begin
       end;
     end;
     ButtonPress: begin
-      if Event.xbutton.window = win then begin
+      XMapRaised(dis, Event.xbutton.window);
+      if Event.xbutton.window = Window then begin
         if IsInRegion then begin
           IsMouseDown := True;
           IsButtonDown := True;
@@ -220,7 +257,7 @@ begin
       end;
     end;
     MotionNotify: begin
-      if Event.xbutton.window = win then begin
+      if Event.xbutton.window = Window then begin
         if IsInRegion and (OnMouseMove <> nil) then begin
           OnMouseMove(self, x, y);
         end;
@@ -235,7 +272,7 @@ begin
       end;
     end;
     ButtonRelease: begin
-      if Event.xbutton.window = win then begin
+      if Event.xbutton.window = Window then begin
         if IsMouseDown and IsInRegion then begin
           if OnClick <> nil then begin
             OnClick(self);

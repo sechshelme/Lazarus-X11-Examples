@@ -18,7 +18,7 @@ uses
 
 var
   dis: PDisplay;
-  win, Subwin1, Subwin2, rw: TWindow;
+  win, Subwin1, Subwin2, SubWin3, rw: TWindow;
   Event: TXEvent;
   scr: cint;
   gc: TGC;
@@ -43,6 +43,7 @@ begin
 
   Subwin1 := XCreateSimpleWindow(dis, win, 100, 100, 320, 240, 10, BlackPixel(dis, scr), WhitePixel(dis, scr));
   Subwin2 := XCreateSimpleWindow(dis, win, 250, 100, 320, 240, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  Subwin3 := XCreateSimpleWindow(dis, win, 250, 150, 320, 240, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
       XSetWindowBorderWidth(dis, Subwin2, 15);
       XSetStandardProperties(dis,win,'Hello','1234',0,nil,0,nil);
      // XSetBackground(dis,gc,$FF);
@@ -51,11 +52,16 @@ begin
   XSelectInput(dis, win, KeyPressMask or ExposureMask or PointerMotionMask);
   XSelectInput(dis, Subwin1, KeyPressMask or ExposureMask or PointerMotionMask);
   XSelectInput(dis, Subwin2, KeyPressMask or ExposureMask or PointerMotionMask);
+  XSelectInput(dis, Subwin3, KeyPressMask or ExposureMask or PointerMotionMask);
 
   // Fenster anzeigen
   XMapWindow(dis, win);
   XMapWindow(dis, Subwin1);
   XMapWindow(dis, Subwin2);
+  XMapWindow(dis, Subwin3);
+
+  // 3. Fenster schliessen
+  XDestroyWindow(dis, SubWin3);
 
   i:=XDisplayHeight(dis, scr);
   WriteLn( i);

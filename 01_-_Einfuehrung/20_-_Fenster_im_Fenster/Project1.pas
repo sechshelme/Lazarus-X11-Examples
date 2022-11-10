@@ -24,6 +24,8 @@ var
   gc: TGC;
   i: integer;
 
+const EventMask=      KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask;
+
 begin
   // Erstellt die Verbindung zum Server
   dis := XOpenDisplay(nil);
@@ -45,9 +47,9 @@ begin
       XSetIconName(dis, win, 'Hakko');
   // Wählt die gewünschten Ereignisse aus
   // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
-  XSelectInput(dis, win, KeyPressMask or ExposureMask or PointerMotionMask);
-  XSelectInput(dis, Subwin1, KeyPressMask or ExposureMask or PointerMotionMask);
-  XSelectInput(dis, Subwin2, KeyPressMask or ExposureMask or PointerMotionMask);
+  XSelectInput(dis, win, EventMask);
+  XSelectInput(dis, Subwin1, EventMask);
+  XSelectInput(dis, Subwin2, EventMask);
 
   // Fenster anzeigen
   XMapWindow(dis, win);
@@ -83,6 +85,10 @@ begin
         if Event.xbutton.window = Subwin2 then begin
           WriteLn('Sub2');
         end;
+      end;
+      ButtonPress:begin
+        Write('press');
+        XRaiseWindow(dis, Event.xbutton.window);
       end;
 
       KeyPress: begin
