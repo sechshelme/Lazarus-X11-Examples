@@ -78,7 +78,6 @@ end;
     btn: TX11Button;
 
   begin
-
     Mywindow := TX11Window.Create(Self, True);
     btn := TX11Button.Create(Mywindow);
     with btn do begin

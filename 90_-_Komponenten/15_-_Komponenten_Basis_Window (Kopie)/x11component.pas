@@ -296,68 +296,37 @@ end;
 
 procedure TX11Component.DoOnResize(AWidth, AHeight: cint);
 var
-  dx, d: cint;
+  d: cint;
   mody: boolean;
-  i: Integer;
 begin
   mody := False;
 
+  //  if LastWindowWidth <> AWidth then begin
   mody := True;
-    dx := AWidth - FWidth;
+  //  d := AWidth - LastWindowWidth;
   //WriteLn('AWidth ', AWidth);
   //  WriteLn('LastWindowWidth ', LastWindowWidth);
-  //  WriteLn('d ', dx);
+  //  WriteLn('d ', d);
   if akRight in Anchors then begin
     if akLeft in Anchors then begin
-      FWidth := FWidth + dx;
+      FWidth := FWidth + d;
     end else begin
-      FLeft := FLeft + dx;
+      FLeft := FLeft + d;
     end;
   end;
   //  end;
 
+  //  if LastWindowHeight <> AHeight then begin
   mody := True;
-   dx := AHeight - FHeight;
+  //  d := AHeight - LastWindowHeight;
   if akBottom in Anchors then begin
     if akTop in Anchors then begin
-      FHeight := FHeight + dx;
+      FHeight := FHeight + d;
     end else begin
-      FTop := FTop + dx;
+      FTop := FTop + d;
     end;
   end;
-
-//  XSelectInput(dis, Window, NoEventMask);
-//  XMoveResizeWindow(dis, Window, FLeft, FTop, FWidth, FHeight);
-//  XSelectInput(dis, Window, EventMask);
-
-
-  //if FWidth <> AWidth then begin
-  //  d := AWidth - FWidth;
-  //  for i := 0 to Length(ComponentList) - 1 do begin
-  //    if akRight in ComponentList[i].Anchors then begin
-  //      if akLeft in ComponentList[i].Anchors then begin
-  //        ComponentList[i].Width := ComponentList[i].Width + d;
-  //      end else begin
-  //        ComponentList[i].Left := ComponentList[i].Left + d;
-  //      end;
-  //    end;
   //  end;
-  //  FWidth := AWidth;
-  //end;
-  //
-  //  if FHeight <> AHeight then begin
-  //  d := AHeight - FHeight;
-  //  for i := 0 to Length(ComponentList) - 1 do begin
-  //    if akBottom in ComponentList[i].Anchors then begin
-  //      if akTop in ComponentList[i].Anchors then begin
-  //        ComponentList[i].Height := ComponentList[i].Height + d;
-  //      end else begin
-  //        ComponentList[i].Top := ComponentList[i].Top + d;
-  //      end;
-  //    end;
-  //  end;
-  //  FHeight := AHeight;
-  //end;
 
   if mody then begin
     DoOnPaint;
