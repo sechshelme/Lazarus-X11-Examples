@@ -45,6 +45,7 @@ begin
   Subwin2 := XCreateSimpleWindow(dis, win, 250, 100, 320, 240, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
       XSetWindowBorderWidth(dis, Subwin2, 15);
       XSetStandardProperties(dis,win,'Hello','1234',0,nil,0,nil);
+     // XSetBackground(dis,gc,$FF);
   // Wählt die gewünschten Ereignisse aus
   // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
   XSelectInput(dis, win, KeyPressMask or ExposureMask or PointerMotionMask);
