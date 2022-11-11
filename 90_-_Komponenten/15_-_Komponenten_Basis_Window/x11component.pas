@@ -296,7 +296,7 @@ end;
 
 procedure TX11Component.DoOnResize(AWidth, AHeight: cint);
 var
-  dx, d: cint;
+  dx, dy: cint;
   mody: boolean;
   i: Integer;
 begin
@@ -307,57 +307,65 @@ begin
   //WriteLn('AWidth ', AWidth);
   //  WriteLn('LastWindowWidth ', LastWindowWidth);
   //  WriteLn('d ', dx);
-  if akRight in Anchors then begin
-    if akLeft in Anchors then begin
-      FWidth := FWidth + dx;
-    end else begin
-      FLeft := FLeft + dx;
-    end;
-  end;
+  //if akRight in Anchors then begin
+  //  if akLeft in Anchors then begin
+  //    FWidth := FWidth + dx;
+  //  end else begin
+  //    FLeft := FLeft + dx;
   //  end;
-
-  mody := True;
-   dx := AHeight - FHeight;
-  if akBottom in Anchors then begin
-    if akTop in Anchors then begin
-      FHeight := FHeight + dx;
-    end else begin
-      FTop := FTop + dx;
-    end;
-  end;
+  //end;
+  ////  end;
+  //
+  //mody := True;
+  // dx := AHeight - FHeight;
+  //if akBottom in Anchors then begin
+  //  if akTop in Anchors then begin
+  //    FHeight := FHeight + dx;
+  //  end else begin
+  //    FTop := FTop + dx;
+  //  end;
+  //end;
 
 //  XSelectInput(dis, Window, NoEventMask);
 //  XMoveResizeWindow(dis, Window, FLeft, FTop, FWidth, FHeight);
 //  XSelectInput(dis, Window, EventMask);
 
 
-  //if FWidth <> AWidth then begin
-  //  d := AWidth - FWidth;
-  //  for i := 0 to Length(ComponentList) - 1 do begin
-  //    if akRight in ComponentList[i].Anchors then begin
-  //      if akLeft in ComponentList[i].Anchors then begin
-  //        ComponentList[i].Width := ComponentList[i].Width + d;
-  //      end else begin
-  //        ComponentList[i].Left := ComponentList[i].Left + d;
-  //      end;
-  //    end;
-  //  end;
-  //  FWidth := AWidth;
-  //end;
-  //
-  //  if FHeight <> AHeight then begin
-  //  d := AHeight - FHeight;
-  //  for i := 0 to Length(ComponentList) - 1 do begin
-  //    if akBottom in ComponentList[i].Anchors then begin
-  //      if akTop in ComponentList[i].Anchors then begin
-  //        ComponentList[i].Height := ComponentList[i].Height + d;
-  //      end else begin
-  //        ComponentList[i].Top := ComponentList[i].Top + d;
-  //      end;
-  //    end;
-  //  end;
-  //  FHeight := AHeight;
-  //end;
+  if FWidth <> AWidth then begin
+    dx := AWidth - FWidth;
+    for i := 0 to Length(ComponentList) - 1 do begin
+      with ComponentList[i] do begin
+      if akRight in Anchors then begin
+          if akLeft in Anchors then begin
+     //      XMoveResizeWindow(dis,Window,Left,Top,Width+dx,Height);
+            Width := Width + dx;
+          end else begin
+    //      XMoveWindow(dis,Window,Left+dx,Top);
+            Left := Left + dx;
+          end;
+        end;
+      end;
+    end;
+    FWidth := AWidth;
+  end;
+
+    if FHeight <> AHeight then begin
+    dy := AHeight - FHeight;
+    for i := 0 to Length(ComponentList) - 1 do begin
+      with ComponentList[i] do begin
+      if akBottom in Anchors then begin
+          if akTop in Anchors then begin
+      //         XMoveResizeWindow(dis,Window,Left,Top,Width,Height+dy);
+       Height := Height + dy;
+          end else begin
+  //    XMoveWindow(dis,Window,Left,Top+dy);
+      Top := Top + dy;
+          end;
+        end;
+      end;
+    end;
+    FHeight := AHeight;
+  end;
 
   if mody then begin
     DoOnPaint;
