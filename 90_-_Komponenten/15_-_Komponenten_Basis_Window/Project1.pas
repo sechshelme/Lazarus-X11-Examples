@@ -40,8 +40,8 @@ type
     procedure NewButtonClick(Sender: TObject);
     procedure SubWinButtonClick(Sender: TObject);
   protected
-    procedure DoOnPaint; override;
     procedure DoOnEventHandle(var Event: TXEvent); override;
+    procedure DoOnPaint; override;
   public
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
