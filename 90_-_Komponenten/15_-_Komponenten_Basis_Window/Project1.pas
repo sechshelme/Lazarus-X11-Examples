@@ -126,8 +126,8 @@ end;
       Width := 530;
       Height := 100;
       BorderWidth := 4;
-            Anchors := [akRight, akBottom];
-      //      Anchors := [akTop, akLeft, akRight, akBottom];
+//            Anchors := [akRight, akBottom];
+ //           Anchors := [akTop, akLeft, akRight, akBottom];
     end;
 
     PanelSub1 := TX11Panel.Create(Panel);
@@ -149,7 +149,7 @@ end;
       Width := Panel.Width - PanelSub1.Width - 30;
       Height := Panel.Height - 20;
       Bevel := bvLowred;
-      Anchors := [akTop, akLeft, akRight, akBottom];
+      Anchors := [akTop, akLeft, akRight];
     end;
 
     for i := 0 to Length(Button) - 1 do begin
@@ -173,7 +173,7 @@ end;
       Top := 100;
       Width := 120;
       Height := 50;
-      //      Anchors := [akRight, akBottom];
+            Anchors := [akRight, akBottom];
       //            Anchors:=[akTop,akLeft, akRight, akBottom];
       Caption := 'Close';
       OnClick := @CloseButtonClick;
@@ -186,15 +186,16 @@ end;
       Top := 100;
       Width := 120;
       Height := 50;
-      //      Anchors := [akRight, akBottom];
+            Anchors := [akRight, akBottom];
       //            Anchors:=[akTop,akLeft, akRight, akBottom];
       Caption := 'New';
       OnClick := @NewButtonClick;
     end;
 
-    WriteLn('SubPanel ',Panel.Height);
-    WriteLn('panel1 ',PanelSub1.Height);
-    WriteLn('panel2 ',PanelSub2.Height);
+    WriteLn('Left ',NewButton.Left);
+    WriteLn('Top ',NewButton.Top);
+    WriteLn('Width ',NewButton.Width);
+    WriteLn('Height ',NewButton.Height);
   end;
 
   destructor TMyDesktop.Destroy;
@@ -226,6 +227,10 @@ end;
 
   procedure TMyDesktop.DoOnEventHandle(var Event: TXEvent);
   begin
+    WriteLn('Left ',NewButton.Left);
+    WriteLn('Top ',NewButton.Top);
+    WriteLn('Width ',NewButton.Width);
+    WriteLn('Height ',NewButton.Height);
     inherited DoOnEventHandle(Event);
     case Event._type of
       KeyPress: begin

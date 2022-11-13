@@ -38,7 +38,7 @@ type
     procedure SetLeft(ALeft: cint);
     procedure SetWidth(AWidth: cint);
 
-    procedure DoOnResize(x, y, AWidth, AHeight: cint);
+    procedure Resize(ALeft, ATop, AWidth, AHeight: cint);
 
   protected
     dis: PDisplay; static;
@@ -235,23 +235,23 @@ begin
   x := Event.xbutton.x;
   y := Event.xbutton.y;
   IsInRegion := (x >= 0) and (x < FWidth) and (y >= 0) and (y < FHeight);
-  case Event._type of
-    Expose: begin
-      DoOnPaint;
-    end;
-    ConfigureNotify: begin
-      if Event.xbutton.window = Window then  begin
-        DoOnResize(Event.xconfigure.x, Event.xconfigure.y, Event.xconfigure.Width, Event.xconfigure.Height);
+  if Event.xbutton.window = Window then begin
+    case Event._type of
+      Expose: begin
+        DoOnPaint;
       end;
-    end;
-    KeyPress: begin
-      if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
-        // Taste auswerten
+      ConfigureNotify: begin
+        with Event.xconfigure do begin
+          Resize(x, y, Width, Height);
+        end;
       end;
-    end;
-    ButtonPress: begin
-      XMapRaised(dis, Event.xbutton.window);
-      if Event.xbutton.window = Window then begin
+      KeyPress: begin
+        if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
+          // Taste auswerten
+        end;
+      end;
+      ButtonPress: begin
+        XMapRaised(dis, Event.xbutton.window);
         if IsInRegion then begin
           IsMouseDown := True;
           IsButtonDown := True;
@@ -261,9 +261,7 @@ begin
         end;
         DoOnPaint;
       end;
-    end;
-    MotionNotify: begin
-      if Event.xbutton.window = Window then begin
+      MotionNotify: begin
         if IsInRegion and (OnMouseMove <> nil) then begin
           OnMouseMove(self, x, y);
         end;
@@ -276,9 +274,7 @@ begin
           DoOnPaint;
         end;
       end;
-    end;
-    ButtonRelease: begin
-      if Event.xbutton.window = Window then begin
+      ButtonRelease: begin
         if IsMouseDown and IsInRegion then begin
           if OnClick <> nil then begin
             OnClick(self);
@@ -301,48 +297,53 @@ begin
   end;
 end;
 
-procedure TX11Component.DoOnResize(x, y, AWidth, AHeight: cint);
+procedure TX11Component.Resize(ALeft, ATop, AWidth, AHeight: cint);
 var
-  dx, dy: cint;
+  dx, dy, L, T, W, H: cint;
   i: integer;
 begin
 
-//  WriteLn(x, ' ', y, ' ', AWidth, ' ', AHeight);
-
-  if FWidth <> AWidth then begin
-    dx := AWidth - FWidth;
-    for i := 0 to Length(ComponentList) - 1 do begin
-      with ComponentList[i] do begin
-        if akRight in Anchors then begin
-          if akLeft in Anchors then begin
-            XMoveResizeWindow(dis, Window, Left, Top, Width + dx, Height);
-          end else begin
-            XMoveWindow(dis, Window, Left + dx, Top);
-          end;
-        end;
-      end;
-    end;
-  end;
-
-  if FHeight <> AHeight then begin
-    dy := AHeight - FHeight;
-    for i := 0 to Length(ComponentList) - 1 do begin
-      with ComponentList[i] do begin
-        if akBottom in Anchors then begin
-          if akTop in Anchors then begin
-            XMoveResizeWindow(dis, Window, Left, Top, Width, Height + dy);
-          end else begin
-            XMoveWindow(dis, Window, Left, Top + dy);
-          end;
-        end;
-      end;
-    end;
-  end;
-
-  FLeft := x;
-  FTop := y;
+  //  WriteLn(ALeft, ' ', ATop, ' ', AWidth, ' ', AHeight);
+  dx := AWidth - FWidth;
+  dy := AHeight - FHeight;
+  FLeft := ALeft;
+  FTop := ATop;
   FWidth := AWidth;
   FHeight := AHeight;
+
+  for i := 0 to Length(ComponentList) - 1 do begin
+    with ComponentList[i] do begin
+      L := Left;
+      T := Top;
+      W := Width;
+      H := Height;
+
+      if akRight in Anchors then begin
+        if akLeft in Anchors then begin
+          Inc(W, dx);
+          //          XMoveResizeWindow(dis, Window, Left, Top, Width + dx, Height);
+        end else begin
+          Inc(L, dx);
+          //          XMoveWindow(dis, Window, Left + dx, Top);
+        end;
+      end;
+
+      if akBottom in Anchors then begin
+        if akTop in Anchors then begin
+          Inc(H, dy);
+          //          XMoveResizeWindow(dis, Window, Left, Top, Width, Height + dy);
+        end else begin
+          Inc(T, dy);
+          //          XMoveWindow(dis, Window, Left, Top + dy);
+        end;
+      end;
+
+      if (H <> Height) or (W <> Width) or (T <> Top) or (L <> Left) then  begin
+        XMoveResizeWindow(dis, Window, L, T, W, H);
+      end;
+    end;
+  end;
+
 end;
 
 end.
