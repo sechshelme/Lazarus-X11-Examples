@@ -28,9 +28,6 @@ var
 
 const
   EventMask = KeyPressMask or ExposureMask or StructureNotifyMask;
-  //  EventMask = KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask or ResizeRedirectMask or StructureNotifyMask or SubstructureNotifyMask;
-  //  EventMask = KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask or ResizeRedirectMask;
-  //  EventMask = KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask;
 
 begin
   // Erstellt die Verbindung zum Server
@@ -118,6 +115,7 @@ begin
         with Event.xconfigure do begin
           WriteLn('ConfigureNotify ', window, ' ', x, ' ', y, ' ', Width, ' ', Height);
         end;
+
         if Event.xbutton.window = win then begin
           with Event.xconfigure do begin
             XMoveResizeWindow(dis, Subwin1, 50, 50, Width - 100, Height - 100);

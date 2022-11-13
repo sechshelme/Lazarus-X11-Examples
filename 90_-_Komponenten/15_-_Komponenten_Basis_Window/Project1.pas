@@ -149,7 +149,7 @@ end;
       Width := Panel.Width - PanelSub1.Width - 30;
       Height := Panel.Height - 20;
       Bevel := bvLowred;
-      //      Anchors := [akTop, akLeft, akRight];
+      Anchors := [akTop, akLeft, akRight, akBottom];
     end;
 
     for i := 0 to Length(Button) - 1 do begin
@@ -191,6 +191,7 @@ end;
       Caption := 'New';
       OnClick := @NewButtonClick;
     end;
+
   end;
 
   destructor TMyDesktop.Destroy;
@@ -222,6 +223,9 @@ end;
 
   procedure TMyDesktop.DoOnEventHandle(var Event: TXEvent);
   begin
+    WriteLn('SubPanel ',Panel.Height);
+    WriteLn('panel1 ',PanelSub1.Height);
+    WriteLn('panel2 ',PanelSub2.Height);
     inherited DoOnEventHandle(Event);
     case Event._type of
       KeyPress: begin
