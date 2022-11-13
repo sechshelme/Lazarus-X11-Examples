@@ -9,6 +9,7 @@ uses
 
 const
   EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or SubstructureNotifyMask or StructureNotifyMask or PointerMotionMask;
+//  EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or SubstructureNotifyMask or StructureNotifyMask or PointerMotionMask or ResizeRedirectMask;
 
 type
 
@@ -38,7 +39,7 @@ type
     procedure SetLeft(ALeft: cint);
     procedure SetWidth(AWidth: cint);
 
-    procedure DoOnResize(AWidth, AHeight: cint);
+    procedure DoOnResize(x, y, AWidth, AHeight: cint);
 
   protected
     dis: PDisplay; static;
@@ -241,7 +242,7 @@ begin
     end;
     ConfigureNotify: begin
       if Event.xbutton.window = Window then  begin
-        DoOnResize(Event.xconfigure.Width, Event.xconfigure.Height);
+        DoOnResize(  Event.xconfigure.x, Event.xconfigure.height,Event.xconfigure.Width, Event.xconfigure.Height);
       end;
     end;
     KeyPress: begin
@@ -301,7 +302,7 @@ begin
   end;
 end;
 
-procedure TX11Component.DoOnResize(AWidth, AHeight: cint);
+procedure TX11Component.DoOnResize(x,y,AWidth, AHeight: cint);
 var
   dx, dy: cint;
   mody: boolean;
@@ -312,41 +313,49 @@ begin
   mody := True;
   dx := AWidth - FWidth;
 
-  //if FWidth <> AWidth then begin
-  //  dx := AWidth - FWidth;
-  //  for i := 0 to Length(ComponentList) - 1 do begin
-  //    with ComponentList[i] do begin
-  //      if akRight in Anchors then begin
-  //        if akLeft in Anchors then begin
-  //          //      XMoveResizeWindow(dis,Window,Left,Top,Width+dx,Height);
-  //          Width := Width + dx;
-  //        end else begin
-  //          //      XMoveWindow(dis,Window,Left+dx,Top);
-  //          Left := Left + dx;
-  //        end;
-  //      end;
-  //    end;
-  //  end;
-  //  FWidth := AWidth;
-  //end;
-  //
-  //if FHeight <> AHeight then begin
-  //  dy := AHeight - FHeight;
-  //  for i := 0 to Length(ComponentList) - 1 do begin
-  //    with ComponentList[i] do begin
-  //      if akBottom in Anchors then begin
-  //        if akTop in Anchors then begin
-  //          //         XMoveResizeWindow(dis,Window,Left,Top,Width,Height+dy);
-  //          Height := Height + dy;
-  //        end else begin
-  //          //    XMoveWindow(dis,Window,Left,Top+dy);
-  //          Top := Top + dy;
-  //        end;
-  //      end;
-  //    end;
-  //  end;
-  //  FHeight := AHeight;
-  //end;
+//  XMoveResizeWindow(dis,Window,Left,Top,Width,Height);
+//  WriteLn(Left,' ', top,' ', Width,' ', Height);
+//
+//  if FWidth <> AWidth then begin
+//    dx := AWidth - FWidth;
+//    for i := 0 to Length(ComponentList) - 1 do begin
+//      with ComponentList[i] do begin
+//        if akRight in Anchors then begin
+//          if akLeft in Anchors then begin
+////                  XMoveResizeWindow(dis,Window,Left,Top,Width+dx,Height);
+//            Width := Width + dx;
+////            DoOnResize(Left,Top,Width,Height);
+////            DoOnResize();
+//          end else begin
+////                  XMoveWindow(dis,Window,Left+dx,Top);
+//            Left := Left + dx;
+//  //          DoOnResize(Left,Top,Width,Height);
+//          end;
+//        end;
+//      end;
+//    end;
+// //   FWidth := AWidth;
+//  end;
+//
+//  if FHeight <> AHeight then begin
+//    dy := AHeight - FHeight;
+//    for i := 0 to Length(ComponentList) - 1 do begin
+//      with ComponentList[i] do begin
+//        if akBottom in Anchors then begin
+//          if akTop in Anchors then begin
+////                     XMoveResizeWindow(dis,Window,Left,Top,Width,Height+dy);
+//            Height := Height + dy;
+////            DoOnResize(Left,Top,Width,Height);
+//          end else begin
+////                XMoveWindow(dis,Window,Left,Top+dy);
+//            Top := Top + dy;
+//  //          DoOnResize(Left,Top,Width,Height);
+//          end;
+//        end;
+//      end;
+//    end;
+////    FHeight := AHeight;
+//  end;
 
   if mody then begin
     DoOnPaint;
