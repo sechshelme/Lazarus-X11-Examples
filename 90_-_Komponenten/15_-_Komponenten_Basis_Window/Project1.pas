@@ -192,6 +192,9 @@ end;
       OnClick := @NewButtonClick;
     end;
 
+    WriteLn('SubPanel ',Panel.Height);
+    WriteLn('panel1 ',PanelSub1.Height);
+    WriteLn('panel2 ',PanelSub2.Height);
   end;
 
   destructor TMyDesktop.Destroy;
@@ -223,9 +226,6 @@ end;
 
   procedure TMyDesktop.DoOnEventHandle(var Event: TXEvent);
   begin
-    WriteLn('SubPanel ',Panel.Height);
-    WriteLn('panel1 ',PanelSub1.Height);
-    WriteLn('panel2 ',PanelSub2.Height);
     inherited DoOnEventHandle(Event);
     case Event._type of
       KeyPress: begin

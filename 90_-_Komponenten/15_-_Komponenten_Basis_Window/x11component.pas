@@ -9,8 +9,6 @@ uses
 
 const
   EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or StructureNotifyMask or PointerMotionMask;
-//  EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or SubstructureNotifyMask or StructureNotifyMask or PointerMotionMask;
-//  EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or SubstructureNotifyMask or StructureNotifyMask or PointerMotionMask or ResizeRedirectMask;
 
 type
 
@@ -306,13 +304,9 @@ end;
 procedure TX11Component.DoOnResize(x, y, AWidth, AHeight: cint);
 var
   dx, dy: cint;
-  mody: boolean;
   i: integer;
 begin
-  mody := False;
-  mody := True;
 
-  //    XMoveResizeWindow(dis,Window,Left,Top,Width,Height);
 //  WriteLn(x, ' ', y, ' ', AWidth, ' ', AHeight);
 
   if FWidth <> AWidth then begin
@@ -349,11 +343,6 @@ begin
   FTop := y;
   FWidth := AWidth;
   FHeight := AHeight;
-
-  if mody then begin
-    DoOnPaint;
-  end;
 end;
-
 
 end.
