@@ -24,13 +24,13 @@ var
   gc: TGC;
   i: integer;
   size_hints: TXSizeHints;
-  Region: TRegion;
   r: TXRectangle;
 
 const
-    EventMask = KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask or ResizeRedirectMask or StructureNotifyMask or SubstructureNotifyMask;
-//  EventMask = KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask or ResizeRedirectMask;
-//  EventMask = KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask;
+  EventMask = KeyPressMask or ExposureMask or StructureNotifyMask;
+  //  EventMask = KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask or ResizeRedirectMask or StructureNotifyMask or SubstructureNotifyMask;
+  //  EventMask = KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask or ResizeRedirectMask;
+  //  EventMask = KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask;
 
 begin
   // Erstellt die Verbindung zum Server
@@ -47,10 +47,10 @@ begin
   // Erstellt das Fenster
   win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, $FF, $88);
   Subwin1 := XCreateSimpleWindow(dis, win, 100, 100, 320, 240, 10, $FF00, $8800);
-  Subwin2 := XCreateSimpleWindow(dis, win, 250, 100, 320, 240, 0, $FF0000,$880000);
-//  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-//  Subwin1 := XCreateSimpleWindow(dis, win, 100, 100, 320, 240, 10, BlackPixel(dis, scr), WhitePixel(dis, scr));
-//7/  Subwin2 := XCreateSimpleWindow(dis, win, 250, 100, 320, 240, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  Subwin2 := XCreateSimpleWindow(dis, Subwin1, 250, 100, 320, 240, 0, $FF0000, $880000);
+  //  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  //  Subwin1 := XCreateSimpleWindow(dis, win, 100, 100, 320, 240, 10, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  //7/  Subwin2 := XCreateSimpleWindow(dis, win, 250, 100, 320, 240, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
   XSetWindowBorderWidth(dis, Subwin2, 15);
 
   //with  size_hints do begin
@@ -67,8 +67,8 @@ begin
   //end;
   //XSetStandardProperties(dis, win, 'none', 'none', None, nil, 0, @size_hints);
 
-//  XConfigureWindow
-// TwindowcXWindowChanges;
+  //  XConfigureWindow
+  // TwindowcXWindowChanges;
 
 
   XSelectInput(dis, win, EventMask);
@@ -80,16 +80,6 @@ begin
   XMapWindow(dis, Subwin1);
   XMapWindow(dis, Subwin2);
 
-  // Region erzeugen
-  Region := XCreateRegion;
-  r.x := 10;
-  r.y := 10;
-  r.Width :=  1000;
-  r.Height := 1000;
-  XUnionRectWithRegion(@r, Region, Region);
-  XSetRegion(dis, gc, Region);
-
-
 
   // Ereignisschleife
   while (True) do begin
@@ -97,8 +87,7 @@ begin
 
     case Event._type of
       Expose: begin
-//        XClearWindow(dis, win);
-  //      XClearWindow(dis, Subwin1);
+        XClearWindow(dis, Subwin2);
         for i := 0 to 10 do begin
           XSetForeground(dis, gc, $FF);
           XDrawArc(dis, win, gc, random(800) - 200, random(800) - 200, 150, 150, 0, 360 * 64);
@@ -107,7 +96,7 @@ begin
           XDrawArc(dis, Subwin1, gc, random(500) - 200, random(500) - 200, 150, 150, 0, 360 * 64);
 
           XSetForeground(dis, gc, $FF shl 16);
-          XDrawArc(dis, Subwin2, gc, random(500) - 200, random(500) - 200, 150, 150, 0, 360 * 64);
+          XDrawArc(dis, Subwin2, gc, random(150) - 20, random(150) - 20, 50, 50, 0, 360 * 64);
         end;
       end;
       MotionNotify: begin
@@ -131,9 +120,14 @@ begin
         end;
         if Event.xbutton.window = win then begin
           with Event.xconfigure do begin
+            XMoveResizeWindow(dis, Subwin1, 50, 50, Width - 100, Height - 100);
+          end;
+        end;
+
+        if Event.xbutton.window = Subwin1 then begin
+          with Event.xconfigure do begin
             WriteLn('mone');
-            //            XMoveWindow(dis, Subwin1, x, y);
-            XMoveResizeWindow(dis, Subwin1, x, y, Width, Height);
+            XMoveWindow(dis, Subwin2, Width - x - 400, Height - y - 300);
           end;
         end;
         if Event.xbutton.window = Subwin2 then begin
@@ -144,12 +138,6 @@ begin
           WriteLn();
         end;
 
-      end;
-      ResizeRequest: begin
-        with Event.xresizerequest do begin
-          WriteLn('ResizeRequest ', window, ' ', Width, ' ', Height);
-          if Event.xbutton.window = win then XMoveResizeWindow(dis, Subwin1, 50, 50, Width - 100, Height - 100);
-        end;
       end;
       KeyPress: begin
         // Beendet das Programm bei [ESC]

@@ -18,9 +18,10 @@ uses
 
 var
   dis: PDisplay;
-  win1,win2 :TWindow;
+  win, SubWin: TWindow;
   Event: TXEvent;
   scr: cint;
+  Info: TXWindowAttributes;
 
 begin
   // Erstellt die Verbindung zum Server
@@ -32,27 +33,37 @@ begin
   scr := DefaultScreen(dis);
 
   // Erstellt das Fenster
-  win1 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-//  win2 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-  win2 := XCreateSimpleWindow(dis, win1, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  //  SubWin := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  SubWin := XCreateSimpleWindow(dis, win, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
   // Wählt die gewünschten Ereignisse aus
   // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
-  XSelectInput(dis, win1, KeyPressMask or ExposureMask);
-  XSelectInput(dis, win2, KeyPressMask or ExposureMask);
+  XSelectInput(dis, win, KeyPressMask or ExposureMask);
+  XSelectInput(dis, SubWin, KeyPressMask or ExposureMask);
 
   // Fenster anzeigen
-  XMapWindow(dis, win1);
-  XMapWindow(dis, win2);
+  XMapWindow(dis, win);
+  XMapWindow(dis, SubWin);
 
   // Ereignisschleife
   while (True) do begin
     XNextEvent(dis, @Event);
 
+    XGetWindowAttributes(dis, win, @Info);
+    WriteLn('win:');
+    WriteLn(Info.x, ' ', Info.y, ' ', Info.Width, ' ', Info.Height);
+    WriteLn();
+    XGetWindowAttributes(dis, SubWin, @Info);
+    WriteLn('SubWin:');
+    WriteLn(Info.x, ' ', Info.y, ' ', Info.Width, ' ', Info.Height);
+    WriteLn();
+
+
     case Event._type of
-      Expose:begin
-//        XSetForeground(dis, gc, Random(Random($FF));
-        end;
+      Expose: begin
+        //        XSetForeground(dis, gc, Random(Random($FF));
+      end;
       KeyPress: begin
         // Beendet das Programm bei [ESC]
         if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
@@ -67,4 +78,3 @@ begin
   XCloseDisplay(dis);
 end.
 //code-
-
