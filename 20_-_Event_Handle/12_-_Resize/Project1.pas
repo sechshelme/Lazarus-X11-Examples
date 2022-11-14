@@ -27,7 +27,10 @@ var
   r: TXRectangle;
 
 const
-  EventMask = KeyPressMask or ExposureMask or StructureNotifyMask;
+  //  EventMask = KeyPressMask or ExposureMask or StructureNotifyMask or ResizeRedirectMask;
+  //  EventMask = KeyPressMask or ExposureMask or StructureNotifyMask or PropertyChangeMask;
+  EventMask = KeyPressMask or ExposureMask or PropertyChangeMask or StructureNotifyMask;
+  //  EventMask = $FFFF;
 
 begin
   // Erstellt die Verbindung zum Server
@@ -45,9 +48,6 @@ begin
   win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 30, $FF, $88);
   Subwin1 := XCreateSimpleWindow(dis, win, 100, 100, 320, 240, 10, $FF00, $8800);
   Subwin2 := XCreateSimpleWindow(dis, Subwin1, 250, 100, 320, 240, 0, $FF0000, $880000);
-  //  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-  //  Subwin1 := XCreateSimpleWindow(dis, win, 100, 100, 320, 240, 10, BlackPixel(dis, scr), WhitePixel(dis, scr));
-  //7/  Subwin2 := XCreateSimpleWindow(dis, win, 250, 100, 320, 240, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
   XSetWindowBorderWidth(dis, Subwin2, 15);
 
   //with  size_hints do begin
@@ -82,6 +82,11 @@ begin
   while (True) do begin
     XNextEvent(dis, @Event);
 
+    //    if Event.xconfigure.window = win then begin
+    WriteLn(Event.xconfigure._type);
+    WriteLn();
+    //    end;
+
     case Event._type of
       Expose: begin
         XClearWindow(dis, Subwin2);
@@ -111,9 +116,15 @@ begin
         Write('press');
         XRaiseWindow(dis, Event.xbutton.window);
       end;
+      PropertyNotify: begin
+        if Event.xproperty.window = win then begin
+          WriteLn('state: ', Event.xproperty.state);
+        end;
+
+      end;
       ConfigureNotify: begin
         with Event.xconfigure do begin
-          WriteLn('ConfigureNotify ', window, ' ', x, ' ', y, ' ', Width, ' ', Height);
+          //          WriteLn('ConfigureNotify ', window, ' ', x, ' ', y, ' ', Width, ' ', Height);
         end;
 
         if Event.xbutton.window = win then begin
@@ -128,11 +139,17 @@ begin
             XMoveWindow(dis, Subwin2, Width - x - 400, Height - y - 300);
           end;
         end;
-        if Event.xbutton.window = win then begin
-          WriteLn(Event.xconfigure.x);
-          WriteLn(Event.xconfigure.y);
-          WriteLn(Event.xconfigure.Width);
-          WriteLn(Event.xconfigure.Height);
+        if Event.xconfigure.window = win then begin
+          WriteLn('type: ', Event.xconfigure._type);
+          WriteLn('serial: ', Event.xconfigure.serial);
+          WriteLn('send_event: ', Event.xconfigure.send_event);
+          //          WriteLn('Window parent: ', Event.xconfigure.parent);
+          WriteLn('Window window: ', Event.xconfigure.window);
+          WriteLn('x: ', Event.xconfigure.x);
+          WriteLn('y: ', Event.xconfigure.y);
+          WriteLn('widht: ', Event.xconfigure.Width);
+          WriteLn('height: ', Event.xconfigure.Height);
+          WriteLn('boarderwidht: ', Event.xconfigure.border_width);
           WriteLn();
         end;
 
@@ -143,16 +160,18 @@ begin
           Break;
         end;
         if Event.xbutton.window = win then  begin
-          if XLookupKeysym(@Event.xkey, 0) = XK_Return then begin
-                       XMoveResizeWindow(dis, win, 300, 300, 600, 600);
-          end;
-          if XLookupKeysym(@Event.xkey, 0) = XK_space then begin
-            //           XMoveResizeWindow(dis, win, 100, 100, 200, 200);
-            XResizeWindow(dis, win, 500, 500);
-          end;
-          if XLookupKeysym(@Event.xkey, 0) = XK_Tab then begin
-            //           XMoveResizeWindow(dis, win, 100, 100, 200, 200);
-            XMoveWindow(dis, win, 100, 100);
+          case XLookupKeysym(@Event.xkey, 0) of
+            XK_Return: begin
+              XMoveResizeWindow(dis, win, 300, 300, 600, 600);
+            end;
+            XK_space: begin
+              //           XMoveResizeWindow(dis, win, 100, 100, 200, 200);
+              XResizeWindow(dis, win, 500, 500);
+            end;
+            XK_Tab: begin
+              //           XMoveResizeWindow(dis, win, 100, 100, 200, 200);
+              XMoveWindow(dis, win, 100, 100);
+            end;
           end;
         end;
       end;
