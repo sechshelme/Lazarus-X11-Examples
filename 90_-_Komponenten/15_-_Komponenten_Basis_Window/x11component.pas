@@ -39,7 +39,6 @@ type
     procedure SetWidth(AWidth: cint);
 
     procedure Resize(ALeft, ATop, AWidth, AHeight: cint);
-
   protected
     dis: PDisplay; static;
     scr: cint; static;
@@ -78,7 +77,7 @@ procedure TX11Component.SetTop(ATop: cint);
 begin
   if FTop <> ATop then begin
     FTop := ATop;
-    XMoveWindow(dis, Window, FLeft, FTop);
+    XMoveWindow(dis, Window, FLeft, ATop);
   end;
 end;
 
@@ -86,7 +85,7 @@ procedure TX11Component.SetHeight(AHeight: cint);
 begin
   if FHeight <> AHeight then begin
     FHeight := AHeight;
-    XMoveResizeWindow(dis, Window, FLeft, FTop, FWidth, FHeight);
+    XResizeWindow(dis, Window, FWidth, AHeight);
   end;
 end;
 
@@ -94,7 +93,7 @@ procedure TX11Component.SetLeft(ALeft: cint);
 begin
   if FLeft <> ALeft then begin
     FLeft := ALeft;
-    XMoveWindow(dis, Window, FLeft, FTop);
+    XMoveWindow(dis, Window, ALeft, FTop);
   end;
 end;
 
@@ -102,7 +101,7 @@ procedure TX11Component.SetWidth(AWidth: cint);
 begin
   if FWidth <> AWidth then begin
     FWidth := AWidth;
-    XMoveResizeWindow(dis, Window, FLeft, FTop, FWidth, FHeight);
+    XResizeWindow(dis, Window, AWidth, FHeight);
   end;
 end;
 
@@ -241,9 +240,8 @@ begin
         DoOnPaint;
       end;
       ConfigureNotify: begin
-        with Event.xconfigure do begin
-          Resize(x, y, Width, Height);
-        end;
+        //        Resize(Event.xconfigure.x, Event.xconfigure.y, Event.xconfigure.Width, Event.xconfigure.Height);
+        Resize(FLeft, FTop, FWidth, FHeight);
       end;
       KeyPress: begin
         if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
@@ -313,10 +311,10 @@ begin
 
   for i := 0 to Length(ComponentList) - 1 do begin
     with ComponentList[i] do begin
-      L := Left;
-      T := Top;
-      W := Width;
-      H := Height;
+      L := FLeft;
+      T := FTop;
+      W := FWidth;
+      H := FHeight;
 
       if akRight in Anchors then begin
         if akLeft in Anchors then begin
@@ -339,7 +337,13 @@ begin
       end;
 
       if (H <> Height) or (W <> Width) or (T <> Top) or (L <> Left) then  begin
-        XMoveResizeWindow(dis, Window, L, T, W, H);
+        FLeft := L;
+        FTop := T;
+        FWidth := W;
+        FHeight := H;
+//        XMoveResizeWindow(dis, Window, L, T, W, H);
+        XResizeWindow(dis, Window, W, H);
+        XMoveWindow(dis, Window, L, T);
       end;
     end;
   end;

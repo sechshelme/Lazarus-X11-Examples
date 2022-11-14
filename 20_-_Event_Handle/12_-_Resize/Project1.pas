@@ -42,7 +42,7 @@ begin
 
 
   // Erstellt das Fenster
-  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, $FF, $88);
+  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 30, $FF, $88);
   Subwin1 := XCreateSimpleWindow(dis, win, 100, 100, 320, 240, 10, $FF00, $8800);
   Subwin2 := XCreateSimpleWindow(dis, Subwin1, 250, 100, 320, 240, 0, $FF0000, $880000);
   //  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
@@ -128,7 +128,7 @@ begin
             XMoveWindow(dis, Subwin2, Width - x - 400, Height - y - 300);
           end;
         end;
-        if Event.xbutton.window = Subwin2 then begin
+        if Event.xbutton.window = win then begin
           WriteLn(Event.xconfigure.x);
           WriteLn(Event.xconfigure.y);
           WriteLn(Event.xconfigure.Width);
@@ -141,6 +141,19 @@ begin
         // Beendet das Programm bei [ESC]
         if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
           Break;
+        end;
+        if Event.xbutton.window = win then  begin
+          if XLookupKeysym(@Event.xkey, 0) = XK_Return then begin
+                       XMoveResizeWindow(dis, win, 300, 300, 600, 600);
+          end;
+          if XLookupKeysym(@Event.xkey, 0) = XK_space then begin
+            //           XMoveResizeWindow(dis, win, 100, 100, 200, 200);
+            XResizeWindow(dis, win, 500, 500);
+          end;
+          if XLookupKeysym(@Event.xkey, 0) = XK_Tab then begin
+            //           XMoveResizeWindow(dis, win, 100, 100, 200, 200);
+            XMoveWindow(dis, win, 100, 100);
+          end;
         end;
       end;
     end;

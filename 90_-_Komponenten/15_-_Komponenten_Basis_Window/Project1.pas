@@ -67,10 +67,10 @@ var
     WriteLn('move: ', x, '  ', y);
   end;
 
-procedure TMyDesktop.btnClick(Sender: TObject);
-begin
-  TX11Component(Sender).Parent.Close;
-end;
+  procedure TMyDesktop.btnClick(Sender: TObject);
+  begin
+    TX11Component(Sender).Parent.Close;
+  end;
 
   procedure TMyDesktop.NewButtonClick(Sender: TObject);
   var
@@ -83,7 +83,11 @@ end;
     btn := TX11Button.Create(Mywindow);
     with btn do begin
       Caption := 'close';
-      OnClick:=@btnClick;
+      OnClick := @btnClick;
+      Left := 5;
+      Top := 5;
+      Width := Self.Width - 200;
+      Height := Self.Height - 10;
     end;
   end;
 
@@ -100,7 +104,8 @@ end;
     inherited Create(TheOwner);
     Color := $FF;
 
-    //    Width:=640;Height:=480;
+    Width := 680;
+    Height := 480;
 
     Caption := 'Mein Fenster';
 
@@ -126,8 +131,8 @@ end;
       Width := 530;
       Height := 100;
       BorderWidth := 4;
-//            Anchors := [akRight, akBottom];
- //           Anchors := [akTop, akLeft, akRight, akBottom];
+      //            Anchors := [akRight, akBottom];
+      //            Anchors := [akTop, akLeft, akRight, akBottom];
     end;
 
     PanelSub1 := TX11Panel.Create(Panel);
@@ -169,11 +174,11 @@ end;
 
     CloseButton := TX11Button.Create(Self);
     with CloseButton do begin
+      Top := 120;
       Left := 100;
-      Top := 100;
       Width := 120;
       Height := 50;
-            Anchors := [akRight, akBottom];
+      Anchors := [akRight, akBottom];
       //            Anchors:=[akTop,akLeft, akRight, akBottom];
       Caption := 'Close';
       OnClick := @CloseButtonClick;
@@ -182,20 +187,20 @@ end;
 
     NewButton := TX11Button.Create(Self);
     with NewButton do begin
+      Anchors := [akRight, akBottom];
+      Top := 120;
       Left := 250;
-      Top := 100;
-      Width := 120;
       Height := 50;
-            Anchors := [akRight, akBottom];
+      Width := 120;
       //            Anchors:=[akTop,akLeft, akRight, akBottom];
       Caption := 'New';
       OnClick := @NewButtonClick;
     end;
 
-    WriteLn('Left ',NewButton.Left);
-    WriteLn('Top ',NewButton.Top);
-    WriteLn('Width ',NewButton.Width);
-    WriteLn('Height ',NewButton.Height);
+    WriteLn('Left ', NewButton.Left);
+    WriteLn('Top ', NewButton.Top);
+    WriteLn('Width ', NewButton.Width);
+    WriteLn('Height ', NewButton.Height);
   end;
 
   destructor TMyDesktop.Destroy;
@@ -227,10 +232,10 @@ end;
 
   procedure TMyDesktop.DoOnEventHandle(var Event: TXEvent);
   begin
-    WriteLn('Left ',NewButton.Left);
-    WriteLn('Top ',NewButton.Top);
-    WriteLn('Width ',NewButton.Width);
-    WriteLn('Height ',NewButton.Height);
+    WriteLn('Left ', NewButton.Left);
+    WriteLn('Top ', NewButton.Top);
+    WriteLn('Width ', NewButton.Width);
+    WriteLn('Height ', NewButton.Height);
     inherited DoOnEventHandle(Event);
     case Event._type of
       KeyPress: begin
