@@ -84,10 +84,10 @@ var
     with btn do begin
       Caption := 'close';
       OnClick := @btnClick;
-      Left := 5;
-      Top := 5;
-      Width := Self.Width - 200;
-      Height := Self.Height - 10;
+      Left := 15;
+      Top := 15;
+      Height := Self.Height - 30;
+      Width := Self.Width - 30;
     end;
   end;
 
@@ -132,7 +132,7 @@ var
       Height := 100;
       BorderWidth := 4;
       //            Anchors := [akRight, akBottom];
-      //            Anchors := [akTop, akLeft, akRight, akBottom];
+      Anchors := [akTop, akLeft, akRight, akBottom];
     end;
 
     PanelSub1 := TX11Panel.Create(Panel);
@@ -143,7 +143,7 @@ var
       Width := 370;
       Height := Panel.Height - 20;
       Bevel := bvLowred;
-      //                  Anchors:=[akTop,akLeft, akRight, akBottom];
+      Anchors := [akTop, akLeft, akBottom];
     end;
 
     PanelSub2 := TX11Panel.Create(Panel);
@@ -154,7 +154,8 @@ var
       Width := Panel.Width - PanelSub1.Width - 30;
       Height := Panel.Height - 20;
       Bevel := bvLowred;
-      Anchors := [akTop, akLeft, akRight];
+      Anchors := [akTop, akLeft, akRight, akBottom];
+      //     Anchors := [akTop, akLeft, akRight];
     end;
 
     for i := 0 to Length(Button) - 1 do begin

@@ -240,8 +240,10 @@ begin
         DoOnPaint;
       end;
       ConfigureNotify: begin
-        //        Resize(Event.xconfigure.x, Event.xconfigure.y, Event.xconfigure.Width, Event.xconfigure.Height);
-        Resize(FLeft, FTop, FWidth, FHeight);
+//        if (Event.xconfigure.Width <> FWidth) or (Event.xconfigure.Height <> FHeight) then begin
+          Resize(FLeft, FTop, Event.xconfigure.Width, Event.xconfigure.Height);
+  //      end;
+        //Resize(FLeft, FTop, FWidth, FHeight);
       end;
       KeyPress: begin
         if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
@@ -300,8 +302,6 @@ var
   dx, dy, L, T, W, H: cint;
   i: integer;
 begin
-
-  //  WriteLn(ALeft, ' ', ATop, ' ', AWidth, ' ', AHeight);
   dx := AWidth - FWidth;
   dy := AHeight - FHeight;
   FLeft := ALeft;
@@ -319,31 +319,27 @@ begin
       if akRight in Anchors then begin
         if akLeft in Anchors then begin
           Inc(W, dx);
-          //          XMoveResizeWindow(dis, Window, Left, Top, Width + dx, Height);
         end else begin
           Inc(L, dx);
-          //          XMoveWindow(dis, Window, Left + dx, Top);
         end;
       end;
 
       if akBottom in Anchors then begin
         if akTop in Anchors then begin
           Inc(H, dy);
-          //          XMoveResizeWindow(dis, Window, Left, Top, Width, Height + dy);
         end else begin
           Inc(T, dy);
-          //          XMoveWindow(dis, Window, Left, Top + dy);
         end;
       end;
 
-      if (H <> Height) or (W <> Width) or (T <> Top) or (L <> Left) then  begin
+      if (H <> FHeight) or (W <> FWidth) or (T <> FTop) or (L <> FLeft) then  begin
         FLeft := L;
         FTop := T;
         FWidth := W;
         FHeight := H;
-//        XMoveResizeWindow(dis, Window, L, T, W, H);
-        XResizeWindow(dis, Window, W, H);
-        XMoveWindow(dis, Window, L, T);
+        XMoveResizeWindow(dis, Window, L, T, W, H);
+        //        XResizeWindow(dis, Window, W, H);
+        //      XMoveWindow(dis, Window, L, T);
       end;
     end;
   end;
