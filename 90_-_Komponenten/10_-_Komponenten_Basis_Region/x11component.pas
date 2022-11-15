@@ -9,16 +9,12 @@ uses
 
 type
 
-  TAnchorKind = (akTop, akLeft, akRight, akBottom);
-  TAnchors = set of TAnchorKind;
-
   TNotifyEvent = procedure(Sender: TObject) of object;
   TMouseMoveEvent = procedure(Sender: TObject; X, Y: integer) of object;
   { TX11Component }
 
   TX11Component = class(TObject)
   private
-    FAnchors: TAnchors;
     FCaption: string;
     FColor: culong;
     FHeight, FLeft, FTop, FWidth: cint;
@@ -43,7 +39,6 @@ type
     gc: TGC;
     LastWindowWidth: cint; static;
     LastWindowHeight: cint; static;
-    property Anchors: TAnchors read FAnchors write FAnchors;
     property Name: string read FName write FName;
     property Parent: TX11Component read FParent write FParent;
     property Caption: string read FCaption write FCaption;
@@ -101,7 +96,6 @@ begin
   OnMouseMove := nil;
 
   FColor := $BBBBBB;
-  Anchors := [akLeft, akTop];
   Left := 0;
   Top := 0;
   Width := 320;
@@ -123,14 +117,23 @@ end;
 
 destructor TX11Component.Destroy;
 var
-  i: Integer;
+  i: integer;
 begin
-  XDestroyRegion(Region);
   for i := 0 to Length(ComponentList) - 1 do begin
-    if ComponentList[i] <> nil then  begin
-      ComponentList[i].Free;
+    if ComponentList[0] <> nil then  begin
+      ComponentList[0].Free;
     end;
   end;
+  SetLength(ComponentList, 0);
+  if Parent <> nil then begin
+    for i := 0 to Length(Parent.ComponentList) - 1 do begin
+      if Parent.ComponentList[i] = self then begin
+        Delete(Parent.ComponentList, i, 1);
+        Break;
+      end;
+    end;
+  end;
+
   inherited Destroy;
 end;
 
@@ -208,68 +211,37 @@ procedure TX11Component.DoOnResize(AWidth, AHeight: cint);
 var
   rect: TXRectangle;
   d: cint;
-  mody: boolean;
 begin
-  mody := False;
-
-  //  if LastWindowWidth <> AWidth then begin
-  mody := True;
   d := AWidth - LastWindowWidth;
-//  WriteLn('AWidth ', AWidth);
-//  WriteLn('LastWindowWidth ', LastWindowWidth);
-//  WriteLn('d ', d);
-  if akRight in Anchors then begin
-    if akLeft in Anchors then begin
-      FWidth := FWidth + d;
-    end else begin
-      FLeft := FLeft + d;
-    end;
+
+  rect.x := FLeft;
+  rect.y := FTop;
+
+  if FWidth < 0 then  begin
+    rect.Width := 0;
+  end else begin
+    rect.Width := FWidth;
   end;
-  //  end;
 
-  //  if LastWindowHeight <> AHeight then begin
-  mody := True;
-  d := AHeight - LastWindowHeight;
-  if akBottom in Anchors then begin
-    if akTop in Anchors then begin
-      FHeight := FHeight + d;
-    end else begin
-      FTop := FTop + d;
-    end;
+  if FHeight < 0 then  begin
+    rect.Height := 0;
+  end else begin
+    rect.Height := FHeight;
   end;
-  //  end;
 
-  if mody then begin
-    rect.x := FLeft;
-    rect.y := FTop;
-
-    if FWidth < 0 then  begin
-      rect.Width := 0;
-    end else begin
-      rect.Width := FWidth;
-    end;
-
-    if FHeight < 0 then  begin
-      rect.Height := 0;
-    end else begin
-      rect.Height := FHeight;
-    end;
-
-    if XEmptyRegion(Region) = 0 then begin
-      XDestroyRegion(Region);
-    end;
-    Region := XCreateRegion;
-    XUnionRectWithRegion(@rect, Region, Region);
-
-    if (Parent <> nil) and (XEmptyRegion(Parent.Region) = 0) then begin
-      XIntersectRegion(Region, Parent.Region, Region);
-    end;
-
-    LastWindowWidth := AWidth;
-    LastWindowHeight := AHeight;
-    DoOnPaint;
+  if XEmptyRegion(Region) = 0 then begin
+    XDestroyRegion(Region);
   end;
+  Region := XCreateRegion;
+  XUnionRectWithRegion(@rect, Region, Region);
+
+  if (Parent <> nil) and (XEmptyRegion(Parent.Region) = 0) then begin
+    XIntersectRegion(Region, Parent.Region, Region);
+  end;
+
+  LastWindowWidth := AWidth;
+  LastWindowHeight := AHeight;
+  DoOnPaint;
 end;
-
 
 end.

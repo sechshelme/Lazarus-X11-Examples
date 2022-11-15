@@ -17,6 +17,7 @@ type
     AppClose: boolean; static;
     constructor Create(TheOwner: TX11Component; NewWindow: boolean = False);
     destructor Destroy; override;
+  protected
     procedure DoOnEventHandle(var Event: TXEvent); override;
     procedure Run;
   end;

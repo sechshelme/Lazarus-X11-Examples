@@ -84,7 +84,7 @@ var
       OnClick := @btnClick;
       Left := 15;
       Top := 15;
-      BorderWidth:=20;
+      BorderWidth := 20;
       Height := Mywindow.Height - 30;
       Width := Mywindow.Width - 30;
       Anchors := [akTop, akLeft, akRight, akBottom];
@@ -128,10 +128,9 @@ var
     with Panel do begin
       Left := 10;
       Top := 10;
-      Width := Self.Width-20;
+      Width := Self.Width - 20;
       Height := 100;
       BorderWidth := 4;
-      //            Anchors := [akRight, akBottom];
       Anchors := [akTop, akLeft, akRight, akBottom];
     end;
 
@@ -155,7 +154,6 @@ var
       Height := Panel.Height - 20;
       Bevel := bvLowred;
       Anchors := [akTop, akLeft, akRight, akBottom];
-      //     Anchors := [akTop, akLeft, akRight];
     end;
 
     for i := 0 to Length(Button) - 1 do begin
@@ -180,8 +178,8 @@ var
       Width := 120;
       Height := 50;
       Anchors := [akRight, akBottom];
-      //            Anchors:=[akTop,akLeft, akRight, akBottom];
       Caption := 'Close';
+      Color:=$BB0000;
       OnClick := @CloseButtonClick;
       OnMouseMove := @CloseButtonMouseMove;
     end;
@@ -193,15 +191,10 @@ var
       Left := 250;
       Height := 50;
       Width := 120;
-      //            Anchors:=[akTop,akLeft, akRight, akBottom];
       Caption := 'New';
       OnClick := @NewButtonClick;
     end;
 
-    WriteLn('Left ', NewButton.Left);
-    WriteLn('Top ', NewButton.Top);
-    WriteLn('Width ', NewButton.Width);
-    WriteLn('Height ', NewButton.Height);
   end;
 
   destructor TMyDesktop.Destroy;
@@ -233,10 +226,6 @@ var
 
   procedure TMyDesktop.DoOnEventHandle(var Event: TXEvent);
   begin
-    WriteLn('Left ', NewButton.Left);
-    WriteLn('Top ', NewButton.Top);
-    WriteLn('Width ', NewButton.Width);
-    WriteLn('Height ', NewButton.Height);
     inherited DoOnEventHandle(Event);
     case Event._type of
       KeyPress: begin

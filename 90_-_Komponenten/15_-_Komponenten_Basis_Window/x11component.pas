@@ -8,7 +8,7 @@ uses
   unixtype, ctypes, xlib, xutil, keysym, x;
 
 const
-//  EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or StructureNotifyMask or PointerMotionMask;
+  //  EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or StructureNotifyMask or PointerMotionMask;
   EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or PointerMotionMask;
 
 type
@@ -39,7 +39,7 @@ type
     procedure SetLeft(ALeft: cint);
     procedure SetWidth(AWidth: cint);
 
-    procedure Resize(ALeft, ATop, AWidth, AHeight: cint);
+    procedure Resize(AWidth, AHeight: cint);
   protected
     dis: PDisplay; static;
     scr: cint; static;
@@ -85,9 +85,8 @@ end;
 procedure TX11Component.SetHeight(AHeight: cint);
 begin
   if FHeight <> AHeight then begin
-//    FHeight := AHeight;
-        XResizeWindow(dis, Window, FWidth, AHeight);
-    Resize(FLeft,FTop,FWidth,AHeight);
+    XResizeWindow(dis, Window, FWidth, AHeight);
+    Resize(FWidth, AHeight);
   end;
 end;
 
@@ -103,8 +102,8 @@ procedure TX11Component.SetWidth(AWidth: cint);
 begin
   if FWidth <> AWidth then begin
     FWidth := AWidth;
-        XResizeWindow(dis, Window, AWidth, FHeight);
-    Resize(FLeft,FTop,AWidth,FHeight);
+    XResizeWindow(dis, Window, AWidth, FHeight);
+    Resize(AWidth, FHeight);
   end;
 end;
 
@@ -168,22 +167,20 @@ begin
     FWindow := XCreateSimpleWindow(dis, RootWin, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
     XSelectInput(dis, FWindow, EventMask or StructureNotifyMask);
   end;
-  //with  size_hints do begin
-  //  flags := PSize or PMinSize or PMaxSize;
-  //  //    flags:=0;
-  //  min_width := FWidth;
-  //  max_width := FWidth;
-  //  min_height := FHeight;
-  //  max_height := FHeight;
-  //  x := 300;
-  //  y := 200;
-  //end;
-  //XSetStandardProperties(dis, Window, 'none', 'none', None, nil, 0, @size_hints);
+  with  size_hints do begin
+    flags := PSize or PPosition or PMinSize;
+    min_width := 50;
+    min_height := 50;
+    Width := FWidth;
+    Height := FHeight;
+    x := 300;
+    y := 200;
+  end;
+  XSetStandardProperties(dis, Window, 'noname', 'noname', None, nil, 0, @size_hints);
 
   XStoreName(dis, FWindow, 'none');
   XSetBackground(dis, gc, $FF);
   XSetForeground(dis, gc, $FF00);
-
 
   // Fenster anzeigen
   XMapWindow(dis, FWindow);
@@ -245,9 +242,8 @@ begin
       end;
       ConfigureNotify: begin
         if (Event.xconfigure.Width <> FWidth) or (Event.xconfigure.Height <> FHeight) then begin
-          Resize(FLeft, FTop, Event.xconfigure.Width, Event.xconfigure.Height);
+          Resize(Event.xconfigure.Width, Event.xconfigure.Height);
         end;
-        //Resize(FLeft, FTop, FWidth, FHeight);
       end;
       KeyPress: begin
         if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
@@ -293,27 +289,20 @@ begin
 end;
 
 procedure TX11Component.DoOnPaint;
-var
-  i: integer;
 begin
-  for i := 0 to Length(ComponentList) - 1 do begin
-    ComponentList[i].DoOnPaint;
-  end;
+  // Für virtuellen Aufruf
 end;
 
-procedure TX11Component.Resize(ALeft, ATop, AWidth, AHeight: cint);
+procedure TX11Component.Resize(AWidth, AHeight: cint);
 var
   dx, dy, L, T, W, H: cint;
   i: integer;
 begin
   dx := AWidth - FWidth;
   dy := AHeight - FHeight;
-  FLeft := ALeft;
-  FTop := ATop;
+
   FWidth := AWidth;
   FHeight := AHeight;
-//  XMoveResizeWindow(dis, Window, FLeft, FTop, FWidth, FHeight);
-
 
   for i := 0 to Length(ComponentList) - 1 do begin
     with ComponentList[i] do begin
@@ -339,18 +328,13 @@ begin
       end;
 
       if (H <> FHeight) or (W <> FWidth) or (T <> FTop) or (L <> FLeft) then  begin
-//        FLeft := L;
-//        FTop := T;
-//        FWidth := W;
-//        FHeight := H;
-        Resize(L,T,W,H);
+        FLeft := L;
+        FTop := T;
+        Resize(W, H);
         XMoveResizeWindow(dis, Window, L, T, W, H);
-        //        XResizeWindow(dis, Window, W, H);
-        //      XMoveWindow(dis, Window, L, T);
       end;
     end;
   end;
-
 end;
 
 end.

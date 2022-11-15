@@ -14,6 +14,7 @@ type
 
   TX11Window = class(TX11Component)
   private
+    wm_delete_window: TAtom;
     scr: cint;
   public
     AppClose: boolean; static;
@@ -44,6 +45,7 @@ begin
   Width := LastWindowWidth;
   Height := LastWindowHeight;
 
+  wm_delete_window := XInternAtom(dis, 'WM_DELETE_WINDOW', False);
   win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, LastWindowWidth, LastWindowHeight, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
   // Wählt die gewünschten Ereignisse aus
@@ -52,7 +54,9 @@ begin
 
   // Fenster anzeigen
   XMapWindow(dis, win);
-  Anchors := [akTop, akLeft, akRight, akBottom];
+
+  // [X] abfangen
+  XSetWMProtocols(dis, win, @wm_delete_window, 1);
 end;
 
 destructor TX11Window.Destroy;
@@ -98,6 +102,16 @@ begin
   // Ereignisschleife
   while not AppClose do begin
     XNextEvent(dis, @Event);
+
+    case Event._type of
+      ClientMessage: begin
+        if (Event.xclient.Data.l[0] = wm_delete_window) then begin
+          WriteLn('[X] wurde gedrückt');
+          AppClose := True;
+        end;
+      end;
+    end;
+
     DoOnEventHandle(Event);
   end;
 end;

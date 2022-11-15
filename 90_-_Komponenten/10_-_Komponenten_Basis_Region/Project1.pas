@@ -79,8 +79,6 @@ var
       Width := 530;
       Height := 100;
       BorderWidth := 4;
-      Anchors := [akRight, akBottom];
-      Anchors := [akTop, akLeft, akRight, akBottom];
     end;
 
     PanelSub1 := TX11Panel.Create(Panel);
@@ -91,7 +89,6 @@ var
       Width := 370;
       Height := Panel.Height - 20;
       Bevel := bvLowred;
-      //                  Anchors:=[akTop,akLeft, akRight, akBottom];
     end;
 
     PanelSub2 := TX11Panel.Create(Panel);
@@ -102,7 +99,6 @@ var
       Width := Panel.Width - PanelSub1.Width - 30;
       Height := Panel.Height - 20;
       Bevel := bvLowred;
-      //      Anchors := [akTop, akLeft, akRight];
     end;
 
     for i := 0 to Length(Button) - 1 do begin
@@ -126,8 +122,6 @@ var
       Top := 100;
       Width := 60;
       Height := 25;
-      Anchors := [akRight, akBottom];
-      //            Anchors:=[akTop,akLeft, akRight, akBottom];
       Caption := 'Close';
       OnClick := @CloseButtonClick;
       OnMouseMove := @CloseButtonMouseMove;
@@ -184,28 +178,9 @@ var
     end;
   end;
 
-//  PROCEDURE THeapView.Update;
-//var
-//  status : TFPCHeapStatus;
-//BEGIN
-//   status:=GetFPCHeapStatus;
-//   If (OldMem <> status.CurrHeapUsed) Then Begin                 { Memory differs }
-//     OldMem := status.CurrHeapUsed;                              { Hold memory avail }
-//     DrawView;                                        { Now redraw }
-//   End;
-//END;
-
-var
-  status : TFPCHeapStatus;
-
 begin
-  status:=GetFPCHeapStatus;
-  WriteLn('Heap:', status.CurrHeapFree);
-
   MyWindows := TMyWin.Create(nil);
-  WriteLn('Heap:', status.CurrHeapSize);
   MyWindows.Run;
   MyWindows.Free;
-  WriteLn('Heap:', status.CurrHeapSize);
 end.
 //code-
