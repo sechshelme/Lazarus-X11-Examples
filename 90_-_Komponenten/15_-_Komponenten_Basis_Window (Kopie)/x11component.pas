@@ -8,8 +8,7 @@ uses
   unixtype, ctypes, xlib, xutil, keysym, x;
 
 const
-//  EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or StructureNotifyMask or PointerMotionMask;
-  EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or PointerMotionMask;
+  EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or StructureNotifyMask or PointerMotionMask;
 
 type
 
@@ -85,9 +84,8 @@ end;
 procedure TX11Component.SetHeight(AHeight: cint);
 begin
   if FHeight <> AHeight then begin
-//    FHeight := AHeight;
-        XResizeWindow(dis, Window, FWidth, AHeight);
-    Resize(FLeft,FTop,FWidth,AHeight);
+    FHeight := AHeight;
+    XResizeWindow(dis, Window, FWidth, AHeight);
   end;
 end;
 
@@ -103,8 +101,7 @@ procedure TX11Component.SetWidth(AWidth: cint);
 begin
   if FWidth <> AWidth then begin
     FWidth := AWidth;
-        XResizeWindow(dis, Window, AWidth, FHeight);
-    Resize(FLeft,FTop,AWidth,FHeight);
+    XResizeWindow(dis, Window, AWidth, FHeight);
   end;
 end;
 
@@ -159,14 +156,11 @@ begin
     FName += s;
     if NewWindow then begin
       FWindow := XCreateSimpleWindow(dis, RootWin, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
-      XSelectInput(dis, FWindow, EventMask or StructureNotifyMask);
     end else begin
       FWindow := XCreateSimpleWindow(dis, TheOwner.Window, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
-      XSelectInput(dis, FWindow, EventMask);
     end;
   end else begin
     FWindow := XCreateSimpleWindow(dis, RootWin, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
-    XSelectInput(dis, FWindow, EventMask or StructureNotifyMask);
   end;
   //with  size_hints do begin
   //  flags := PSize or PMinSize or PMaxSize;
@@ -184,6 +178,8 @@ begin
   XSetBackground(dis, gc, $FF);
   XSetForeground(dis, gc, $FF00);
 
+  // Wählt die gewünschten Ereignisse aus
+  XSelectInput(dis, FWindow, EventMask);
 
   // Fenster anzeigen
   XMapWindow(dis, FWindow);
@@ -244,9 +240,9 @@ begin
         DoOnPaint;
       end;
       ConfigureNotify: begin
-        if (Event.xconfigure.Width <> FWidth) or (Event.xconfigure.Height <> FHeight) then begin
+//        if (Event.xconfigure.Width <> FWidth) or (Event.xconfigure.Height <> FHeight) then begin
           Resize(FLeft, FTop, Event.xconfigure.Width, Event.xconfigure.Height);
-        end;
+  //      end;
         //Resize(FLeft, FTop, FWidth, FHeight);
       end;
       KeyPress: begin
@@ -312,8 +308,6 @@ begin
   FTop := ATop;
   FWidth := AWidth;
   FHeight := AHeight;
-//  XMoveResizeWindow(dis, Window, FLeft, FTop, FWidth, FHeight);
-
 
   for i := 0 to Length(ComponentList) - 1 do begin
     with ComponentList[i] do begin
@@ -339,11 +333,10 @@ begin
       end;
 
       if (H <> FHeight) or (W <> FWidth) or (T <> FTop) or (L <> FLeft) then  begin
-//        FLeft := L;
-//        FTop := T;
-//        FWidth := W;
-//        FHeight := H;
-        Resize(L,T,W,H);
+        FLeft := L;
+        FTop := T;
+        FWidth := W;
+        FHeight := H;
         XMoveResizeWindow(dis, Window, L, T, W, H);
         //        XResizeWindow(dis, Window, W, H);
         //      XMoveWindow(dis, Window, L, T);

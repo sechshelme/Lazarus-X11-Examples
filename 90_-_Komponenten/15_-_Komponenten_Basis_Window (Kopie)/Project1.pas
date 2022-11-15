@@ -76,7 +76,9 @@ var
   var
     Mywindow: TX11Window;
     btn: TX11Button;
+
   begin
+
     Mywindow := TX11Window.Create(Self, True);
     btn := TX11Button.Create(Mywindow);
     with btn do begin
@@ -84,10 +86,8 @@ var
       OnClick := @btnClick;
       Left := 15;
       Top := 15;
-      BorderWidth:=20;
-      Height := Mywindow.Height - 30;
-      Width := Mywindow.Width - 30;
-      Anchors := [akTop, akLeft, akRight, akBottom];
+      Height := Self.Height - 30;
+      Width := Self.Width - 30;
     end;
   end;
 
@@ -128,7 +128,7 @@ var
     with Panel do begin
       Left := 10;
       Top := 10;
-      Width := Self.Width-20;
+      Width := 530;
       Height := 100;
       BorderWidth := 4;
       //            Anchors := [akRight, akBottom];
