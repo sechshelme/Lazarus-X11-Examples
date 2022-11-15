@@ -179,7 +179,7 @@ var
       Height := 50;
       Anchors := [akRight, akBottom];
       Caption := 'Close';
-      Color:=$BB0000;
+      Color:=$BB2222;
       OnClick := @CloseButtonClick;
       OnMouseMove := @CloseButtonMouseMove;
     end;
