@@ -1,8 +1,9 @@
 //image image.png
 (*
-Erstes Fenster mit <b>X11</b> wird erstellt.
-Es wird nur ein einziges Eregniss gebraucht.
-Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.
+Es ist möglich ein Fenster innerhalb eine anderen zu erzeugen.
+Bei GUI-Anwendungen ist dies in der Regel der Fall.
+Jedes **Panel**, **Button**, etc. sind eigene Fenster.
+Dies ist auch rekursiv möglich. ZB. Ein Button in einem Panel und dieses dann im Hauptfenster.
 *)
 //lineal
 //code+
@@ -24,7 +25,8 @@ var
   gc: TGC;
   i: integer;
 
-const EventMask=      KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask;
+const
+  EventMask = KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask;
 
 begin
   // Erstellt die Verbindung zum Server
@@ -36,17 +38,16 @@ begin
   scr := DefaultScreen(dis);
   gc := DefaultGC(dis, scr);
 
-
-
-  // Erstellt das Fenster
+  // Erstellt das Haupt-Fenster
   win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  XSetIconName(dis, win, 'Hallo'); // Fenster-Titel
 
+  // Zwei Subfenster
   Subwin1 := XCreateSimpleWindow(dis, win, 100, 100, 320, 240, 10, BlackPixel(dis, scr), WhitePixel(dis, scr));
-  Subwin2 := XCreateSimpleWindow(dis, win, 250, 100, 320, 240, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
-      XSetWindowBorderWidth(dis, Subwin2, 15);
-      XSetIconName(dis, win, 'Hakko');
-  // Wählt die gewünschten Ereignisse aus
-  // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
+  Subwin2 := XCreateSimpleWindow(dis, win, 250, 80, 320, 240, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  XSetWindowBorderWidth(dis, Subwin2, 15);
+
+  // Es werden Events für Zeichen, Maus und Tastatur gebraucht.
   XSelectInput(dis, win, EventMask);
   XSelectInput(dis, Subwin1, EventMask);
   XSelectInput(dis, Subwin2, EventMask);
@@ -76,6 +77,7 @@ begin
         end;
       end;
       MotionNotify: begin
+        // In welchem Fenster bewegt sich die Maus
         if Event.xbutton.window = win then begin
           WriteLn('root');
         end;
@@ -86,8 +88,8 @@ begin
           WriteLn('Sub2');
         end;
       end;
-      ButtonPress:begin
-        Write('press');
+      ButtonPress: begin
+        // Angeklicktes Fenster zuoberst
         XRaiseWindow(dis, Event.xbutton.window);
       end;
 
@@ -98,7 +100,6 @@ begin
         end;
       end;
     end;
-
   end;
 
   // Schliesst Verbindung zum Server

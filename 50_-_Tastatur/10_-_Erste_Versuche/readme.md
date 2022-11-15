@@ -1,10 +1,14 @@
-//image image.png
-(*
+# 01 - Einfuehrung
+## 05 - Besser mit Klassen
+
+![image.png](image.png)
+
 Besser man macht es objektorientiert mit Klassen.
-Dies macht es übersichtlicher und ausbaufähiger.
-*)
-//lineal
-//code+
+Die macht es übersichtlicher und ausbaufähiger.
+
+---
+
+```pascal
 program Project1;
 
 uses
@@ -44,7 +48,7 @@ type
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
-    // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
+    // Es wird nur das Tastendrückereigniss **KeyPressMask** gebraucht.
     XSelectInput(dis, win, KeyPressMask);
 
     // Fenster anzeigen
@@ -82,13 +86,10 @@ var
   MyWindows: TMyWin;
 
 begin
-  // Programm inizialisieren
   MyWindows := TMyWin.Create;
-
-  // Programm ablaufen lassen
   MyWindows.Run;
-
-  // Alles aufräumen und beenden
   MyWindows.Free;
 end.
-//code-
+```
+
+

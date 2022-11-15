@@ -46,9 +46,8 @@ type
 
     // Wählt die gewünschten Ereignisse aus
     // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
-//    XSelectInput(dis, win, KeyPressMask);
-XSelectInput(dis, win, $FFFF);
-XSelectInput(dis, win2, $FFFF);
+    XSelectInput(dis, win, KeyPressMask or KeyReleaseMask or ExposureMask);
+    XSelectInput(dis, win2, KeyPressMask or KeyReleaseMask or ExposureMask);
 
     // Fenster anzeigen
     XMapWindow(dis, win);
@@ -76,6 +75,9 @@ XSelectInput(dis, win2, $FFFF);
       WriteLn('Event: ', Event._type);
 
       case Event._type of
+        Expose: begin
+          WriteLn('expose');
+        end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
           case XLookupKeysym(@Event.xkey, 0) of
@@ -84,22 +86,24 @@ XSelectInput(dis, win2, $FFFF);
             end;
             XK_space: begin
               WriteLn('space');
-              e._type:=DestroyNotify;
-              e.xbutton.window:=Event.xbutton.window;
-              e.xbutton.window:=win;
-//              XSendEvent(dis, win, False, myEvent, @e);
-              status:= XSendEvent(dis, Event.xbutton.window, True, NoEventMask, @e);
-              if status=0 then WriteLn('fehler');
+              e._type := Expose;
+              e.xkey.window := win;
+
+              //              XSendEvent(dis, win, False, myEvent, @e);
+              status := XSendEvent(dis, win, True, Expose, @e);
+              if status = 0 then begin
+                WriteLn('fehler');
+              end;
 
             end;
           end;
         end;
-        ClientMessage : begin
+        ClientMessage: begin
           WriteLn('Hallo');
         end;
         DestroyNotify: begin
           WriteLn('Ende ', Event.xbutton.window);
-//          Exit;
+          //          Exit;
         end;
       end;
 

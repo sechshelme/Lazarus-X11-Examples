@@ -1,7 +1,7 @@
 //image image.png
 (*
 Besser man macht es objektorientiert mit Klassen.
-Dies macht es übersichtlicher und ausbaufähiger.
+Die macht es übersichtlicher und ausbaufähiger.
 *)
 //lineal
 //code+
@@ -21,7 +21,7 @@ type
     dis: PDisplay;
     scr: cint;
     depth: cint;
-    rootwin, win: TWindow;
+    rootwin, win, win2: TWindow;
   public
     constructor Create;
     destructor Destroy; override;
@@ -42,13 +42,17 @@ type
 
     // Erstellt das Fenster
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    win2 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
     // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
-    XSelectInput(dis, win, KeyPressMask);
+//    XSelectInput(dis, win, KeyPressMask);
+XSelectInput(dis, win, $FFFF);
+XSelectInput(dis, win2, $FFFF);
 
     // Fenster anzeigen
     XMapWindow(dis, win);
+    XMapWindow(dis, win2);
   end;
 
   destructor TMyWin.Destroy;
@@ -61,17 +65,41 @@ type
   procedure TMyWin.Run;
   var
     Event: TXEvent;
+    e: TXEvent;
+    status: TStatus;
+  const
+    myEvent = 37;
   begin
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
+      WriteLn('Event: ', Event._type);
 
       case Event._type of
         KeyPress: begin
           // Beendet das Programm bei [ESC]
-          if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
-            Break;
+          case XLookupKeysym(@Event.xkey, 0) of
+            XK_Escape: begin
+              Break;
+            end;
+            XK_space: begin
+              WriteLn('space');
+              e._type:=DestroyNotify;
+              e.xbutton.window:=Event.xbutton.window;
+              e.xbutton.window:=win;
+//              XSendEvent(dis, win, False, myEvent, @e);
+              status:= XSendEvent(dis, Event.xbutton.window, True, NoEventMask, @e);
+              if status=0 then WriteLn('fehler');
+
+            end;
           end;
+        end;
+        ClientMessage : begin
+          WriteLn('Hallo');
+        end;
+        DestroyNotify: begin
+          WriteLn('Ende ', Event.xbutton.window);
+//          Exit;
         end;
       end;
 
@@ -82,13 +110,8 @@ var
   MyWindows: TMyWin;
 
 begin
-  // Programm inizialisieren
   MyWindows := TMyWin.Create;
-
-  // Programm ablaufen lassen
   MyWindows.Run;
-
-  // Alles aufräumen und beenden
   MyWindows.Free;
 end.
 //code-

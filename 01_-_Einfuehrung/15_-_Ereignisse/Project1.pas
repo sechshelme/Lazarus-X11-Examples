@@ -51,6 +51,7 @@ type
     end;
     scr := DefaultScreen(dis);
     gc := DefaultGC(dis, scr);
+
     // Erstellt das Fenster
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 

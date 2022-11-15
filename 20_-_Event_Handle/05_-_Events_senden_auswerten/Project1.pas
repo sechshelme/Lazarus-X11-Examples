@@ -22,7 +22,7 @@ type
     scr: cint;
     depth: cint;
     rootwin, win, win2: TWindow;
-    widht, height: cuint;
+    widht, Height: cuint;
   public
     constructor Create;
     destructor Destroy; override;
@@ -41,18 +41,19 @@ type
     end;
     scr := DefaultScreen(dis);
 
-    widht:=320;height:=200;
+    widht := 320;
+    Height := 200;
 
     // Erstellt das Fenster
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, widht, height, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-    win2 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, widht, height, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, widht, Height, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    win2 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, widht, Height, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
     // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
-    XSelectInput(dis, win, KeyPressMask or ResizeRedirectMask);
-    XSelectInput(dis, win2, KeyPressMask or ResizeRedirectMask);
-//XSelectInput(dis, win, $FFFF);
-//XSelectInput(dis, win2, $FFFF);
+    XSelectInput(dis, win, KeyPressMask);
+    XSelectInput(dis, win2, KeyPressMask);
+    //XSelectInput(dis, win, $FFFF);
+    //XSelectInput(dis, win2, $FFFF);
 
     // Fenster anzeigen
     XMapWindow(dis, win);
@@ -71,8 +72,6 @@ type
     Event: TXEvent;
     e: TXEvent;
     status: TStatus;
-  const
-    myEvent = 37;
   begin
     // Ereignisschleife
     while (True) do begin
@@ -82,35 +81,35 @@ type
       case Event._type of
         KeyPress: begin
           // Beendet das Programm bei [ESC]
+
+          writeln( Event.xkey.state);
+          WriteLn(char( XLookupKeysym(@Event.xkey, 0)));
           case XLookupKeysym(@Event.xkey, 0) of
+            XKc_A:WriteLn('a');
+
             XK_Escape: begin
               Break;
             end;
             XK_space: begin
-              widht:=widht+10;
-              XMoveResizeWindow(dis,win2,100,100,widht,height);
-              WriteLn('space');
-              e._type:=DestroyNotify;
-              e.xbutton.window:=Event.xbutton.window;
-              e.xbutton.window:=win;
-//              XSendEvent(dis, win, False, myEvent, @e);
-//              status:= XSendEvent(dis, Event.xbutton.window, True, NoEventMask, @e);
-  //            if status=0 then WriteLn('fehler');
-
+              e:=Event;
+              e._type := KeyPress;
+              e.xkey.keycode:= XK_Escape;
+              status := XSendEvent(dis, win, False, KeyPress, @e);
+              if status = 0 then begin
+                WriteLn('fehler');
+              end;
             end;
           end;
         end;
-        ResizeRequest:begin
+        ResizeRequest: begin
           WriteLn('resize');
         end;
-
-
-        ClientMessage : begin
+        ClientMessage: begin
           WriteLn('Hallo');
         end;
         DestroyNotify: begin
           WriteLn('Ende ', Event.xbutton.window);
-//          Exit;
+          //          Exit;
         end;
       end;
 
