@@ -25,6 +25,9 @@ var
   i: integer;
   size_hints: TXSizeHints;
   r: TXRectangle;
+  rr: PWindow;
+  xret, yret: cint;
+  widhtRet, heigheiRet, bw, dr: cuint;
 
 const
   //  EventMask = KeyPressMask or ExposureMask or StructureNotifyMask or ResizeRedirectMask;
@@ -143,14 +146,21 @@ begin
           WriteLn('type: ', Event.xconfigure._type);
           WriteLn('serial: ', Event.xconfigure.serial);
           WriteLn('send_event: ', Event.xconfigure.send_event);
-          //          WriteLn('Window parent: ', Event.xconfigure.parent);
+          WriteLn('Window event: ', Event.xconfigure.event);
           WriteLn('Window window: ', Event.xconfigure.window);
           WriteLn('x: ', Event.xconfigure.x);
           WriteLn('y: ', Event.xconfigure.y);
           WriteLn('widht: ', Event.xconfigure.Width);
           WriteLn('height: ', Event.xconfigure.Height);
           WriteLn('boarderwidht: ', Event.xconfigure.border_width);
+          WriteLn('Window above: ', Event.xconfigure.above);
+          WriteLn('ovveride_redirect: ', Event.xconfigure.override_redirect);
           WriteLn();
+
+
+          XGetGeometry(dis,win, @rr, @xret,@yret, @widhtRet, @heigheiRet, @bw,@dr);
+          WriteLn(xret,' ' ,yret,' ',widhtRet,' ',heigheiRet,' ');
+//          XTranslateCoordinates(dis,win,);
         end;
 
       end;
