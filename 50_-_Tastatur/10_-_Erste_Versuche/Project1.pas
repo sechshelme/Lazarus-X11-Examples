@@ -28,6 +28,9 @@ type
     procedure Run;
   end;
 
+const
+  EventMask = KeyPressMask or KeyReleaseMask or KeymapStateMask;
+
   constructor TMyWin.Create;
   begin
     inherited Create;
@@ -46,9 +49,8 @@ type
 
     // Wählt die gewünschten Ereignisse aus
     // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
-//    XSelectInput(dis, win, KeyPressMask);
-XSelectInput(dis, win, $FFFF);
-XSelectInput(dis, win2, $FFFF);
+    XSelectInput(dis, win, EventMask);
+    XSelectInput(dis, win2, EventMask);
 
     // Fenster anzeigen
     XMapWindow(dis, win);
@@ -73,33 +75,53 @@ XSelectInput(dis, win2, $FFFF);
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
-      WriteLn('Event: ', Event._type);
+      //      WriteLn('Event: ', Event._type);
 
       case Event._type of
-        KeyPress: begin
-          // Beendet das Programm bei [ESC]
-          case XLookupKeysym(@Event.xkey, 0) of
-            XK_Escape: begin
-              Break;
-            end;
-            XK_space: begin
-              WriteLn('space');
-              e._type:=DestroyNotify;
-              e.xbutton.window:=Event.xbutton.window;
-              e.xbutton.window:=win;
-//              XSendEvent(dis, win, False, myEvent, @e);
-              status:= XSendEvent(dis, Event.xbutton.window, True, NoEventMask, @e);
-              if status=0 then WriteLn('fehler');
-
-            end;
-          end;
+        KeymapNotify: begin
+          WriteLn('keymap');
         end;
-        ClientMessage : begin
+        KeyRelease: begin
+          //          WriteLn('Release: ', Event.xkey.keycode);
+          //          WriteLn('state: ', Event.xkey.state);
+          //        WriteLn();
+        end;
+        KeyPress: begin
+          WriteLn('keycode:' ,XKeycodeToKeysym(dis, Event.xkey.keycode, 0));
+          WriteLn('keycode:' ,XKeycodeToKeysym(dis, Event.xkey.keycode, Event.xkey.state));
+          WriteLn('Press: ', Event.xkey.keycode);
+          WriteLn('state: ', Event.xkey.state);
+          WriteLn('Keysym: ', XLookupKeysym(@Event.xkey, 0));
+          WriteLn('Keysym: ', XLookupKeysym(@Event.xkey, 1));
+          WriteLn(XKeysymToString(XLookupKeysym(@Event.xkey, 0)));
+          WriteLn(XKeysymToString(XLookupKeysym(@Event.xkey, Event.xkey.state)));
+          WriteLn();
+
+          // Beendet das Programm bei [ESC]
+          //case XLookupKeysym(@Event.xkey, 0) of
+          //  XK_Escape: begin
+          //    Break;
+          //  end;
+          //  XK_space: begin
+          //    WriteLn('space');
+          //    e._type := DestroyNotify;
+          //    e.xbutton.window := Event.xbutton.window;
+          //    e.xbutton.window := win;
+          //    //              XSendEvent(dis, win, False, myEvent, @e);
+          //    status := XSendEvent(dis, Event.xbutton.window, True, NoEventMask, @e);
+          //    if status = 0 then begin
+          //      WriteLn('fehler');
+          //    end;
+          //
+          //  end;
+          //end;
+        end;
+        ClientMessage: begin
           WriteLn('Hallo');
         end;
         DestroyNotify: begin
           WriteLn('Ende ', Event.xbutton.window);
-//          Exit;
+          //          Exit;
         end;
       end;
 
