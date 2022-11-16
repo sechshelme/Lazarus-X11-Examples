@@ -8,12 +8,24 @@ Die macht es übersichtlicher und ausbaufähiger.
 program Project1;
 
 uses
+  //  libc,
   unixtype,
   ctypes,
   xlib,
   xutil,
+  xresource,
   keysym,
   x;
+
+//const clib = 'c';
+//procedure setlocale(cat : integer; p : pchar); cdecl; external 'c';
+  function setlocale(cat: integer; p: PChar): cint; cdecl; external 'c';
+
+
+
+const
+  LC_ALL = 6;
+
 
 type
   TMyWin = class(TObject)
@@ -21,7 +33,7 @@ type
     dis: PDisplay;
     scr: cint;
     depth: cint;
-    rootwin, win, win2: TWindow;
+    rootwin, win: TWindow;
   public
     constructor Create;
     destructor Destroy; override;
@@ -29,11 +41,28 @@ type
   end;
 
 const
-  EventMask = KeyPressMask or KeyReleaseMask or KeymapStateMask;
+  EventMask = ButtonPress or KeyPressMask or KeyReleaseMask or StructureNotifyMask;
+
+  function test(ac:array of const):Pchar;
+  begin
+
+  end;
 
   constructor TMyWin.Create;
+  var
+    im: PXIM;
+    failed: PChar;
   begin
     inherited Create;
+    if setlocale(LC_ALL, '') = 0 then begin
+      WriteLn('setlocale Fehler');
+    end;
+    if XSupportsLocale = 0 then begin
+      WriteLn('XSupportsLocale Fehler');
+    end;
+    if XSetLocaleModifiers('@im=none') = nil then begin
+      WriteLn('XSetLocaleModifiers Fehler');
+    end;
 
     // Erstellt die Verbindung zum Server
     dis := XOpenDisplay(nil);
@@ -45,16 +74,26 @@ const
 
     // Erstellt das Fenster
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-    win2 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
     // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
     XSelectInput(dis, win, EventMask);
-    XSelectInput(dis, win2, EventMask);
 
     // Fenster anzeigen
     XMapWindow(dis, win);
-    XMapWindow(dis, win2);
+
+    im := XOpenIM(dis, nil, nil, nil);
+    if im = nil then begin
+      WriteLn('Could not open input method');
+    end;
+
+//    failed:=XGetIMValues(im,XNQueryInputStyle,@styles,nil);
+//     XGetIMValues(im, xnq);
+    failed := XGetIMValues(im, ['queryInputStyle']);
+    if failed=nil then begin
+      WriteLn('fdgfd');
+    end;
+
   end;
 
   destructor TMyWin.Destroy;
@@ -87,9 +126,8 @@ const
           //        WriteLn();
         end;
         KeyPress: begin
-          Xutf8TextListToTextProperty();
-          WriteLn('keycode:' ,XKeycodeToKeysym(dis, Event.xkey.keycode, 0));
-          WriteLn('keycode:' ,XKeycodeToKeysym(dis, Event.xkey.keycode, Event.xkey.state));
+          WriteLn('keycode:', XKeycodeToKeysym(dis, Event.xkey.keycode, 0));
+          WriteLn('keycode:', XKeycodeToKeysym(dis, Event.xkey.keycode, Event.xkey.state));
           WriteLn('Press: ', Event.xkey.keycode);
           WriteLn('state: ', Event.xkey.state);
           WriteLn('Keysym: ', XLookupKeysym(@Event.xkey, 0));
