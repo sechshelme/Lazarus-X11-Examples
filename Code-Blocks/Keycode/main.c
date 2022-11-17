@@ -63,10 +63,10 @@ int main(int argc, char ** argv)
     height = 200;
 
     win = XCreateSimpleWindow(dpy, DefaultRootWindow(dpy), /* display, parent */
-        0,0, /* x, y: the window manager will place the window elsewhere */
-        width, height, /* width, height */
-        2, 0xFF00000, /* border width & colour, unless you have a window manager */
-        0x880000) ;/* background colour */
+        0,0,
+        width, height,
+        2, 0xFF00000,
+        0x880000) ;
 
     /* tell the display server what kind of events we would like to see */
     XSelectInput(dpy, win, ButtonPressMask|StructureNotifyMask|KeyPressMask|KeyReleaseMask);
