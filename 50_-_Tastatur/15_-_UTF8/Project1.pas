@@ -108,6 +108,7 @@ const
     status: TStatus;
     Count: integer;
     keysym: TKeySym;
+    i: integer;
     buf: array[0..31] of char;
 
   begin
