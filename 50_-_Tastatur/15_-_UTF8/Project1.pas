@@ -29,8 +29,6 @@ type
 const
   LC_ALL = 6;
 
-  qIS: TCharArray = ('q', 'u', 'e', 'r', 'y', 'I', 'n', 'p', 'u', 't', 'S', 't', 'y', 'l', 'e');
-
 
 type
   TMyWin = class(TObject)
@@ -38,9 +36,9 @@ type
     dis: PDisplay;
     scr: cint;
     gc: TGC;
-    rootwin, win: TWindow;
+    win: TWindow;
 
-    ic: PXIC;
+    xic: PXIC;
   public
     constructor Create;
     destructor Destroy; override;
@@ -49,29 +47,15 @@ type
 
 const
   EventMask = ButtonPressMask or KeyPressMask or KeyReleaseMask or StructureNotifyMask or ExposureMask;
-
-  // ac:array of const = ('q','u','e','r','y','I','n','p','u','t','S','t','y','l','e');
-
-  function test(ac: array of const): PChar;
-  begin
-
-  end;
+  //  EventMask = KeyPressMask or KeyReleaseMask;
 
   constructor TMyWin.Create;
   var
-    im: PXIM;
-    failed: PChar;
-    styles: TXIMStyles;
+    xim: PXIM;
   begin
     inherited Create;
     if setlocale(LC_ALL, '') = 0 then begin
       WriteLn('setlocale Fehler');
-    end;
-    if XSupportsLocale = 0 then begin
-      WriteLn('XSupportsLocale Fehler');
-    end;
-    if XSetLocaleModifiers('@im=none') = nil then begin
-      WriteLn('XSetLocaleModifiers Fehler');
     end;
 
     // Erstellt die Verbindung zum Server
@@ -83,39 +67,27 @@ const
     scr := DefaultScreen(dis);
     gc := DefaultGC(dis, scr);
 
-
-    // Erstellt das Fenster
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-
-    // Wählt die gewünschten Ereignisse aus
-    // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
-    XSelectInput(dis, win, EventMask);
-
-    // Fenster anzeigen
+    win := XCreateSimpleWindow(dis, DefaultRootWindow(dis), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
     XMapWindow(dis, win);
+    XSync(dis, False);
 
-    im := XOpenIM(dis, nil, nil, nil);
-    if im = nil then begin
+    XSetLocaleModifiers('');
+
+    xim := XOpenIM(dis, nil, nil, nil);
+    if xim = nil then begin
       // fallback to internal input method
       XSetLocaleModifiers('@im=none');
-      im := XOpenIM(dis, nil, nil, nil);
-      WriteLn('Could not open input method');
+      xim := XOpenIM(dis, nil, nil, nil);
     end;
 
-    failed := XGetIMValues(im, [XNQueryInputStyle, @styles, nil]);
-    if failed <> nil then begin
-      WriteLn('XIM Can''t get styles');
-      WriteLn(failed);
-    end;
-
-    WriteLn(styles.count_styles);
-
-    ic := XCreateIC(im, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow, win, nil]);
-    if ic = nil then begin
+    xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow, win, XNFocusWindow, win, nil]);
+    if xic = nil then begin
       WriteLn('Could not open IC');
     end;
 
-    XSetICFocus(ic);
+    XSetICFocus(xic);
+
+    XSelectInput(dis, win, EventMask);
 
   end;
 
@@ -133,52 +105,56 @@ const
 
   var
     Event: TXEvent;
-    e: TXEvent;
     status: TStatus;
-    countP, countR: integer;
+    Count: integer;
     keysym: TKeySym;
-    i: integer;
-    bufP, bufR: array[0..19] of char;
+    buf: array[0..31] of char;
+
   begin
+
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
-      case Event._type of
-        Expose: begin
-          XDrawString(dis, win, gc, 10, 10, PChar(Hello), Length(Caption));
-          XDrawString(dis, win, gc, 10, 30, PChar(Caption), Length(Caption));
-        end;
-        KeymapNotify: begin
-          WriteLn('keymap');
-        end;
-        KeyPress: begin
-          WriteLn('press');
-          countP := 0;
-          keysym := 0;
-          status := 0;
-          countP := Xutf8LookupString(ic, @Event, @bufP, 20, @keysym, @status);
-          if status = XBufferOverflow then begin
-            WriteLn('Buffer Überlauf !');
-          end;
-          WriteLn('Count Press: ', countP);
 
-        end;
-        KeyRelease: begin
-          countR := 0;
-          keysym := 0;
-          FillChar(bufR, Length(bufR), #0);
-          countR := XLookupString(@Event, @bufR, 20, @keysym, nil);
-          WriteLn('Count Release: ', countR);
-          if countR > 0 then begin
-            for i := 0 to 6 do begin
-              Write(byte(bufR[i]), ' ');
+      if not XFilterEvent(@Event, 0) then begin
+        case Event._type of
+          Expose: begin
+            XDrawString(dis, win, gc, 10, 10, PChar(Hello), Length(Caption));
+            XDrawString(dis, win, gc, 10, 30, PChar(Caption), Length(Caption));
+            //            Xutf8DrawString(dis, win, @fontset, gc, 10, 50, PChar(Caption), Length(Caption));
+          end;
+          KeyPress: begin
+            keysym := NoSymbol;
+
+            FillChar(buf, Length(buf), #0);
+            Count := Xutf8LookupString(xic, @Event.xkey, @buf, SizeOf(buf) - 1, @keysym, @status);
+            if status = XLookupBoth then begin
+            end;
+
+            if status = XBufferOverflow then begin
+              //            WriteLn('Buffer Überlauf !');
+            end;
+            WriteLn('Count Press: ', Count);
+            Write(buf, ' ');
+            if Event.xkey.state and 1 = 1 then begin
+              Write('Shift ');
+            end;
+            if Event.xkey.state and 2 = 2 then begin
+              Write('Caps ');
+            end;
+            if Event.xkey.state and 4 = 4 then begin
+              Write('Ctrl ');
+            end;
+            if Event.xkey.state and 8 = 8 then begin
+              Write('Alt ');
             end;
             WriteLn();
-            WriteLn(bufR);
+
+          end;
+          KeyRelease: begin
           end;
         end;
       end;
-
     end;
   end;
 

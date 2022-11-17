@@ -143,6 +143,7 @@ const
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
+      if XFilterEvent(@Event,0)then Continue;
       case Event._type of
         Expose: begin
           XDrawString(dis, win, gc, 10, 10, PChar(Hello), Length(Caption));

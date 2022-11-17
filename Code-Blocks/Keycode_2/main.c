@@ -10,7 +10,7 @@ int main(void){
     Display* dpy = XOpenDisplay(NULL);
 
     Window win = XCreateSimpleWindow(dpy, DefaultRootWindow(dpy), 0, 0, 500, 500, 0, 0XFF88, 0XFF88);
-    XMapRaised(dpy, win);
+    XMapWindow(dpy, win);
     XSync(dpy, False);
 
     // X input method setup, only strictly necessary for intl key text
@@ -44,7 +44,7 @@ int main(void){
 
     // main loop
 
-    XEvent prev_ev = {}, ev = {};
+    XEvent ev = {};
 
     // you probably want XPending(dpy) here instead of 1, and an outer main loop
     // where you do things other than just getting X events
@@ -68,12 +68,12 @@ int main(void){
                 char text[32] = {};
 
                 // if you want to tell if this was a repeated key, this trick seems reliable.
-                int is_repeat = prev_ev.type         == KeyRelease &&
-                                prev_ev.xkey.time    == ev.xkey.time &&
-                                prev_ev.xkey.keycode == ev.xkey.keycode;
+       //         int is_repeat = prev_ev.type         == KeyRelease &&
+         //                       prev_ev.xkey.time    == ev.xkey.time &&
+           //                     prev_ev.xkey.keycode == ev.xkey.keycode;
 
                 // you might want to remove the control modifier, since it makes stuff return control codes
-                ev.xkey.state &= ~ControlMask;
+//                ev.xkey.state &= ~ControlMask;
 
                 // get text from the key.
                 // it could be multiple characters in the case an IME is used.
@@ -98,7 +98,7 @@ int main(void){
                     // (all the keysyms are listed in /usr/include/X11/keysymdef.h)
 
                     char* sym_name = XKeysymToString(keysym);
-                    printf("Got both: (%s), (%s)\n", text, sym_name);
+                    printf("Taste: (%s)\n", text);
                 }
 
                 if(status == XLookupKeySym){
@@ -116,7 +116,7 @@ int main(void){
             } break;
         }
 
-        prev_ev = ev;
+        //prev_ev = ev;
     }
 
   return 0;
