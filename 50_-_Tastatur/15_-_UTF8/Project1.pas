@@ -20,11 +20,16 @@ uses
 //const clib = 'c';
 //procedure setlocale(cat : integer; p : pchar); cdecl; external 'c';
   function setlocale(cat: integer; p: PChar): cint; cdecl; external 'c';
+  //  function XGetIMValues(im: PXIM; xis: PChar; styl: PXIMStyles; p: Pointer): PChar; cdecl; external 'X11';
 
 
+type
+  TCharArray = array of char;
 
 const
   LC_ALL = 6;
+
+  qIS: TCharArray = ('q', 'u', 'e', 'r', 'y', 'I', 'n', 'p', 'u', 't', 'S', 't', 'y', 'l', 'e');
 
 
 type
@@ -34,6 +39,8 @@ type
     scr: cint;
     depth: cint;
     rootwin, win: TWindow;
+
+    ic: PXIC;
   public
     constructor Create;
     destructor Destroy; override;
@@ -41,9 +48,11 @@ type
   end;
 
 const
-  EventMask = ButtonPress or KeyPressMask or KeyReleaseMask or StructureNotifyMask;
+  EventMask = ButtonPressMask or KeyPressMask or KeyReleaseMask or StructureNotifyMask;
 
-  function test(ac:array of const):Pchar;
+  // ac:array of const = ('q','u','e','r','y','I','n','p','u','t','S','t','y','l','e');
+
+  function test(ac: array of const): PChar;
   begin
 
   end;
@@ -52,6 +61,7 @@ const
   var
     im: PXIM;
     failed: PChar;
+    styles: TXIMStyles;
   begin
     inherited Create;
     if setlocale(LC_ALL, '') = 0 then begin
@@ -87,12 +97,23 @@ const
       WriteLn('Could not open input method');
     end;
 
-//    failed:=XGetIMValues(im,XNQueryInputStyle,@styles,nil);
-//     XGetIMValues(im, xnq);
-    failed := XGetIMValues(im, ['queryInputStyle']);
-    if failed=nil then begin
-      WriteLn('fdgfd');
+    //    WriteLn(Length([@qIS, @styles, nil]));
+
+    failed := XGetIMValues(im, [XNQueryInputStyle, @styles, nil]);
+    //    failed := XGetIMValues(im, [@qIS, @styles, nil]);
+    if failed <> nil then begin
+      WriteLn('XIM Can''t get styles');
+      WriteLn(failed);
     end;
+
+    WriteLn(styles.count_styles);
+
+    ic := XCreateIC(im, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow, win, nil]);
+    if ic = nil then begin
+      WriteLn('Could not open IC');
+    end;
+
+    XSetICFocus(ic);
 
   end;
 
@@ -107,9 +128,10 @@ const
   var
     Event: TXEvent;
     e: TXEvent;
-    status: TStatus;
-  const
-    myEvent = 37;
+    statusP,statusR: TStatus;
+    countP, countR: Integer;
+    keysym:TKeySym;
+    bufP,bufR:array[0..19]of Char;
   begin
     // Ereignisschleife
     while (True) do begin
@@ -120,40 +142,26 @@ const
         KeymapNotify: begin
           WriteLn('keymap');
         end;
+        KeyPress: begin
+          WriteLn('press');
+          countP:=0;
+          keysym:=0;
+          statusP:=0 ;
+          countP:=Xutf8LookupString(ic,@Event,@bufP,20,@keysym,@statusP);
+          WriteLn(countP);
+
+
+        end;
         KeyRelease: begin
+          countR:=0;
+          keysym:=0;
+          statusR:=0;
+          countR:=XLookupString(@Event,@bufR,20,@keysym,nil);if countR>0 then WriteLn(bufR);
+
           //          WriteLn('Release: ', Event.xkey.keycode);
           //          WriteLn('state: ', Event.xkey.state);
           //        WriteLn();
-        end;
-        KeyPress: begin
-          WriteLn('keycode:', XKeycodeToKeysym(dis, Event.xkey.keycode, 0));
-          WriteLn('keycode:', XKeycodeToKeysym(dis, Event.xkey.keycode, Event.xkey.state));
-          WriteLn('Press: ', Event.xkey.keycode);
-          WriteLn('state: ', Event.xkey.state);
-          WriteLn('Keysym: ', XLookupKeysym(@Event.xkey, 0));
-          WriteLn('Keysym: ', XLookupKeysym(@Event.xkey, 1));
-          WriteLn(XKeysymToString(XLookupKeysym(@Event.xkey, 0)));
-          WriteLn(XKeysymToString(XLookupKeysym(@Event.xkey, Event.xkey.state)));
-          WriteLn();
 
-          // Beendet das Programm bei [ESC]
-          //case XLookupKeysym(@Event.xkey, 0) of
-          //  XK_Escape: begin
-          //    Break;
-          //  end;
-          //  XK_space: begin
-          //    WriteLn('space');
-          //    e._type := DestroyNotify;
-          //    e.xbutton.window := Event.xbutton.window;
-          //    e.xbutton.window := win;
-          //    //              XSendEvent(dis, win, False, myEvent, @e);
-          //    status := XSendEvent(dis, Event.xbutton.window, True, NoEventMask, @e);
-          //    if status = 0 then begin
-          //      WriteLn('fehler');
-          //    end;
-          //
-          //  end;
-          //end;
         end;
         ClientMessage: begin
           WriteLn('Hallo');

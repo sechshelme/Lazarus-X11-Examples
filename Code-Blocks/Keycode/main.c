@@ -26,7 +26,7 @@
 int main(int argc, char ** argv)
 {
     int screen_num, width, height;
-    unsigned long background, border;
+
     Window win;
     XEvent ev;
     Display *dpy;
@@ -57,8 +57,7 @@ int main(int argc, char ** argv)
     /* these are macros that pull useful data out of the display object */
     /* we use these bits of info enough to want them in their own variables */
     screen_num = DefaultScreen(dpy);
-    background = BlackPixel(dpy, screen_num);
-    border = WhitePixel(dpy, screen_num);
+
 
     width = 400; /* start with a small window */
     height = 200;
@@ -89,6 +88,7 @@ int main(int argc, char ** argv)
     }
 
     int i;
+        printf("size %d\n", styles->count_styles);
     for (i = 0; i < styles->count_styles; i++) {
         printf("style %d\n", (int)styles->supported_styles[i]);
     }
