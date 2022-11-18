@@ -17,11 +17,20 @@ uses
   keysym,
   x;
 
+//const clib = 'c';
+//procedure setlocale(cat : integer; p : pchar); cdecl; external 'c';
   function setlocale(cat: integer; p: PChar): cint; cdecl; external 'c';
+  //  function XGetIMValues(im: PXIM; xis: PChar; styl: PXIMStyles; p: Pointer): PChar; cdecl; external 'X11';
+
 
 type
   TCharArray = array of char;
 
+const
+  LC_ALL = 6;
+
+
+type
   TMyWin = class(TObject)
   private
     dis: PDisplay;
@@ -38,14 +47,17 @@ type
 
 const
   EventMask = ButtonPressMask or KeyPressMask or KeyReleaseMask or StructureNotifyMask or ExposureMask;
+  //  EventMask = KeyPressMask or KeyReleaseMask;
 
   constructor TMyWin.Create;
-  const
-    LC_ALL = 6;
   var
     xim: PXIM;
   begin
     inherited Create;
+    if setlocale(LC_ALL, '') = 0 then begin
+      WriteLn('setlocale Fehler');
+    end;
+
     // Erstellt die Verbindung zum Server
     dis := XOpenDisplay(nil);
     if dis = nil then begin
@@ -56,15 +68,10 @@ const
     gc := DefaultGC(dis, scr);
 
     win := XCreateSimpleWindow(dis, DefaultRootWindow(dis), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-    XSelectInput(dis, win, EventMask);
     XMapWindow(dis, win);
     XSync(dis, False);
 
-//    if setlocale(LC_ALL, '') = 0 then begin
-      WriteLn('setlocale Fehler');
-//    end;
-
-//    XSetLocaleModifiers('');
+    XSetLocaleModifiers('');
 
     xim := XOpenIM(dis, nil, nil, nil);
     if xim = nil then begin
@@ -79,6 +86,9 @@ const
     end;
 
     XSetICFocus(xic);
+
+    XSelectInput(dis, win, EventMask);
+
   end;
 
   destructor TMyWin.Destroy;
@@ -90,6 +100,7 @@ const
 
   procedure TMyWin.Run;
   const
+    Caption = 'öäü ÄÜÖ !';
     Hello = 'Hello World !';
 
   var
@@ -97,7 +108,11 @@ const
     status: TStatus;
     Count: integer;
     keysym: TKeySym;
+    i: integer;
     buf: array[0..31] of char;
+    fontset: TXOC;
+    s: array[0..3] of TXChar2b;
+    ss: string;
 
   begin
 
@@ -108,7 +123,28 @@ const
       if not XFilterEvent(@Event, 0) then begin
         case Event._type of
           Expose: begin
-            XDrawString(dis, win, gc, 10, 10, PChar(Hello), Length(Hello));
+            XDrawString(dis, win, gc, 10, 10, PChar(Hello), Length(Caption));
+            XDrawString(dis, win, gc, 10, 30, PChar(Caption), Length(Caption));
+            //     XmbDrawString(dis,win, @fontset,gc,20,70,PChar(Caption), Length(Caption));
+            //                       Xutf8DrawString(dis, win, @fontset, gc, 10, 50, PChar(Caption), Length(Caption));
+            //            XDrawString16(dis, win, gc, 10, 50, PChar(Caption), Length(Caption));
+
+            ss := 'äüö';
+            //Getmem(s,6);
+            s[0].byte1 := byte(ss[1]);
+            s[0].byte2 := byte(ss[2]);
+            s[1].byte1 := byte(ss[3]);
+            s[1].byte2 := byte(ss[4]);
+            s[2].byte1 := byte(ss[5]);
+            s[2].byte2 := byte(ss[6]);
+            s[2].byte1 := byte(ss[7]);
+            s[2].byte2 := byte(ss[8]);
+
+            WriteLn(ss[1], ss[2]);
+
+            XDrawString16(dis, win, gc, 10, 50, s, 8);
+
+            //XDrawString16(dis, win, gc, 10, 50, s, Length(Caption));
           end;
           KeyPress: begin
             keysym := NoSymbol;
