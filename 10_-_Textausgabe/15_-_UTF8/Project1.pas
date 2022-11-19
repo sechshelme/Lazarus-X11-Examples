@@ -115,7 +115,7 @@ const
 
   procedure TMyWin.Paint;
   const
-    Caption = 'öäü-ÄÜÖ !Ÿ';
+    Caption = 'öäü-ÄÜÖ !Ÿ←←««¥¥<<';
     Hello = 'Hello World !';
   begin
     XDrawString(dis, win, gc, 10, 10, PChar(Hello), Length(Caption));
