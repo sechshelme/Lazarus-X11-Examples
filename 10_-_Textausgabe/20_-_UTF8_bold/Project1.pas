@@ -117,13 +117,28 @@ const
   const
     Caption = 'öäü-ÄÜÖ !Ÿ←←««¥¥<<';
     Hello = 'Hello World !';
+  var
+    list:PPChar;
+    count: cint;
+    font: TFont;
+    fontset: TXOC;
   begin
     XDrawString(dis, win, gc, 10, 10, PChar(Hello), Length(Caption));
+
+
+
 
     //    XDrawString(dis, win, gc, 10, 30, PChar(Caption), Length(Caption));
     //     XmbDrawString(dis,win, @fontset,gc,20,70,PChar(Caption), Length(Caption));
     DrawString(Caption, 10, 30);
     DrawString(sl, 10, 50);
+
+    list:=XListFonts(dis,'*', 1000, @count);
+    font:=XLoadFont(dis, list[25]);
+    XSetFont(dis,gc,font);
+//    Xutf8DrawString(dis, win, @fontset, gc, 10, 50, PChar(Caption), Length(Caption));
+
+//    XFreeFontNames(list);
   end;
 
   constructor TMyWin.Create;
