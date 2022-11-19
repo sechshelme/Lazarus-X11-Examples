@@ -7,7 +7,15 @@
 	<X11/X.h>
 	<X11/keysym.h>
 
-1668696487 source:/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/Code-Blocks/Keycode/main.c
-	<X11/Xlib.h>
+1668701498 source:/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/Code-Blocks/Keycode/main.c
 	<stdio.h>
+	<locale.h>
+	<X11/Xlib.h>
+	<X11/keysym.h>
+
+1668701498 source:/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/Code-Blocks/Keycode_2/main.c
+	<stdio.h>
+	<locale.h>
+	<X11/Xlib.h>
+	<X11/keysym.h>
 

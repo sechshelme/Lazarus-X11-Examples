@@ -108,9 +108,7 @@ const
     status: TStatus;
     Count: integer;
     keysym: TKeySym;
-    i: integer;
     buf: array[0..31] of char;
-    fontset: TXOC;
     s: array[0..3] of TXChar2b;
     ss: string;
 

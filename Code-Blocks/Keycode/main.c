@@ -1,163 +1,124 @@
-#include <X11/Xlib.h>
-//#include <X11/Xutil.h>
-//#include <X11/Xresource.h>
-//#hnclude <X11/Xlocale.h>
 #include <stdio.h>
-//#include <stdlib.h>
-//#include <string.h>
+#include <locale.h>
+#include <X11/Xlib.h>
+#include <X11/keysym.h>
 
-/*ne __LC_CTYPE		 0
-#define __LC_NUMERIC		 1
-#define __LC_TIME		 2
-#define __LC_COLLATE		 3
-#define __LC_MONETARY		 4
-#define __LC_MESSAGES		 5
-#define __LC_ALL		 6
-#define __LC_PAPER		 7
-#define __LC_NAME		 8
-#define __LC_ADDRESS		 9
-#define __LC_TELEPHONE		10
-#define __LC_MEASUREMENT	11
-#define __LC_IDENTIFICATION	12*/
+int main(void){
 
-#define	LC_ALL 6
+    setlocale(LC_ALL, "");
 
+    Display* dpy = XOpenDisplay(NULL);
 
-int main(int argc, char ** argv)
-{
-    int screen_num, width, height;
-
-    Window win;
-    XEvent ev;
-    Display *dpy;
-    XIM im;
-    XIC ic;
-    char *failed_arg;
-    XIMStyles *styles;
-    XIMStyle xim_requested_style;
-
-    /* First connect to the display server, as specified in the DISPLAY
-    environment variable. */
-    if (setlocale(LC_ALL, "") == NULL) {
-        return 9;
-    }
-
-    if (!XSupportsLocale()) {
-        return 10;
-    }
-    if (XSetLocaleModifiers("@im=none") == NULL) {
-        return 11;
-    }
-
-    dpy = XOpenDisplay(NULL);
-    if (!dpy) {
-        fprintf(stderr, "unable to connect to display");
-        return 7;
-    }
-    /* these are macros that pull useful data out of the display object */
-    /* we use these bits of info enough to want them in their own variables */
-    screen_num = DefaultScreen(dpy);
-
-
-    width = 400; /* start with a small window */
-    height = 200;
-
-    win = XCreateSimpleWindow(dpy, DefaultRootWindow(dpy), /* display, parent */
-        0,0,
-        width, height,
-        2, 0xFF00000,
-        0x880000) ;
-
-    /* tell the display server what kind of events we would like to see */
-    XSelectInput(dpy, win, ButtonPressMask|StructureNotifyMask|KeyPressMask|KeyReleaseMask);
-
-    /* okay, put the window on the screen, please */
+    Window win = XCreateSimpleWindow(dpy, DefaultRootWindow(dpy), 0, 0, 500, 500, 0, 0XFF88, 0XFF88);
     XMapWindow(dpy, win);
+    XSync(dpy, False);
 
-    im = XOpenIM(dpy, NULL, NULL, NULL);
-    if (im == NULL) {
-        fputs("Could not open input method\n", stdout);
-        return 2;
+    // X input method setup, only strictly necessary for intl key text
+
+    // loads the XMODIFIERS environment variable to see what IME to use
+    XSetLocaleModifiers("");
+
+    XIM xim = XOpenIM(dpy, 0, 0, 0);
+    if(!xim){
+        // fallback to internal input method
+        XSetLocaleModifiers("@im=none");
+        xim = XOpenIM(dpy, 0, 0, 0);
     }
 
-    failed_arg = XGetIMValues(im, XNQueryInputStyle, &styles, NULL);
+    // X input context, you can have multiple for text boxes etc, but having a
+    // single one is the easiest.
 
-    if (failed_arg != NULL) {
-      fputs("XIM Can't get styles\n", stdout);
-      return 3;
-    }
+    XIC xic = XCreateIC(xim,
+                        XNInputStyle,   XIMPreeditNothing | XIMStatusNothing,
+                        XNClientWindow, win,
+                        XNFocusWindow,  win,
+                        NULL);
 
-    int i;
-        printf("size %d\n", styles->count_styles);
-    for (i = 0; i < styles->count_styles; i++) {
-        printf("style %d\n", (int)styles->supported_styles[i]);
-    }
-    ic = XCreateIC(im, XNInputStyle, XIMPreeditNothing | XIMStatusNothing, XNClientWindow, win, NULL);
-    if (ic == NULL) {
-        printf("Could not open IC\n");
-        return 4;
-    }
+    XSetICFocus(xic);
 
-    XSetICFocus(ic);
+    // we want key presses
 
-    /* as each event that we asked about occurs, we respond.  In this
-     * case we note if the window's shape changed, and exit if a button
-     * is pressed inside the window */
-    while(1) {
+    XSelectInput(dpy, win, KeyPressMask | KeyReleaseMask);
+
+      //XMapWindow(dpy, win);
+
+    // main loop
+
+    XEvent ev = {};
+
+    // you probably want XPending(dpy) here instead of 1, and an outer main loop
+    // where you do things other than just getting X events
+    while(1){
         XNextEvent(dpy, &ev);
-        if (XFilterEvent(&ev, win))
-            continue;
+
+        // this is needed for IMEs to hook keypresses is some cases,
+        // if you need keys even when they're filtered things get a bit more complex
+
+        if(XFilterEvent(&ev, None) == True) continue;
+
         switch(ev.type){
-        case MappingNotify:
-            XRefreshKeyboardMapping(&ev.xmapping);
-            break;
-        case KeyPress:
-            {
-                int count = 0;
-                KeySym keysym = 0;
-                char buf[20];
-                Status status = 0;
-                count = Xutf8LookupString(ic, (XKeyPressedEvent*)&ev, buf, 20, &keysym, &status);
+            case KeyPress: {
 
-                printf("count: %d\n", count);
-                if (status==XBufferOverflow)
-//                    printf("BufferOverflow\n");
+                // note: if you just want the XK_ keysym, then you can just use
+                // XLookupKeysym(&ev.xkey, 0);
+                // and ignore all the XIM / XIC / status etc stuff
 
-                if (count)
-                    printf("buffer: %.*s\n", count, buf);
+                Status status;
+                KeySym keysym = NoSymbol;
+                char text[32] = {};
 
-                if (status == XLookupKeySym || status == XLookupBoth) {
-//                    printf("status: %d\n", status);
+                // if you want to tell if this was a repeated key, this trick seems reliable.
+       //         int is_repeat = prev_ev.type         == KeyRelease &&
+         //                       prev_ev.xkey.time    == ev.xkey.time &&
+           //                     prev_ev.xkey.keycode == ev.xkey.keycode;
+
+                // you might want to remove the control modifier, since it makes stuff return control codes
+//                ev.xkey.state &= ~ControlMask;
+
+                // get text from the key.
+                // it could be multiple characters in the case an IME is used.
+                // if you only care about latin-1 input, you can use XLookupString instead
+                // and skip all the XIM / XIC setup stuff
+
+                Xutf8LookupString(xic, &ev.xkey, text, sizeof(text) - 1, &keysym, &status);
+
+                if(status == XBufferOverflow){
+                    // an IME was probably used, and wants to commit more than 32 chars.
+                    // ignore this fairly unlikely case for now
                 }
-//                printf("pressed KEY: %d\n", (int)keysym);
-            }
-            break;
-        case KeyRelease:
-            {
-                int count = 0;
-                KeySym keysym = 0;
-                char buf[20];
-                Status status = 0;
-                count = XLookupString((XKeyEvent*)&ev, buf, 20, &keysym, NULL);
 
-                if (count)
-                    printf("in release buffer: %.*s\n", count, buf);
+                if(status == XLookupChars){
+                    // some characters were returned without an associated key,
+                    // again probably the result of an IME
+                    printf("Got chars: (%s)\n", text);
+                }
 
-//                printf("released KEY: %d\n", (int)keysym);
-            }
-            break;
-        case ConfigureNotify:
-            if (width != ev.xconfigure.width
-                    || height != ev.xconfigure.height) {
-                width = ev.xconfigure.width;
-                height = ev.xconfigure.height;
-//                printf("Size changed to: %d by %d", width, height);
-            }
-            break;
-        case ButtonPress:
-//            XCloseDisplay(dpy);
-//            return 0;
+                if(status == XLookupBoth){
+                    // we got one or more characters with an associated keysym
+                    // (all the keysyms are listed in /usr/include/X11/keysymdef.h)
+
+                    char* sym_name = XKeysymToString(keysym);
+                    printf("Taste: (%s)\n", text);
+                }
+
+                if(status == XLookupKeySym){
+                    // a key without text on it
+                    char* sym_name = XKeysymToString(keysym);
+                    printf("Got keysym: (%s)\n", sym_name);
+                }
+
+                // example of responding to a key
+                if(keysym == XK_Escape){
+                    puts("Exiting because escape was pressed.");
+                    return 0;
+                }
+
+            } break;
         }
-        fflush(stdout);
+
+        //prev_ev = ev;
     }
+
+  return 0;
+
 }
