@@ -26,7 +26,7 @@ int utf8toXChar2b(XChar2b *output_r, int outsize, const char *input, int inlen)
             /* we're inside a character we don't know  */
             continue;
         }
-        else switch(c&0xF0)
+        else switch(c & 0xF0)
             {
             case 0xC0:
             case 0xD0: /* two bytes 5+6 = 11 bits */
@@ -42,7 +42,7 @@ int utf8toXChar2b(XChar2b *output_r, int outsize, const char *input, int inlen)
             case 0xE0: /* three bytes 4+6+6 = 16 bits */
                 if (inlen < j+2)
                 {
-                    return k;
+                 return k;
                 }
                 j++;
                 output_r[k].byte1 = ((c & 0xF) << 4) + ((input[j] & 0x3C) >> 2);
@@ -51,9 +51,9 @@ int utf8toXChar2b(XChar2b *output_r, int outsize, const char *input, int inlen)
                 output_r[k].byte2 = ((c & 0x3) << 6) + (input[j] & 0x3F);
                 k++;
                 break;
-            case 0xFF:
+            case 0xF0:
                 /* the character uses more than 16 bits */
-                continue;
+//                continue;
             }
     }
     return k;
@@ -84,7 +84,8 @@ int main_loop()
     XEvent ev;
     int text_width;
     XChar2b *string;
-    char *text = "Hello World äüö ÄÜÖ  Ã«!";
+//    char *text = "Hello World äüö ÄÜÖ  Ã«!";
+    char *text = "1234-äüöäüöäüöäüöäüöäüöäüöäüö---ÄŸ";
     int strlength = strlen(text);
 
     /* may be too big, but definitely big enough */

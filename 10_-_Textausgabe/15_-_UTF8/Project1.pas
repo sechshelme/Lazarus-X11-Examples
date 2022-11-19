@@ -8,6 +8,7 @@ Die macht es übersichtlicher und ausbaufähiger.
 program Project1;
 
 uses
+  heaptrc,
   //  libc,
   unixtype,
   ctypes,
@@ -17,20 +18,16 @@ uses
   keysym,
   x;
 
-//const clib = 'c';
-//procedure setlocale(cat : integer; p : pchar); cdecl; external 'c';
   function setlocale(cat: integer; p: PChar): cint; cdecl; external 'c';
-  //  function XGetIMValues(im: PXIM; xis: PChar; styl: PXIMStyles; p: Pointer): PChar; cdecl; external 'X11';
-
-
-type
-  TCharArray = array of char;
 
 const
   LC_ALL = 6;
 
 
 type
+
+  { TMyWin }
+
   TMyWin = class(TObject)
   private
     dis: PDisplay;
@@ -39,6 +36,10 @@ type
     win: TWindow;
 
     xic: PXIC;
+    sl: string;
+    function utf8toXChar2b(output: PXChar2b; const input: string): integer;
+    procedure DrawString(const s: string; x, y: integer);
+    procedure Paint;
   public
     constructor Create;
     destructor Destroy; override;
@@ -48,6 +49,84 @@ type
 const
   EventMask = ButtonPressMask or KeyPressMask or KeyReleaseMask or StructureNotifyMask or ExposureMask;
   //  EventMask = KeyPressMask or KeyReleaseMask;
+
+  function TMyWin.utf8toXChar2b(output: PXChar2b; const input: string): integer;
+  var
+    j: integer = 0;
+    k: integer = 0;
+    inlen: integer;
+    c: byte;
+  begin
+    inlen := Length(input);
+    //    SetLength(output, inlen);
+    while (j < inlen) and (k < inlen) do begin
+      c := byte(input[j + 1]);
+      if c < 128 then  begin
+        output[k].byte1 := 0;
+        output[k].byte2 := byte(c);
+        Inc(k);
+      end else if c < $C0 then begin
+        Continue;
+      end else begin
+        case c and $F0 of
+          $C0, $D0: begin
+            if inlen < j + 1 then begin
+              Result := k;
+              Exit;
+            end;
+            output[k].byte1 := (c and $1C) shr 2;
+            Inc(j);
+            output[k].byte2 := ((c and $03) shl 6) + (byte(input[j + 1]) and $3F);
+            Inc(k);
+          end;
+          $E0: begin
+            if inlen < 2 + j then begin
+              Result := k;
+              Exit;
+            end;
+            Inc(j);
+            output[k].byte1 := ((c and $0F) shl 4) + ((byte(input[j + 1]) and $3C) shr 2);
+            c := byte(input[j + 1]);
+            Inc(j);
+            output[k].byte2 := ((c and $03) shl 6) + (byte(input[j + 1]) and $3F);
+            Inc(k);
+          end;
+          $FF: begin
+            Continue;
+          end;
+
+        end;
+      end;
+      Inc(j);
+    end;
+    Result := k;
+  end;
+
+  procedure TMyWin.DrawString(const s: string; x, y: integer);
+  var
+    PC2: PXChar2b;
+    len: integer;
+  begin
+    Getmem(PC2, Length(s) * 2);
+    len := utf8toXChar2b(PC2, s);
+    XDrawString16(dis, win, gc, x, y, PC2, len);
+    Freemem(PC2);
+  end;
+
+  procedure TMyWin.Paint;
+  const
+    Caption = 'öäü-ÄÜÖ !Ÿ';
+    Hello = 'Hello World !';
+  begin
+    XDrawString(dis, win, gc, 10, 10, PChar(Hello), Length(Caption));
+
+    //    XDrawString(dis, win, gc, 10, 30, PChar(Caption), Length(Caption));
+    //     XmbDrawString(dis,win, @fontset,gc,20,70,PChar(Caption), Length(Caption));
+    //                       Xutf8DrawString(dis, win, @fontset, gc, 10, 50, PChar(Caption), Length(Caption));
+    //            XDrawString16(dis, win, gc, 10, 50, PChar(Caption), Length(Caption));
+    DrawString(Caption, 10, 30);
+    DrawString(sl, 10, 50);
+  end;
 
   constructor TMyWin.Create;
   var
@@ -99,52 +178,24 @@ const
   end;
 
   procedure TMyWin.Run;
-  const
-    Caption = 'öäü ÄÜÖ !';
-    Hello = 'Hello World !';
-
   var
     Event: TXEvent;
     status: TStatus;
-    Count: integer;
+    Count, i: integer;
     keysym: TKeySym;
     buf: array[0..31] of char;
-    s: array[0..3] of TXChar2b;
-    ss: string;
+    quit: boolean = False;
 
   begin
-
-    // Ereignisschleife
-    while (True) do begin
+    while not quit do begin
       XNextEvent(dis, @Event);
 
-      if not XFilterEvent(@Event, 0) then begin
         case Event._type of
           Expose: begin
-            XDrawString(dis, win, gc, 10, 10, PChar(Hello), Length(Caption));
-            XDrawString(dis, win, gc, 10, 30, PChar(Caption), Length(Caption));
-            //     XmbDrawString(dis,win, @fontset,gc,20,70,PChar(Caption), Length(Caption));
-            //                       Xutf8DrawString(dis, win, @fontset, gc, 10, 50, PChar(Caption), Length(Caption));
-            //            XDrawString16(dis, win, gc, 10, 50, PChar(Caption), Length(Caption));
-
-            ss := 'äüö';
-            //Getmem(s,6);
-            s[0].byte1 := byte(ss[1]);
-            s[0].byte2 := byte(ss[2]);
-            s[1].byte1 := byte(ss[3]);
-            s[1].byte2 := byte(ss[4]);
-            s[2].byte1 := byte(ss[5]);
-            s[2].byte2 := byte(ss[6]);
-            s[2].byte1 := byte(ss[7]);
-            s[2].byte2 := byte(ss[8]);
-
-            WriteLn(ss[1], ss[2]);
-
-            XDrawString16(dis, win, gc, 10, 50, s, 8);
-
-            //XDrawString16(dis, win, gc, 10, 50, s, Length(Caption));
+            Paint;
           end;
           KeyPress: begin
+            if not XFilterEvent(@Event, 0) then begin
             keysym := NoSymbol;
 
             FillChar(buf, Length(buf), #0);
@@ -156,6 +207,13 @@ const
               //            WriteLn('Buffer Überlauf !');
             end;
             WriteLn('Count Press: ', Count);
+            i := 0;
+            while buf[i] <> #0 do begin
+              sl := sl + buf[i];
+              Inc(i);
+            end;
+            Paint;
+
             Write(buf, ' ');
             if Event.xkey.state and 1 = 1 then begin
               Write('Shift ');
@@ -168,13 +226,14 @@ const
             end;
             if Event.xkey.state and 8 = 8 then begin
               Write('Alt ');
+              quit := True;
             end;
             WriteLn();
 
+            end;
           end;
           KeyRelease: begin
           end;
-        end;
       end;
     end;
   end;

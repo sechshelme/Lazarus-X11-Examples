@@ -60,11 +60,10 @@ const
     XMapWindow(dis, win);
     XSync(dis, False);
 
-//    if setlocale(LC_ALL, '') = 0 then begin
+    if setlocale(LC_ALL, '') = 0 then begin
       WriteLn('setlocale Fehler');
-//    end;
-
-//    XSetLocaleModifiers('');
+    end;
+    XSetLocaleModifiers('');
 
     xim := XOpenIM(dis, nil, nil, nil);
     if xim = nil then begin
@@ -105,12 +104,12 @@ const
     while (True) do begin
       XNextEvent(dis, @Event);
 
-      if not XFilterEvent(@Event, 0) then begin
-        case Event._type of
-          Expose: begin
-            XDrawString(dis, win, gc, 10, 10, PChar(Hello), Length(Hello));
-          end;
-          KeyPress: begin
+      case Event._type of
+        Expose: begin
+          XDrawString(dis, win, gc, 10, 10, PChar(Hello), Length(Hello));
+        end;
+        KeyPress: begin
+          if not XFilterEvent(@Event, 0) then begin
             keysym := NoSymbol;
 
             FillChar(buf, Length(buf), #0);
@@ -136,10 +135,9 @@ const
               Write('Alt ');
             end;
             WriteLn();
-
           end;
-          KeyRelease: begin
-          end;
+        end;
+        KeyRelease: begin
         end;
       end;
     end;
