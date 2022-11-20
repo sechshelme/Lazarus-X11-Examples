@@ -127,30 +127,29 @@ const
     fontname: TFont;
     ofs, i: integer;
     info: PChar;
-    font: PXFontStruct;
+    fontStructure: PXFontStruct;
     direction, ascent, descent: cint;
     overall: TXCharStruct;
+    ff: TXID;
   begin
     WriteLn(FontList.Count);
-    ofs := 370;
+    ofs := 890;
     for i := 0 to 100 do begin
       Info := FontList.Data[i + ofs];
       fontname := XLoadFont(dis, FontList.Data[i + ofs]);
       //      XSetFont(dis, gc, fontname);
 
-      font := XLoadQueryFont(dis, FontList.Data[i + ofs]);
-      if font = nil then begin
-        font := XLoadQueryFont(dis, 'fixed');
+      fontStructure := XLoadQueryFont(dis, FontList.Data[i + ofs]);
+      if fontStructure = nil then begin
+        fontStructure := XLoadQueryFont(dis, 'fixed');
         WriteLn(stderr, 'unable to load font ' + FontList.Data[i + ofs] + ' : using fixed');
       end;
 
-      XSetFont(dis, gc, font^.fid);
-      XTextExtents(font, info, Length(info), @direction, @ascent, @descent, @overall);
-      XDrawRectangle(dis, win, gc, 10, 15 * i, overall.Width, ascent - descent);
+      XSetFont(dis, gc, fontStructure^.fid);
+      XTextExtents(fontStructure, info, Length(info), @direction, @ascent, @descent, @overall);
+      XDrawRectangle(dis, win, gc, 10, 20 * i, overall.Width, descent);
 
-      WriteLn(overall.Width);
-
-      XDrawString(dis, win, gc, 10, i * 15 + 15, PChar(info), Length(info));
+      XDrawString(dis, win, gc, 10, i * 20 + 20, PChar(info), Length(info));
       XUnloadFont(dis, fontname);
     end;
 
