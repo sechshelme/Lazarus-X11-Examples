@@ -37,6 +37,12 @@ type
 
     xic: PXIC;
     sl: string;
+
+    FontList: record
+      Data: PPChar;
+      Count: cint;
+      end;
+
     function utf8toXChar2b(output: PXChar2b; const input: string): integer;
     procedure DrawString(const s: string; x, y: integer);
     procedure Paint;
@@ -118,20 +124,34 @@ const
     Caption = 'öäü-ÄÜÖ !Ÿ←←««¥¥<<';
     Hello = 'Hello World !';
   var
-    list: PPChar;
-    Count: cint;
-    font: TFont;
-    fontset: TXOC;
+    fontname: TFont;
     ofs, i: integer;
+    info: PChar;
+    font: PXFontStruct;
+    direction, ascent, descent: cint;
+    overall: TXCharStruct;
   begin
-    list := XListFonts(dis, '*', 10000, @Count);
-    WriteLn(Count);
-    ofs:=700;
+    WriteLn(FontList.Count);
+    ofs := 370;
     for i := 0 to 100 do begin
-      font := XLoadFont(dis, list[i+ofs]);
-      XSetFont(dis, gc, font);
-      XDrawString(dis, win, gc, 10, i * 15 + 15, PChar(Hello), Length(Caption));
-      XUnloadFont(dis,font);
+      Info := FontList.Data[i + ofs];
+      fontname := XLoadFont(dis, FontList.Data[i + ofs]);
+      //      XSetFont(dis, gc, fontname);
+
+      font := XLoadQueryFont(dis, FontList.Data[i + ofs]);
+      if font = nil then begin
+        font := XLoadQueryFont(dis, 'fixed');
+        WriteLn(stderr, 'unable to load font ' + FontList.Data[i + ofs] + ' : using fixed');
+      end;
+
+      XSetFont(dis, gc, font^.fid);
+      XTextExtents(font, info, Length(info), @direction, @ascent, @descent, @overall);
+      XDrawRectangle(dis, win, gc, 10, 15 * i, overall.Width, ascent - descent);
+
+      WriteLn(overall.Width);
+
+      XDrawString(dis, win, gc, 10, i * 15 + 15, PChar(info), Length(info));
+      XUnloadFont(dis, fontname);
     end;
 
 
@@ -143,7 +163,6 @@ const
 
     //    Xutf8DrawString(dis, win, @fontset, gc, 10, 50, PChar(Caption), Length(Caption));
 
-    XFreeFontNames(list);
   end;
 
   constructor TMyWin.Create;
@@ -186,10 +205,12 @@ const
 
     XSelectInput(dis, win, EventMask);
 
+    FontList.Data := XListFonts(dis, '*', 10000, @FontList.Count);
   end;
 
   destructor TMyWin.Destroy;
   begin
+    XFreeFontNames(FontList.Data);
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;
