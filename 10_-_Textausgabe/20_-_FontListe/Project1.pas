@@ -122,12 +122,17 @@ const
     Count: cint;
     font: TFont;
     fontset: TXOC;
+    ofs, i: integer;
   begin
-    list := XListFonts(dis, '*', 1000, @Count);
-    font := XLoadFont(dis, list[25]);
-    XSetFont(dis, gc, font);
-    XDrawString(dis, win, gc, 10, 10, PChar(Hello), Length(Caption));
-
+    list := XListFonts(dis, '*', 10000, @Count);
+    WriteLn(Count);
+    ofs:=700;
+    for i := 0 to 100 do begin
+      font := XLoadFont(dis, list[i+ofs]);
+      XSetFont(dis, gc, font);
+      XDrawString(dis, win, gc, 10, i * 15 + 15, PChar(Hello), Length(Caption));
+      XUnloadFont(dis,font);
+    end;
 
 
 
