@@ -65,6 +65,7 @@ const
 
     XSetForeground(dis, gc, $000000);
     XDrawString(dis, win, gc, Left, Top + ascent - descent, PChar(Hello), Length(Hello));
+//    XDrawImageString(dis, win, gc, Left, Top + ascent - descent, PChar(Hello), Length(Hello));
   end;
 
   constructor TMyWin.Create;
