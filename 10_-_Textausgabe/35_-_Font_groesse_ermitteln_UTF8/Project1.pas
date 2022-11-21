@@ -16,6 +16,7 @@ uses
   keysym,
   x;
 
+  function setlocale(cat: integer; p: PChar): cint; cdecl; external 'c';
 type
 
   { TMyWin }
@@ -29,7 +30,6 @@ type
 
     Width, Height: cint;
     procedure Paint;
-    function utf8toXChar2b(output: PXChar2b; const input: string): integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -39,96 +39,55 @@ type
 const
   EventMask = ButtonPressMask or KeyPressMask or KeyReleaseMask or StructureNotifyMask or ExposureMask;
 
-  function TMyWin.utf8toXChar2b(output: PXChar2b; const input: string): integer;
-  var
-    j: integer = 0;
-    k: integer = 0;
-    inlen: integer;
-    c: byte;
-  begin
-    inlen := Length(input);
-    //    SetLength(output, inlen);
-    while (j < inlen) and (k < inlen) do begin
-      c := byte(input[j + 1]);
-      if c < 128 then  begin
-        output[k].byte1 := 0;
-        output[k].byte2 := byte(c);
-        Inc(k);
-      end else if c < $C0 then begin
-        Continue;
-      end else begin
-        case c and $F0 of
-          $C0, $D0: begin
-            if inlen < j + 1 then begin
-              Result := k;
-              Exit;
-            end;
-            output[k].byte1 := (c and $1C) shr 2;
-            Inc(j);
-            output[k].byte2 := ((c and $03) shl 6) + (byte(input[j + 1]) and $3F);
-            Inc(k);
-          end;
-          $E0: begin
-            if inlen < 2 + j then begin
-              Result := k;
-              Exit;
-            end;
-            Inc(j);
-            output[k].byte1 := ((c and $0F) shl 4) + ((byte(input[j + 1]) and $3C) shr 2);
-            c := byte(input[j + 1]);
-            Inc(j);
-            output[k].byte2 := ((c and $03) shl 6) + (byte(input[j + 1]) and $3F);
-            Inc(k);
-          end;
-          $FF: begin
-            Continue;
-          end;
-
-        end;
-      end;
-      Inc(j);
-    end;
-    Result := k;
-  end;
-
   procedure TMyWin.Paint;
   const
-    Hello = 'Hello World !, ich habe "äüö ÄÜÖ ÿŸ   ggg" !';
+        Hello = 'öäüHello World , ich habe "ggggggg"!H';
+//    Hello = 'Hello World';
   var
     fontStructure: PXFontStruct;
     direction, ascent, descent: cint;
     overall: TXCharStruct;
-    Left, Top: cint;
-    str2b: PXChar2b;
-    Char2BLen: integer;
+    Left, Top, missingCharsetCount: cint;
+    FontSet: TXFontSet;
+    missingCharsets: PPChar;
+    defaultString: PChar;
 
   begin
-    fontStructure := XLoadQueryFont(dis, '9x15bold');
+    fontStructure := XLoadQueryFont(dis, '-misc-fixed-bold-r-normal--13-120-75-75-c-70-iso8859-15');
     if fontStructure = nil then begin
       fontStructure := XLoadQueryFont(dis, 'fixed');
     end;
+
     XSetFont(dis, gc, fontStructure^.fid);
-
-    Getmem(str2b, Length(Hello) * 2);
-    Char2BLen := utf8toXChar2b(str2b, Hello);
-
-    XTextExtents16(fontStructure, str2b, Char2BLen, @direction, @ascent, @descent, @overall);
+    XTextExtents(fontStructure, Hello, Length(Hello), @direction, @ascent, @descent, @overall);
     Left := (Width - overall.Width) div 2;
     Top := (Height - ascent) div 2;
 
-    XSetForeground(dis, gc, $88FF88);
+    XSetForeground(dis, gc, $FF8888);
     XFillRectangle(dis, win, gc, Left, Top, overall.Width, ascent);
-    WriteLn(overall.Width, ' ', ascent, ' ', descent);
+
+//    FontSet := XCreateFontSet(dis, '-monotype-arial-medium-r-normal--*-90-*-*-p-0-*-*,-monotype-arial-regular-r-normal--*-90-*-*-p-0-*-*', @missingCharsets, @missingCharsetCount, @defaultString);
+    FontSet := XCreateFontSet(dis, 'fixed', @missingCharsets, @missingCharsetCount, @defaultString);
+    if FontSet=nil then WriteLn('fehler');
+
+    WriteLn('X11 locale: ', XLocaleOfFontSet(fontSet));
+    WriteLn('XFontSet: ', XBaseFontNameListOfFontSet(fontSet));
 
     XSetForeground(dis, gc, $000000);
-    XDrawString16(dis, win, gc, Left, Top + ascent - descent, str2b, Char2BLen);
-
-    Freemem(str2b);
+    //    Xutf8DrawString(dis, win, FontSet, gc, Left, Top + ascent - descent, PChar(Hello), Length(Hello));
+    Xutf8DrawString(dis, win, FontSet, gc, 10, 10, PChar(Hello), Length(Hello));
   end;
 
   constructor TMyWin.Create;
+  const
+    LC_ALL = 6;
   begin
     inherited Create;
+
+    if setlocale(LC_ALL, '') = 0 then begin
+      WriteLn('setlocale Fehler');
+    end;
+    //    XSetLocaleModifiers('');
 
     // Erstellt die Verbindung zum Server
     dis := XOpenDisplay(nil);
@@ -139,7 +98,7 @@ const
     scr := DefaultScreen(dis);
     gc := DefaultGC(dis, scr);
 
-    Width := 500;
+    Width := 320;
     Height := 240;
 
     win := XCreateSimpleWindow(dis, DefaultRootWindow(dis), 10, 10, Width, Height, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
