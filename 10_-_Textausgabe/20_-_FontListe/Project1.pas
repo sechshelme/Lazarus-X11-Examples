@@ -137,7 +137,6 @@ const
     for i := 0 to 100 do begin
       Info := FontList.Data[i + ofs];
       fontname := XLoadFont(dis, FontList.Data[i + ofs]);
-      //      XSetFont(dis, gc, fontname);
 
       fontStructure := XLoadQueryFont(dis, FontList.Data[i + ofs]);
       if fontStructure = nil then begin
@@ -153,20 +152,17 @@ const
       XUnloadFont(dis, fontname);
     end;
 
-
-
-    //    XDrawString(dis, win, gc, 10, 30, PChar(Caption), Length(Caption));
     //     XmbDrawString(dis,win, @fontset,gc,20,70,PChar(Caption), Length(Caption));
     DrawString(Caption, 10, 30);
     DrawString(sl, 10, 50);
-
-    //    Xutf8DrawString(dis, win, @fontset, gc, 10, 50, PChar(Caption), Length(Caption));
 
   end;
 
   constructor TMyWin.Create;
   var
     xim: PXIM;
+    i: integer;
+    f:text;
   begin
     inherited Create;
     if setlocale(LC_ALL, '') = 0 then begin
@@ -205,6 +201,13 @@ const
     XSelectInput(dis, win, EventMask);
 
     FontList.Data := XListFonts(dis, '*', 10000, @FontList.Count);
+
+    AssignFile(f, 'fontliste.txt');
+    Rewrite(f);
+    for i := 0 to FontList.Count - 1 do begin
+      WriteLn(f, FontList.Data[i]);
+    end;
+    CloseFile(f);
   end;
 
   destructor TMyWin.Destroy;

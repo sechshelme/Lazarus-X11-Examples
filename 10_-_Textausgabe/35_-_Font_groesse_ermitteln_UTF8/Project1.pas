@@ -41,41 +41,49 @@ const
 
   procedure TMyWin.Paint;
   const
-        Hello = 'öäüHello World , ich habe "ggggggg"!H';
-//    Hello = 'Hello World';
+    Hello = 'öäü ÄÖÜ Ÿÿ Hello World , ich habe "ggggggg"!H';
   var
     fontStructure: PXFontStruct;
-    direction, ascent, descent: cint;
-    overall: TXCharStruct;
     Left, Top, missingCharsetCount: cint;
     FontSet: TXFontSet;
     missingCharsets: PPChar;
     defaultString: PChar;
 
+    Overall_ink, Overall_logical: TXRectangle;
+    i: integer;
+
   begin
-    fontStructure := XLoadQueryFont(dis, '-misc-fixed-bold-r-normal--13-120-75-75-c-70-iso8859-15');
-    if fontStructure = nil then begin
-      fontStructure := XLoadQueryFont(dis, 'fixed');
+    fontStructure := XLoadQueryFont(dis, 'fixed');
+
+//    FontSet := XCreateFontSet(dis, '-*-fixed-*-*-*-*-16-*', @missingCharsets, @missingCharsetCount, @defaultString);
+    FontSet := XCreateFontSet(dis, '*', @missingCharsets, @missingCharsetCount, @defaultString);
+    if FontSet = nil then begin
+      WriteLn('Ungültiger Font');
+      Exit;
     end;
-
-    XSetFont(dis, gc, fontStructure^.fid);
-    XTextExtents(fontStructure, Hello, Length(Hello), @direction, @ascent, @descent, @overall);
-    Left := (Width - overall.Width) div 2;
-    Top := (Height - ascent) div 2;
-
-    XSetForeground(dis, gc, $FF8888);
-    XFillRectangle(dis, win, gc, Left, Top, overall.Width, ascent);
-
-//    FontSet := XCreateFontSet(dis, '-monotype-arial-medium-r-normal--*-90-*-*-p-0-*-*,-monotype-arial-regular-r-normal--*-90-*-*-p-0-*-*', @missingCharsets, @missingCharsetCount, @defaultString);
-    FontSet := XCreateFontSet(dis, 'fixed', @missingCharsets, @missingCharsetCount, @defaultString);
-    if FontSet=nil then WriteLn('fehler');
 
     WriteLn('X11 locale: ', XLocaleOfFontSet(fontSet));
     WriteLn('XFontSet: ', XBaseFontNameListOfFontSet(fontSet));
+    WriteLn('missing: ', missingCharsetCount);
+    for i := 0 to missingCharsetCount - 1 do begin
+      WriteLn(missingCharsets[i]);
+    end;
+
+    XFreeStringList(missingCharsets);
+
+    Xutf8TextExtents(FontSet, Hello, Length(Hello), @Overall_ink, @Overall_logical);
+    Left := (Width - Overall_logical.Width) div 2;
+    Top := (Height - Overall_logical.Height) div 2;
+
+    XSetForeground(dis, gc, $8888FF);
+    XFillRectangle(dis, win, gc, Left, Top, Overall_ink.Width, Overall_logical.Height);
 
     XSetForeground(dis, gc, $000000);
-    //    Xutf8DrawString(dis, win, FontSet, gc, Left, Top + ascent - descent, PChar(Hello), Length(Hello));
-    Xutf8DrawString(dis, win, FontSet, gc, 10, 10, PChar(Hello), Length(Hello));
+    Xutf8DrawString(dis, win, FontSet, gc, Left, Top + Overall_logical.Height, PChar(Hello), Length(Hello));
+
+    XSetFont(dis, gc, fontStructure^.fid);
+    XDrawString(dis, win, gc, 60, 70, PChar(Hello), Length(Hello));
+    XDrawString(dis, win, gc, 50, 50, PChar(Hello), Length(Hello));
   end;
 
   constructor TMyWin.Create;
@@ -98,7 +106,7 @@ const
     scr := DefaultScreen(dis);
     gc := DefaultGC(dis, scr);
 
-    Width := 320;
+    Width := 420;
     Height := 240;
 
     win := XCreateSimpleWindow(dis, DefaultRootWindow(dis), 10, 10, Width, Height, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
