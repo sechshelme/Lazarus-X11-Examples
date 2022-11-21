@@ -107,6 +107,7 @@ const
     PC2: PXChar2b;
     len: integer;
   begin
+    xft
     Getmem(PC2, Length(s) * 2);
     len := utf8toXChar2b(PC2, s);
     XDrawString16(dis, win, gc, x, y, PC2, len);
