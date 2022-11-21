@@ -6,10 +6,12 @@ Das Tutorial findet man auch direkt bei den Sourcen auf GitHub: [Inhaltsverzeich
 
 ## Externe Beispiele:
 Diese sind alle in C/C++
-- [Rheinwerk openbook - Linux Programmierung Kapitel 14](https://openbook.rheinwerk-verlag.de/linux_unix_programmierung/Kap14-007.htm)
+- [Rheinwerk openbook - Linux Programmierung Kapitel 14](https://openbook.rheinwerk-verlag.de/linux_unix_programmierung/Kap14-007.htm) (DE)
+- [Programmieren mit der Xlib](http://eggdrop.ch/texts/xlib/) (DE)
 - [The X Window system](https://tronche.com/gui/x)
 - [Xlib tutorial](http://xopendisplay.hilltopia.ca/2009/Jan/Xlib-tutorial-part-1----Beginnings.html)
 - [X11 OpenGL Window](https://github.com/gamedevtech/X11OpenGLWindow)
+- [Mesa Demos](https://github.com/JoakimSoderberg/mesademos)
 
 
 ## Hintergrundwissen von X11
