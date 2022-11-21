@@ -56,7 +56,8 @@ const
     fontStructure := XLoadQueryFont(dis, 'fixed');
 
 //    FontSet := XCreateFontSet(dis, '-*-fixed-*-*-*-*-16-*', @missingCharsets, @missingCharsetCount, @defaultString);
-    FontSet := XCreateFontSet(dis, '*', @missingCharsets, @missingCharsetCount, @defaultString);
+//FontSet := XCreateFontSet(dis, '*', @missingCharsets, @missingCharsetCount, @defaultString);
+FontSet := XCreateFontSet(dis, '-schumacher*', @missingCharsets, @missingCharsetCount, @defaultString);
     if FontSet = nil then begin
       WriteLn('Ungültiger Font');
       Exit;
