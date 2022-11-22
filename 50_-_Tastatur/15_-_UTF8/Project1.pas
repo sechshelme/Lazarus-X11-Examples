@@ -19,6 +19,7 @@ uses
 
   function setlocale(cat: integer; p: PChar): cint; cdecl; external 'c';
 
+
 type
   TCharArray = array of char;
 
@@ -40,8 +41,6 @@ const
   EventMask = ButtonPressMask or KeyPressMask or KeyReleaseMask or StructureNotifyMask or ExposureMask;
 
   constructor TMyWin.Create;
-  const
-    LC_ALL = 6;
   var
     xim: PXIM;
   begin
@@ -52,15 +51,8 @@ const
       WriteLn('Kann nicht das Display öffnen');
       Halt(1);
     end;
-    scr := DefaultScreen(dis);
-    gc := DefaultGC(dis, scr);
 
-    win := XCreateSimpleWindow(dis, DefaultRootWindow(dis), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-    XSelectInput(dis, win, EventMask);
-    XMapWindow(dis, win);
-    XSync(dis, False);
-
-    if setlocale(LC_ALL, '') = 0 then begin
+    if setlocale(0 {LC_ALL}, '') = 0 then begin
       WriteLn('setlocale Fehler');
     end;
 //    XSetLocaleModifiers('');
@@ -71,6 +63,17 @@ const
       XSetLocaleModifiers('@im=none');
       xim := XOpenIM(dis, nil, nil, nil);
     end;
+
+
+
+    scr := DefaultScreen(dis);
+    gc := DefaultGC(dis, scr);
+
+    win := XCreateSimpleWindow(dis, DefaultRootWindow(dis), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    XSelectInput(dis, win, EventMask);
+    XMapWindow(dis, win);
+    XSync(dis, False);
+
 
     xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow, win, XNFocusWindow, win, nil]);
     if xic = nil then begin

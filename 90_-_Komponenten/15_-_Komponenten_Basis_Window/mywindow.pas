@@ -25,7 +25,7 @@ type
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
   protected
-    procedure DoOnPaint; override;
+    procedure Paint; override;
 
   private
     procedure btnClick(Sender: TObject);
@@ -59,9 +59,9 @@ begin
   inherited Destroy;
 end;
 
-procedure TMyWindow.DoOnPaint;
+procedure TMyWindow.Paint;
 begin
-  //  inherited DoOnPaint;
+  //  inherited Paint;
 end;
 
 procedure TMyWindow.btnClick(Sender: TObject);

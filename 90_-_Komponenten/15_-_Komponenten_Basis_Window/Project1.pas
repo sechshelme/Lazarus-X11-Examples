@@ -19,7 +19,8 @@ uses
   X11Component,
   X11Panel,
   X11Window,
-  X11Desktop, MyWindow;
+  X11Desktop,
+  MyWindow;
 
 type
 
@@ -40,7 +41,7 @@ type
     procedure SubWinButtonClick(Sender: TObject);
   protected
     procedure DoOnEventHandle(var Event: TXEvent); override;
-    procedure DoOnPaint; override;
+    procedure Paint; override;
   public
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
@@ -161,7 +162,7 @@ var
       Height := 50;
       Anchors := [akRight, akBottom];
       Caption := 'Close';
-      Color:=$BB2222;
+      Color := $BB2222;
       OnClick := @CloseButtonClick;
       OnMouseMove := @CloseButtonMouseMove;
     end;
@@ -184,14 +185,14 @@ var
     inherited Destroy;
   end;
 
-  procedure TMyDesktop.DoOnPaint;
+  procedure TMyDesktop.Paint;
   const
     maxSektoren = 8;
   var
     punkte: array[0..maxSektoren] of TXPoint;
     i: integer;
   begin
-    inherited DoOnPaint;
+    inherited Paint;
 
     for i := 0 to maxSektoren - 1 do begin
       punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 250;

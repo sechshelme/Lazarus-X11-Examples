@@ -12,6 +12,7 @@ const
   EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or PointerMotionMask;
 
 type
+  TUTF8Char = String[7]; // UTF-8 character is at most 6 bytes plus a #0
 
   TAnchorKind = (akTop, akLeft, akRight, akBottom);
   TAnchors = set of TAnchorKind;
@@ -40,6 +41,7 @@ type
     procedure SetWidth(AWidth: cint);
 
     procedure Resize(AWidth, AHeight: cint);
+    procedure ChangeActiveComponent;
   protected
     dis: PDisplay; static;
     scr: cint; static;
@@ -49,9 +51,11 @@ type
 
     IsMouseDown, IsButtonDown: boolean;
     ComponentList: array of TX11Component;
-    ActiveComponent:Integer;
+    ActiveComponent: integer;
     procedure DoOnEventHandle(var Event: TXEvent); virtual;
-    procedure DoOnPaint; virtual;
+    procedure Paint; virtual;
+    procedure Click; virtual;
+    procedure DoOnKeyPress(    UTF8Char:TUTF8Char);
   public
     property Window: TDrawable read FWindow;
     property Anchors: TAnchors read FAnchors write FAnchors;
@@ -136,6 +140,7 @@ constructor TX11Component.Create(TheOwner: TX11Component; NewWindow: boolean);
 var
   s: string;
   size_hints: TXSizeHints;
+  len: SizeInt;
 begin
   inherited Create;
 
@@ -150,12 +155,16 @@ begin
   FWidth := 320;
   FHeight := 200;
 
+  ActiveComponent := -1;
+
   Name := 'X11Component';
 
   if TheOwner <> nil then begin
-    SetLength(TheOwner.ComponentList, Length(TheOwner.ComponentList) + 1);
-    TheOwner.ComponentList[Length(TheOwner.ComponentList) - 1] := Self;
-    str(Length(TheOwner.ComponentList), s);
+    len := Length(TheOwner.ComponentList);
+    SetLength(TheOwner.ComponentList, len + 1);
+    TheOwner.ComponentList[len] := Self;
+    str(len + 1, s);
+    TheOwner.ActiveComponent := len;
     FName += s;
     if NewWindow then begin
       FWindow := XCreateSimpleWindow(dis, RootWin, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
@@ -207,6 +216,9 @@ begin
         Break;
       end;
     end;
+    if ActiveComponent >= Length(ComponentList) then begin
+      ActiveComponent := Length(ComponentList) - 1;
+    end;
   end;
 
   XDestroyWindow(dis, FWindow);
@@ -229,8 +241,15 @@ var
   x, y: cint;
   IsInRegion: TBoolResult;
 begin
-  for i := 0 to Length(ComponentList) - 1 do begin
-    ComponentList[i].DoOnEventHandle(Event);
+  if Event._type in [KeyPress, KeyRelease] then begin
+    WriteLn(ActiveComponent);
+    if (ActiveComponent >= 0) and (ActiveComponent < Length(ComponentList) )then  begin
+      ComponentList[ActiveComponent].DoOnEventHandle(Event);
+    end;
+  end else begin
+    for i := 0 to Length(ComponentList) - 1 do begin
+      ComponentList[i].DoOnEventHandle(Event);
+    end;
   end;
 
   x := Event.xbutton.x;
@@ -239,7 +258,7 @@ begin
   if Event.xbutton.window = Window then begin
     case Event._type of
       Expose: begin
-        DoOnPaint;
+        Paint;
       end;
       ConfigureNotify: begin
         if (Event.xconfigure.Width <> FWidth) or (Event.xconfigure.Height <> FHeight) then begin
@@ -253,6 +272,7 @@ begin
       end;
       ButtonPress: begin
         XMapRaised(dis, Event.xbutton.window);
+        ChangeActiveComponent;
         if IsInRegion then begin
           IsMouseDown := True;
           IsButtonDown := True;
@@ -260,7 +280,7 @@ begin
           IsMouseDown := False;
           IsButtonDown := False;
         end;
-        DoOnPaint;
+        Paint;
       end;
       MotionNotify: begin
         if IsInRegion and (OnMouseMove <> nil) then begin
@@ -272,26 +292,36 @@ begin
           end else begin
             IsButtonDown := False;
           end;
-          DoOnPaint;
+          Paint;
         end;
       end;
       ButtonRelease: begin
         if IsMouseDown and IsInRegion then begin
-          if OnClick <> nil then begin
-            OnClick(self);
-          end;
+          Click;
         end;
         IsMouseDown := False;
         IsButtonDown := False;
-        DoOnPaint;
+        Paint;
       end;
     end;
   end;
 end;
 
-procedure TX11Component.DoOnPaint;
+procedure TX11Component.Paint;
 begin
   // Für virtuellen Aufruf
+end;
+
+procedure TX11Component.Click;
+begin
+  if OnClick <> nil then begin
+    OnClick(self);
+  end;
+end;
+
+procedure TX11Component.DoOnKeyPress(UTF8Char: TUTF8Char);
+begin
+
 end;
 
 procedure TX11Component.Resize(AWidth, AHeight: cint);
@@ -334,6 +364,20 @@ begin
         Resize(W, H);
         XMoveResizeWindow(dis, Window, L, T, W, H);
       end;
+    end;
+  end;
+end;
+
+procedure TX11Component.ChangeActiveComponent;
+var
+  i: Integer;
+begin
+  if Parent <> nil then begin
+    for i := 0 to Length(Parent.ComponentList) - 1 do begin
+      if Parent.ComponentList[i] = Self then begin
+        Parent.ActiveComponent := i;
+      end;
+      Parent.ChangeActiveComponent;
     end;
   end;
 end;

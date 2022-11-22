@@ -12,7 +12,7 @@ type
 
   TX11Button = class(TX11Panel)
   protected
-    procedure DoOnPaint; override;
+    procedure Paint; override;
   public
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
@@ -36,7 +36,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TX11Button.DoOnPaint;
+procedure TX11Button.Paint;
 begin
   if IsButtonDown then begin
     Bevel := bvLowred;
@@ -44,7 +44,7 @@ begin
     Bevel := bvRaised;
   end;
 
-  inherited DoOnPaint;
+  inherited Paint;
 
   XSetForeground(dis, gc, $00);
   XDrawRectangle(dis, Window, gc, 0, 0, Width - 1, Height - 1);
