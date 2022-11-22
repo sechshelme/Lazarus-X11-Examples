@@ -48,15 +48,16 @@ type
     wm_delete_window: TAtom; static;
 
     IsMouseDown, IsButtonDown: boolean;
+    ComponentList: array of TX11Component;
+    ActiveComponent:Integer;
     procedure DoOnEventHandle(var Event: TXEvent); virtual;
     procedure DoOnPaint; virtual;
   public
-    ComponentList: array of TX11Component;
     property Window: TDrawable read FWindow;
     property Anchors: TAnchors read FAnchors write FAnchors;
     property Name: string read FName write FName;
-    property Parent: TX11Component read FParent write FParent;
     property Caption: string read FCaption write SetCaption;
+    property Parent: TX11Component read FParent write FParent;
     property WindowBorderWidth: cint read FWindowBorderWidth write SetWindowBorderWidth;
     property Color: culong read FColor write SetColor;
     property Left: cint read FLeft write SetLeft;

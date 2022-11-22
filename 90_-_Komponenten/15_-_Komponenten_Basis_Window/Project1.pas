@@ -19,7 +19,7 @@ uses
   X11Component,
   X11Panel,
   X11Window,
-  X11Desktop;
+  X11Desktop, MyWindow;
 
 type
 
@@ -33,7 +33,6 @@ type
 
     SubWin: TX11Window;
     SubWinButton: TX11Button;
-    procedure btnClick(Sender: TObject);
     procedure ButtonClick(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
     procedure CloseButtonMouseMove(Sender: TObject; X, Y: integer);
@@ -67,28 +66,11 @@ var
     WriteLn('move: ', x, '  ', y);
   end;
 
-  procedure TMyDesktop.btnClick(Sender: TObject);
-  begin
-    TX11Component(Sender).Parent.Close;
-  end;
-
   procedure TMyDesktop.NewButtonClick(Sender: TObject);
   var
-    Mywindow: TX11Window;
-    btn: TX11Button;
+    Mywindow: TMyWindow;
   begin
-    Mywindow := TX11Window.Create(Self, True);
-    btn := TX11Button.Create(Mywindow);
-    with btn do begin
-      Caption := 'close';
-      OnClick := @btnClick;
-      Left := 15;
-      Top := 15;
-      BorderWidth := 20;
-      Height := Mywindow.Height - 30;
-      Width := Mywindow.Width - 30;
-      Anchors := [akTop, akLeft, akRight, akBottom];
-    end;
+    Mywindow := TMyWindow.Create(Self);
   end;
 
   procedure TMyDesktop.SubWinButtonClick(Sender: TObject);
