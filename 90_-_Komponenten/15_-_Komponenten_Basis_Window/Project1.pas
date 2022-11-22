@@ -39,6 +39,7 @@ type
     procedure CloseButtonMouseMove(Sender: TObject; X, Y: integer);
     procedure MyDesktopKeyPress(Sender: TObject; UTF8Char: TUTF8Char);
     procedure NewButtonClick(Sender: TObject);
+    procedure NewButtonPaint(Sender: TObject; ADisplay: PDisplay; AWindowwin: TDrawable; AGC: TGC);
     procedure SubWinButtonClick(Sender: TObject);
   protected
     procedure DoOnEventHandle(var Event: TXEvent); override;
@@ -78,6 +79,12 @@ var
     Mywindow: TMyWindow;
   begin
     Mywindow := TMyWindow.Create(Self);
+  end;
+
+  procedure TMyDesktop.NewButtonPaint(Sender: TObject; ADisplay: PDisplay; AWindowwin: TDrawable; AGC: TGC);
+  begin
+    XSetForeground(ADisplay, AGC, $FF);
+    XDrawRectangle(ADisplay, AWindowwin, AGC, 5, 5, 50, 50);
   end;
 
   procedure TMyDesktop.SubWinButtonClick(Sender: TObject);
@@ -183,6 +190,7 @@ var
       Width := 120;
       Caption := 'New';
       OnClick := @NewButtonClick;
+      OnPaint := @NewButtonPaint;
     end;
   end;
 

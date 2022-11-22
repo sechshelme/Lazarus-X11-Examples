@@ -20,6 +20,8 @@ type
   TNotifyEvent = procedure(Sender: TObject) of object;
   TMouseMoveEvent = procedure(Sender: TObject; X, Y: integer) of object;
   TKeyPressEvent = procedure(Sender: TObject; UTF8Char: TUTF8Char) of object;
+  TPaintEvent = procedure(Sender: TObject; ADisplay: PDisplay; AWindowwin: TDrawable; AGC: TGC) of object;
+
   { TX11Component }
 
   TX11Component = class(TObject)
@@ -33,9 +35,10 @@ type
     FColor: culong;
     FHeight, FLeft, FTop, FWidth, FWindowBorderWidth: cint;
 
+    FOnPaint: TPaintEvent;
+    FOnClick: TNotifyEvent;
     FOnMouseMove: TMouseMoveEvent;
     FOnKeyPress: TKeyPressEvent;
-    FOnClick: TNotifyEvent;
 
     procedure SetCaption(AValue: string);
     procedure SetColor(AColor: culong);
@@ -76,6 +79,7 @@ type
     property Width: cint read FWidth write SetWidth;
     property Height: cint read FHeight write SetHeight;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
+    property OnPaint: TPaintEvent read FOnPaint write FOnPaint;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     constructor Create(TheOwner: TX11Component; NewWindow: boolean = False);
@@ -153,6 +157,7 @@ begin
   inherited Create;
 
   FParent := TheOwner;
+  OnPaint := nil;
   OnClick := nil;
   OnMouseMove := nil;
   OnKeyPress := nil;
@@ -277,37 +282,35 @@ begin
   x := Event.xbutton.x;
   y := Event.xbutton.y;
   IsInRegion := (x >= 0) and (x < FWidth) and (y >= 0) and (y < FHeight);
-  if Event.xbutton.window = Window then begin
-    case Event._type of
-      Expose: begin
-        DoOnPaint;
-      end;
-      ConfigureNotify: begin
+  //  if Event.xbutton.window = Window then begin
+  case Event._type of
+    Expose: begin
+      DoOnPaint;
+    end;
+    ConfigureNotify: begin
+      if Event.xconfigure.window = Window then begin
         if (Event.xconfigure.Width <> FWidth) or (Event.xconfigure.Height <> FHeight) then begin
           Resize(Event.xconfigure.Width, Event.xconfigure.Height);
         end;
       end;
-      KeyPress: begin
-        if not XFilterEvent(@Event, 0) then begin
-          keysym := NoSymbol;
+    end;
+    KeyPress: begin
+      if not XFilterEvent(@Event, 0) then begin
+        keysym := NoSymbol;
 
-          FillChar(buf, Length(buf), #0);
-          Count := Xutf8LookupString(xic, @Event.xkey, @buf, SizeOf(buf) - 1, @keysym, @status);
-          if status = XLookupBoth then begin
-          end;
-
-          if status = XBufferOverflow then begin
-            //            WriteLn('Buffer Überlauf !');
-          end;
-          DoOnKeyPress(buf);
+        FillChar(buf, Length(buf), #0);
+        Count := Xutf8LookupString(xic, @Event.xkey, @buf, SizeOf(buf) - 1, @keysym, @status);
+        if status = XLookupBoth then begin
         end;
 
-
-        if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
-          // Taste auswerten
+        if status = XBufferOverflow then begin
+          //            WriteLn('Buffer Überlauf !');
         end;
+        DoOnKeyPress(buf);
       end;
-      ButtonPress: begin
+    end;
+    ButtonPress: begin
+      if Event.xbutton.window = Window then begin
         XMapRaised(dis, Event.xbutton.window);
         ChangeActiveComponent;
         if IsInRegion then begin
@@ -319,7 +322,9 @@ begin
         end;
         DoOnPaint;
       end;
-      MotionNotify: begin
+    end;
+    MotionNotify: begin
+      if Event.xmotion.window = Window then begin
         if IsInRegion and (OnMouseMove <> nil) then begin
           OnMouseMove(self, x, y);
         end;
@@ -332,7 +337,9 @@ begin
           DoOnPaint;
         end;
       end;
-      ButtonRelease: begin
+    end;
+    ButtonRelease: begin
+      if Event.xbutton.window = Window then begin
         if IsMouseDown and IsInRegion then begin
           DoOnClick;
         end;
@@ -346,7 +353,9 @@ end;
 
 procedure TX11Component.DoOnPaint;
 begin
-  // Für virtuellen Aufruf
+  if OnPaint <> nil then begin
+    OnPaint(self, dis, Window, gc);
+  end;
 end;
 
 procedure TX11Component.DoOnClick;
