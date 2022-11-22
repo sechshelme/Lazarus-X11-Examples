@@ -10,9 +10,12 @@ uses
 
 type
 
+  { TX11Button }
+
   TX11Button = class(TX11Panel)
   protected
-    procedure Paint; override;
+    procedure DoOnPaint; override;
+    procedure DoOnKeyPress(UTF8Char: TUTF8Char); override;
   public
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
@@ -36,7 +39,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TX11Button.Paint;
+procedure TX11Button.DoOnPaint;
 begin
   if IsButtonDown then begin
     Bevel := bvLowred;
@@ -44,7 +47,7 @@ begin
     Bevel := bvRaised;
   end;
 
-  inherited Paint;
+  inherited DoOnPaint;
 
   XSetForeground(dis, gc, $00);
   XDrawRectangle(dis, Window, gc, 0, 0, Width - 1, Height - 1);
@@ -52,6 +55,14 @@ begin
     XDrawString(dis, Window, gc, 8 + BorderWidth, 15 + BorderWidth, PChar(Caption), Length(Caption));
   end else begin
     XDrawString(dis, Window, gc, 7 + BorderWidth, 14 + BorderWidth, PChar(Caption), Length(Caption));
+  end;
+end;
+
+procedure TX11Button.DoOnKeyPress(UTF8Char: TUTF8Char);
+begin
+  inherited DoOnKeyPress(UTF8Char);
+  if (UTF8Char = #13) or (UTF8Char = #32) then begin
+    DoOnClick;
   end;
 end;
 

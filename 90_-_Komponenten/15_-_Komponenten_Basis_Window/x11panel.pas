@@ -24,7 +24,7 @@ type
     FBorderWidth: cint;
   protected
     ColLeftTop, ColRightBottom: culong;
-    procedure Paint; override;
+    procedure DoOnPaint; override;
   public
     property Bevel: TBevels read FBevels write FBevels;
     property BorderWidth: cint read FBorderWidth write FBorderWidth;
@@ -42,7 +42,7 @@ begin
   Bevel := bvRaised;
 end;
 
-procedure TX11Panel.Paint;
+procedure TX11Panel.DoOnPaint;
 var
   poly: array[0..5] of TXPoint;
 
@@ -55,7 +55,7 @@ var
 begin
   XSetForeground(dis, gc, Color);
   XFillRectangle(dis, Window, gc, 0, 0, Width, Height);
-  inherited Paint;
+  inherited DoOnPaint;
 
   if Bevel <> bvNone then begin
     if Bevel = bvRaised then begin

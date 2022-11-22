@@ -37,11 +37,12 @@ type
     procedure ButtonClick(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
     procedure CloseButtonMouseMove(Sender: TObject; X, Y: integer);
+    procedure MyDesktopKeyPress(Sender: TObject; UTF8Char: TUTF8Char);
     procedure NewButtonClick(Sender: TObject);
     procedure SubWinButtonClick(Sender: TObject);
   protected
     procedure DoOnEventHandle(var Event: TXEvent); override;
-    procedure Paint; override;
+    procedure DoOnPaint; override;
   public
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
@@ -65,6 +66,11 @@ var
   procedure TMyDesktop.CloseButtonMouseMove(Sender: TObject; X, Y: integer);
   begin
     WriteLn('move: ', x, '  ', y);
+  end;
+
+  procedure TMyDesktop.MyDesktopKeyPress(Sender: TObject; UTF8Char: TUTF8Char);
+  begin
+    WriteLn(TX11Button(Sender).Caption, ' Key: ', UTF8Char);
   end;
 
   procedure TMyDesktop.NewButtonClick(Sender: TObject);
@@ -149,6 +155,7 @@ var
       Button[i].Caption := 'Button' + s;
       Button[i].Name := 'Button' + s;
       Button[i].OnClick := @ButtonClick;
+      Button[i].OnKeyPress := @MyDesktopKeyPress;
     end;
     Button[1].Color := $8888FF;
     Button[2].Color := $88FF88;
@@ -177,7 +184,6 @@ var
       Caption := 'New';
       OnClick := @NewButtonClick;
     end;
-
   end;
 
   destructor TMyDesktop.Destroy;
@@ -185,14 +191,14 @@ var
     inherited Destroy;
   end;
 
-  procedure TMyDesktop.Paint;
+  procedure TMyDesktop.DoOnPaint;
   const
     maxSektoren = 8;
   var
     punkte: array[0..maxSektoren] of TXPoint;
     i: integer;
   begin
-    inherited Paint;
+    inherited DoOnPaint;
 
     for i := 0 to maxSektoren - 1 do begin
       punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 250;

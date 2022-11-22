@@ -25,7 +25,7 @@ type
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
   protected
-    procedure Paint; override;
+    procedure DoOnPaint; override;
 
   private
     procedure btnClick(Sender: TObject);
@@ -44,11 +44,11 @@ begin
   with btn do begin
     Caption := 'close';
     OnClick := @btnClick;
-    Left := 15;
-    Top := 15;
+    Left := 150;
+    Top := 150;
     BorderWidth := 20;
-    Height := Self.Height - 30;
-    Width := Self.Width - 30;
+    Height := Self.Height - 300;
+    Width := Self.Width - 300;
     Anchors := [akTop, akLeft, akRight, akBottom];
   end;
   Caption := Name;
@@ -59,7 +59,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TMyWindow.Paint;
+procedure TMyWindow.DoOnPaint;
 begin
   //  inherited Paint;
 end;

@@ -8,6 +8,8 @@ uses
   unixtype, ctypes, xlib, xutil, keysym, x,
   X11Component, X11Window;
 
+function setlocale(cat: integer; p: PChar): cint; cdecl; external 'c';
+
 type
 
   { TX11Desktop }
@@ -32,6 +34,22 @@ begin
     WriteLn('Kann nicht das Display öffnen');
     Halt(1);
   end;
+
+// UTF8 Key
+  if setlocale(0 {LC_ALL}, '') = 0 then begin
+    WriteLn('setlocale Fehler');
+  end;
+//    XSetLocaleModifiers('');
+
+  xim := XOpenIM(dis, nil, nil, nil);
+  if xim = nil then begin
+    // fallback to internal input method
+    XSetLocaleModifiers('@im=none');
+    xim := XOpenIM(dis, nil, nil, nil);
+  end;
+  // End UTF8 Key
+
+
   scr := DefaultScreen(dis);
   gc := DefaultGC(dis, scr);
   RootWin := RootWindow(dis, scr);

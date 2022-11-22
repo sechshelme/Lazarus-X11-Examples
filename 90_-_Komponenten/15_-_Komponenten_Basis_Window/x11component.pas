@@ -12,26 +12,31 @@ const
   EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or PointerMotionMask;
 
 type
-  TUTF8Char = String[7]; // UTF-8 character is at most 6 bytes plus a #0
+  TUTF8Char = string[7]; // UTF-8 character is at most 6 bytes plus a #0
 
   TAnchorKind = (akTop, akLeft, akRight, akBottom);
   TAnchors = set of TAnchorKind;
 
   TNotifyEvent = procedure(Sender: TObject) of object;
   TMouseMoveEvent = procedure(Sender: TObject; X, Y: integer) of object;
+  TKeyPressEvent = procedure(Sender: TObject; UTF8Char: TUTF8Char) of object;
   { TX11Component }
 
   TX11Component = class(TObject)
   private
+    FWindow: TDrawable;
+    FParent: TX11Component;
+
     FAnchors: TAnchors;
+    FName: string;
     FCaption: string;
     FColor: culong;
     FHeight, FLeft, FTop, FWidth, FWindowBorderWidth: cint;
-    FWindow: TDrawable;
+
     FOnMouseMove: TMouseMoveEvent;
-    FName: string;
-    FParent: TX11Component;
+    FOnKeyPress: TKeyPressEvent;
     FOnClick: TNotifyEvent;
+
     procedure SetCaption(AValue: string);
     procedure SetColor(AColor: culong);
     procedure SetWindowBorderWidth(AWindowBorderWidth: cint);
@@ -46,6 +51,8 @@ type
     dis: PDisplay; static;
     scr: cint; static;
     RootWin: TWindow; static;
+    xim: PXIM; static; // UTF8 Key
+    xic: PXIC; // UTF8 Key
     gc: TGC; static;
     wm_delete_window: TAtom; static;
 
@@ -53,9 +60,9 @@ type
     ComponentList: array of TX11Component;
     ActiveComponent: integer;
     procedure DoOnEventHandle(var Event: TXEvent); virtual;
-    procedure Paint; virtual;
-    procedure Click; virtual;
-    procedure DoOnKeyPress(    UTF8Char:TUTF8Char);
+    procedure DoOnPaint; virtual;
+    procedure DoOnClick; virtual;
+    procedure DoOnKeyPress(UTF8Char: TUTF8Char); virtual;
   public
     property Window: TDrawable read FWindow;
     property Anchors: TAnchors read FAnchors write FAnchors;
@@ -69,6 +76,7 @@ type
     property Width: cint read FWidth write SetWidth;
     property Height: cint read FHeight write SetHeight;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
+    property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     constructor Create(TheOwner: TX11Component; NewWindow: boolean = False);
     destructor Destroy; override;
@@ -147,6 +155,7 @@ begin
   FParent := TheOwner;
   OnClick := nil;
   OnMouseMove := nil;
+  OnKeyPress := nil;
 
   FColor := $BBBBBB;
   Anchors := [akLeft, akTop];
@@ -197,6 +206,14 @@ begin
 
   // [X] abfangen
   XSetWMProtocols(dis, FWindow, @wm_delete_window, 1);
+
+  // UTF8 Key
+  xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow, Window, XNFocusWindow, Window, nil]);
+  if xic = nil then begin
+    WriteLn('Could not open IC');
+  end;
+  XSetICFocus(xic);
+
 end;
 
 destructor TX11Component.Destroy;
@@ -240,10 +257,15 @@ var
   i: integer;
   x, y: cint;
   IsInRegion: TBoolResult;
+
+  status: TStatus;
+  Count: integer;
+  keysym: TKeySym;
+  buf: array[0..31] of char;
 begin
   if Event._type in [KeyPress, KeyRelease] then begin
     WriteLn(ActiveComponent);
-    if (ActiveComponent >= 0) and (ActiveComponent < Length(ComponentList) )then  begin
+    if (ActiveComponent >= 0) and (ActiveComponent < Length(ComponentList)) then  begin
       ComponentList[ActiveComponent].DoOnEventHandle(Event);
     end;
   end else begin
@@ -258,7 +280,7 @@ begin
   if Event.xbutton.window = Window then begin
     case Event._type of
       Expose: begin
-        Paint;
+        DoOnPaint;
       end;
       ConfigureNotify: begin
         if (Event.xconfigure.Width <> FWidth) or (Event.xconfigure.Height <> FHeight) then begin
@@ -266,6 +288,21 @@ begin
         end;
       end;
       KeyPress: begin
+        if not XFilterEvent(@Event, 0) then begin
+          keysym := NoSymbol;
+
+          FillChar(buf, Length(buf), #0);
+          Count := Xutf8LookupString(xic, @Event.xkey, @buf, SizeOf(buf) - 1, @keysym, @status);
+          if status = XLookupBoth then begin
+          end;
+
+          if status = XBufferOverflow then begin
+            //            WriteLn('Buffer Überlauf !');
+          end;
+          DoOnKeyPress(buf);
+        end;
+
+
         if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
           // Taste auswerten
         end;
@@ -280,7 +317,7 @@ begin
           IsMouseDown := False;
           IsButtonDown := False;
         end;
-        Paint;
+        DoOnPaint;
       end;
       MotionNotify: begin
         if IsInRegion and (OnMouseMove <> nil) then begin
@@ -292,27 +329,27 @@ begin
           end else begin
             IsButtonDown := False;
           end;
-          Paint;
+          DoOnPaint;
         end;
       end;
       ButtonRelease: begin
         if IsMouseDown and IsInRegion then begin
-          Click;
+          DoOnClick;
         end;
         IsMouseDown := False;
         IsButtonDown := False;
-        Paint;
+        DoOnPaint;
       end;
     end;
   end;
 end;
 
-procedure TX11Component.Paint;
+procedure TX11Component.DoOnPaint;
 begin
   // Für virtuellen Aufruf
 end;
 
-procedure TX11Component.Click;
+procedure TX11Component.DoOnClick;
 begin
   if OnClick <> nil then begin
     OnClick(self);
@@ -321,7 +358,9 @@ end;
 
 procedure TX11Component.DoOnKeyPress(UTF8Char: TUTF8Char);
 begin
-
+  if OnKeyPress <> nil then begin
+    OnKeyPress(Self, UTF8Char);
+  end;
 end;
 
 procedure TX11Component.Resize(AWidth, AHeight: cint);
@@ -370,7 +409,7 @@ end;
 
 procedure TX11Component.ChangeActiveComponent;
 var
-  i: Integer;
+  i: integer;
 begin
   if Parent <> nil then begin
     for i := 0 to Length(Parent.ComponentList) - 1 do begin

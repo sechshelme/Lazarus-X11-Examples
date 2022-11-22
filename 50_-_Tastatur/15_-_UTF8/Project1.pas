@@ -100,6 +100,7 @@ const
     Count: integer;
     keysym: TKeySym;
     buf: array[0..31] of char;
+    s:String;
 
   begin
 
@@ -125,6 +126,9 @@ const
             end;
             WriteLn('Count Press: ', Count);
             Write(buf, ' ');
+            s:=buf;
+            Write(s,'  ');
+            WriteLn(Length(s));
             if Event.xkey.state and 1 = 1 then begin
               Write('Shift ');
             end;
