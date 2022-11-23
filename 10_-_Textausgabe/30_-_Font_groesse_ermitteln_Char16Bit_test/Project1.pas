@@ -92,7 +92,7 @@ const
     Result := k;
   end;
 
-  function TMyWin.utf8toXChar2bxxxxx(output: PXChar2b; const input: string): uIntPtr;
+  function TMyWin.utf8toXChar2bxxxxx(output: PXChar2b; const input: string): PtrUInt;
 
   var
     j: integer = 0;
@@ -101,19 +101,18 @@ const
     c: byte;
     op: PXChar2b;
 
-    function GetLen: IntPtr; inline;
+    function GetLen2B: IntPtr; inline;
     begin
-      Result := (uIntPtr(op) - uIntPtr(output)) div SizeOf(TXChar2b);
+      Result := (PtrUInt(op) - PtrUInt(output)) div SizeOf(TXChar2b);
     end;
-
-
 
   begin
     inlen := Length(input);
     //    SetLength(output, inlen);
     op := output;
-    while (j < inlen) and (GetLen < inlen) do begin
-      c := byte(input[j + 1]);
+    j:=1;
+    while (j-1 < inlen) and (GetLen2B < inlen) do begin
+      c := byte(input[j]);
       if c < 128 then  begin
         op^.byte1 := 0;
         op^.byte2 := byte(c);
@@ -123,26 +122,26 @@ const
       end else begin
         case c and $F0 of
           $C0, $D0: begin
-            if inlen < j + 1 then begin
+            if inlen < j then begin
               //            Result := k;
-              Result := GetLen;
+              Result := GetLen2B;
               Exit;
             end;
             op^.byte1 := (c and $1C) shr 2;
             Inc(j);
-            op^.byte2 := ((c and $03) shl 6) + (byte(input[j + 1]) and $3F);
+            op^.byte2 := ((c and $03) shl 6) + (byte(input[j]) and $3F);
             Inc(op);
           end;
           $E0: begin
-            if inlen < 2 + j then begin
-              Result := GetLen;
+            if inlen < J+1 then begin
+              Result := GetLen2B;
               Exit;
             end;
             Inc(j);
-            op^.byte1 := ((c and $0F) shl 4) + ((byte(input[j + 1]) and $3C) shr 2);
-            c := byte(input[j + 1]);
+            op^.byte1 := ((c and $0F) shl 4) + ((byte(input[j]) and $3C) shr 2);
+            c := byte(input[j]);
             Inc(j);
-            op^.byte2 := ((c and $03) shl 6) + (byte(input[j + 1]) and $3F);
+            op^.byte2 := ((c and $03) shl 6) + (byte(input[j]) and $3F);
             Inc(op);
           end;
           $FF: begin
@@ -153,12 +152,12 @@ const
       end;
       Inc(j);
     end;
-    Result := GetLen;
+    Result := GetLen2B;
   end;
 
   procedure TMyWin.Paint;
   const
-    Hello = 'Hello World !, ich habe "äüö ÄÜÖ ÿŸ   ggg" !';
+    Hello = 'Hello World !, ich habe "äüö ÄÜÖ ÿŸäüö   ggg" !';
   var
     fontStructure: PXFontStruct;
     direction, ascent, descent: cint;
@@ -176,7 +175,7 @@ const
 
     Getmem(str2b, Length(Hello) * 2);
     Writeln('str: ', Length(Hello));
-    Char2BLen := utf8toXChar2b(str2b, Hello);
+//    Char2BLen := utf8toXChar2b(str2b, Hello);
     WriteLn('b2: ', Char2BLen);
     Char2BLen := utf8toXChar2bxxxxx(str2b, Hello);
     WriteLn('b2: ', Char2BLen);
