@@ -20,7 +20,8 @@ uses
   X11Panel,
   X11Window,
   X11Desktop,
-  MyWindow;
+  MyWindow,
+  X11Edit;
 
 type
 
@@ -30,6 +31,7 @@ type
   private
     Panel, PanelSub1, PanelSub2: TX11Panel;
     Button: array[0..3] of TX11Button;
+    Edit: array[0..3] of TX11Edit;
     NewButton, CloseButton: TX11Button;
 
     SubWin: TX11Window;
@@ -96,6 +98,7 @@ var
   var
     i: integer;
     s: string;
+    PanelSub3: TX11Panel;
   begin
     inherited Create(TheOwner);
     Color := $FF;
@@ -125,7 +128,7 @@ var
       Left := 10;
       Top := 10;
       Width := Self.Width - 20;
-      Height := 100;
+      Height := 250;
       BorderWidth := 4;
       Anchors := [akTop, akLeft, akRight, akBottom];
     end;
@@ -136,9 +139,9 @@ var
       Left := 10;
       Top := 10;
       Width := 370;
-      Height := Panel.Height - 20;
+      Height := 100 - 20;
       Bevel := bvLowred;
-      Anchors := [akTop, akLeft, akBottom];
+      Anchors := [akTop, akLeft];
     end;
 
     PanelSub2 := TX11Panel.Create(Panel);
@@ -147,7 +150,18 @@ var
       Left := 390;
       Top := 10;
       Width := Panel.Width - PanelSub1.Width - 30;
-      Height := Panel.Height - 20;
+      Height := 100 - 20;
+      Bevel := bvLowred;
+      Anchors := [akTop, akLeft, akRight];
+    end;
+
+    PanelSub3 := TX11Panel.Create(Panel);
+    with PanelSub3 do begin
+      Color := $999999;
+      Left := 10;
+      Top := 100;
+      Width := Panel.Width - 20;
+      Height := Panel.Height - PanelSub2.Height - 30;
       Bevel := bvLowred;
       Anchors := [akTop, akLeft, akRight, akBottom];
     end;
@@ -168,9 +182,23 @@ var
     Button[2].Color := $88FF88;
     Button[3].Color := $FF8888;
 
+    for i := 0 to Length(Edit) - 1 do begin
+      Edit[i] := TX11Edit.Create(PanelSub3);
+      Edit[i].Width := PanelSub3.Width - 20;
+      Edit[i].Left := 10;
+      Edit[i].Top := 10 + i * (Edit[0].Height + 5);
+      str(i, s);
+      Edit[i].Text := 'Edit' + s;
+      Edit[i].Name := 'Edit' + s;
+      Edit[i].Anchors := [akTop, akLeft, akRight];
+    end;
+    Button[1].Color := $8888FF;
+    Button[2].Color := $88FF88;
+    Button[3].Color := $FF8888;
+
     CloseButton := TX11Button.Create(Self);
     with CloseButton do begin
-      Top := 120;
+      Top := Panel.Height + 20;
       Left := 100;
       Width := 120;
       Height := 50;
@@ -184,7 +212,7 @@ var
     NewButton := TX11Button.Create(Self);
     with NewButton do begin
       Anchors := [akRight, akBottom];
-      Top := 120;
+      Top := Panel.Height + 20;
       Left := 250;
       Height := 50;
       Width := 120;

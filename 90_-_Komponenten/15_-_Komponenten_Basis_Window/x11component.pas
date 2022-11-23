@@ -100,9 +100,16 @@ begin
 end;
 
 procedure TX11Component.SetHeight(AHeight: cint);
+var
+  h: cint;
 begin
   if FHeight <> AHeight then begin
-    XResizeWindow(dis, Window, FWidth, AHeight);
+    if AHeight < 1 then begin
+      h := 1;
+    end else begin
+      h := AHeight;
+    end;
+    XResizeWindow(dis, Window, FWidth, h);
     Resize(FWidth, AHeight);
   end;
 end;
@@ -116,10 +123,17 @@ begin
 end;
 
 procedure TX11Component.SetWidth(AWidth: cint);
+var
+  w: cint;
 begin
   if FWidth <> AWidth then begin
+    if AWidth < 1 then begin
+      w := 1;
+    end else begin
+      w := AWidth;
+    end;
     FWidth := AWidth;
-    XResizeWindow(dis, Window, AWidth, FHeight);
+    XResizeWindow(dis, Window, w, FHeight);
     Resize(AWidth, FHeight);
   end;
 end;

@@ -29,7 +29,7 @@
         <Mode0 Name="default"/>
       </Modes>
     </RunParams>
-    <Units Count="7">
+    <Units Count="8">
       <Unit0>
         <Filename Value="Project1.pas"/>
         <IsPartOfProject Value="True"/>
@@ -64,6 +64,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="MyWindow"/>
       </Unit6>
+      <Unit7>
+        <Filename Value="x11edit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="X11Edit"/>
+      </Unit7>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
