@@ -30,7 +30,7 @@ type
     Width, Height: cint;
     procedure Paint;
     function utf8toXChar2b(output: PXChar2b; const input: string): integer;
-    function utf8toXChar2bxxxxx(output: PXChar2b; const input: string): IntPtr;
+    function utf8toXChar2bxxxxx(output: PXChar2b; const input: string): uIntPtr;
   public
     constructor Create;
     destructor Destroy; override;
@@ -92,7 +92,7 @@ const
     Result := k;
   end;
 
-  function TMyWin.utf8toXChar2bxxxxx(output: PXChar2b; const input: string): IntPtr;
+  function TMyWin.utf8toXChar2bxxxxx(output: PXChar2b; const input: string): uIntPtr;
 
   var
     j: integer = 0;
@@ -103,7 +103,7 @@ const
 
     function GetLen: IntPtr; inline;
     begin
-      Result := (IntPtr(op) - IntPtr(output)) div SizeOf(TXChar2b);
+      Result := (uIntPtr(op) - uIntPtr(output)) div SizeOf(TXChar2b);
     end;
 
 
