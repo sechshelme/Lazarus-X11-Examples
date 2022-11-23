@@ -30,7 +30,6 @@ type
     Width, Height: cint;
     procedure Paint;
     function utf8toXChar2b(output: PXChar2b; const input: string): integer;
-    function utf8toXChar2bxxxxx(output: PXChar2b; const input: string): uIntPtr;
   public
     constructor Create;
     destructor Destroy; override;
@@ -92,72 +91,9 @@ const
     Result := k;
   end;
 
-  function TMyWin.utf8toXChar2bxxxxx(output: PXChar2b; const input: string): PtrUInt;
-
-  var
-    j: integer = 0;
-    //  k: integer = 0;
-    inlen: IntPtr;
-    c: byte;
-    op: PXChar2b;
-
-    function GetLen2B: IntPtr; inline;
-    begin
-      Result := (PtrUInt(op) - PtrUInt(output)) div SizeOf(TXChar2b);
-    end;
-
-  begin
-    inlen := Length(input);
-    //    SetLength(output, inlen);
-    op := output;
-    j:=1;
-    while (j-1 < inlen) and (GetLen2B < inlen) do begin
-      c := byte(input[j]);
-      if c < 128 then  begin
-        op^.byte1 := 0;
-        op^.byte2 := byte(c);
-        Inc(op);
-      end else if c < $C0 then begin
-        Continue;
-      end else begin
-        case c and $F0 of
-          $C0, $D0: begin
-            if inlen < j then begin
-              //            Result := k;
-              Result := GetLen2B;
-              Exit;
-            end;
-            op^.byte1 := (c and $1C) shr 2;
-            Inc(j);
-            op^.byte2 := ((c and $03) shl 6) + (byte(input[j]) and $3F);
-            Inc(op);
-          end;
-          $E0: begin
-            if inlen < J+1 then begin
-              Result := GetLen2B;
-              Exit;
-            end;
-            Inc(j);
-            op^.byte1 := ((c and $0F) shl 4) + ((byte(input[j]) and $3C) shr 2);
-            c := byte(input[j]);
-            Inc(j);
-            op^.byte2 := ((c and $03) shl 6) + (byte(input[j]) and $3F);
-            Inc(op);
-          end;
-          $FF: begin
-            Continue;
-          end;
-
-        end;
-      end;
-      Inc(j);
-    end;
-    Result := GetLen2B;
-  end;
-
   procedure TMyWin.Paint;
   const
-    Hello = 'Hello World !, ich habe "äüö ÄÜÖ ÿŸäüö   ggg" !';
+    Hello = 'Hello World !, ich habe "äüö ÄÜÖ ÿŸ   ggg" !';
   var
     fontStructure: PXFontStruct;
     direction, ascent, descent: cint;
@@ -174,11 +110,7 @@ const
     XSetFont(dis, gc, fontStructure^.fid);
 
     Getmem(str2b, Length(Hello) * 2);
-    Writeln('str: ', Length(Hello));
-//    Char2BLen := utf8toXChar2b(str2b, Hello);
-    WriteLn('b2: ', Char2BLen);
-    Char2BLen := utf8toXChar2bxxxxx(str2b, Hello);
-    WriteLn('b2: ', Char2BLen);
+    Char2BLen := utf8toXChar2b(str2b, Hello);
 
     XTextExtents16(fontStructure, str2b, Char2BLen, @direction, @ascent, @descent, @overall);
     Left := (Width - overall.Width) div 2;
