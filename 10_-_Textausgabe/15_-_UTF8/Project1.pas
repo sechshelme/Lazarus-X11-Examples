@@ -107,7 +107,6 @@ const
     PC2: PXChar2b;
     len: integer;
   begin
-    xft
     Getmem(PC2, Length(s) * 2);
     len := utf8toXChar2b(PC2, s);
     XDrawString16(dis, win, gc, x, y, PC2, len);
@@ -117,11 +116,12 @@ const
   procedure TMyWin.Paint;
   const
     Caption = 'öäü-ÄÜÖ !Ÿ←←««¥¥<<';
-    Hello = 'Hello World !';
+    Hello = 'Hello World !'#152
+      ;
   begin
     XDrawString(dis, win, gc, 10, 10, PChar(Hello), Length(Caption));
 
-    //    XDrawString(dis, win, gc, 10, 30, PChar(Caption), Length(Caption));
+    XDrawString(dis, win, gc, 10, 70, PChar(Hello), Length(Hello));
     //     XmbDrawString(dis,win, @fontset,gc,20,70,PChar(Caption), Length(Caption));
     DrawString(Caption, 10, 30);
     DrawString(sl, 10, 50);

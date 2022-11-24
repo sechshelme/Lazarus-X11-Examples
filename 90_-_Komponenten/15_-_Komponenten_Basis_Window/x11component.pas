@@ -18,6 +18,7 @@ type
   TAnchors = set of TAnchorKind;
 
   TNotifyEvent = procedure(Sender: TObject) of object;
+  TEvent = procedure(Sender: TObject; Event:TXEvent) of object;
   TMouseMoveEvent = procedure(Sender: TObject; X, Y: integer) of object;
   TKeyPressEvent = procedure(Sender: TObject; UTF8Char: TUTF8Char) of object;
   TPaintEvent = procedure(Sender: TObject; ADisplay: PDisplay; AWindowwin: TDrawable; AGC: TGC) of object;
@@ -39,6 +40,7 @@ type
     FOnClick: TNotifyEvent;
     FOnMouseMove: TMouseMoveEvent;
     FOnKeyPress: TKeyPressEvent;
+    FOnKeyDown: TEvent;
 
     procedure SetCaption(AValue: string);
     procedure SetColor(AColor: culong);
@@ -66,6 +68,7 @@ type
     procedure DoOnPaint; virtual;
     procedure DoOnClick; virtual;
     procedure DoOnKeyPress(UTF8Char: TUTF8Char); virtual;
+    procedure DoOnKeyDown(var Event: TXEvent); virtual;
   public
     property Window: TDrawable read FWindow;
     property Anchors: TAnchors read FAnchors write FAnchors;
@@ -81,6 +84,7 @@ type
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
     property OnPaint: TPaintEvent read FOnPaint write FOnPaint;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
+    property OnKeyDown: TEvent read FOnKeyDown write FOnKeyDown;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     constructor Create(TheOwner: TX11Component; NewWindow: boolean = False);
     destructor Destroy; override;
@@ -175,6 +179,7 @@ begin
   OnClick := nil;
   OnMouseMove := nil;
   OnKeyPress := nil;
+  FOnKeyDown := nil;
 
   FColor := $BBBBBB;
   Anchors := [akLeft, akTop];
@@ -283,7 +288,7 @@ var
   buf: array[0..31] of char;
 begin
   if Event._type in [KeyPress, KeyRelease] then begin
-    WriteLn(ActiveComponent);
+//    WriteLn(ActiveComponent);
     if (ActiveComponent >= 0) and (ActiveComponent < Length(ComponentList)) then  begin
       ComponentList[ActiveComponent].DoOnEventHandle(Event);
     end;
@@ -321,6 +326,7 @@ begin
           //            WriteLn('Buffer Überlauf !');
         end;
         DoOnKeyPress(buf);
+        DoOnKeyDown(Event);
       end;
     end;
     ButtonPress: begin
@@ -383,6 +389,13 @@ procedure TX11Component.DoOnKeyPress(UTF8Char: TUTF8Char);
 begin
   if OnKeyPress <> nil then begin
     OnKeyPress(Self, UTF8Char);
+  end;
+end;
+
+procedure TX11Component.DoOnKeyDown(var Event: TXEvent);
+begin
+  if OnKeyDown <> nil then begin
+    OnKeyDown(Self, Event);
   end;
 end;
 

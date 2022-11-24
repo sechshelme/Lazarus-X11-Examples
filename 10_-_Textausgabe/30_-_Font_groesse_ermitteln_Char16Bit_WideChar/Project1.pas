@@ -170,7 +170,7 @@ const
     Left, Top: cint;
     str2b: PXChar2b;
     Char2BLen: integer;
-    pwc: pwidechar;
+    pwc: PUnicodeChar;
     UTF16Str: UnicodeString;
     i: integer;
 
@@ -210,7 +210,6 @@ const
     WriteLn('WideChar: ', Char2BLen);
     for i := 0 to Char2BLen - 1 do begin
       Write(word(pwc[i]), '-');
-      //      Write(pwc[i].byte2, ' ');
     end;
     WriteLn();
 
@@ -220,7 +219,6 @@ const
     WriteLn('WideChar: ', Char2BLen);
     for i := 0 to Char2BLen - 1 do begin
       Write(word(pwc[i]), '-');
-      //      Write(pwc[i].byte2, ' ');
     end;
     WriteLn();
 
@@ -235,6 +233,7 @@ const
 
     XSetForeground(dis, gc, $000000);
     XDrawString16(dis, win, gc, Left, Top + ascent - descent, pointer(pwc), Char2BLen);
+
 
     Freemem(str2b);
     Freemem(pwc);

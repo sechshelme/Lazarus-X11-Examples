@@ -46,10 +46,24 @@ begin
 end;
 
 procedure TX11Edit.DoOnKeyPress(UTF8Char: TUTF8Char);
+var
+  i: integer;
 begin
   inherited DoOnKeyPress(UTF8Char);
-  FText := FText + UTF8Char;
-  Inc(CursorPos);
+  for i := 1 to Length(UTF8Char) do begin
+    Write(byte(UTF8Char[i]), ' ');
+  end;
+  WriteLn();
+  case UTF8Char of
+    #8: begin
+      Dec(CursorPos);
+      SetLength(FText, Length(FText) - 1);
+    end;
+    else begin
+      FText := FText + UTF8Char;
+      Inc(CursorPos, Length(UTF8Char));
+    end;
+  end;
   DoOnPaint;
 end;
 
