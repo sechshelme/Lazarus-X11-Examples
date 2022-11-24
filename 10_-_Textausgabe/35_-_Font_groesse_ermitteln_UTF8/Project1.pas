@@ -67,8 +67,7 @@ FontSet := XCreateFontSet(dis, '-schumacher*', @missingCharsets, @missingCharset
     WriteLn('XFontSet: ', XBaseFontNameListOfFontSet(fontSet));
     WriteLn('missing: ', missingCharsetCount);
     for i := 0 to missingCharsetCount - 1 do begin
-      WriteLn(missingCharsets[i]);
-    end;
+      WriteLn(missingCharsets[i]);      end;
 
     XFreeStringList(missingCharsets);
 

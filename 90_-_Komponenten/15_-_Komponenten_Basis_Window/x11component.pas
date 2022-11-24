@@ -71,7 +71,7 @@ type
     property Anchors: TAnchors read FAnchors write FAnchors;
     property Name: string read FName write FName;
     property Caption: string read FCaption write SetCaption;
-    property Parent: TX11Component read FParent write FParent;
+    property Parent: TX11Component read FParent;
     property WindowBorderWidth: cint read FWindowBorderWidth write SetWindowBorderWidth;
     property Color: culong read FColor write SetColor;
     property Left: cint read FLeft write SetLeft;

@@ -184,7 +184,8 @@ var
 
     for i := 0 to Length(Edit) - 1 do begin
       Edit[i] := TX11Edit.Create(PanelSub3);
-      Edit[i].Width := PanelSub3.Width - 20;
+    //  if Parent=nil then WriteLn('nil');
+      Edit[i].Width :=Edit[i].Parent.Width - 20;
       Edit[i].Left := 10;
       Edit[i].Top := 10 + i * (Edit[0].Height + 5);
       str(i, s);
