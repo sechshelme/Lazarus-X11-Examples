@@ -29,46 +29,11 @@
         <Mode0 Name="default"/>
       </Modes>
     </RunParams>
-    <Units Count="8">
+    <Units Count="1">
       <Unit0>
         <Filename Value="Project1.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
-      <Unit1>
-        <Filename Value="x11button.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X11Button"/>
-      </Unit1>
-      <Unit2>
-        <Filename Value="x11component.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X11Component"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="x11panel.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X11Panel"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="x11window.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X11Window"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="x11desktop.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X11Desktop"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="mywindow.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="MyWindow"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="x11edit.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X11Edit"/>
-      </Unit7>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -80,12 +45,8 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="/tmp"/>
     </SearchPaths>
-    <CodeGeneration>
-      <TargetOS Value="linux"/>
-    </CodeGeneration>
     <Linking>
       <Debugging>
-        <GenerateDebugInfo Value="False"/>
         <DebugInfoType Value="dsDwarf2Set"/>
       </Debugging>
     </Linking>
