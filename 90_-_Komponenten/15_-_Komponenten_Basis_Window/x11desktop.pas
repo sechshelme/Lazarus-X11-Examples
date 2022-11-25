@@ -51,7 +51,7 @@ begin
 
 
   scr := DefaultScreen(dis);
-  gc := DefaultGC(dis, scr);
+//  gc := DefaultGC(dis, scr);
   RootWin := RootWindow(dis, scr);
 
   // [X] abfangen

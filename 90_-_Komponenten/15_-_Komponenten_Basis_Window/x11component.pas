@@ -44,7 +44,7 @@ type
     RootWin: TWindow; static;
     xim: PXIM; static; // UTF8 Key
     xic: PXIC; // UTF8 Key
-    gc: TGC; static;
+    gc: TGC;
     wm_delete_window: TAtom; static;
 
     IsMouseDown, IsButtonDown: boolean;
@@ -205,6 +205,9 @@ begin
     x := 300;
     y := 200;
   end;
+
+  gc:=XCreateGC(dis,Window,0,nil);
+
   XSetStandardProperties(dis, Window, 'noname', 'noname', None, nil, 0, @size_hints);
 
   XStoreName(dis, FWindow, 'none');
