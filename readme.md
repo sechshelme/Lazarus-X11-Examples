@@ -21,7 +21,7 @@ Diese sind alle in C/C++
 
 
 ## Tool für X, welche vonrinstalliert sind
-- [Schriften Tools von Linux/X11](xtool.md)
+- [Tools von Linux/X11](xtool.md)
 
 ## X-Client auf einem Windows-PC mit SSH
 - [Anleitung](SSH-Server_einrichten.md)
