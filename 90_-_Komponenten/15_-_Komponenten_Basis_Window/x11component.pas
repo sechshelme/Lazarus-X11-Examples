@@ -206,7 +206,7 @@ begin
     y := 200;
   end;
 
-  gc:=XCreateGC(dis,Window,0,nil);
+  gc := XCreateGC(dis, Window, 0, nil);
 
   XSetStandardProperties(dis, Window, 'noname', 'noname', None, nil, 0, @size_hints);
 
@@ -277,7 +277,7 @@ var
   buf: array[0..31] of char;
 begin
   if Event._type in [KeyPress, KeyRelease] then begin
-//    WriteLn(ActiveComponent);
+    //    WriteLn(ActiveComponent);
     if (ActiveComponent >= 0) and (ActiveComponent < Length(ComponentList)) then  begin
       ComponentList[ActiveComponent].DoOnEventHandle(Event);
     end;

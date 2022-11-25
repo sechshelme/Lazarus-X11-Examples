@@ -20,8 +20,8 @@ Diese sind alle in C/C++
 - [The X Window system](https://tronche.com/gui/x)
 
 
-## Schriften
-- [Schriften Tools von Linux/X11](font.md)
+## Tool für X, welche vonrinstalliert sind
+- [Schriften Tools von Linux/X11](xtool.md)
 
 ## X-Client auf einem Windows-PC mit SSH
 - [Anleitung](SSH-Server_einrichten.md)
