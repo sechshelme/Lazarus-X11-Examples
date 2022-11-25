@@ -21,7 +21,7 @@ uses
   X11Window,
   X11Desktop,
   MyWindow,
-  X11Edit;
+  X11Edit, X11Utils;
 
 type
 
@@ -68,7 +68,7 @@ var
 
   procedure TMyDesktop.CloseButtonMouseMove(Sender: TObject; X, Y: integer);
   begin
-    WriteLn('move: ', x, '  ', y);
+//    WriteLn('move: ', x, '  ', y);
   end;
 
   procedure TMyDesktop.MyDesktopKeyPress(Sender: TObject; UTF8Char: TUTF8Char);

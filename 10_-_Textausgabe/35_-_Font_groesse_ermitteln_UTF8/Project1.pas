@@ -84,6 +84,8 @@ FontSet := XCreateFontSet(dis, '-schumacher*', @missingCharsets, @missingCharset
     XSetFont(dis, gc, fontStructure^.fid);
     XDrawString(dis, win, gc, 60, 70, PChar(Hello), Length(Hello));
     XDrawString(dis, win, gc, 50, 50, PChar(Hello), Length(Hello));
+
+    XFreeFont(dis, fontStructure);
   end;
 
   constructor TMyWin.Create;

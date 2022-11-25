@@ -193,6 +193,7 @@ const
     XDrawString16(dis, win, gc, Left, Top + ascent - descent, str2b, Char2BLen);
 
     Freemem(str2b);
+    XFreeFont(dis, fontStructure);
   end;
 
   constructor TMyWin.Create;

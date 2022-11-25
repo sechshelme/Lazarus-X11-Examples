@@ -170,8 +170,8 @@ const
     Left, Top: cint;
     str2b: PXChar2b;
     Char2BLen: integer;
-    pwc: PUnicodeChar;
-    UTF16Str: UnicodeString;
+    pwc: punicodechar;
+    UTF16Str: unicodestring;
     i: integer;
 
   begin
@@ -184,7 +184,7 @@ const
     Getmem(str2b, Length(Hello) * 2);
     Writeln('str: ', Length(Hello));
     for i := 1 to Length(Hello) do begin
-      Write(byte( Hello[i]), '-');
+      Write(byte(Hello[i]), '-');
     end;
 
     Char2BLen := utf8toXChar2b_old(str2b, Hello);
@@ -201,7 +201,7 @@ const
 
     //    UTF16Str:=Hello;
     //    SetLength(UTF16Str, 6);
-    UTF16Str := #1278 + #78 + #34 + #34+'aa';
+    UTF16Str := #1278 + #78 + #34 + #34 + 'aa';
     WriteLn(Length(UTF16Str));
     WriteLn(UTF16Str);
 
@@ -237,6 +237,7 @@ const
 
     Freemem(str2b);
     Freemem(pwc);
+    XFreeFont(dis, fontStructure);
   end;
 
   constructor TMyWin.Create;

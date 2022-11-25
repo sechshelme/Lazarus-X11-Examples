@@ -5,24 +5,10 @@ unit X11Component;
 interface
 
 uses
-  unixtype, ctypes, xlib, xutil, keysym, x;
-
-const
-  //  EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or StructureNotifyMask or PointerMotionMask;
-  EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or PointerMotionMask;
+  unixtype, ctypes, xlib, xutil, keysym, x,
+  X11Utils;
 
 type
-  TUTF8Char = string[7]; // UTF-8 character is at most 6 bytes plus a #0
-
-  TAnchorKind = (akTop, akLeft, akRight, akBottom);
-  TAnchors = set of TAnchorKind;
-
-  TNotifyEvent = procedure(Sender: TObject) of object;
-  TEvent = procedure(Sender: TObject; Event:TXEvent) of object;
-  TMouseMoveEvent = procedure(Sender: TObject; X, Y: integer) of object;
-  TKeyPressEvent = procedure(Sender: TObject; UTF8Char: TUTF8Char) of object;
-  TPaintEvent = procedure(Sender: TObject; ADisplay: PDisplay; AWindowwin: TDrawable; AGC: TGC) of object;
-
   { TX11Component }
 
   TX11Component = class(TObject)

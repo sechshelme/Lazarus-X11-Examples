@@ -47,22 +47,12 @@ const
     C2BPtr: PXChar2b;
     c: byte;
 
-    function GetLen2B: IntPtr; inline;
-    begin
-      Result := (PtrUInt(C2BPtr) - PtrUInt(@output[0])) div SizeOf(TXChar2b);
-    end;
-
-    function GetLenPC: IntPtr; inline;
-    begin
-      Result := (PtrUInt(StrPtr) - PtrUInt(@s[1])) div SizeOf(char);
-    end;
-
   begin
     StrLen := Length(s);
     SetLength(output, StrLen);
     StrPtr := @s[1];
     C2BPtr := @output[0];
-    while (GetLenPC < StrLen) do begin
+    while ((PtrUInt(StrPtr) - PtrUInt(@s[1])) div SizeOf(char) < StrLen) do begin
       c := StrPtr^;
       if c < 128 then  begin
         C2BPtr^.byte1 := 0;
@@ -90,7 +80,7 @@ const
       end;
       Inc(StrPtr);
     end;
-    SetLength(output, GetLen2B);
+    SetLength(output, (PtrUInt(C2BPtr) - PtrUInt(@output[0])) div SizeOf(TXChar2b));
   end;
 
   procedure TMyWin.Paint;
@@ -101,7 +91,7 @@ const
     direction, ascent, descent: cint;
     overall: TXCharStruct;
     Left, Top: cint;
-    Char2BArr: array of TXChar2b;
+    Char2BArr: TXChar2BArray;
 
   begin
     fontStructure := XLoadQueryFont(dis, '9x15bold');
@@ -124,6 +114,8 @@ const
 
     XSetForeground(dis, gc, $000000);
     XDrawString16(dis, win, gc, Left, Top + ascent - descent, @Char2BArr[0], Length(Char2BArr));
+
+    XFreeFont(dis, fontStructure);
   end;
 
   constructor TMyWin.Create;

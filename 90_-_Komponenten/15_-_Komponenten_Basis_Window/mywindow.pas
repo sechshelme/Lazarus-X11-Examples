@@ -5,17 +5,8 @@ unit MyWindow;
 interface
 
 uses
-  unixtype,
-  ctypes,
-  xlib,
-  xutil,
-  keysym,
-  x,
-  X11Button,
-  X11Component,
-  X11Panel,
-  X11Window,
-  X11Desktop;
+  unixtype, ctypes, xlib, xutil, keysym, x,
+  X11Utils, X11Button, X11Component, X11Panel, X11Window, X11Desktop;
 
 type
 

@@ -6,7 +6,7 @@ interface
 
 uses
   unixtype, ctypes, xlib, xutil, keysym, x,
-  X11Panel, X11Component;
+  X11Utils, X11Panel, X11Component;
 
 type
 
