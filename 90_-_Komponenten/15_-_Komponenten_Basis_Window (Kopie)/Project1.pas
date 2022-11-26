@@ -21,8 +21,7 @@ uses
   X11Window,
   X11Desktop,
   MyWindow,
-  X11Edit,
-  X11Utils;
+  X11Edit, X11Utils;
 
 type
 
@@ -69,7 +68,7 @@ var
 
   procedure TMyDesktop.CloseButtonMouseMove(Sender: TObject; X, Y: integer);
   begin
-    //    WriteLn('move: ', x, '  ', y);
+//    WriteLn('move: ', x, '  ', y);
   end;
 
   procedure TMyDesktop.MyDesktopKeyPress(Sender: TObject; UTF8Char: TUTF8Char);
@@ -185,8 +184,8 @@ var
 
     for i := 0 to Length(Edit) - 1 do begin
       Edit[i] := TX11Edit.Create(PanelSub3);
-      //  if Parent=nil then WriteLn('nil');
-      Edit[i].Width := Edit[i].Parent.Width - 20;
+    //  if Parent=nil then WriteLn('nil');
+      Edit[i].Width :=Edit[i].Parent.Width - 20;
       Edit[i].Left := 10;
       Edit[i].Top := 10 + i * (Edit[0].Height + 5);
       str(i, s);

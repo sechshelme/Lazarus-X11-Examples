@@ -37,25 +37,24 @@ type
     procedure SetWidth(AWidth: cint);
 
     procedure Resize(AWidth, AHeight: cint);
-    procedure DeleteActive;
+    procedure ChangeActiveComponent;
   protected
     dis: PDisplay; static;
     scr: cint; static;
     RootWin: TWindow; static;
-    gc: TGC;
     xim: PXIM; static; // UTF8 Key
     xic: PXIC; // UTF8 Key
-    wm_delete_window: TAtom; static;  // [x] Button
+    gc: TGC;
+    wm_delete_window: TAtom; static;
 
-    IsActive, IsCursorOn, IsMouseDown, IsButtonDown: boolean;
+    IsMouseDown, IsButtonDown: boolean;
     ComponentList: array of TX11Component;
+    ActiveComponent: integer;
     procedure DoOnEventHandle(var Event: TXEvent); virtual;
     procedure DoOnPaint; virtual;
     procedure DoOnClick; virtual;
     procedure DoOnKeyPress(UTF8Char: TUTF8Char); virtual;
     procedure DoOnKeyDown(var Event: TXEvent); virtual;
-    procedure CursorOn; virtual;
-    procedure CursorOff; virtual;
   public
     property Window: TDrawable read FWindow;
     property Anchors: TAnchors read FAnchors write FAnchors;
@@ -175,7 +174,7 @@ begin
   FWidth := 320;
   FHeight := 200;
 
-  //  ActiveComponent := -1;
+  ActiveComponent := -1;
 
   Name := 'X11Component';
 
@@ -184,6 +183,7 @@ begin
     SetLength(TheOwner.ComponentList, len + 1);
     TheOwner.ComponentList[len] := Self;
     str(len + 1, s);
+    TheOwner.ActiveComponent := len;
     FName += s;
     if NewWindow then begin
       FWindow := XCreateSimpleWindow(dis, RootWin, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
@@ -246,9 +246,13 @@ begin
         Break;
       end;
     end;
+    if ActiveComponent >= Length(ComponentList) then begin
+      ActiveComponent := Length(ComponentList) - 1;
+    end;
   end;
 
   XDestroyWindow(dis, FWindow);
+
   inherited Destroy;
 end;
 
@@ -271,13 +275,11 @@ var
   Count: integer;
   keysym: TKeySym;
   buf: array[0..31] of char;
-  tempParent: TX11Component;
 begin
   if Event._type in [KeyPress, KeyRelease] then begin
-    for i := 0 to Length(ComponentList) - 1 do begin
-      if ComponentList[i].IsActive then begin
-        ComponentList[i].DoOnEventHandle(Event);
-      end;
+    //    WriteLn(ActiveComponent);
+    if (ActiveComponent >= 0) and (ActiveComponent < Length(ComponentList)) then  begin
+      ComponentList[ActiveComponent].DoOnEventHandle(Event);
     end;
   end else begin
     for i := 0 to Length(ComponentList) - 1 do begin
@@ -288,6 +290,7 @@ begin
   x := Event.xbutton.x;
   y := Event.xbutton.y;
   IsInRegion := (x >= 0) and (x < FWidth) and (y >= 0) and (y < FHeight);
+  //  if Event.xbutton.window = Window then begin
   case Event._type of
     Expose: begin
       DoOnPaint;
@@ -317,18 +320,8 @@ begin
     end;
     ButtonPress: begin
       if Event.xbutton.window = Window then begin
-        tempParent := Self;
-        while tempParent.Parent <> nil do begin
-          tempParent := tempParent.Parent;
-        end;
-        tempParent.DeleteActive;
-        IsActive := True;
-        tempParent := Self;
-        while tempParent.Parent <> nil do begin
-          tempParent.IsActive := True;
-          tempParent := tempParent.Parent;
-        end;
         XMapRaised(dis, Event.xbutton.window);
+        ChangeActiveComponent;
         if IsInRegion then begin
           IsMouseDown := True;
           IsButtonDown := True;
@@ -395,16 +388,6 @@ begin
   end;
 end;
 
-procedure TX11Component.CursorOn;
-begin
-  IsCursorOn := True;
-end;
-
-procedure TX11Component.CursorOff;
-begin
-  IsCursorOn := False;
-end;
-
 procedure TX11Component.Resize(AWidth, AHeight: cint);
 var
   dx, dy, L, T, W, H: cint;
@@ -449,13 +432,17 @@ begin
   end;
 end;
 
-procedure TX11Component.DeleteActive;
+procedure TX11Component.ChangeActiveComponent;
 var
   i: integer;
 begin
-  IsActive := False;
-  for i := 0 to Length(ComponentList) - 1 do begin
-    ComponentList[i].DeleteActive;
+  if Parent <> nil then begin
+    for i := 0 to Length(Parent.ComponentList) - 1 do begin
+      if Parent.ComponentList[i] = Self then begin
+        Parent.ActiveComponent := i;
+      end;
+      Parent.ChangeActiveComponent;
+    end;
   end;
 end;
 

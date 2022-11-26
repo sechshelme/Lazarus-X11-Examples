@@ -35,11 +35,11 @@ begin
     Halt(1);
   end;
 
-  // UTF8 Key
+// UTF8 Key
   if setlocale(0 {LC_ALL}, '') = 0 then begin
     WriteLn('setlocale Fehler');
   end;
-  //    XSetLocaleModifiers('');
+//    XSetLocaleModifiers('');
 
   xim := XOpenIM(dis, nil, nil, nil);
   if xim = nil then begin
@@ -51,14 +51,13 @@ begin
 
 
   scr := DefaultScreen(dis);
-  //  gc := DefaultGC(dis, scr);
+//  gc := DefaultGC(dis, scr);
   RootWin := RootWindow(dis, scr);
 
   // [X] abfangen
   wm_delete_window := XInternAtom(dis, 'WM_DELETE_WINDOW', False);
 
   inherited Create(TheOwner);
-  Name := 'desktop';
 end;
 
 destructor TX11Desktop.Destroy;
@@ -87,7 +86,7 @@ begin
         for i := 0 to Length(ComponentList) - 1 do begin
           if Event.xbutton.window = ComponentList[i].Window then begin
             ComponentList[i].Free;
-            //            WriteLn('[X] wurde gedrückt');
+//            WriteLn('[X] wurde gedrückt');
             Break;
           end;
         end;

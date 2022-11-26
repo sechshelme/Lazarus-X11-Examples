@@ -141,7 +141,6 @@ begin
   Height := 24;
   Color := $FFFFFF;
   Bevel := bvLowred;
-  Name:='Edit';
 end;
 
 destructor TX11Edit.Destroy;

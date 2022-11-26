@@ -29,7 +29,6 @@ begin
   inherited Create(TheOwner, NewWindow);
   Width := 640;
   Height := 480;
-  Name:='window';
 end;
 
 destructor TX11Window.Destroy;
