@@ -300,19 +300,26 @@ begin
       end;
     end;
     KeyPress: begin
-      if not XFilterEvent(@Event, 0) then begin
-        keysym := NoSymbol;
+      if IsActive and (Length(ComponentList) = 0) then begin
+        if not XFilterEvent(@Event, 0) then begin
+          keysym := NoSymbol;
 
-        FillChar(buf, Length(buf), #0);
-        Count := Xutf8LookupString(xic, @Event.xkey, @buf, SizeOf(buf) - 1, @keysym, @status);
-        if status = XLookupBoth then begin
-        end;
+          FillChar(buf, Length(buf), #0);
+          Count := Xutf8LookupString(xic, @Event.xkey, @buf, SizeOf(buf) - 1, @keysym, @status);
+          for i := 0 to Length(buf) - 1 do begin
+            Write(byte(buf[i]), ' ');
+          end;
+          WriteLn();
+          WriteLn(Count);
+          if status = XLookupBoth then begin
+          end;
 
-        if status = XBufferOverflow then begin
-          //            WriteLn('Buffer Überlauf !');
+          if status = XBufferOverflow then begin
+            //            WriteLn('Buffer Überlauf !');
+          end;
+         if Count>0 then DoOnKeyPress(buf);
+          DoOnKeyDown(Event);
         end;
-        DoOnKeyPress(buf);
-        DoOnKeyDown(Event);
       end;
     end;
     ButtonPress: begin
