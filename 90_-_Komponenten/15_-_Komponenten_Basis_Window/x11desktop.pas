@@ -28,6 +28,10 @@ implementation
 
 constructor TX11Desktop.Create(TheOwner: TX11Component);
 begin
+  //hDisplay = XOpenDisplay(":0.0");
+  //hDisplay = XOpenDisplay("somehost:0.0");
+  //hDisplay = XOpenDisplay("192.168.1.10:0.0");
+
   // Erstellt die Verbindung zum Server
   dis := XOpenDisplay(nil);
   if dis = nil then begin

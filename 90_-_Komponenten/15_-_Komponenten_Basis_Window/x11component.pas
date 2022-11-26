@@ -222,10 +222,11 @@ begin
 
   // UTF8 Key
   xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow, Window, XNFocusWindow, Window, nil]);
+//  xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow,Window, nil]);
   if xic = nil then begin
     WriteLn('Could not open IC');
   end;
-  XSetICFocus(xic);
+//  XSetICFocus(xic);
 
 end;
 
@@ -273,6 +274,7 @@ var
   buf: array[0..31] of char;
   tempParent: TX11Component;
 begin
+  XSetICFocus(xic);
   if Event._type in [KeyPress, KeyRelease] then begin
     for i := 0 to Length(ComponentList) - 1 do begin
       if ComponentList[i].IsActive then begin

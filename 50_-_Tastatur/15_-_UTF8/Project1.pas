@@ -43,6 +43,7 @@ const
   constructor TMyWin.Create;
   var
     xim: PXIM;
+    subwin: TWindow;
   begin
     inherited Create;
     // Erstellt die Verbindung zum Server
@@ -64,18 +65,22 @@ const
       xim := XOpenIM(dis, nil, nil, nil);
     end;
 
-
-
     scr := DefaultScreen(dis);
     gc := DefaultGC(dis, scr);
 
     win := XCreateSimpleWindow(dis, DefaultRootWindow(dis), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+//    subwin := XCreateSimpleWindow(dis, DefaultRootWindow(dis), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    subwin := XCreateSimpleWindow(dis, win, 50, 50, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
     XSelectInput(dis, win, EventMask);
     XMapWindow(dis, win);
+    XSelectInput(dis, subwin, EventMask);
+    XMapWindow(dis, subwin);
     XSync(dis, False);
 
 
-    xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow, win, XNFocusWindow, win, nil]);
+//    xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow, win, XNFocusWindow, win, nil]);
+xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow,win, nil]);
+//xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow,subwin, nil]);
     if xic = nil then begin
       WriteLn('Could not open IC');
     end;
