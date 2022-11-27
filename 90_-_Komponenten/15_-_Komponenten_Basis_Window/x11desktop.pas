@@ -108,7 +108,7 @@ end;
 
 procedure TX11Desktop.Run;
 const
-  maxZ = 4000;
+  maxZ = 40;
 var
   Event: TXEvent;
   z: integer = 0;

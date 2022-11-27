@@ -47,7 +47,7 @@ type
     xic: PXIC; // UTF8 Key
     wm_delete_window: TAtom; static;  // [x] Button
 
-    IsFocusable, IsFocused, IsCursorOn, IsMouseDown, IsButtonDown: boolean;
+    IsFocusable, IsFocused, IsMouseDown, IsButtonDown: boolean;
     ComponentList: array of TX11Component;
     procedure DoOnEventHandle(var Event: TXEvent); virtual;
     procedure DoOnPaint; virtual;
@@ -410,7 +410,6 @@ procedure TX11Component.CursorOn;
 var
   i: integer;
 begin
-  IsCursorOn := True;
   for i := 0 to Length(ComponentList) - 1 do begin
     ComponentList[i].CursorOn;
   end;
@@ -420,7 +419,6 @@ procedure TX11Component.CursorOff;
 var
   i: integer;
 begin
-  IsCursorOn := False;
   for i := 0 to Length(ComponentList) - 1 do begin
     ComponentList[i].CursorOff;
   end;
@@ -477,6 +475,7 @@ begin
   IsFocused := False;
   for i := 0 to Length(ComponentList) - 1 do begin
     ComponentList[i].DeleteActiveFocused;
+    ComponentList[i].CursorOff;
   end;
 end;
 

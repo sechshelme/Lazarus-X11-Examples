@@ -34,7 +34,7 @@ procedure wait;
 var
   rem, Req: timespec;
 begin
-  Req.tv_nsec := 1000;
+  Req.tv_nsec := 10000000;
   Req.tv_sec := 0;
   fpNanoSleep(@Req, @rem);
 end;
