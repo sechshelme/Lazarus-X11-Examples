@@ -308,11 +308,11 @@ begin
 
           FillChar(buf, Length(buf), #0);
           Count := Xutf8LookupString(xic, @Event.xkey, @buf, SizeOf(buf) - 1, @keysym, @status);
-          for i := 0 to Length(buf) - 1 do begin
-            Write(byte(buf[i]), ' ');
-          end;
-          WriteLn();
-          WriteLn(Count);
+          //for i := 0 to Length(buf) - 1 do begin
+          //  Write(byte(buf[i]), ' ');
+          //end;
+          //WriteLn();
+          //WriteLn(Count);
           if status = XLookupBoth then begin
           end;
 

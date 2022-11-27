@@ -33,7 +33,7 @@ type
     Panel, PanelSub1, PanelSub2: TX11Panel;
     Button: array[0..3] of TX11Button;
     Edit: array[0..3] of TX11Edit;
-    NewButton, CloseButton: TX11Button;
+    NewButton, CloseButton, OutButton: TX11Button;
 
     SubWin: TX11Window;
     SubWinButton: TX11Button;
@@ -43,6 +43,7 @@ type
     procedure MyDesktopKeyPress(Sender: TObject; UTF8Char: TUTF8Char);
     procedure NewButtonClick(Sender: TObject);
     procedure NewButtonPaint(Sender: TObject; ADisplay: PDisplay; AWindowwin: TDrawable; AGC: TGC);
+    procedure OutButtonClick(Sender: TObject);
     procedure SubWinButtonClick(Sender: TObject);
   protected
     procedure DoOnEventHandle(var Event: TXEvent); override;
@@ -89,6 +90,14 @@ var
     XSetForeground(ADisplay, AGC, $FF);
     XDrawRectangle(ADisplay, AWindowwin, AGC, 5, 5, 50, 50);
   end;
+
+procedure TMyDesktop.OutButtonClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i:=0 to Length(Edit)-1 do WriteLn(Edit[i].Text);
+  WriteLn();
+end;
 
   procedure TMyDesktop.SubWinButtonClick(Sender: TObject);
   begin
@@ -221,6 +230,17 @@ var
       Caption := 'New';
       OnClick := @NewButtonClick;
       OnPaint := @NewButtonPaint;
+    end;
+
+    OutButton := TX11Button.Create(Self);
+    with OutButton do begin
+      Anchors := [akRight, akBottom];
+      Top := Panel.Height + 20;
+      Left := 400;
+      Height := 50;
+      Width := 120;
+      Caption := 'Write';
+      OnClick :=@OutButtonClick;
     end;
   end;
 

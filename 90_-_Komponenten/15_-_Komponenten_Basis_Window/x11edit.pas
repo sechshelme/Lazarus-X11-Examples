@@ -45,8 +45,29 @@ begin
 end;
 
 function TX11Edit.Gettext: string;
+var
+  i: integer;
 begin
-  Result := 'undefined';
+  Result := '';
+  for i := 0 to Length(Char2BArr) - 1 do begin
+    if Char2BArr[i].byte1 = 0 then begin
+      if Char2BArr[i].byte2 in [32..126] then begin
+        Result := Result + char(Char2BArr[i].byte2);
+      end;
+      if Char2BArr[i].byte2 in [159..192] then begin
+        Result := Result + #194+ char(Char2BArr[i].byte2);
+      end;
+      if Char2BArr[i].byte2 in [192..255] then begin
+        Result := Result + #195+ char(Char2BArr[i].byte2-64);
+      end;
+    end;
+    if Char2BArr[i].byte1 = 1 then begin
+      if Char2BArr[i].byte2 in [64..128] then begin
+        Result := Result + #197+ char(Char2BArr[i].byte2+64);
+      end;
+    end;
+
+  end;
 end;
 
 procedure TX11Edit.DoOnPaint;
@@ -70,17 +91,31 @@ begin
   if Length(UTF8Char) < 1 then begin
     Exit;
   end;
-  for i := 1 to Length(UTF8Char) do begin
-    //    Write(byte(UTF8Char[i]), ' ');
-  end;
-  //  WriteLn();
   oldCursorPos := CursorPos;
   case UTF8Char of
     #32..#126, #128..#255: begin
       FText := FText + UTF8Char;
       UTF8toXChar2b(TempChar2BArr, UTF8Char);
 
-      //      WriteLn(Length(TempChar2BArr));
+      //      if Length(UTF8Char) = 2 then begin
+      for i := 1 to Length(UTF8Char) do begin
+        Write(byte(UTF8Char[i]), ' ');
+      end;
+      WriteLn();
+
+      for i := 0 to Length(TempChar2BArr) - 1 do begin
+        Write(TempChar2BArr[i].byte1, ' ');
+        Write(TempChar2BArr[i].byte2, ' ');
+      end;
+      WriteLn();
+      if Length(UTF8Char) = 2 then  begin
+        WriteLn('dif ', TempChar2BArr[0].byte2 - byte(UTF8Char[2]));
+      end;
+      WriteLn();
+      WriteLn();
+      //      end;
+
+
       Insert(TempChar2BArr, Char2BArr, CursorPos - 1);
       Inc(CursorPos, 1);
     end;
