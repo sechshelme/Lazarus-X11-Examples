@@ -37,7 +37,7 @@ type
     procedure SetWidth(AWidth: cint);
 
     procedure Resize(AWidth, AHeight: cint);
-    procedure DeleteActive;
+    procedure DeleteActiveFocused;
   protected
     dis: PDisplay; static;
     scr: cint; static;
@@ -47,7 +47,7 @@ type
     xic: PXIC; // UTF8 Key
     wm_delete_window: TAtom; static;  // [x] Button
 
-    IsActive, IsCursorOn, IsMouseDown, IsButtonDown: boolean;
+    IsFocusable, IsFocused, IsCursorOn, IsMouseDown, IsButtonDown: boolean;
     ComponentList: array of TX11Component;
     procedure DoOnEventHandle(var Event: TXEvent); virtual;
     procedure DoOnPaint; virtual;
@@ -222,11 +222,11 @@ begin
 
   // UTF8 Key
   xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow, Window, XNFocusWindow, Window, nil]);
-//  xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow,Window, nil]);
+  //  xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow,Window, nil]);
   if xic = nil then begin
     WriteLn('Could not open IC');
   end;
-//  XSetICFocus(xic);
+  //  XSetICFocus(xic);
 
 end;
 
@@ -277,7 +277,7 @@ begin
   XSetICFocus(xic);
   if Event._type in [KeyPress, KeyRelease] then begin
     for i := 0 to Length(ComponentList) - 1 do begin
-      if ComponentList[i].IsActive then begin
+      if ComponentList[i].IsFocused then begin
         ComponentList[i].DoOnEventHandle(Event);
       end;
     end;
@@ -302,7 +302,7 @@ begin
       end;
     end;
     KeyPress: begin
-      if IsActive and (Length(ComponentList) = 0) then begin
+      if IsFocused and (Length(ComponentList) = 0) then begin
         if not XFilterEvent(@Event, 0) then begin
           keysym := NoSymbol;
 
@@ -319,22 +319,24 @@ begin
           if status = XBufferOverflow then begin
             //            WriteLn('Buffer Überlauf !');
           end;
-         if Count>0 then DoOnKeyPress(buf);
+          if Count > 0 then begin
+            DoOnKeyPress(buf);
+          end;
           DoOnKeyDown(Event);
         end;
       end;
     end;
     ButtonPress: begin
-      if Event.xbutton.window = Window then begin
+      if (Event.xbutton.window = Window) and IsFocusable then begin
         tempParent := Self;
         while tempParent.Parent <> nil do begin
           tempParent := tempParent.Parent;
         end;
-        tempParent.DeleteActive;
-        IsActive := True;
+        tempParent.DeleteActiveFocused;
+        IsFocused := True;
         tempParent := Self;
         while tempParent.Parent <> nil do begin
-          tempParent.IsActive := True;
+          tempParent.IsFocused := True;
           tempParent := tempParent.Parent;
         end;
         XMapRaised(dis, Event.xbutton.window);
@@ -405,13 +407,23 @@ begin
 end;
 
 procedure TX11Component.CursorOn;
+var
+  i: integer;
 begin
   IsCursorOn := True;
+  for i := 0 to Length(ComponentList) - 1 do begin
+    ComponentList[i].CursorOn;
+  end;
 end;
 
 procedure TX11Component.CursorOff;
+var
+  i: integer;
 begin
   IsCursorOn := False;
+  for i := 0 to Length(ComponentList) - 1 do begin
+    ComponentList[i].CursorOff;
+  end;
 end;
 
 procedure TX11Component.Resize(AWidth, AHeight: cint);
@@ -458,13 +470,13 @@ begin
   end;
 end;
 
-procedure TX11Component.DeleteActive;
+procedure TX11Component.DeleteActiveFocused;
 var
   i: integer;
 begin
-  IsActive := False;
+  IsFocused := False;
   for i := 0 to Length(ComponentList) - 1 do begin
-    ComponentList[i].DeleteActive;
+    ComponentList[i].DeleteActiveFocused;
   end;
 end;
 

@@ -27,10 +27,9 @@ constructor TX11Button.Create(TheOwner: TX11Component);
 begin
   inherited Create(TheOwner);
   Caption := 'Button';
-  Name:='Button';
+  Name := 'Button';
 
-  IsMouseDown := False;
-  IsButtonDown := False;
+  IsFocusable := True;
   Width := 75;
   Height := 25;
   BorderWidth := 3;

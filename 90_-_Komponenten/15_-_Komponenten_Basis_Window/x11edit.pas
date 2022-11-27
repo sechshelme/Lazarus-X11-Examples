@@ -24,6 +24,8 @@ type
     procedure DoOnPaint; override;
     procedure DoOnKeyPress(UTF8Char: TUTF8Char); override;
     procedure DoOnKeyDown(var Event: TXEvent); override;
+    procedure CursorOn; override;
+    procedure CursorOff; override;
   public
     property Text: string read Gettext write SetText;
     constructor Create(TheOwner: TX11Component);
@@ -52,7 +54,11 @@ begin
   inherited DoOnPaint;
   XSetForeground(dis, gc, $000000);
   XDrawString16(dis, Window, gc, Left, Height - BorderWidth - 2, @Char2BArr[0], Length(Char2BArr));
-  XFillRectangle(dis, Window, gc, CursorPos * FontWidht, Height - BorderWidth - 0, FontWidht, 2);
+  if IsFocused then begin
+    CursorOn;
+  end else begin
+    CursorOff;
+  end;
 end;
 
 procedure TX11Edit.DoOnKeyPress(UTF8Char: TUTF8Char);
@@ -65,16 +71,16 @@ begin
     Exit;
   end;
   for i := 1 to Length(UTF8Char) do begin
-//    Write(byte(UTF8Char[i]), ' ');
+    //    Write(byte(UTF8Char[i]), ' ');
   end;
-//  WriteLn();
+  //  WriteLn();
   oldCursorPos := CursorPos;
   case UTF8Char of
     #32..#126, #128..#255: begin
       FText := FText + UTF8Char;
       UTF8toXChar2b(TempChar2BArr, UTF8Char);
 
-//      WriteLn(Length(TempChar2BArr));
+      //      WriteLn(Length(TempChar2BArr));
       Insert(TempChar2BArr, Char2BArr, CursorPos - 1);
       Inc(CursorPos, 1);
     end;
@@ -126,6 +132,22 @@ begin
   end;
 end;
 
+procedure TX11Edit.CursorOn;
+begin
+  inherited CursorOn;
+  if IsFocused then begin
+    XSetForeground(dis, gc, $000000);
+    XFillRectangle(dis, Window, gc, CursorPos * FontWidht, Height - BorderWidth - 0, FontWidht, 2);
+  end;
+end;
+
+procedure TX11Edit.CursorOff;
+begin
+  inherited CursorOff;
+  XSetForeground(dis, gc, Color);
+  XFillRectangle(dis, Window, gc, CursorPos * FontWidht, Height - BorderWidth - 0, FontWidht, 2);
+end;
+
 constructor TX11Edit.Create(TheOwner: TX11Component);
 begin
   inherited Create(TheOwner);
@@ -136,12 +158,13 @@ begin
   end;
   XSetFont(dis, gc, fontStructure^.fid);
 
+  IsFocusable := True;
   FontWidht := 9;
   Text := 'Edit';
   Height := 24;
   Color := $FFFFFF;
   Bevel := bvLowred;
-  Name:='Edit';
+  Name := 'Edit';
 end;
 
 destructor TX11Edit.Destroy;

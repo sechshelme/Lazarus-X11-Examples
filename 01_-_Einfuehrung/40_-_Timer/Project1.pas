@@ -39,8 +39,8 @@ type
   var
     rem, Req: timespec;
   begin
-    Req.tv_nsec := 0;
-    Req.tv_sec := 1;
+    Req.tv_nsec := 900000000;
+    Req.tv_sec := 0;
     fpNanoSleep(@Req, @rem);
   end;
 

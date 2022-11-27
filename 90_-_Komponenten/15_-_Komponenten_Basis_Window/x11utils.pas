@@ -5,7 +5,7 @@ unit X11Utils;
 interface
 
 uses
-  unixtype, ctypes, xlib, xutil, keysym, x;
+ BaseUnix, unixtype, ctypes, xlib, xutil, keysym, x;
 
 const
   //  EventMask = KeyPressMask or ExposureMask or ButtonReleaseMask or ButtonPressMask or StructureNotifyMask or PointerMotionMask;
@@ -25,9 +25,19 @@ type
   TKeyPressEvent = procedure(Sender: TObject; UTF8Char: TUTF8Char) of object;
   TPaintEvent = procedure(Sender: TObject; ADisplay: PDisplay; AWindowwin: TDrawable; AGC: TGC) of object;
 
+procedure wait;
 procedure UTF8toXChar2b(var output: TXChar2BArray; const s: string);
 
 implementation
+
+procedure wait;
+var
+  rem, Req: timespec;
+begin
+  Req.tv_nsec := 1000;
+  Req.tv_sec := 0;
+  fpNanoSleep(@Req, @rem);
+end;
 
 procedure UTF8toXChar2b(var output: TXChar2BArray; const s: string);
 var

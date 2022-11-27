@@ -6,7 +6,7 @@ interface
 
 uses
   unixtype, ctypes, xlib, xutil, keysym, x,
-  X11Component, X11Window;
+  X11Utils, X11Component, X11Window;
 
 function setlocale(cat: integer; p: PChar): cint; cdecl; external 'c';
 
@@ -18,6 +18,7 @@ type
   protected
     procedure DoOnEventHandle(var Event: TXEvent); override;
   public
+    procedure Run;
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
   end;
@@ -103,6 +104,32 @@ begin
   end;
 
   inherited DoOnEventHandle(Event);
+end;
+
+procedure TX11Desktop.Run;
+const
+  maxZ = 4000;
+var
+  Event: TXEvent;
+  z: integer = 0;
+begin
+  // Ereignisschleife
+  while not AppClose do begin
+    if XPending(dis) <> 0 then begin
+      XNextEvent(dis, @Event);
+      DoOnEventHandle(Event);
+    end else begin
+      wait;
+      Inc(z);
+      if z > maxZ * 3 then  begin
+        CursorOff;
+        z := 0;
+      end;
+      if z > maxZ then  begin
+        CursorOn;
+      end;
+    end;
+  end;
 end;
 
 end.
