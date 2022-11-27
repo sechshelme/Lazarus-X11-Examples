@@ -8,6 +8,7 @@ Dies macht es übersichtlicher und ausbaufähiger.
 program Project1;
 
 uses
+  BaseUnix,
   unixtype,
   ctypes,
   xlib,
@@ -26,27 +27,21 @@ type
   private
     dis: PDisplay;
     scr: cint;
-    depth: cint;
-    rootwin, win: TWindow;
-    function XNextTimeout(var Event: TXEvent; seconds: extended): boolean;
+    win: TWindow;
+    gc: TGC;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Run;
   end;
 
-  function wait_fd(fd: cint; seconds: extended): cint;
+  procedure wait;
+  var
+    rem, Req: timespec;
   begin
-  end;
-
-  function TMyWin.XNextTimeout(var Event: TXEvent; seconds: extended): boolean;
-  begin
-    if (XPending(dis) <> 0) or (wait_fd(ConnectionNumber(dis), seconds)<>0) then begin
-      XNextEvent(dis, @Event);
-      Result := False;
-    end else begin
-      Result := True;
-    end;
+    Req.tv_nsec := 0;
+    Req.tv_sec := 1;
+    fpNanoSleep(@Req, @rem);
   end;
 
   constructor TMyWin.Create;
@@ -63,10 +58,11 @@ type
 
     // Erstellt das Fenster
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    gc := XCreateGC(dis, win, 0, nil);
 
     // Wählt die gewünschten Ereignisse aus
     // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
-    XSelectInput(dis, win, KeyPressMask);
+    XSelectInput(dis, win, KeyPressMask or ExposureMask);
 
     // Fenster anzeigen
     XMapWindow(dis, win);
@@ -86,17 +82,26 @@ type
   begin
     // Ereignisschleife
     while (True) do begin
-      XNextEvent(dis, @Event);
+      if XPending(dis) <> 0 then begin
+        XNextEvent(dis, @Event);
 
-      case Event._type of
-        KeyPress: begin
-          // Beendet das Programm bei [ESC]
-          if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
-            Break;
+        case Event._type of
+          Expose: begin
+            XDrawRectangle(dis, win, gc, 10, 10, Event.xexpose.Width - 20, Event.xexpose.Height - 20);
+          end;
+
+          KeyPress: begin
+            // Beendet das Programm bei [ESC]
+            if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
+              Break;
+            end;
           end;
         end;
-      end;
 
+      end else begin
+        XDrawLine(dis, win, gc, 10, 10, Random(Event.xexpose.width), Random(Event.xexpose.height));
+        wait;
+      end;
     end;
   end;
 
