@@ -36,7 +36,6 @@ type
     procedure SetLeft(ALeft: cint);
     procedure SetWidth(AWidth: cint);
 
-    procedure Resize(AWidth, AHeight: cint);
     procedure DeleteActiveFocused;
   protected
     dis: PDisplay; static;
@@ -56,6 +55,7 @@ type
     procedure DoOnKeyDown(var Event: TXEvent); virtual;
     procedure CursorOn; virtual;
     procedure CursorOff; virtual;
+    procedure DoOnResize(AWidth, AHeight: cint); virtual;
   public
     property Window: TDrawable read FWindow;
     property Anchors: TAnchors read FAnchors write FAnchors;
@@ -101,7 +101,7 @@ begin
       h := AHeight;
     end;
     XResizeWindow(dis, Window, FWidth, h);
-    Resize(FWidth, AHeight);
+    DoOnResize(FWidth, AHeight);
   end;
 end;
 
@@ -125,7 +125,7 @@ begin
     end;
     FWidth := AWidth;
     XResizeWindow(dis, Window, w, FHeight);
-    Resize(AWidth, FHeight);
+    DoOnResize(AWidth, FHeight);
   end;
 end;
 
@@ -297,7 +297,7 @@ begin
     ConfigureNotify: begin
       if Event.xconfigure.window = Window then begin
         if (Event.xconfigure.Width <> FWidth) or (Event.xconfigure.Height <> FHeight) then begin
-          Resize(Event.xconfigure.Width, Event.xconfigure.Height);
+          DoOnResize(Event.xconfigure.Width, Event.xconfigure.Height);
         end;
       end;
     end;
@@ -424,7 +424,7 @@ begin
   end;
 end;
 
-procedure TX11Component.Resize(AWidth, AHeight: cint);
+procedure TX11Component.DoOnResize(AWidth, AHeight: cint);
 var
   dx, dy, L, T, W, H: cint;
   i: integer;
@@ -461,7 +461,7 @@ begin
       if (H <> FHeight) or (W <> FWidth) or (T <> FTop) or (L <> FLeft) then  begin
         FLeft := L;
         FTop := T;
-        Resize(W, H);
+        DoOnResize(W, H);
         XMoveResizeWindow(dis, Window, L, T, W, H);
       end;
     end;

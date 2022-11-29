@@ -17,7 +17,7 @@ type
     FText: string;
     Char2BArr: TXChar2BArray;
     fontStructure: PXFontStruct;
-    CursorPos, FontWidht: integer;
+    CursorPos, FontWidht, ofsx, EditWidht: integer;
     function Gettext: string;
     procedure SetText(const AValue: string);
   protected
@@ -26,6 +26,7 @@ type
     procedure DoOnKeyDown(var Event: TXEvent); override;
     procedure CursorOn; override;
     procedure CursorOff; override;
+    procedure DoOnResize(AWidth, AHeight: cint); override;
   public
     property Text: string read Gettext write SetText;
     constructor Create(TheOwner: TX11Component);
@@ -55,26 +56,38 @@ begin
         Result := Result + char(Char2BArr[i].byte2);
       end;
       if Char2BArr[i].byte2 in [159..192] then begin
-        Result := Result + #194+ char(Char2BArr[i].byte2);
+        Result := Result + #194 + char(Char2BArr[i].byte2);
       end;
       if Char2BArr[i].byte2 in [192..255] then begin
-        Result := Result + #195+ char(Char2BArr[i].byte2-64);
+        Result := Result + #195 + char(Char2BArr[i].byte2 - 64);
       end;
     end;
     if Char2BArr[i].byte1 = 1 then begin
       if Char2BArr[i].byte2 in [64..128] then begin
-        Result := Result + #197+ char(Char2BArr[i].byte2+64);
+        Result := Result + #197 + char(Char2BArr[i].byte2 + 64);
       end;
     end;
-
   end;
 end;
 
 procedure TX11Edit.DoOnPaint;
 begin
   inherited DoOnPaint;
+  if CursorPos + ofsx > EditWidht then begin
+    ofsx := EditWidht - CursorPos;
+  end;
+  if CursorPos + ofsx < 1 then begin
+    ofsx := 1 - CursorPos;
+  end;
+//
+//  Write('ofsx: ', ofsx);
+//  Write('  curp: ', CursorPos);
+//  Write('  wid: ', EditWidht);
+//  WriteLn();
+//
+
   XSetForeground(dis, gc, $000000);
-  XDrawString16(dis, Window, gc, Left, Height - BorderWidth - 2, @Char2BArr[0], Length(Char2BArr));
+  XDrawString16(dis, Window, gc, Left + ofsx * FontWidht, Height - BorderWidth - 2, @Char2BArr[0], Length(Char2BArr));
   if IsFocused then begin
     CursorOn;
   end else begin
@@ -97,24 +110,21 @@ begin
       FText := FText + UTF8Char;
       UTF8toXChar2b(TempChar2BArr, UTF8Char);
 
-      //      if Length(UTF8Char) = 2 then begin
-      for i := 1 to Length(UTF8Char) do begin
-        Write(byte(UTF8Char[i]), ' ');
-      end;
-      WriteLn();
-
-      for i := 0 to Length(TempChar2BArr) - 1 do begin
-        Write(TempChar2BArr[i].byte1, ' ');
-        Write(TempChar2BArr[i].byte2, ' ');
-      end;
-      WriteLn();
-      if Length(UTF8Char) = 2 then  begin
-        WriteLn('dif ', TempChar2BArr[0].byte2 - byte(UTF8Char[2]));
-      end;
-      WriteLn();
-      WriteLn();
-      //      end;
-
+      //for i := 1 to Length(UTF8Char) do begin
+      //  Write(byte(UTF8Char[i]), ' ');
+      //end;
+      //WriteLn();
+      //
+      //for i := 0 to Length(TempChar2BArr) - 1 do begin
+      //  Write(TempChar2BArr[i].byte1, ' ');
+      //  Write(TempChar2BArr[i].byte2, ' ');
+      //end;
+      //WriteLn();
+      //if Length(UTF8Char) = 2 then  begin
+      //  WriteLn('dif ', TempChar2BArr[0].byte2 - byte(UTF8Char[2]));
+      //end;
+      //WriteLn();
+      //WriteLn();
 
       Insert(TempChar2BArr, Char2BArr, CursorPos - 1);
       Inc(CursorPos, 1);
@@ -172,7 +182,7 @@ begin
   inherited CursorOn;
   if IsFocused then begin
     XSetForeground(dis, gc, $000000);
-    XFillRectangle(dis, Window, gc, CursorPos * FontWidht, Height - BorderWidth - 0, FontWidht, 2);
+    XFillRectangle(dis, Window, gc, (CursorPos + ofsx) * FontWidht, Height - BorderWidth - 0, FontWidht, 2);
   end;
 end;
 
@@ -180,7 +190,14 @@ procedure TX11Edit.CursorOff;
 begin
   inherited CursorOff;
   XSetForeground(dis, gc, Color);
-  XFillRectangle(dis, Window, gc, CursorPos * FontWidht, Height - BorderWidth - 0, FontWidht, 2);
+  XFillRectangle(dis, Window, gc, (CursorPos + ofsx) * FontWidht, Height - BorderWidth - 0, FontWidht, 2);
+end;
+
+procedure TX11Edit.DoOnResize(AWidth, AHeight: cint);
+begin
+  inherited DoOnResize(AWidth, AHeight);
+  EditWidht := AWidth div FontWidht - 1;
+  WriteLn(EditWidht);
 end;
 
 constructor TX11Edit.Create(TheOwner: TX11Component);
@@ -195,6 +212,7 @@ begin
 
   IsFocusable := True;
   FontWidht := 9;
+  EditWidht := Width div FontWidht;
   Text := 'Edit';
   Height := 24;
   Color := $FFFFFF;
