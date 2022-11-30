@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1669735671 source:/home/tux/Schreibtisch/wayland_test/main.c
+	<stdio.h>
+	<stdlib.h>
+	<wayland-client.h>
+
