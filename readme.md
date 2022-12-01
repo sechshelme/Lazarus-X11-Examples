@@ -14,11 +14,9 @@ Diese sind alle in C/C++
 - [X11 OpenGL Window](https://github.com/gamedevtech/X11OpenGLWindow)
 - [Mesa Demos](https://github.com/JoakimSoderberg/mesademos)
 
-
 ## Hintergrundwissen von X11
 - [X Window System](http://x11.gweb.info/index.html)
 - [The X Window system](https://tronche.com/gui/x)
-
 
 ## Tool für X, welche vonrinstalliert sind
 - [Tools von Linux/X11](xtool.md)
