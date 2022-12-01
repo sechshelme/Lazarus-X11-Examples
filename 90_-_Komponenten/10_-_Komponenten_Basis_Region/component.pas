@@ -1,4 +1,4 @@
-unit X11Component;
+unit Component;
 
 {$mode ObjFPC}{$H+}
 
@@ -69,7 +69,6 @@ end;
 procedure TX11Component.SetHeight(AHeight: cint);
 begin
   FHeight := AHeight;
-  //  LastWindowHeight := FHeight;
 end;
 
 procedure TX11Component.SetLeft(ALeft: cint);
@@ -84,7 +83,6 @@ end;
 procedure TX11Component.SetWidth(AWidth: cint);
 begin
   FWidth := AWidth;
-  //  LastWindowWidth := FWidth;
 end;
 
 constructor TX11Component.Create(TheOwner: TX11Component);
@@ -210,10 +208,7 @@ end;
 procedure TX11Component.DoOnResize(AWidth, AHeight: cint);
 var
   rect: TXRectangle;
-  d: cint;
 begin
-  d := AWidth - LastWindowWidth;
-
   rect.x := FLeft;
   rect.y := FTop;
 

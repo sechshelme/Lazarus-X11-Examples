@@ -35,24 +35,24 @@
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="x11button.pas"/>
+        <Filename Value="button.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="X11Button"/>
+        <UnitName Value="Button"/>
       </Unit1>
       <Unit2>
-        <Filename Value="x11component.pas"/>
+        <Filename Value="component.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="X11Component"/>
+        <UnitName Value="Component"/>
       </Unit2>
       <Unit3>
-        <Filename Value="x11panel.pas"/>
+        <Filename Value="panel.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="X11Panel"/>
+        <UnitName Value="Panel"/>
       </Unit3>
       <Unit4>
-        <Filename Value="x11window.pas"/>
+        <Filename Value="window.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="X11Window"/>
+        <UnitName Value="Window"/>
       </Unit4>
     </Units>
   </ProjectOptions>

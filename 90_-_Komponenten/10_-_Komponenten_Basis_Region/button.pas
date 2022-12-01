@@ -1,4 +1,4 @@
-unit X11Button;
+unit Button;
 
 {$mode ObjFPC}{$H+}
 
@@ -6,7 +6,7 @@ interface
 
 uses
   unixtype, ctypes, xlib, xutil, keysym, x,
-  X11Panel, X11Component;
+  Panel, Component;
 
 type
 

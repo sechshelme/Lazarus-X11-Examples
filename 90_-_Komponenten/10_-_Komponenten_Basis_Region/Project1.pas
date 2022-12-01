@@ -18,10 +18,10 @@ uses
   xutil,
   keysym,
   x,
-  X11Button,
-  X11Component,
-  X11Panel,
-  X11Window;
+  Button,
+  Component,
+  Panel,
+  Window;
 
 type
 

@@ -1,4 +1,4 @@
-unit X11Window;
+unit Window;
 
 {$mode ObjFPC}{$H+}
 
@@ -6,7 +6,7 @@ interface
 
 uses
   unixtype, ctypes, xlib, xutil, keysym, x,
-  X11Component;
+  Component;
 
 type
 
