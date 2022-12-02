@@ -1,5 +1,5 @@
-# 06 - Regionen
-## 20 - XorRegion (XOR)
+# 70 - Regionen
+## 25 - XorRegion (XOR)
 
 ![image.png](image.png)
 

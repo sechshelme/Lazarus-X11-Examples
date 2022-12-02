@@ -1,5 +1,5 @@
 # 02 - Grafische Ausgabe
-## 20 - Bitmap TBitmap
+## 40 - Bitmap TBitmap
 
 ![image.png](image.png)
 

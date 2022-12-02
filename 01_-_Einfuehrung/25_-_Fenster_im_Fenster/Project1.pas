@@ -1,15 +1,13 @@
-# 40 - Maus
-## 00 - Verhalten mehrere Fenster
-
-![image.png](image.png)
-
-Erstes Fenster mit **X11** wird erstellt.
-Es wird nur ein einziges Eregniss gebraucht.
-Ein Tastatur-Event, welches **[ESC]** abfängt und das Programm beendet.
-
----
-
-```pascal
+//image image.png
+(*
+Es ist möglich ein Fenster innerhalb eine anderen zu erzeugen.
+Bei GUI-Anwendungen ist dies in der Regel der Fall.
+Jedes **Panel**, **Button**, etc. sind eigene Fenster.
+Dies ist auch rekursiv möglich. ZB. Ein Button in einem Panel und dieses dann im Hauptfenster.
+Dafür muss man bei **XCreateSimpleWindow** anstelle des Rootwindow, das Parent-Fenster angeben.
+*)
+//lineal
+//code+
 program Project1;
 
 uses
@@ -29,7 +27,7 @@ var
   i: integer;
 
 const
-  EventMask: clong = KeyPressMask or ExposureMask or PointerMotionMask or ButtonReleaseMask or ButtonPressMask;
+  EventMask = KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask;
 
 begin
   // Erstellt die Verbindung zum Server
@@ -41,17 +39,18 @@ begin
   scr := DefaultScreen(dis);
   gc := DefaultGC(dis, scr);
 
-
-
-  // Erstellt das Fenster
+  // Erstellt das Haupt-Fenster
   win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  XStoreName(dis, win, 'Sub-Fenster'); // Fenster-Titel, geht nur bei Haupt-Fenster
 
+  // Zwei Subfenster
   Subwin1 := XCreateSimpleWindow(dis, win, 100, 100, 320, 240, 10, BlackPixel(dis, scr), WhitePixel(dis, scr));
-  Subwin2 := XCreateSimpleWindow(dis, win, 250, 100, 320, 240, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  Subwin2 := XCreateSimpleWindow(dis, win, 250, 80, 320, 240, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
+
+  // Border-Breite nachträglich festlegen, geht nur bei Sub-Fenster
   XSetWindowBorderWidth(dis, Subwin2, 15);
-  XSetIconName(dis, win, 'Hakko');
-  // Wählt die gewünschten Ereignisse aus
-  // Es wird nur das Tastendrückereigniss **KeyPressMask** gebraucht.
+
+  // Es werden Events für Zeichen, Maus und Tastatur gebraucht.
   XSelectInput(dis, win, EventMask);
   XSelectInput(dis, Subwin1, EventMask);
   XSelectInput(dis, Subwin2, EventMask);
@@ -81,41 +80,20 @@ begin
         end;
       end;
       MotionNotify: begin
-        //if Event.xbutton.window = win then begin
-        //            WriteLn('root');
-        //end;
-        //if Event.xbutton.window = Subwin1 then begin
-        //            WriteLn('Sub1');
-        //end;
-        //if Event.xbutton.window = Subwin2 then begin
-        //            WriteLn('Sub2');
-        //end;
+        // In welchem Fenster bewegt sich die Maus
+        if Event.xbutton.window = win then begin
+          WriteLn('root');
+        end;
+        if Event.xbutton.window = Subwin1 then begin
+          WriteLn('Sub1');
+        end;
+        if Event.xbutton.window = Subwin2 then begin
+          WriteLn('Sub2');
+        end;
       end;
       ButtonPress: begin
-        Write('press: ');
-        if Event.xbutton.window = win then begin
-          WriteLn('win');
-        end;
-        if Event.xbutton.window = Subwin1 then begin
-          WriteLn('Subwin1');
-        end;
-        if Event.xbutton.window = Subwin2 then begin
-          WriteLn('Subwin2');
-        end;
-      end;
-      ButtonRelease: begin
-        Write('up: ');
-        if Event.xbutton.window = win then begin
-          WriteLn('win     ',Event.xbutton.x,'   ',Event.xbutton.y, '   ');
-        end;
-        if Event.xbutton.window = Subwin1 then begin
-          WriteLn('Subwin1');
-          WriteLn('win     ',Event.xbutton.x,'   ',Event.xbutton.y, '   ');
-        end;
-        if Event.xbutton.window = Subwin2 then begin
-          WriteLn('Subwin2');
-          WriteLn('win     ',Event.xbutton.x,'   ',Event.xbutton.y, '   ');
-        end;
+        // Angeklicktes Fenster zuoberst
+        XRaiseWindow(dis, Event.xbutton.window);
       end;
 
       KeyPress: begin
@@ -125,12 +103,9 @@ begin
         end;
       end;
     end;
-
   end;
 
   // Schliesst Verbindung zum Server
   XCloseDisplay(dis);
 end.
-```
-
-
+//code-

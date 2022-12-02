@@ -1,5 +1,5 @@
 # 02 - Grafische Ausgabe
-## 07 - Linien Style
+## 10 - Linien Style
 
 ![image.png](image.png)
 
@@ -85,13 +85,12 @@ type
           // Bildschirm löschen
           XClearWindow(dis, win);
 
-          XSetLineAttributes(dis,gc,10,LineSolid,CapButt,JoinBevel);
-
           // Eine einfache Linie
+          XSetLineAttributes(dis, gc, 10, LineSolid, CapButt, JoinBevel);
           XDrawLine(dis, win, gc, 10, 60, 110, 160);
 
           // Ein Linien-Array
-          XSetLineAttributes(dis,gc,3,LineDoubleDash,CapNotLast,JoinBevel);
+          XSetLineAttributes(dis, gc, 3, LineDoubleDash, CapNotLast, JoinBevel);
           XDrawLines(dis, win, gc, @Points, Length(Points) - 1, 0);
         end;
         KeyPress: begin
@@ -101,7 +100,6 @@ type
           end;
         end;
       end;
-
     end;
   end;
 

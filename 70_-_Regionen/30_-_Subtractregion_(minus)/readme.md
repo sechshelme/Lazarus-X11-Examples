@@ -1,5 +1,5 @@
-# 06 - Regionen
-## 25 - Subtractregion (minus)
+# 70 - Regionen
+## 30 - Subtractregion (minus)
 
 ![image.png](image.png)
 

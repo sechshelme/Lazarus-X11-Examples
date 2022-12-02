@@ -1,5 +1,5 @@
 # 02 - Grafische Ausgabe
-## 30 - Bereich loeschen
+## 50 - Bereich loeschen
 
 ![image.png](image.png)
 

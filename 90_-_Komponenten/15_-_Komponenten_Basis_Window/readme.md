@@ -1,13 +1,10 @@
-# 20 - Komponenten
+# 90 - Komponenten
 ## 15 - Komponenten Basis Window
 
 ![image.png](image.png)
 
-Verschiedene Varinaten um Rechtecke zu zeichnen:
-
-- [XDrawRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XDrawRectangle.html)
-- [XFillRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillRectangle.html)
-- [XFillPolygon](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillPolygon.html) (Für ein nicht ausgefülltes Polygon nimmt man **XDrawLines**.)
+Ein Beispiel wie man ein Widget mit Buttons und Panels erstellt.
+Dabei bekommt jede Komponente ein eigenes Window.
 
 ---
 
@@ -15,6 +12,7 @@ Verschiedene Varinaten um Rechtecke zu zeichnen:
 program Project1;
 
 uses
+  heaptrc,
   unixtype,
   ctypes,
   xlib,
@@ -25,7 +23,10 @@ uses
   X11Component,
   X11Panel,
   X11Window,
-  X11Desktop;
+  X11Desktop,
+  MyWindow,
+  X11Edit,
+  X11Utils;
 
 type
 
@@ -35,16 +36,22 @@ type
   private
     Panel, PanelSub1, PanelSub2: TX11Panel;
     Button: array[0..3] of TX11Button;
-    CloseButton: TX11Button;
+    Edit: array[0..3] of TX11Edit;
+    NewButton, CloseButton, OutButton: TX11Button;
+
     SubWin: TX11Window;
     SubWinButton: TX11Button;
     procedure ButtonClick(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
     procedure CloseButtonMouseMove(Sender: TObject; X, Y: integer);
+    procedure MyDesktopKeyPress(Sender: TObject; UTF8Char: TUTF8Char);
+    procedure NewButtonClick(Sender: TObject);
+    procedure NewButtonPaint(Sender: TObject; ADisplay: PDisplay; AWindowwin: TDrawable; AGC: TGC);
+    procedure OutButtonClick(Sender: TObject);
     procedure SubWinButtonClick(Sender: TObject);
   protected
-    procedure DoOnPaint; override;
     procedure DoOnEventHandle(var Event: TXEvent); override;
+    procedure DoOnPaint; override;
   public
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
@@ -67,8 +74,34 @@ var
 
   procedure TMyDesktop.CloseButtonMouseMove(Sender: TObject; X, Y: integer);
   begin
-    WriteLn('move: ', x, '  ', y);
+    //    WriteLn('move: ', x, '  ', y);
   end;
+
+  procedure TMyDesktop.MyDesktopKeyPress(Sender: TObject; UTF8Char: TUTF8Char);
+  begin
+    WriteLn(TX11Button(Sender).Caption, ' Key: ', UTF8Char);
+  end;
+
+  procedure TMyDesktop.NewButtonClick(Sender: TObject);
+  var
+    Mywindow: TMyWindow;
+  begin
+    Mywindow := TMyWindow.Create(Self);
+  end;
+
+  procedure TMyDesktop.NewButtonPaint(Sender: TObject; ADisplay: PDisplay; AWindowwin: TDrawable; AGC: TGC);
+  begin
+    XSetForeground(ADisplay, AGC, $FF);
+    XDrawRectangle(ADisplay, AWindowwin, AGC, 5, 5, 50, 50);
+  end;
+
+procedure TMyDesktop.OutButtonClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i:=0 to Length(Edit)-1 do WriteLn(Edit[i].Text);
+  WriteLn();
+end;
 
   procedure TMyDesktop.SubWinButtonClick(Sender: TObject);
   begin
@@ -79,9 +112,13 @@ var
   var
     i: integer;
     s: string;
+    PanelSub3: TX11Panel;
   begin
     inherited Create(TheOwner);
-    Color:=$FF;
+    Color := $FF;
+
+    Width := 680;
+    Height := 480;
 
     Caption := 'Mein Fenster';
 
@@ -104,11 +141,10 @@ var
     with Panel do begin
       Left := 10;
       Top := 10;
-      Width := 530;
-      Height := 100;
+      Width := Self.Width - 20;
+      Height := 250;
       BorderWidth := 4;
-      //      Anchors := [akRight, akBottom];
-      //      Anchors := [akTop, akLeft, akRight, akBottom];
+      Anchors := [akTop, akLeft, akRight, akBottom];
     end;
 
     PanelSub1 := TX11Panel.Create(Panel);
@@ -117,9 +153,9 @@ var
       Left := 10;
       Top := 10;
       Width := 370;
-      Height := Panel.Height - 20;
+      Height := 100 - 20;
       Bevel := bvLowred;
-      //                  Anchors:=[akTop,akLeft, akRight, akBottom];
+      Anchors := [akTop, akLeft];
     end;
 
     PanelSub2 := TX11Panel.Create(Panel);
@@ -128,9 +164,20 @@ var
       Left := 390;
       Top := 10;
       Width := Panel.Width - PanelSub1.Width - 30;
-      Height := Panel.Height - 20;
+      Height := 100 - 20;
       Bevel := bvLowred;
-      //      Anchors := [akTop, akLeft, akRight];
+      Anchors := [akTop, akLeft, akRight];
+    end;
+
+    PanelSub3 := TX11Panel.Create(Panel);
+    with PanelSub3 do begin
+      Color := $999999;
+      Left := 10;
+      Top := 100;
+      Width := Panel.Width - 20;
+      Height := Panel.Height - PanelSub2.Height - 30;
+      Bevel := bvLowred;
+      Anchors := [akTop, akLeft, akRight, akBottom];
     end;
 
     for i := 0 to Length(Button) - 1 do begin
@@ -143,6 +190,22 @@ var
       Button[i].Caption := 'Button' + s;
       Button[i].Name := 'Button' + s;
       Button[i].OnClick := @ButtonClick;
+      Button[i].OnKeyPress := @MyDesktopKeyPress;
+    end;
+    Button[1].Color := $8888FF;
+    Button[2].Color := $88FF88;
+    Button[3].Color := $FF8888;
+
+    for i := 0 to Length(Edit) - 1 do begin
+      Edit[i] := TX11Edit.Create(PanelSub3);
+      //  if Parent=nil then WriteLn('nil');
+      Edit[i].Width := Edit[i].Parent.Width - 20;
+      Edit[i].Left := 10;
+      Edit[i].Top := 10 + i * (Edit[0].Height + 5);
+      str(i, s);
+      Edit[i].Text := 'Edit' + s;
+      Edit[i].Name := 'Edit' + s;
+      Edit[i].Anchors := [akTop, akLeft, akRight];
     end;
     Button[1].Color := $8888FF;
     Button[2].Color := $88FF88;
@@ -150,15 +213,38 @@ var
 
     CloseButton := TX11Button.Create(Self);
     with CloseButton do begin
+      Top := Panel.Height + 20;
       Left := 100;
-      Top := 100;
       Width := 120;
       Height := 50;
-      //      Anchors := [akRight, akBottom];
-      //            Anchors:=[akTop,akLeft, akRight, akBottom];
+      Anchors := [akRight, akBottom];
       Caption := 'Close';
+      Color := $BB2222;
       OnClick := @CloseButtonClick;
       OnMouseMove := @CloseButtonMouseMove;
+    end;
+
+    NewButton := TX11Button.Create(Self);
+    with NewButton do begin
+      Anchors := [akRight, akBottom];
+      Top := Panel.Height + 20;
+      Left := 250;
+      Height := 50;
+      Width := 120;
+      Caption := 'New';
+      OnClick := @NewButtonClick;
+      OnPaint := @NewButtonPaint;
+    end;
+
+    OutButton := TX11Button.Create(Self);
+    with OutButton do begin
+      Anchors := [akRight, akBottom];
+      Top := Panel.Height + 20;
+      Left := 400;
+      Height := 50;
+      Width := 120;
+      Caption := 'Write';
+      OnClick :=@OutButtonClick;
     end;
   end;
 
@@ -182,11 +268,11 @@ var
     end;
 
     XSetForeground(dis, gc, $FF00FF);
-    XDrawRectangle(dis, win, gc, 10, 150, 50, 50);
-    XFillRectangle(dis, win, gc, 110, 150, 50, 50);
+    XDrawRectangle(dis, Window, gc, 10, 150, 50, 50);
+    XFillRectangle(dis, Window, gc, 110, 150, 50, 50);
 
     // Ein Polygon
-    XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
+    XFillPolygon(dis, Window, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
   end;
 
   procedure TMyDesktop.DoOnEventHandle(var Event: TXEvent);

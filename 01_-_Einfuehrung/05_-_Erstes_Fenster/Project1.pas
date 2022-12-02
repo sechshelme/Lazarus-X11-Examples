@@ -38,6 +38,9 @@ begin
   // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
   XSelectInput(dis, win, KeyPressMask);
 
+  // Fenster Titel festlegen
+  XStoreName(dis, win, 'Mein Fenster');
+
   // Fenster anzeigen
   XMapWindow(dis, win);
 

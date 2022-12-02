@@ -1,5 +1,5 @@
-# 06 - Regionen
-## 35 - Ist Punkt in Region
+# 70 - Regionen
+## 40 - Ist Punkt in Region
 
 ![image.png](image.png)
 

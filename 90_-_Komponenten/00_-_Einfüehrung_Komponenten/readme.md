@@ -1,4 +1,4 @@
-# 20 - Komponenten
+# 90 - Komponenten
 ## 00 - Einfüehrung Komponenten
 
 X11 hat keine Komponenten wie Buttons, Panels, etc.

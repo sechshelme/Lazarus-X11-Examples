@@ -34,11 +34,9 @@ begin
 
   // Erstellt das Fenster
   win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-  //  SubWin := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
   SubWin := XCreateSimpleWindow(dis, win, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
   // Wählt die gewünschten Ereignisse aus
-  // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
   XSelectInput(dis, win, KeyPressMask or ExposureMask);
   XSelectInput(dis, SubWin, KeyPressMask or ExposureMask);
 

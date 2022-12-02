@@ -1,5 +1,5 @@
 # 20 - Event Handle
-## 15 - xkill abfangen
+## 00 - Events senden auswerten
 
 ![image.png](image.png)
 
@@ -24,9 +24,9 @@ type
   private
     dis: PDisplay;
     scr: cint;
-    win: TWindow;
+    depth: cint;
+    rootwin, win, win2: TWindow;
     widht, Height: cuint;
-    wm_delete_window: TAtom;
   public
     constructor Create;
     destructor Destroy; override;
@@ -50,17 +50,18 @@ type
 
     // Erstellt das Fenster
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, widht, Height, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    win2 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, widht, Height, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
     // Es wird nur das Tastendrückereigniss **KeyPressMask** gebraucht.
-    XSelectInput(dis, win, KeyPressMask or ResizeRedirectMask);
+    XSelectInput(dis, win, KeyPressMask);
+    XSelectInput(dis, win2, KeyPressMask);
+    //XSelectInput(dis, win, $FFFF);
+    //XSelectInput(dis, win2, $FFFF);
 
     // Fenster anzeigen
     XMapWindow(dis, win);
-
-    // [X] abfangen
-    wm_delete_window := XInternAtom(dis, 'WM_DELETE_WINDOW', False);
-    XSetWMProtocols(dis, win, @wm_delete_window, 1);
+    XMapWindow(dis, win2);
   end;
 
   destructor TMyWin.Destroy;
@@ -73,33 +74,42 @@ type
   procedure TMyWin.Run;
   var
     Event: TXEvent;
-    quit: boolean = False;
-  const
-    myEvent = 37;
+    e: TXEvent;
+    status: TStatus;
   begin
     // Ereignisschleife
-    while not quit do begin
+    while (True) do begin
       XNextEvent(dis, @Event);
       WriteLn('Event: ', Event._type);
 
       case Event._type of
         KeyPress: begin
           // Beendet das Programm bei [ESC]
+
+          writeln( Event.xkey.state);
+          WriteLn(char( XLookupKeysym(@Event.xkey, 0)));
           case XLookupKeysym(@Event.xkey, 0) of
+            XKc_A:WriteLn('a');
+
             XK_Escape: begin
-              quit := True;
+              Break;
+            end;
+            XK_space: begin
+              e:=Event;
+              e._type := KeyPress;
+              e.xkey.keycode:= XK_Escape;
+              status := XSendEvent(dis, win, False, KeyPress, @e);
+              if status = 0 then begin
+                WriteLn('fehler');
+              end;
             end;
           end;
         end;
         ResizeRequest: begin
           WriteLn('resize');
         end;
-
         ClientMessage: begin
-          if (Event.xclient.Data.l[0] = wm_delete_window) then begin
-            WriteLn('[X] wurde gedrückt');
-            quit := True;
-          end;
+          WriteLn('Hallo');
         end;
         DestroyNotify: begin
           WriteLn('Ende ', Event.xbutton.window);

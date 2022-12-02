@@ -1,5 +1,5 @@
 # 01 - Einfuehrung
-## 10 - Ereignisse
+## 15 - Ereignisse
 
 ![image.png](image.png)
 
@@ -53,8 +53,12 @@ type
     end;
     scr := DefaultScreen(dis);
     gc := DefaultGC(dis, scr);
+
     // Erstellt das Fenster
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+
+    // Fenster Titel festlegen
+    XStoreName(dis, win, 'Ereignisse');
 
     // Wählt die gewünschten Ereignisse aus
     // Es wird nur das Tastendrückereigniss "KeyPressMask" und "ExposureMask" gebraucht.
@@ -81,6 +85,7 @@ type
       XNextEvent(dis, @Event);
 
       case Event._type of
+      // Paint Ereigniss
       Expose: begin
         // Gibt einen String aus
         XDrawString(dis, win, gc, 100, 100, msg, strlen(msg));

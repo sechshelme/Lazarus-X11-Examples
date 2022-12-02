@@ -1,5 +1,5 @@
 # 01 - Einfuehrung
-## 03 - Erstes Fenster
+## 05 - Erstes Fenster
 
 ![image.png](image.png)
 
@@ -41,6 +41,9 @@ begin
   // Wählt die gewünschten Ereignisse aus
   // Es wird nur das Tastendrückereigniss **KeyPressMask** gebraucht.
   XSelectInput(dis, win, KeyPressMask);
+
+  // Fenster Titel festlegen
+  XStoreName(dis, win, 'Mein Fenster');
 
   // Fenster anzeigen
   XMapWindow(dis, win);

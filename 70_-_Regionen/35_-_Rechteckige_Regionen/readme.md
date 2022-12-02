@@ -1,5 +1,5 @@
-# 06 - Regionen
-## 30 - Rechteckige Regionen
+# 70 - Regionen
+## 35 - Rechteckige Regionen
 
 ![image.png](image.png)
 

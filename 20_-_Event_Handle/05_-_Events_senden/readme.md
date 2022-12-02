@@ -1,10 +1,10 @@
-# 01 - Einfuehrung
-## 10 - Besser mit Klassen
+# 20 - Event Handle
+## 05 - Events senden
 
 ![image.png](image.png)
 
 Besser man macht es objektorientiert mit Klassen.
-Dies macht es übersichtlicher und ausbaufähiger.
+Die macht es übersichtlicher und ausbaufähiger.
 
 ---
 
@@ -25,7 +25,7 @@ type
     dis: PDisplay;
     scr: cint;
     depth: cint;
-    rootwin, win: TWindow;
+    rootwin, win, win2: TWindow;
   public
     constructor Create;
     destructor Destroy; override;
@@ -46,16 +46,16 @@ type
 
     // Erstellt das Fenster
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-
-    // Fenster Titel festlegen
-    XStoreName(dis, win, 'Fenster mit Classen');
+    win2 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
     // Es wird nur das Tastendrückereigniss **KeyPressMask** gebraucht.
-    XSelectInput(dis, win, KeyPressMask);
+    XSelectInput(dis, win, KeyPressMask or KeyReleaseMask or ExposureMask);
+    XSelectInput(dis, win2, KeyPressMask or KeyReleaseMask or ExposureMask);
 
     // Fenster anzeigen
     XMapWindow(dis, win);
+    XMapWindow(dis, win2);
   end;
 
   destructor TMyWin.Destroy;
@@ -68,17 +68,46 @@ type
   procedure TMyWin.Run;
   var
     Event: TXEvent;
+    e: TXEvent;
+    status: TStatus;
+  const
+    myEvent = 37;
   begin
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
+      WriteLn('Event: ', Event._type);
 
       case Event._type of
+        Expose: begin
+          WriteLn('expose');
+        end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
-          if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
-            Break;
+          case XLookupKeysym(@Event.xkey, 0) of
+            XK_Escape: begin
+              Break;
+            end;
+            XK_space: begin
+              WriteLn('space');
+              e._type := Expose;
+              e.xkey.window := win;
+
+              //              XSendEvent(dis, win, False, myEvent, @e);
+              status := XSendEvent(dis, win, True, Expose, @e);
+              if status = 0 then begin
+                WriteLn('fehler');
+              end;
+
+            end;
           end;
+        end;
+        ClientMessage: begin
+          WriteLn('Hallo');
+        end;
+        DestroyNotify: begin
+          WriteLn('Ende ', Event.xbutton.window);
+          //          Exit;
         end;
       end;
 
@@ -89,13 +118,8 @@ var
   MyWindows: TMyWin;
 
 begin
-  // Programm inizialisieren
   MyWindows := TMyWin.Create;
-
-  // Programm ablaufen lassen
   MyWindows.Run;
-
-  // Alles aufräumen und beenden
   MyWindows.Free;
 end.
 ```

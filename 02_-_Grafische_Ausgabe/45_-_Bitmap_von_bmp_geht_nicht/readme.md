@@ -1,5 +1,5 @@
 # 02 - Grafische Ausgabe
-## 20 - Bitmap von bmp geht nicht
+## 45 - Bitmap von bmp geht nicht
 
 ![image.png](image.png)
 

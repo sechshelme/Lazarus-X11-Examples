@@ -43,6 +43,9 @@ type
     // Erstellt das Fenster
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
+    // Fenster Titel festlegen
+    XStoreName(dis, win, 'Fenster mit Classen');
+
     // Wählt die gewünschten Ereignisse aus
     // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
     XSelectInput(dis, win, KeyPressMask);

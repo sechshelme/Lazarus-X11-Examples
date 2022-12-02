@@ -1,5 +1,5 @@
-# 06 - Regionen
-## 15 - IntersectRegion (AND)
+# 70 - Regionen
+## 20 - IntersectRegion (AND)
 
 ![image.png](image.png)
 

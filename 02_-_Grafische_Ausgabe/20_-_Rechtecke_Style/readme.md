@@ -1,5 +1,5 @@
 # 02 - Grafische Ausgabe
-## 11 - Rechtecke Style
+## 20 - Rechtecke Style
 
 ![image.png](image.png)
 

@@ -1,5 +1,5 @@
 # 02 - Grafische Ausgabe
-## 20 - Bitmap Array
+## 35 - Bitmap Array
 
 ![image.png](image.png)
 

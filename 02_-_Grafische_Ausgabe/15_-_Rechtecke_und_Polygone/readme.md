@@ -1,5 +1,5 @@
 # 02 - Grafische Ausgabe
-## 10 - Rechtecke und Polygone
+## 15 - Rechtecke und Polygone
 
 ![image.png](image.png)
 

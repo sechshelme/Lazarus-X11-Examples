@@ -1,5 +1,5 @@
 # 02 - Grafische Ausgabe
-## 20 - Bitmap
+## 30 - Bitmap
 
 ![image.png](image.png)
 

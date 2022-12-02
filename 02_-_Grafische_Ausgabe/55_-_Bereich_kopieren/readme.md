@@ -1,5 +1,5 @@
 # 02 - Grafische Ausgabe
-## 35 - Bereich kopieren
+## 55 - Bereich kopieren
 
 ![image.png](image.png)
 
