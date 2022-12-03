@@ -3,7 +3,7 @@
 
 ![image.png](image.png)
 
-Verschiedene Varinaten um Linien zu zeichnen:
+Verschiedene Varianten um Linien zu zeichnen:
 
 ---
 

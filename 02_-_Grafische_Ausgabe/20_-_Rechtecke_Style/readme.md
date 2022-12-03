@@ -3,11 +3,7 @@
 
 ![image.png](image.png)
 
-Verschiedene Varinaten um Rechtecke zu zeichnen:
-
-- [XDrawRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XDrawRectangle.html)
-- [XFillRectangle](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillRectangle.html)
-- [XFillPolygon](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillPolygon.html) (Für ein nicht ausgefülltes Polygon nimmt man **XDrawLines**.)
+Verschiedene Style um Rechtecke zu zeichnen.
 
 ---
 
@@ -87,11 +83,14 @@ type
         Expose: begin
           // Bildschirm löschen
           XClearWindow(dis, win);
+
+          // Gibt den Zeichnungsstyl an
+          XSetLineAttributes(dis, gc, 3, LineDoubleDash, CapNotLast, JoinBevel);
+          XSetFillStyle(dis, gc, FillStippled);
+
           // Ein Rechteck zeichnen
           XDrawRectangle(dis, win, gc, 10, 50, 50, 50);
           // Einen rechteckigen Bereich mit Farbe füllen
-          XSetLineAttributes(dis,gc,3,LineDoubleDash,CapNotLast,JoinBevel);
-          XSetFillStyle(dis,gc,FillStippled);
 
           XFillRectangle(dis, win, gc, 110, 50, 50, 50);
 

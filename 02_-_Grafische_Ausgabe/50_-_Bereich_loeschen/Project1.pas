@@ -1,7 +1,6 @@
 //image image.png
 (*
-Einfache rechteckige Regionen
-Dabei ist es möglich durch mehrmaliges generieren von Rechteckregionen, das sie sich addieren.
+Man kann in einem gezeichneten Fenster Bereich löschen.
 *)
 //lineal
 //code+
@@ -89,6 +88,7 @@ type
 
           // Bereich löschen
           XClearArea(dis, win, 50, 50, 100, 100, False);
+          XClearArea(dis, win, 200, 50, 80, 80, False);
 
         end;
         KeyPress: begin

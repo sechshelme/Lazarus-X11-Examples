@@ -1,9 +1,6 @@
 //image image.png
 (*
-Kreise und Elipsen zeichnen:
-
-- [XDrawArc](https://tronche.com/gui/x/xlib/graphics/drawing/XDrawArc.html)
-- [XFill](https://tronche.com/gui/x/xlib/graphics/filling-areas/XFillArc.html)
+Ausgabe von Bitmap
 *)
 //lineal
 //code+
@@ -50,8 +47,8 @@ type
 
     inherited Create;
     with BitmapData do begin
-      Width := 512;
-      Height := 512;
+      Width := 256;
+      Height := 256;
       Getmem(Data, Width * Height * 4);
 
       // Erstellt die Verbindung zum Server
@@ -62,7 +59,7 @@ type
       end;
       scr := DefaultScreen(dis);
       gc := DefaultGC(dis, scr);
-      win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+      win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 320, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
       visual := DefaultVisual(dis, scr);
       if visual^.c_class <> TrueColor then begin

@@ -54,6 +54,7 @@ type
 
     // Fenster anzeigen
     XMapWindow(dis, win);
+    XSetLineAttributes(dis, gc, 5, LineSolid, CapNotLast, JoinBevel);
   end;
 
   destructor TMyWin.Destroy;
@@ -89,6 +90,7 @@ type
           for i := 0 to 20 do begin
             XSetForeground(dis, gc, Random($FFFFFF));
             XDrawArc(dis, win, gc, random(500) - 200, random(500) - 200, 150, 150, 0, 360 * 64);
+
             XDrawRectangle(dis, win, gc, 10, 10, 100, 100);
             XDrawRectangle(dis, win, gc, 150, 10, 100, 100);
           end;
