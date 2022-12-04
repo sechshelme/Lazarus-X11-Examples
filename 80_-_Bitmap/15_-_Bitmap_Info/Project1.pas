@@ -1,7 +1,6 @@
 //image image.png
 (*
-Besser man macht es objektorientiert mit Klassen.
-Die macht es übersichtlicher und ausbaufähiger.
+Source: https://github.com/tristanred/x11-examples/blob/master/main.cpp
 *)
 //lineal
 //code+
