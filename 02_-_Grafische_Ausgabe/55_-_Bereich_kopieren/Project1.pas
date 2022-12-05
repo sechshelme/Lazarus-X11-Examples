@@ -87,12 +87,16 @@ type
             XSetForeground(dis, gc, Random($FFFFFF));
             XDrawArc(dis, win, gc, random(500) - 200, random(500) - 200, 150, 150, 0, 360 * 64);
 
+            XSetForeground(dis, gc, $000000);
             XDrawRectangle(dis, win, gc, 10, 10, 100, 100);
             XDrawRectangle(dis, win, gc, 150, 10, 100, 100);
           end;
 
           // Bereich kopieren
           XCopyArea(dis, win, win, gc, 10, 10, 100, 100, 150, 10);
+          XCopyPlane(dis, win, win, gc, 10, 10, 100, 100, 10, 150, 32);
+
+          //          XCopyPlane(dis, image, win, gc, 0, 0, 128, 128, 50, 50, 1);
 
         end;
         KeyPress: begin
