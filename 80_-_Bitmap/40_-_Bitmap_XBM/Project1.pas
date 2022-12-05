@@ -80,7 +80,7 @@ type
         Expose: begin
           XClearWindow(dis, win);
           XCopyPlane(dis, image, win, gc, 0, 0, 128, 128, 50, 50, 1);
-//          XCopyArea(dis, image, win, gc, 0, 0, 128, 128, 10, 10);
+//           XCopyArea(dis, image, win, gc, 0, 0, 128, 128, 10, 10);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
