@@ -25,13 +25,12 @@ type
     win: TWindow;
     gc: TGC;
     visual: PVisual;
-    Bit: PXImage;
-    image: TDrawable;
+    image: TPixmap;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Run;
-    function LoadImage(path: string): TDrawable;
+    function LoadImage(path: string): TPixmap;
   end;
 
 
@@ -57,7 +56,7 @@ type
 
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
     XMapWindow(dis, win);
-    image := LoadImage('X11.xbm');
+    image := LoadImage('test.xbm');
   end;
 
   destructor TMyWin.Destroy;
@@ -79,7 +78,7 @@ type
       case Event._type of
         Expose: begin
           XClearWindow(dis, win);
-          XCopyPlane(dis, image, win, gc, 0, 0, 128, 128, 50, 50, 1);
+          XCopyPlane(dis, image, win, gc, 0, 0, 512, 512, 50, 50, 1);
 //           XCopyArea(dis, image, win, gc, 0, 0, 128, 128, 10, 10);
         end;
         KeyPress: begin
@@ -93,7 +92,7 @@ type
     end;
   end;
 
-  function TMyWin.LoadImage(path: string): TDrawable;
+  function TMyWin.LoadImage(path: string): TPixmap;
   var
     res, hotspotX, hotspotY: cint;
     bw, bh: cuint;
