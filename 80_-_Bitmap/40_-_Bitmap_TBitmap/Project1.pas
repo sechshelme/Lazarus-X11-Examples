@@ -71,8 +71,9 @@ type
   destructor TMyWin.Destroy;
   begin
     // Schliesst Verbindung zum Server
-    XCloseDisplay(dis);
     Bitmap.Free;
+//    XDestroyImage(image);
+    XCloseDisplay(dis);
     inherited Destroy;
   end;
 

@@ -90,6 +90,7 @@ type
   destructor TMyWin.Destroy;
   begin
     // Schliesst Verbindung zum Server
+//    XDestroyImage(image);
     XCloseDisplay(dis);
     inherited Destroy;
   end;
