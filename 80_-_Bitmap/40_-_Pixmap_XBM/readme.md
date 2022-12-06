@@ -1,12 +1,17 @@
-//image image.png
-(*
+# 02 - Grafische Ausgabe
+## 40 - Bitmap TBitmap
+
+![image.png](image.png)
+
 Eine Bitmap laden
-*)
-//lineal
-//code+
+
+---
+
+```pascal
 program Project1;
 
 uses
+  Graphics,
   unixtype,
   ctypes,
   xlib,
@@ -16,8 +21,6 @@ uses
 
 type
 
-  { TMyWin }
-
   TMyWin = class(TObject)
   private
     dis: PDisplay;
@@ -25,17 +28,24 @@ type
     win: TWindow;
     gc: TGC;
     visual: PVisual;
-    image: TPixmap;
+    image: PXImage;
+    Bitmap: TBitmap;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Run;
-    function LoadImage(path: string): TPixmap;
   end;
 
 
   constructor TMyWin.Create;
+  var
+    x, y: integer;
+    p: PChar;
+
   begin
+    Bitmap := TBitmap.Create;
+    Bitmap.LoadFromFile('X11.bmp');
+
     inherited Create;
 
     // Erstellt die Verbindung zum Server
@@ -54,16 +64,19 @@ type
       Halt(1);
     end;
 
+    with Bitmap do begin
+      image := XCreateImage(dis, visual, DefaultDepth(dis, scr), ZPixmap, 0, PChar(RawImage.Data), Width, Height, 32, 0);
+    end;
+
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
     XMapWindow(dis, win);
-    image := LoadImage('test.xbm');
   end;
 
   destructor TMyWin.Destroy;
   begin
     // Schliesst Verbindung zum Server
-    XFreePixmap(dis, image);
     XCloseDisplay(dis);
+    Bitmap.Free;
     inherited Destroy;
   end;
 
@@ -78,8 +91,7 @@ type
       case Event._type of
         Expose: begin
           XClearWindow(dis, win);
-          XCopyPlane(dis, image, win, gc, 0, 0, 512, 512, 50, 50, 1);
-//           XCopyArea(dis, image, win, gc, 0, 0, 128, 128, 10, 10);
+          XPutImage(dis, win, gc, image, 0, 0, 10, 10, Bitmap.Width, Bitmap.Height);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
@@ -92,33 +104,6 @@ type
     end;
   end;
 
-  function TMyWin.LoadImage(path: string): TPixmap;
-  var
-    res, hotspotX, hotspotY: cint;
-    bw, bh: cuint;
-  begin
-    res := XReadBitmapFile(dis, win, PChar(path), @bw, @bh, @Result, @hotspotX, @hotspotY);
-    case res of
-      BitmapOpenFailed: begin
-        WriteLn('Open failed.');
-      end;
-      BitmapFileInvalid: begin
-        WriteLn('Open invalid.');
-      end;
-      BitmapNoMemory: begin
-        WriteLn('No mem.');
-      end;
-      BitmapSuccess: begin
-        WriteLn('Bitmap loading success !');
-      end;
-      else begin
-        WriteLn('Unknown error while loading a bitmap.');
-      end;
-
-    end;
-
-  end;
-
 var
   MyWindows: TMyWin;
 
@@ -127,4 +112,6 @@ begin
   MyWindows.Run;
   MyWindows.Free;
 end.
-//code-
+```
+
+

@@ -1,7 +1,6 @@
 //image image.png
 (*
-Einfache rechteckige Regionen
-Dabei ist es möglich durch mehrmaliges generieren von Rechteckregionen, das sie sich addieren.
+Eine Bitmap laden
 *)
 //lineal
 //code+
@@ -16,17 +15,27 @@ uses
   x;
 
 type
+
+  { TMyWin }
+
   TMyWin = class(TObject)
   private
     dis: PDisplay;
     scr: cint;
     win: TWindow;
     gc: TGC;
+    visual: PVisual;
+    image: record
+      Width, Height: cuint;
+      Data: TPixmap;
+      end;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Run;
+    procedure LoadImage(path: string);
   end;
+
 
   constructor TMyWin.Create;
   begin
@@ -40,22 +49,23 @@ type
     end;
     scr := DefaultScreen(dis);
     gc := DefaultGC(dis, scr);
+    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
-    // Erstellt das Fenster
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    visual := DefaultVisual(dis, scr);
+    if visual^.c_class <> TrueColor then begin
+      WriteLn('Kein TrueColor Modus');
+      Halt(1);
+    end;
 
-    // Wählt die gewünschten Ereignisse aus
-    // Es werden die Ereignisse <b>KeyPressMask</b> und <b>ExposureMask</b> für die grafische Auzsgabe gebraucht.
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
-
-    // Fenster anzeigen
     XMapWindow(dis, win);
-    XSetLineAttributes(dis, gc, 5, LineSolid, CapNotLast, JoinBevel);
+    LoadImage('X11.xbm');
   end;
 
   destructor TMyWin.Destroy;
   begin
     // Schliesst Verbindung zum Server
+    XFreePixmap(dis, image.Data);
     XCloseDisplay(dis);
     inherited Destroy;
   end;
@@ -63,16 +73,6 @@ type
   procedure TMyWin.Run;
   var
     Event: TXEvent;
-    i: integer;
-
-    function Rect(Left, Top, Width, Height: cshort): TXRectangle;
-    begin
-      Result.x := Left;
-      Result.y := Top;
-      Result.Width := Width;
-      Result.Height := Height;
-    end;
-
   begin
     // Ereignisschleife
     while (True) do begin
@@ -81,22 +81,10 @@ type
       case Event._type of
         Expose: begin
           XClearWindow(dis, win);
-
-          // Kreise zeichnen
-          for i := 0 to 20 do begin
-            XSetForeground(dis, gc, Random($FFFFFF));
-            XDrawArc(dis, win, gc, random(500) - 200, random(500) - 200, 150, 150, 0, 360 * 64);
-
-            XSetForeground(dis, gc, $000000);
-            XDrawRectangle(dis, win, gc, 10, 10, 100, 100);
-            XDrawRectangle(dis, win, gc, 150, 10, 100, 100);
+          with image do begin
+            XCopyPlane(dis, Data, win, gc, 0, 0, Width, Height, 0, 0, 1);
+            //                       XCopyArea(dis, Data, win, gc, 0, 0, Width, Height, 10, 10);
           end;
-
-          // Bereich kopieren
-          XCopyArea(dis, win, win, gc, 10, 10, 100, 100, 150, 10);
-
-          // Nur Monocrom
-          XCopyPlane(dis, win, win, gc, 10, 10, 100, 100, 10, 150, 1);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
@@ -106,6 +94,26 @@ type
         end;
       end;
 
+    end;
+  end;
+
+  procedure TMyWin.LoadImage(path: string);
+  var
+    res, hotspotX, hotspotY: cint;
+//    im: TPixmap;
+  begin
+    with image do begin
+//      res := XReadBitmapFile(dis, win, PChar(path), @Width, @Height, @Data, @hotspotX, @hotspotY);
+      if res <> 0 then begin
+        WriteLn('Bitmap Fehler: ', res);
+      end;
+
+
+      Data:=  XCreatePixmap(dis,win,256,256,24);
+      XSetLineAttributes(dis, gc, 3,        LineSolid, CapButt, JoinBevel);
+      XSetForeground(dis,gc,$888888);
+
+      XDrawRectangle(dis,Data,gc,10,10,100,100);
     end;
   end;
 
