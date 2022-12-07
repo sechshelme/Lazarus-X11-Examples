@@ -39,6 +39,11 @@ sudo apt install gbdfed
 Meht infos: 
 - [Font-Formate](http://x11.gweb.info/x11_0654_fontformats.html)
 
+## Diverses
+```bash
+$bitmap
+```
+
 
 
 ## Mehr Infos:
