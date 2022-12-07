@@ -1,8 +1,6 @@
 //image image.png
 (*
-Eine Pixmap erzeugen.
-In diese kann man mit den üblichen Zeichenfunktion reinzeichnen, ZB. Rechtecke und Kreise, wie bei einem Window.
-Eine frisch erzeugte Pixmap muss man mit **XFillRectangle** eine Rechteck zeichen, ansonsten hat so von Anfang an ein zufälliger Inhalt.
+Eine Bitmap laden, nur Monocrom.
 *)
 //lineal
 //code+
@@ -18,7 +16,10 @@ uses
 
 type
 
-  { TMyWin }
+  TBitmap = record
+    Width, Height: cuint;
+    Drawable: TPixmap;
+  end;
 
   TMyWin = class(TObject)
   private
@@ -26,15 +27,13 @@ type
     scr: cint;
     win: TWindow;
     gc: TGC;
-    Bitmap: record
-      Width, Height: cuint;
-      Drawable: TPixmap;
-      end;
+    visual: PVisual;
+    Bitmap: TBitmap;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Run;
-    procedure CrateImage;
+    procedure LoadImage(path: string);
   end;
 
 
@@ -52,9 +51,15 @@ type
     gc := DefaultGC(dis, scr);
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
+    visual := DefaultVisual(dis, scr);
+    if visual^.c_class <> TrueColor then begin
+      WriteLn('Kein TrueColor Modus');
+      Halt(1);
+    end;
+
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
     XMapWindow(dis, win);
-    CrateImage;
+    LoadImage('X11.xbm');
   end;
 
   destructor TMyWin.Destroy;
@@ -72,15 +77,13 @@ type
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
+
       case Event._type of
         Expose: begin
           XClearWindow(dis, win);
           with Bitmap do begin
-            // Monochrom
             XCopyPlane(dis, Drawable, win, gc, 0, 0, Width, Height, 0, 0, 1);
-
-            // Drawable in Window kopieren
-            XCopyArea(dis, Drawable, win, gc, 0, 0, Width, Height, 50, 50);
+            //                       XCopyArea(dis, Drawable, win, gc, 0, 0, Width, Height, 10, 10);
           end;
         end;
         KeyPress: begin
@@ -90,29 +93,18 @@ type
           end;
         end;
       end;
+
     end;
   end;
 
-  procedure TMyWin.CrateImage;
+  procedure TMyWin.LoadImage(path: string);
   var
-    i: integer;
+    res, hotspotX, hotspotY: cint;
   begin
     with Bitmap do begin
-      Width := 256;
-      Height := 256;
-
-      // Die Drawable erzeugen.
-      Drawable := XCreatePixmap(dis, win, Width, Height, DefaultDepth(dis, scr));
-
-      // Drawable mit einer Farbe ausfüllen
-      XSetForeground(dis, gc, $88FFFF);
-      XFillRectangle(dis, Drawable, gc, 0, 0, Width, Height);
-
-      // Ein Muster reinzeichnen
-      for i := 0 to 16 do begin
-        XSetLineAttributes(dis, gc, i, LineSolid, CapButt, JoinBevel);
-        XSetForeground(dis, gc, random($FFFFFF));
-        XDrawRectangle(dis, Drawable, gc, i * 10, i * 10, 100, 100);
+      res := XReadBitmapFile(dis, win, PChar(path), @Width, @Height, @Drawable, @hotspotX, @hotspotY);
+      if res <> 0 then begin
+        WriteLn('Bitmap Fehler: ', res);
       end;
     end;
   end;

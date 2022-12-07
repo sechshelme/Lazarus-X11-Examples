@@ -1,12 +1,17 @@
-//image image.png
-(*
+# 02 - Grafische Ausgabe
+## 40 - Bitmap TBitmap
+
+![image.png](image.png)
+
 Eine Bitmap laden
-*)
-//lineal
-//code+
+
+---
+
+```pascal
 program Project1;
 
 uses
+  Graphics,
   unixtype,
   ctypes,
   xlib,
@@ -16,8 +21,6 @@ uses
 
 type
 
-  { TMyWin }
-
   TMyWin = class(TObject)
   private
     dis: PDisplay;
@@ -25,20 +28,24 @@ type
     win: TWindow;
     gc: TGC;
     visual: PVisual;
-    image: record
-      Width, Height: cuint;
-      Data: TPixmap;
-      end;
+    image: PXImage;
+    Bitmap: TBitmap;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Run;
-    procedure LoadImage(path: string);
   end;
 
 
   constructor TMyWin.Create;
+  var
+    x, y: integer;
+    p: PChar;
+
   begin
+    Bitmap := TBitmap.Create;
+    Bitmap.LoadFromFile('X11.bmp');
+
     inherited Create;
 
     // Erstellt die Verbindung zum Server
@@ -57,16 +64,19 @@ type
       Halt(1);
     end;
 
+    with Bitmap do begin
+      image := XCreateImage(dis, visual, DefaultDepth(dis, scr), ZPixmap, 0, PChar(RawImage.Data), Width, Height, 32, 0);
+    end;
+
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
     XMapWindow(dis, win);
-    LoadImage('X11.xbm');
   end;
 
   destructor TMyWin.Destroy;
   begin
     // Schliesst Verbindung zum Server
-    XFreePixmap(dis, image.Data);
     XCloseDisplay(dis);
+    Bitmap.Free;
     inherited Destroy;
   end;
 
@@ -81,10 +91,7 @@ type
       case Event._type of
         Expose: begin
           XClearWindow(dis, win);
-          with image do begin
-            XCopyPlane(dis, Data, win, gc, 0, 0, Width, Height, 0, 0, 1);
-            //                       XCopyArea(dis, Data, win, gc, 0, 0, Width, Height, 10, 10);
-          end;
+          XPutImage(dis, win, gc, image, 0, 0, 10, 10, Bitmap.Width, Bitmap.Height);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
@@ -97,18 +104,6 @@ type
     end;
   end;
 
-  procedure TMyWin.LoadImage(path: string);
-  var
-    res, hotspotX, hotspotY: cint;
-  begin
-    with image do begin
-      res := XReadBitmapFile(dis, win, PChar(path), @Width, @Height, @Data, @hotspotX, @hotspotY);
-    end;
-    if res <> 0 then begin
-      WriteLn('Bitmap Fehler: ', res);
-    end;
-  end;
-
 var
   MyWindows: TMyWin;
 
@@ -117,4 +112,6 @@ begin
   MyWindows.Run;
   MyWindows.Free;
 end.
-//code-
+```
+
+

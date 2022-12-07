@@ -1,8 +1,6 @@
 //image image.png
 (*
-Eine Pixmap erzeugen.
-In diese kann man mit den üblichen Zeichenfunktion reinzeichnen, ZB. Rechtecke und Kreise, wie bei einem Window.
-Eine frisch erzeugte Pixmap muss man mit **XFillRectangle** eine Rechteck zeichen, ansonsten hat so von Anfang an ein zufälliger Inhalt.
+Es ist auch möglich ein Bitmap abzuspeichern, dies geht nur Monocrom.
 *)
 //lineal
 //code+
@@ -26,6 +24,7 @@ type
     scr: cint;
     win: TWindow;
     gc: TGC;
+    visual: PVisual;
     Bitmap: record
       Width, Height: cuint;
       Drawable: TPixmap;
@@ -79,7 +78,7 @@ type
             // Monochrom
             XCopyPlane(dis, Drawable, win, gc, 0, 0, Width, Height, 0, 0, 1);
 
-            // Drawable in Window kopieren
+            // Pixmap in Window kopieren
             XCopyArea(dis, Drawable, win, gc, 0, 0, Width, Height, 50, 50);
           end;
         end;
@@ -96,15 +95,16 @@ type
   procedure TMyWin.CrateImage;
   var
     i: integer;
+    y_hot, x_hot: cint;
   begin
     with Bitmap do begin
       Width := 256;
       Height := 256;
 
-      // Die Drawable erzeugen.
+      // Die Pixmap erzeugen.
       Drawable := XCreatePixmap(dis, win, Width, Height, DefaultDepth(dis, scr));
 
-      // Drawable mit einer Farbe ausfüllen
+      // Pixmap mit einer Farbe ausfüllen
       XSetForeground(dis, gc, $88FFFF);
       XFillRectangle(dis, Drawable, gc, 0, 0, Width, Height);
 
@@ -114,6 +114,9 @@ type
         XSetForeground(dis, gc, random($FFFFFF));
         XDrawRectangle(dis, Drawable, gc, i * 10, i * 10, 100, 100);
       end;
+
+      // Gezeichnetes Bild abspeichern, nur Monocrom
+      XWriteBitmapFile(dis, 'test.xbm', Drawable, Width, Height, 0, 0);
     end;
   end;
 

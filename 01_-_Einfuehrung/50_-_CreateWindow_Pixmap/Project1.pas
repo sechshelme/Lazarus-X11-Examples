@@ -24,11 +24,11 @@ type
   private
     dis: PDisplay;
     scr: cint;
-    win: TWindow;
+    win,win2: TWindow;
     gc: TGC;
-    Bitmap: record
+    image: record
       Width, Height: cuint;
-      Drawable: TPixmap;
+      Data: TPixmap;
       end;
   public
     constructor Create;
@@ -39,6 +39,8 @@ type
 
 
   constructor TMyWin.Create;
+  var
+    xswa: TXSetWindowAttributes;
   begin
     inherited Create;
 
@@ -50,17 +52,27 @@ type
     end;
     scr := DefaultScreen(dis);
     gc := DefaultGC(dis, scr);
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
-    XSelectInput(dis, win, KeyPressMask or ExposureMask);
+    xswa.background_pixel:=$FF;
+    xswa.event_mask:=KeyPressMask or ExposureMask;
+
+
+    win := XCreateWindow(dis, RootWindow(dis, scr), 10, 10, 512, 512, 10, DefaultDepth(dis, scr), CopyFromParent, DefaultVisual(dis, scr), CWEventMask or CWBorderPixel or CWBackPixel, @xswa);
     XMapWindow(dis, win);
+
     CrateImage;
+
+    xswa.background_pixmap:=image.Data;
+    xswa.border_pixmap:=image.Data;
+
+    win2 := XCreateWindow(dis, RootWindow(dis, scr), 10, 10, 512, 512, 10, 0, CopyFromParent, DefaultVisual(dis, scr), CWEventMask or CWBackPixmap or CWBorderPixmap, @xswa);
+    XMapWindow(dis, win2);
   end;
 
   destructor TMyWin.Destroy;
   begin
     // Schliesst Verbindung zum Server
-    XFreePixmap(dis, Bitmap.Drawable);
+    XFreePixmap(dis, image.Data);
     XCloseDisplay(dis);
     inherited Destroy;
   end;
@@ -75,12 +87,12 @@ type
       case Event._type of
         Expose: begin
           XClearWindow(dis, win);
-          with Bitmap do begin
+          with image do begin
             // Monochrom
-            XCopyPlane(dis, Drawable, win, gc, 0, 0, Width, Height, 0, 0, 1);
+            XCopyPlane(dis, Data, win, gc, 0, 0, Width, Height, 0, 0, 1);
 
-            // Drawable in Window kopieren
-            XCopyArea(dis, Drawable, win, gc, 0, 0, Width, Height, 50, 50);
+            // Pixmap in Window kopieren
+            XCopyArea(dis, Data, win, gc, 0, 0, Width, Height, 50, 50);
           end;
         end;
         KeyPress: begin
@@ -93,26 +105,26 @@ type
     end;
   end;
 
-  procedure TMyWin.CrateImage;
+    procedure TMyWin.CrateImage;
   var
     i: integer;
   begin
-    with Bitmap do begin
-      Width := 256;
-      Height := 256;
+    with image do begin
+      Width := 128;
+      Height := 128;
 
-      // Die Drawable erzeugen.
-      Drawable := XCreatePixmap(dis, win, Width, Height, DefaultDepth(dis, scr));
+      // Die Pixmap erzeugen.
+      Data := XCreatePixmap(dis, win, Width, Height, DefaultDepth(dis, scr));
 
-      // Drawable mit einer Farbe ausfüllen
+      // Pixmap mit einer Farbe ausfüllen
       XSetForeground(dis, gc, $88FFFF);
-      XFillRectangle(dis, Drawable, gc, 0, 0, Width, Height);
+      XFillRectangle(dis, Data, gc, 0, 0, Width, Height);
 
       // Ein Muster reinzeichnen
       for i := 0 to 16 do begin
         XSetLineAttributes(dis, gc, i, LineSolid, CapButt, JoinBevel);
         XSetForeground(dis, gc, random($FFFFFF));
-        XDrawRectangle(dis, Drawable, gc, i * 10, i * 10, 100, 100);
+        XDrawRectangle(dis, Data, gc, i * 5, i * 5, 100, 100);
       end;
     end;
   end;
