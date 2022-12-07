@@ -26,7 +26,6 @@ type
     scr: cint;
     win: TWindow;
     gc: TGC;
-    visual: PVisual;
     image: record
       Width, Height: cuint;
       Data: TPixmap;
@@ -40,6 +39,8 @@ type
 
 
   constructor TMyWin.Create;
+  var
+    xswa: TXSetWindowAttributes;
   begin
     inherited Create;
 
@@ -51,9 +52,13 @@ type
     end;
     scr := DefaultScreen(dis);
     gc := DefaultGC(dis, scr);
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
-    XSelectInput(dis, win, KeyPressMask or ExposureMask);
+    xswa.background_pixel:=$FF;
+    xswa.event_mask:=KeyPressMask or ExposureMask;
+
+
+    win := XCreateWindow(dis, RootWindow(dis, scr), 10, 10, 512, 512, 10, DefaultDepth(dis, scr), CopyFromParent, DefaultVisual(dis, scr), CWEventMask or CWBorderPixel or CWBackPixel, @xswa);
+
     XMapWindow(dis, win);
     CrateImage;
   end;
@@ -94,7 +99,7 @@ type
     end;
   end;
 
-  procedure TMyWin.CrateImage;
+    procedure TMyWin.CrateImage;
   var
     i: integer;
   begin

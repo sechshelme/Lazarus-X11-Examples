@@ -131,8 +131,6 @@ type
     // Erstellt das Fenster
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, widht, Height, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
-    // Wählt die gewünschten Ereignisse aus
-    // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
     XSelectInput(dis, win, KeyPressMask or ResizeRedirectMask);
 
     // Fenster anzeigen

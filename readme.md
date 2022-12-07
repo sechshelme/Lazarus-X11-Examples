@@ -11,6 +11,7 @@ Diese sind alle in C/C++
 - [The X Window system](https://tronche.com/gui/x)
 - [Xlib - C Language X Interface](https://www.x.org/releases/current/doc/libX11/libX11/libX11.html)
 - [Xlib tutorial](http://xopendisplay.hilltopia.ca/2009/Jan/Xlib-tutorial-part-1----Beginnings.html)
+- [Cours X-Window/MOTIF](http://users.polytech.unice.fr/~buffa/cours/X11_Motif/cours/) (FR)
 - [X11 OpenGL Window](https://github.com/gamedevtech/X11OpenGLWindow)
 - [Mesa Demos](https://github.com/JoakimSoderberg/mesademos)
 

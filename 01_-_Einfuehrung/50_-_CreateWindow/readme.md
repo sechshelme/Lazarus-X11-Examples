@@ -1,14 +1,17 @@
-//image image.png
-(*
-Eine Pixmap erzeugen.
-In diese kann man mit den üblichen Zeichenfunktion reinzeichnen, ZB. Rechtecke und Kreise, wie bei einem Window.
-Eine frisch erzeugte Pixmap muss man mit **XFillRectangle** eine Rechteck zeichen, ansonsten hat so von Anfang an ein zufälliger Inhalt.
-*)
-//lineal
-//code+
+# 02 - Grafische Ausgabe
+## 40 - Bitmap TBitmap
+
+![image.png](image.png)
+
+Eine Bitmap laden
+
+---
+
+```pascal
 program Project1;
 
 uses
+  Graphics,
   unixtype,
   ctypes,
   xlib,
@@ -18,8 +21,6 @@ uses
 
 type
 
-  { TMyWin }
-
   TMyWin = class(TObject)
   private
     dis: PDisplay;
@@ -27,20 +28,24 @@ type
     win: TWindow;
     gc: TGC;
     visual: PVisual;
-    image: record
-      Width, Height: cuint;
-      Data: TPixmap;
-      end;
+    image: PXImage;
+    Bitmap: TBitmap;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Run;
-    procedure CrateImage;
   end;
 
 
   constructor TMyWin.Create;
+  var
+    x, y: integer;
+    p: PChar;
+
   begin
+    Bitmap := TBitmap.Create;
+    Bitmap.LoadFromFile('X11.bmp');
+
     inherited Create;
 
     // Erstellt die Verbindung zum Server
@@ -53,16 +58,25 @@ type
     gc := DefaultGC(dis, scr);
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
+    visual := DefaultVisual(dis, scr);
+    if visual^.c_class <> TrueColor then begin
+      WriteLn('Kein TrueColor Modus');
+      Halt(1);
+    end;
+
+    with Bitmap do begin
+      image := XCreateImage(dis, visual, DefaultDepth(dis, scr), ZPixmap, 0, PChar(RawImage.Data), Width, Height, 32, 0);
+    end;
+
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
     XMapWindow(dis, win);
-    CrateImage;
   end;
 
   destructor TMyWin.Destroy;
   begin
     // Schliesst Verbindung zum Server
-    XFreePixmap(dis, image.Data);
     XCloseDisplay(dis);
+    Bitmap.Free;
     inherited Destroy;
   end;
 
@@ -73,16 +87,11 @@ type
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
+
       case Event._type of
         Expose: begin
           XClearWindow(dis, win);
-          with image do begin
-            // Monochrom
-            XCopyPlane(dis, Data, win, gc, 0, 0, Width, Height, 0, 0, 1);
-
-            // Pixmap in Window kopieren
-            XCopyArea(dis, Data, win, gc, 0, 0, Width, Height, 50, 50);
-          end;
+          XPutImage(dis, win, gc, image, 0, 0, 10, 10, Bitmap.Width, Bitmap.Height);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
@@ -91,30 +100,7 @@ type
           end;
         end;
       end;
-    end;
-  end;
 
-  procedure TMyWin.CrateImage;
-  var
-    i: integer;
-  begin
-    with image do begin
-      Width := 256;
-      Height := 256;
-
-      // Die Pixmap erzeugen.
-      Data := XCreatePixmap(dis, win, Width, Height, DefaultDepth(dis, scr));
-
-      // Pixmap mit einer Farbe ausfüllen
-      XSetForeground(dis, gc, $88FFFF);
-      XFillRectangle(dis, Data, gc, 0, 0, Width, Height);
-
-      // Ein Muster reinzeichnen
-      for i := 0 to 16 do begin
-        XSetLineAttributes(dis, gc, i, LineSolid, CapButt, JoinBevel);
-        XSetForeground(dis, gc, random($FFFFFF));
-        XDrawRectangle(dis, Data, gc, i * 10, i * 10, 100, 100);
-      end;
     end;
   end;
 
@@ -126,4 +112,6 @@ begin
   MyWindows.Run;
   MyWindows.Free;
 end.
-//code-
+```
+
+
