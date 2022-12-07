@@ -108,6 +108,8 @@ type
     end else begin
       WriteLn('Current DISPLAY is: ', Value);
     end;
+    WriteLn('Version: ', XProtocolVersion(dis),'.',XProtocolRevision(dis));
+    WriteLn(XScreenCount(dis));
   end;
 
   constructor TMyWin.Create;

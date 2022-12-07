@@ -82,8 +82,9 @@ type
         Expose: begin
           XClearWindow(dis, win);
           with image do begin
-            XCopyPlane(dis, Data, win, gc, 0, 0, Width, Height, 0, 0, 1);
-            //                       XCopyArea(dis, Data, win, gc, 0, 0, Width, Height, 10, 10);
+//                 XCopyPlane(dis, Data, win, gc, 0, 0, Width, Height, 0, 0, 1);
+            //            XFillRectangle(dis, win, gc, 10, 10, 100, 100);
+            XCopyArea(dis, Data, win, gc, 0, 0, Width, Height, 10, 10);
           end;
         end;
         KeyPress: begin
@@ -99,21 +100,18 @@ type
 
   procedure TMyWin.LoadImage(path: string);
   var
-    res, hotspotX, hotspotY: cint;
-//    im: TPixmap;
+    i: Integer;
   begin
     with image do begin
-//      res := XReadBitmapFile(dis, win, PChar(path), @Width, @Height, @Data, @hotspotX, @hotspotY);
-      if res <> 0 then begin
-        WriteLn('Bitmap Fehler: ', res);
+      Width := 256;
+      Height := 256;
+      Data := XCreatePixmap(dis, win, Width, Height, 24);
+      for i := 0 to 16 do begin
+//        XSetLineAttributes(dis, gc, i, LineSolid, CapButt, JoinBevel);
+        XSetForeground(dis, gc, random($FFFFFF));
+
+        XDrawRectangle(dis, Data, gc, i*10, i*10, 100, 100);
       end;
-
-
-      Data:=  XCreatePixmap(dis,win,256,256,24);
-      XSetLineAttributes(dis, gc, 3,        LineSolid, CapButt, JoinBevel);
-      XSetForeground(dis,gc,$888888);
-
-      XDrawRectangle(dis,Data,gc,10,10,100,100);
     end;
   end;
 
