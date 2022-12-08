@@ -105,6 +105,11 @@ begin
     end;
   end;
 
+  // Schliesst die Fenster
+  XDestroyWindow(dis, win3);
+  XDestroyWindow(dis, win2);
+  XDestroyWindow(dis, win1);
+
   // Schliesst Verbindung zum Server
   XCloseDisplay(dis);
 end.

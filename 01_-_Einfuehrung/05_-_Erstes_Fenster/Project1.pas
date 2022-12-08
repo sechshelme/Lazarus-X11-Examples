@@ -47,7 +47,6 @@ begin
   // Ereignisschleife
   while (True) do begin
     XNextEvent(dis, @Event);
-
     case Event._type of
       KeyPress: begin
         // Beendet das Programm bei [ESC]
@@ -56,8 +55,10 @@ begin
         end;
       end;
     end;
-
   end;
+
+  // Schliesst das Fenster
+  XDestroyWindow(dis, win);
 
   // Schliesst Verbindung zum Server
   XCloseDisplay(dis);

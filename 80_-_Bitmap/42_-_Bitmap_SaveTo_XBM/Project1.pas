@@ -58,6 +58,9 @@ type
 
   destructor TMyWin.Destroy;
   begin
+    // Schliesst das Fenster
+    XDestroyWindow(dis, win);
+
     // Schliesst Verbindung zum Server
     XFreePixmap(dis, Bitmap.Drawable);
     XCloseDisplay(dis);

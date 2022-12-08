@@ -1,6 +1,6 @@
 //image image.png
 (*
-Verschiedene Varianten um Rechtecke zu zeichnen:
+Verschiedene Varianten um Linien zu zeichnen:
 *)
 //lineal
 //code+
@@ -53,6 +53,9 @@ type
 
   destructor TMyWin.Destroy;
   begin
+    // Schliesst das Fenster
+    XDestroyWindow(dis, win);
+
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;
@@ -63,12 +66,13 @@ type
     maxSektoren = 8;
   var
     Event: TXEvent;
-    punkte: array[0..maxSektoren] of TXPoint;
+    Points: array[0..maxSektoren] of TXPoint;
     i: integer;
   begin
+    // Punkte in Kreisanordnung berechnen
     for i := 0 to maxSektoren - 1 do begin
-      punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 200;
-      punkte[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 170;
+      Points[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 200;
+      Points[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 110;
     end;
 
     // Ereignisschleife
@@ -79,14 +83,12 @@ type
         Expose: begin
           // Bildschirm löschen
           XClearWindow(dis, win);
-          // Ein Rechteck zeichnen
-          XDrawRectangle(dis, win, gc, 10, 50, 50, 50);
-          // Einen rechteckigen Bereich mit Farbe füllen
-          XFillRectangle(dis, win, gc, 110, 50, 50, 50);
 
-          // Ein Polygon
-          XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
+          // Eine einfache Linie
+          XDrawLine(dis, win, gc, 10, 60, 110, 160);
 
+          // Ein Linien-Array
+          XDrawLines(dis, win, gc, @Points, Length(Points) - 1, 0);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]

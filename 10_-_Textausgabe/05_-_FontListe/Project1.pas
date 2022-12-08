@@ -213,6 +213,9 @@ const
   destructor TMyWin.Destroy;
   begin
     XFreeFontNames(FontList.Data);
+    // Schliesst das Fenster
+    XDestroyWindow(dis, win);
+
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;

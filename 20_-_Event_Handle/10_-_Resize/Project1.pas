@@ -189,6 +189,9 @@ begin
 
   end;
 
+  // Schliesst das Fenster
+  XDestroyWindow(dis, win);
+
   // Schliesst Verbindung zum Server
   XCloseDisplay(dis);
 end.

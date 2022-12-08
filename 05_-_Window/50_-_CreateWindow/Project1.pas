@@ -24,7 +24,7 @@ type
   private
     dis: PDisplay;
     scr: cint;
-    win,win2: TWindow;
+    win: TWindow;
     gc: TGC;
     image: record
       Width, Height: cuint;
@@ -58,21 +58,16 @@ type
 
 
     win := XCreateWindow(dis, RootWindow(dis, scr), 10, 10, 512, 512, 10, DefaultDepth(dis, scr), CopyFromParent, DefaultVisual(dis, scr), CWEventMask or CWBorderPixel or CWBackPixel, @xswa);
+
     XMapWindow(dis, win);
-
     CrateImage;
-
-    xswa.background_pixmap:=image.Data;
-    xswa.border_pixmap:=image.Data;
-
-    win2 := XCreateWindow(dis, RootWindow(dis, scr), 10, 10, 512, 512, 10, 0, CopyFromParent, DefaultVisual(dis, scr), CWEventMask or CWBackPixmap or CWBorderPixmap, @xswa);
-    XMapWindow(dis, win2);
   end;
 
   destructor TMyWin.Destroy;
   begin
-    // Schliesst Verbindung zum Server
+    // Schliesst alles
     XFreePixmap(dis, image.Data);
+    XDestroyWindow(dis, win);
     XCloseDisplay(dis);
     inherited Destroy;
   end;
@@ -110,8 +105,8 @@ type
     i: integer;
   begin
     with image do begin
-      Width := 128;
-      Height := 128;
+      Width := 256;
+      Height := 256;
 
       // Die Pixmap erzeugen.
       Data := XCreatePixmap(dis, win, Width, Height, DefaultDepth(dis, scr));
@@ -124,7 +119,7 @@ type
       for i := 0 to 16 do begin
         XSetLineAttributes(dis, gc, i, LineSolid, CapButt, JoinBevel);
         XSetForeground(dis, gc, random($FFFFFF));
-        XDrawRectangle(dis, Data, gc, i * 5, i * 5, 100, 100);
+        XDrawRectangle(dis, Data, gc, i * 10, i * 10, 100, 100);
       end;
     end;
   end;

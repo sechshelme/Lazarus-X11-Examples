@@ -61,6 +61,9 @@ end;
 
 destructor TX11Window.Destroy;
 begin
+  // Schliesst das Fenster
+  XDestroyWindow(dis, win);
+
   // Schliesst Verbindung zum Server
   XCloseDisplay(dis);
   inherited Destroy;

@@ -64,8 +64,6 @@ const
       xim := XOpenIM(dis, nil, nil, nil);
     end;
 
-
-
     scr := DefaultScreen(dis);
     gc := DefaultGC(dis, scr);
 
@@ -85,6 +83,9 @@ const
 
   destructor TMyWin.Destroy;
   begin
+    // Schliesst das Fenster
+    XDestroyWindow(dis, win);
+
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;

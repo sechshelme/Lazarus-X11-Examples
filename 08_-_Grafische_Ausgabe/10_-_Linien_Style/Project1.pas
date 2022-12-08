@@ -1,8 +1,6 @@
 //image image.png
 (*
-In den meisten Fällen ist es nötig, das man etwas auf das Fenster zeichnet.
-Hier im Beispiel ist es ein einfaches Rechteck, welches mit <b>XFillRectangle</b> gezeichnet wird.
-XFillRectangle(Display, Windows, GC, PosX, PosY, Breite, Höhe)
+Verschiedene Varianten um Linien zu zeichnen:
 *)
 //lineal
 //code+
@@ -21,8 +19,8 @@ type
   private
     dis: PDisplay;
     scr: cint;
-    depth: cint;
-    rootwin, win: TWindow;
+    win: TWindow;
+    gc: TGC;
   public
     constructor Create;
     destructor Destroy; override;
@@ -40,6 +38,7 @@ type
       Halt(1);
     end;
     scr := DefaultScreen(dis);
+    gc := DefaultGC(dis, scr);
 
     // Erstellt das Fenster
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
@@ -54,23 +53,44 @@ type
 
   destructor TMyWin.Destroy;
   begin
+    // Schliesst das Fenster
+    XDestroyWindow(dis, win);
+
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;
   end;
 
   procedure TMyWin.Run;
+  const
+    maxSektoren = 8;
   var
     Event: TXEvent;
+    Points: array[0..maxSektoren] of TXPoint;
+    i: integer;
   begin
+    // Punkte in Kreisanordnung berechnen
+    for i := 0 to maxSektoren - 1 do begin
+      Points[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 200;
+      Points[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 110;
+    end;
+
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
 
       case Event._type of
         Expose: begin
-          // Das Rechteck wird gezeichnet
-          XFillRectangle(dis, win, DefaultGC(dis, scr), 20, 20, 200, 200);
+          // Bildschirm löschen
+          XClearWindow(dis, win);
+
+          // Eine einfache Linie
+          XSetLineAttributes(dis, gc, 10, LineSolid, CapButt, JoinBevel);
+          XDrawLine(dis, win, gc, 10, 60, 110, 160);
+
+          // Ein Linien-Array
+          XSetLineAttributes(dis, gc, 3, LineDoubleDash, CapNotLast, JoinBevel);
+          XDrawLines(dis, win, gc, @Points, Length(Points) - 1, 0);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
@@ -79,7 +99,6 @@ type
           end;
         end;
       end;
-
     end;
   end;
 

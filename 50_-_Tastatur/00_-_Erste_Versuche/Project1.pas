@@ -21,7 +21,7 @@ type
     dis: PDisplay;
     scr: cint;
     depth: cint;
-    rootwin, win, win2: TWindow;
+    rootwin, win1, win2: TWindow;
   public
     constructor Create;
     destructor Destroy; override;
@@ -44,21 +44,25 @@ const
     scr := DefaultScreen(dis);
 
     // Erstellt das Fenster
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    win1 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
     win2 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
     // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
-    XSelectInput(dis, win, EventMask);
+    XSelectInput(dis, win1, EventMask);
     XSelectInput(dis, win2, EventMask);
 
     // Fenster anzeigen
-    XMapWindow(dis, win);
+    XMapWindow(dis, win1);
     XMapWindow(dis, win2);
   end;
 
   destructor TMyWin.Destroy;
   begin
+    // Schliesst das Fenster
+    XDestroyWindow(dis, win1);
+    XDestroyWindow(dis, win1);
+
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;
@@ -87,7 +91,7 @@ const
           //        WriteLn();
         end;
         KeyPress: begin
-          Xutf8TextListToTextProperty();
+//          Xutf8TextListToTextProperty();
           WriteLn('keycode:' ,XKeycodeToKeysym(dis, Event.xkey.keycode, 0));
           WriteLn('keycode:' ,XKeycodeToKeysym(dis, Event.xkey.keycode, Event.xkey.state));
           WriteLn('Press: ', Event.xkey.keycode);
@@ -107,8 +111,8 @@ const
           //    WriteLn('space');
           //    e._type := DestroyNotify;
           //    e.xbutton.window := Event.xbutton.window;
-          //    e.xbutton.window := win;
-          //    //              XSendEvent(dis, win, False, myEvent, @e);
+          //    e.xbutton.window := win1;
+          //    //              XSendEvent(dis, win1, False, myEvent, @e);
           //    status := XSendEvent(dis, Event.xbutton.window, True, NoEventMask, @e);
           //    if status = 0 then begin
           //      WriteLn('fehler');

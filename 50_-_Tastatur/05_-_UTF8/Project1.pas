@@ -28,7 +28,7 @@ type
     dis: PDisplay;
     scr: cint;
     gc: TGC;
-    win: TWindow;
+    subwin, win: TWindow;
 
     xic: PXIC;
   public
@@ -43,7 +43,6 @@ const
   constructor TMyWin.Create;
   var
     xim: PXIM;
-    subwin: TWindow;
   begin
     inherited Create;
     // Erstellt die Verbindung zum Server
@@ -56,7 +55,7 @@ const
     if setlocale(0 {LC_ALL}, '') = 0 then begin
       WriteLn('setlocale Fehler');
     end;
-//    XSetLocaleModifiers('');
+    //    XSetLocaleModifiers('');
 
     xim := XOpenIM(dis, nil, nil, nil);
     if xim = nil then begin
@@ -69,7 +68,7 @@ const
     gc := DefaultGC(dis, scr);
 
     win := XCreateSimpleWindow(dis, DefaultRootWindow(dis), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-//    subwin := XCreateSimpleWindow(dis, DefaultRootWindow(dis), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    //    subwin := XCreateSimpleWindow(dis, DefaultRootWindow(dis), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
     subwin := XCreateSimpleWindow(dis, win, 50, 50, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
     XSelectInput(dis, win, EventMask);
     XMapWindow(dis, win);
@@ -78,9 +77,9 @@ const
     XSync(dis, False);
 
 
-//    xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow, win, XNFocusWindow, win, nil]);
-xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow,win, nil]);
-//xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow,subwin, nil]);
+    //    xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow, win, XNFocusWindow, win, nil]);
+    xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow, win, nil]);
+    //xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow,subwin, nil]);
     if xic = nil then begin
       WriteLn('Could not open IC');
     end;
@@ -90,6 +89,10 @@ xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNCl
 
   destructor TMyWin.Destroy;
   begin
+    // Schliesst das Fenster
+    XDestroyWindow(dis, subwin);
+    XDestroyWindow(dis, win);
+
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;
@@ -105,7 +108,7 @@ xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNCl
     Count: integer;
     keysym: TKeySym;
     buf: array[0..31] of char;
-    s:String;
+    s: string;
 
   begin
 
@@ -131,8 +134,8 @@ xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNCl
             end;
             WriteLn('Count Press: ', Count);
             Write(buf, ' ');
-            s:=buf;
-            Write(s,'  ');
+            s := buf;
+            Write(s, '  ');
             WriteLn(Length(s));
             if Event.xkey.state and 1 = 1 then begin
               Write('Shift ');

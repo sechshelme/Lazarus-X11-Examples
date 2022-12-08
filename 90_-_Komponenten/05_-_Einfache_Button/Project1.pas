@@ -121,6 +121,10 @@ type
     for i := 0 to Length(Button) - 1 do begin
       Button[i].Free;
     end;
+
+    // Schliesst das Fenster
+    XDestroyWindow(dis, win);
+
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;

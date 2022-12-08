@@ -124,7 +124,12 @@ begin
 
   end;
 
-  // Schliesst Verbindung zum Server
+  // Schliesst das Fenster
+    XDestroyWindow(dis, Subwin2);
+    XDestroyWindow(dis, Subwin1);
+    XDestroyWindow(dis, win);
+
+    // Schliesst Verbindung zum Server
   XCloseDisplay(dis);
 end.
 //code-

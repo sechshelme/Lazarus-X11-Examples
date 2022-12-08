@@ -24,17 +24,17 @@ type
   private
     dis: PDisplay;
     scr: cint;
-    win: TWindow;
+    RootWin, win: TWindow;
     gc: TGC;
     image: record
       Width, Height: cuint;
-      Data: TPixmap;
+      Drawable: TPixmap;
       end;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Run;
-    procedure CrateImage;
+    procedure CreateImage;
   end;
 
 
@@ -52,21 +52,22 @@ type
     end;
     scr := DefaultScreen(dis);
     gc := DefaultGC(dis, scr);
+    RootWin := RootWindow(dis, scr);
 
-    xswa.background_pixel:=$FF;
-    xswa.event_mask:=KeyPressMask or ExposureMask;
+    CreateImage;
+    xswa.event_mask := KeyPressMask or ExposureMask;
+    xswa.background_pixmap := image.Drawable;
+    xswa.border_pixmap := image.Drawable;
 
-
-    win := XCreateWindow(dis, RootWindow(dis, scr), 10, 10, 512, 512, 10, DefaultDepth(dis, scr), CopyFromParent, DefaultVisual(dis, scr), CWEventMask or CWBorderPixel or CWBackPixel, @xswa);
-
+    win := XCreateWindow(dis, RootWin, 10, 10, 512, 512, 10, 0, CopyFromParent, DefaultVisual(dis, scr), CWEventMask or CWBackPixmap or CWBorderPixmap, @xswa);
     XMapWindow(dis, win);
-    CrateImage;
   end;
 
   destructor TMyWin.Destroy;
   begin
-    // Schliesst Verbindung zum Server
-    XFreePixmap(dis, image.Data);
+    // Schliesst alles
+    XFreePixmap(dis, image.Drawable);
+    XDestroyWindow(dis, win);
     XCloseDisplay(dis);
     inherited Destroy;
   end;
@@ -83,10 +84,10 @@ type
           XClearWindow(dis, win);
           with image do begin
             // Monochrom
-            XCopyPlane(dis, Data, win, gc, 0, 0, Width, Height, 0, 0, 1);
+            //            XCopyPlane(dis, Drawable, win, gc, 0, 0, Width, Height, 0, 0, 1);
 
             // Pixmap in Window kopieren
-            XCopyArea(dis, Data, win, gc, 0, 0, Width, Height, 50, 50);
+            //            XCopyArea(dis, Drawable, win, gc, 0, 0, Width, Height, 50, 50);
           end;
         end;
         KeyPress: begin
@@ -99,26 +100,35 @@ type
     end;
   end;
 
-    procedure TMyWin.CrateImage;
+  procedure TMyWin.CreateImage;
   var
     i: integer;
+    res, hotspotX, hotspotY: cint;
   begin
     with image do begin
-      Width := 256;
-      Height := 256;
+      Width := 128;
+      Height := 128;
 
-      // Die Pixmap erzeugen.
-      Data := XCreatePixmap(dis, win, Width, Height, DefaultDepth(dis, scr));
+      //with image do begin
+      //  res := XReadBitmapFile(dis, win, 'logo.xbm', @Width, @Height, @Drawable, @hotspotX, @hotspotY);
+      //  if res <> 0 then begin
+      //    WriteLn('Bitmap Fehler: ', res);
+      //  end;
+      //end;
+
+
+      //       Die Pixmap erzeugen.
+      Drawable := XCreatePixmap(dis, RootWin, Width, Height, DefaultDepth(dis, scr));
 
       // Pixmap mit einer Farbe ausfüllen
       XSetForeground(dis, gc, $88FFFF);
-      XFillRectangle(dis, Data, gc, 0, 0, Width, Height);
+      XFillRectangle(dis, Drawable, gc, 0, 0, Width, Height);
 
       // Ein Muster reinzeichnen
-      for i := 0 to 16 do begin
+      for i := 0 to 12 do begin
         XSetLineAttributes(dis, gc, i, LineSolid, CapButt, JoinBevel);
         XSetForeground(dis, gc, random($FFFFFF));
-        XDrawRectangle(dis, Data, gc, i * 10, i * 10, 100, 100);
+        XDrawRectangle(dis, Drawable, gc, i * 5, i * 5, 50, 50);
       end;
     end;
   end;

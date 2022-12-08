@@ -20,8 +20,7 @@ type
   private
     dis: PDisplay;
     scr: cint;
-    depth: cint;
-    rootwin, win, win2: TWindow;
+    win1, win2: TWindow;
   public
     constructor Create;
     destructor Destroy; override;
@@ -41,21 +40,25 @@ type
     scr := DefaultScreen(dis);
 
     // Erstellt das Fenster
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    win1 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
     win2 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
     // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
-    XSelectInput(dis, win, KeyPressMask or KeyReleaseMask or ExposureMask);
+    XSelectInput(dis, win1, KeyPressMask or KeyReleaseMask or ExposureMask);
     XSelectInput(dis, win2, KeyPressMask or KeyReleaseMask or ExposureMask);
 
     // Fenster anzeigen
-    XMapWindow(dis, win);
+    XMapWindow(dis, win1);
     XMapWindow(dis, win2);
   end;
 
   destructor TMyWin.Destroy;
   begin
+    // Schliesst das Fenster
+    XDestroyWindow(dis, win2);
+    XDestroyWindow(dis, win1);
+
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;
@@ -87,10 +90,10 @@ type
             XK_space: begin
               WriteLn('space');
               e._type := Expose;
-              e.xkey.window := win;
+              e.xkey.window := win1;
 
-              //              XSendEvent(dis, win, False, myEvent, @e);
-              status := XSendEvent(dis, win, True, Expose, @e);
+              //              XSendEvent(dis, win1, False, myEvent, @e);
+              status := XSendEvent(dis, win1, True, Expose, @e);
               if status = 0 then begin
                 WriteLn('fehler');
               end;

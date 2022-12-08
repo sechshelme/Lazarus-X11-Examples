@@ -1,6 +1,8 @@
 //image image.png
 (*
-Verschiedene Style um Rechtecke zu zeichnen.
+In den meisten Fällen ist es nötig, das man etwas auf das Fenster zeichnet.
+Hier im Beispiel ist es ein einfaches Rechteck, welches mit <b>XFillRectangle</b> gezeichnet wird.
+XFillRectangle(Display, Windows, GC, PosX, PosY, Breite, Höhe)
 *)
 //lineal
 //code+
@@ -20,7 +22,6 @@ type
     dis: PDisplay;
     scr: cint;
     win: TWindow;
-    gc: TGC;
   public
     constructor Create;
     destructor Destroy; override;
@@ -38,7 +39,6 @@ type
       Halt(1);
     end;
     scr := DefaultScreen(dis);
-    gc := DefaultGC(dis, scr);
 
     // Erstellt das Fenster
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
@@ -53,46 +53,26 @@ type
 
   destructor TMyWin.Destroy;
   begin
+    // Schliesst das Fenster
+    XDestroyWindow(dis, win);
+
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;
   end;
 
   procedure TMyWin.Run;
-  const
-    maxSektoren = 8;
   var
     Event: TXEvent;
-    punkte: array[0..maxSektoren] of TXPoint;
-    i: integer;
   begin
-    for i := 0 to maxSektoren - 1 do begin
-      punkte[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 200;
-      punkte[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 170;
-    end;
-
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
 
       case Event._type of
         Expose: begin
-          // Bildschirm löschen
-          XClearWindow(dis, win);
-
-          // Gibt den Zeichnungsstyl an
-          XSetLineAttributes(dis, gc, 3, LineDoubleDash, CapNotLast, JoinBevel);
-          XSetFillStyle(dis, gc, FillStippled);
-
-          // Ein Rechteck zeichnen
-          XDrawRectangle(dis, win, gc, 10, 50, 50, 50);
-          // Einen rechteckigen Bereich mit Farbe füllen
-
-          XFillRectangle(dis, win, gc, 110, 50, 50, 50);
-
-          // Ein Polygon
-          XFillPolygon(dis, win, gc, @punkte, Length(punkte) - 1, 0, CoordModeOrigin);
-
+          // Das Rechteck wird gezeichnet
+          XFillRectangle(dis, win, DefaultGC(dis, scr), 20, 20, 200, 200);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]

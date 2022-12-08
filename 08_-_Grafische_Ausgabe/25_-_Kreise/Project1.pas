@@ -1,7 +1,6 @@
 //image image.png
 (*
-Einfache rechteckige Regionen
-Dabei ist es möglich durch mehrmaliges generieren von Rechteckregionen, das sie sich addieren.
+Kreise und Elipsen zeichnen
 *)
 //lineal
 //code+
@@ -50,11 +49,13 @@ type
 
     // Fenster anzeigen
     XMapWindow(dis, win);
-    XSetLineAttributes(dis, gc, 5, LineSolid, CapNotLast, JoinBevel);
   end;
 
   destructor TMyWin.Destroy;
   begin
+    // Schliesst das Fenster
+    XDestroyWindow(dis, win);
+
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;
@@ -63,16 +64,6 @@ type
   procedure TMyWin.Run;
   var
     Event: TXEvent;
-    i: integer;
-
-    function Rect(Left, Top, Width, Height: cshort): TXRectangle;
-    begin
-      Result.x := Left;
-      Result.y := Top;
-      Result.Width := Width;
-      Result.Height := Height;
-    end;
-
   begin
     // Ereignisschleife
     while (True) do begin
@@ -82,21 +73,18 @@ type
         Expose: begin
           XClearWindow(dis, win);
 
-          // Kreise zeichnen
-          for i := 0 to 20 do begin
-            XSetForeground(dis, gc, Random($FFFFFF));
-            XDrawArc(dis, win, gc, random(500) - 200, random(500) - 200, 150, 150, 0, 360 * 64);
-
-            XSetForeground(dis, gc, $000000);
-            XDrawRectangle(dis, win, gc, 10, 10, 100, 100);
-            XDrawRectangle(dis, win, gc, 150, 10, 100, 100);
-          end;
-
-          // Bereich kopieren
-          XCopyArea(dis, win, win, gc, 10, 10, 100, 100, 150, 10);
-
-          // Nur Monocrom
-          XCopyPlane(dis, win, win, gc, 10, 10, 100, 100, 10, 150, 1);
+          // Einen Kreis zeichnen
+          XDrawArc(dis, win, gc, 10, 30, 50, 50, 0, 360 * 64);
+          // Einen Kreisbereich füllen
+          XFillArc(dis, win, gc, 110, 30, 50, 50, 0, 360 * 64);
+          // Eine Ellipse zeichnen
+          XDrawArc(dis, win, gc, 60, 90, 60, 40, 0, 360 * 64);
+          // Einen Ellipsenbereich füllen
+          XFillArc(dis, win, gc, 160, 90, 60, 40, 0, 360 * 64);
+          // Einen Halbkreis zeichnen
+          XDrawArc(dis, win, gc, 110, 150, 60, 40, 90 * 64, 180 * 64);
+          // Einen Halbkreis füllen
+          XFillArc(dis, win, gc, 210, 150, 60, 40, 90 * 64, 180 * 64);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]

@@ -128,9 +128,6 @@ const
     XSetFont(dis, gc, font);
     XDrawString(dis, win, gc, 10, 10, PChar(Hello), Length(Caption));
 
-
-
-
     //    XDrawString(dis, win, gc, 10, 30, PChar(Caption), Length(Caption));
     //     XmbDrawString(dis,win, @fontset,gc,20,70,PChar(Caption), Length(Caption));
     DrawString(Caption, 10, 30);
@@ -185,6 +182,9 @@ const
 
   destructor TMyWin.Destroy;
   begin
+    // Schliesst das Fenster
+    XDestroyWindow(dis, win);
+
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;

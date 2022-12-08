@@ -1,6 +1,7 @@
 //image image.png
 (*
-Verschiedene Varianten um Linien zu zeichnen:
+Einfache rechteckige Regionen
+Dabei ist es möglich durch mehrmaliges generieren von Rechteckregionen, das sie sich addieren.
 *)
 //lineal
 //code+
@@ -49,43 +50,56 @@ type
 
     // Fenster anzeigen
     XMapWindow(dis, win);
+    XSetLineAttributes(dis, gc, 5, LineSolid, CapNotLast, JoinBevel);
   end;
 
   destructor TMyWin.Destroy;
   begin
+    // Schliesst das Fenster
+    XDestroyWindow(dis, win);
+
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;
   end;
 
   procedure TMyWin.Run;
-  const
-    maxSektoren = 8;
   var
     Event: TXEvent;
-    Points: array[0..maxSektoren] of TXPoint;
     i: integer;
-  begin
-    // Punkte in Kreisanordnung berechnen
-    for i := 0 to maxSektoren - 1 do begin
-      Points[i].x := round(Sin(Pi * 2 / (maxSektoren - 1) * i) * 50) + 200;
-      Points[i].y := round(Cos(Pi * 2 / (maxSektoren - 1) * i) * 50) + 110;
+
+    function Rect(Left, Top, Width, Height: cshort): TXRectangle;
+    begin
+      Result.x := Left;
+      Result.y := Top;
+      Result.Width := Width;
+      Result.Height := Height;
     end;
 
+  begin
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
 
       case Event._type of
         Expose: begin
-          // Bildschirm löschen
           XClearWindow(dis, win);
 
-          // Eine einfache Linie
-          XDrawLine(dis, win, gc, 10, 60, 110, 160);
+          // Kreise zeichnen
+          for i := 0 to 20 do begin
+            XSetForeground(dis, gc, Random($FFFFFF));
+            XDrawArc(dis, win, gc, random(500) - 200, random(500) - 200, 150, 150, 0, 360 * 64);
 
-          // Ein Linien-Array
-          XDrawLines(dis, win, gc, @Points, Length(Points) - 1, 0);
+            XSetForeground(dis, gc, $000000);
+            XDrawRectangle(dis, win, gc, 10, 10, 100, 100);
+            XDrawRectangle(dis, win, gc, 150, 10, 100, 100);
+          end;
+
+          // Bereich kopieren
+          XCopyArea(dis, win, win, gc, 10, 10, 100, 100, 150, 10);
+
+          // Nur Monocrom
+          XCopyPlane(dis, win, win, gc, 10, 10, 100, 100, 10, 150, 1);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]

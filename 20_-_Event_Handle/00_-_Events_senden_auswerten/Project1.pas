@@ -20,8 +20,7 @@ type
   private
     dis: PDisplay;
     scr: cint;
-    depth: cint;
-    rootwin, win, win2: TWindow;
+    win1, win2: TWindow;
     widht, Height: cuint;
   public
     constructor Create;
@@ -45,23 +44,27 @@ type
     Height := 200;
 
     // Erstellt das Fenster
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, widht, Height, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    win1 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, widht, Height, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
     win2 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, widht, Height, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
     // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
-    XSelectInput(dis, win, KeyPressMask);
+    XSelectInput(dis, win1, KeyPressMask);
     XSelectInput(dis, win2, KeyPressMask);
-    //XSelectInput(dis, win, $FFFF);
+    //XSelectInput(dis, win1, $FFFF);
     //XSelectInput(dis, win2, $FFFF);
 
     // Fenster anzeigen
-    XMapWindow(dis, win);
+    XMapWindow(dis, win1);
     XMapWindow(dis, win2);
   end;
 
   destructor TMyWin.Destroy;
   begin
+    // Schliesst das Fenster
+    XDestroyWindow(dis, win2);
+    XDestroyWindow(dis, win1);
+
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;
@@ -94,7 +97,7 @@ type
               e:=Event;
               e._type := KeyPress;
               e.xkey.keycode:= XK_Escape;
-              status := XSendEvent(dis, win, False, KeyPress, @e);
+              status := XSendEvent(dis, win1, False, KeyPress, @e);
               if status = 0 then begin
                 WriteLn('fehler');
               end;
