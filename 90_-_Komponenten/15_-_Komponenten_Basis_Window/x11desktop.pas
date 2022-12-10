@@ -34,9 +34,9 @@ begin
   //hDisplay = XOpenDisplay("192.168.1.10:0.0");
 
 //  dis := XOpenDisplay('localhost:10.0');
-//  dis:= XOpenDisplay(':1');
+  dis:= XOpenDisplay(':15');
   // Erstellt die Verbindung zum Server
-  dis := XOpenDisplay(nil);
+//  dis := XOpenDisplay(nil);
   if dis = nil then begin
     WriteLn('Kann nicht das Display öffnen');
     Halt(1);

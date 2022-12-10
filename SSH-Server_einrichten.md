@@ -50,4 +50,24 @@ hostname -I
 
 # Windows vorbereiten
 - [MobaXterm](https://mobaxterm.mobatek.net/demo.html)
+# Linux
+```bash
+ssh 192.168.0.200 -XC
+```
+
+# Diverse X-Server-Clients
+## Xephyr
+Installation:
+```bash
+sudo apt-get install xserver-xephyr 
+```
+Ausführen:
+Beispiel auf Display ":13"
+```bash
+Xephyr :13
+```
+
+- [Infos](https://wiki.ubuntuusers.de/Xephyr/)
+
+
 

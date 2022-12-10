@@ -97,7 +97,7 @@ type
     WriteLn('Dsiplay Height: ', dh: 6);
 
     WriteLn('Cells :',XDisplayCells(dis,scr));
-    WriteLn('DisplayString :',XDisplayString(dis));
+    WriteLn('DisplayString :  ',XDisplayString(dis));
     WriteLn('Windows Nr: ',win);
 
     WriteLn();
@@ -117,8 +117,9 @@ type
     inherited Create;
 
     // Erstellt die Verbindung zum Server
-    dis := XOpenDisplay(nil);
-//    dis := XOpenDisplay('localhost:10.0');
+//    dis := XOpenDisplay(nil);
+//dis := XOpenDisplay('localhost:10.0');
+dis := XOpenDisplay(':13.0');
     if dis = nil then begin
       WriteLn('Kann nicht das Display öffnen');
       Halt(1);
