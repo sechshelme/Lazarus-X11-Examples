@@ -57,8 +57,10 @@ type
 
   procedure TMyWin.ScreenInfo;
   var
-    ibo, bitUnit, bbo, bitPad, dh, dw: cint;
+    ibo, bitUnit, bbo, bitPad, dh, dw, Count: cint;
     Value: PChar;
+    extension: PPChar;
+    i: integer;
   begin
     WriteLn('Screen ', scr, ' info:');
     ibo := XImageByteOrder(dis);
@@ -96,11 +98,18 @@ type
     dh := XDisplayHeight(dis, scr);
     WriteLn('Dsiplay Height: ', dh: 6);
 
-    WriteLn('Cells :',XDisplayCells(dis,scr));
-    WriteLn('DisplayString :  ',XDisplayString(dis));
-    WriteLn('Windows Nr: ',win);
-
+    WriteLn('Cells :', XDisplayCells(dis, scr));
+    WriteLn('DisplayString :  ', XDisplayString(dis));
+    WriteLn('Windows Nr: ', win);
     WriteLn();
+    WriteLn('DefaultDepth: ', DefaultDepth(dis, scr));
+    WriteLn('ScreenCount: ', ScreenCount(dis));
+    WriteLn('ConnectionNumber: ', ConnectionNumber(dis));
+    WriteLn('QLength: ', QLength(dis));
+    WriteLn('DisplayPlanes: ', DisplayPlanes(dis, scr));
+    WriteLn('ServerVendor: ', ServerVendor(dis));
+    WriteLn('VendorRelease: ', VendorRelease(dis));
+    WriteLn('Version: ', XProtocolVersion(dis), '.', XProtocolRevision(dis));
 
     Value := FpGetEnv('DISPLAY');
     if Value = nil then begin
@@ -108,8 +117,14 @@ type
     end else begin
       WriteLn('Current DISPLAY is: ', Value);
     end;
-    WriteLn('Version: ', XProtocolVersion(dis),'.',XProtocolRevision(dis));
-    WriteLn(XScreenCount(dis));
+
+    extension := XListExtensions(dis, @Count);
+    Write('Extension: ');
+    for i := 0 to Count - 1 do begin
+      Write(' ', extension[i]);
+    end;
+    WriteLn();
+    XFreeExtensionList(extension);
   end;
 
   constructor TMyWin.Create;
@@ -117,9 +132,9 @@ type
     inherited Create;
 
     // Erstellt die Verbindung zum Server
-//    dis := XOpenDisplay(nil);
-//dis := XOpenDisplay('localhost:10.0');
-dis := XOpenDisplay(':13.0');
+    //    dis := XOpenDisplay(nil);
+    //dis := XOpenDisplay('localhost:10.11.0');
+    dis := XOpenDisplay(':0.0');
     if dis = nil then begin
       WriteLn('Kann nicht das Display öffnen');
       Halt(1);
