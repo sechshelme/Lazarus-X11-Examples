@@ -10,6 +10,10 @@ Quelle:
 ```bash
 sudo apt install openssh-server
 ```
+Nur Client:
+```bash
+sudo apt install openssh-client
+```
 
 ## Status überprüfen und Ubuntu-SSH-Server ggf. aktivieren
 
