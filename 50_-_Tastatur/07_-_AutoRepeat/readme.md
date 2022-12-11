@@ -1,10 +1,14 @@
-//image image.png
-(*
+# 01 - Einfuehrung
+## 10 - Besser mit Klassen
+
+![image.png](image.png)
+
 Besser man macht es objektorientiert mit Klassen.
 Dies macht es übersichtlicher und ausbaufähiger.
-*)
-//lineal
-//code+
+
+---
+
+```pascal
 program Project1;
 
 uses
@@ -20,6 +24,7 @@ type
   private
     dis: PDisplay;
     scr: cint;
+    depth: cint;
     rootwin, win: TWindow;
   public
     constructor Create;
@@ -38,16 +43,15 @@ type
       Halt(1);
     end;
     scr := DefaultScreen(dis);
-    rootwin := RootWindow(dis, scr);
 
     // Erstellt das Fenster
-    win := XCreateSimpleWindow(dis, rootwin, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Fenster Titel festlegen
     XStoreName(dis, win, 'Fenster mit Classen');
 
     // Wählt die gewünschten Ereignisse aus
-    // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
+    // Es wird nur das Tastendrückereigniss **KeyPressMask** gebraucht.
     XSelectInput(dis, win, KeyPressMask);
 
     // Fenster anzeigen
@@ -56,9 +60,6 @@ type
 
   destructor TMyWin.Destroy;
   begin
-    // Schliesst das Fenster
-    XDestroyWindow(dis, win);
-
     // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;
@@ -97,4 +98,6 @@ begin
   // Alles aufräumen und beenden
   MyWindows.Free;
 end.
-//code-
+```
+
+

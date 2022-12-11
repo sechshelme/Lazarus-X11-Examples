@@ -61,6 +61,7 @@ var
   procedure TMyDesktop.ButtonClick(Sender: TObject);
   begin
     WriteLn(TX11Button(Sender).Caption);
+    XBell(dis, 100);
   end;
 
   procedure TMyDesktop.CloseButtonClick(Sender: TObject);

@@ -1,7 +1,7 @@
 //image image.png
 (*
-Besser man macht es objektorientiert mit Klassen.
-Dies macht es übersichtlicher und ausbaufähiger.
+Man kann die Tastatur-Wiederholung ein und ausschalten.
+Dabei ist zu beachten, das dieser Zustand Global über das ganze System läuft, auch nach dem man das Programm beendet hat !
 *)
 //lineal
 //code+
@@ -20,7 +20,7 @@ type
   private
     dis: PDisplay;
     scr: cint;
-    rootwin, win: TWindow;
+    win: TWindow;
   public
     constructor Create;
     destructor Destroy; override;
@@ -38,10 +38,9 @@ type
       Halt(1);
     end;
     scr := DefaultScreen(dis);
-    rootwin := RootWindow(dis, scr);
 
     // Erstellt das Fenster
-    win := XCreateSimpleWindow(dis, rootwin, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Fenster Titel festlegen
     XStoreName(dis, win, 'Fenster mit Classen');
@@ -52,10 +51,16 @@ type
 
     // Fenster anzeigen
     XMapWindow(dis, win);
+
+    // Tasturwiederholung aus
+    XAutoRepeatOff(dis);
   end;
 
   destructor TMyWin.Destroy;
   begin
+    // Tasturwiederholung an
+    XAutoRepeatOn(dis);
+
     // Schliesst das Fenster
     XDestroyWindow(dis, win);
 
@@ -74,6 +79,8 @@ type
 
       case Event._type of
         KeyPress: begin
+          WriteLn(Event.xkey.keycode);
+
           // Beendet das Programm bei [ESC]
           if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
             Break;
@@ -96,5 +103,6 @@ begin
 
   // Alles aufräumen und beenden
   MyWindows.Free;
+
 end.
 //code-
