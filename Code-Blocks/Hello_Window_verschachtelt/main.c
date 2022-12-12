@@ -1,6 +1,7 @@
 #include <X11/keysym.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <X11/X.h>
 #include <stdint.h>
 
 Display *display;
