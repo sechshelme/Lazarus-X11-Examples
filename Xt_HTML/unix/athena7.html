@@ -1,0 +1,236 @@
+<html>
+
+<head>
+<title>Graphics Contexts</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#800000" vlink="#008080" alink="#FF0000">
+
+<h1><font color="#FF0000">6. Graphics Contexts </font></h1>
+
+<ul>
+  <li>a graphics context or GC contains the attributes that are used in drawing commands </li>
+  <li>these attributes include background and foreground colours, function, line style, fill
+    pattern, line width, text font, etc </li>
+  <li>the graphics context itself is stored in the server, the client program only has its ID,
+    the client program can change the value of a GC by calling procedures in the X library </li>
+  <li>there are two ways of doing this, the most general technique allows the programmer to
+    change most of the values in the GC is a single call, this approach is based on a data
+    structure called XGCValues, this data structure mirrors the actual GC data structure </li>
+  <li>there is a field in the XGCValues data structure for most of the fields in the graphics
+    context, the programmer can change the fields in this data structure and then have the
+    result sent to the X server, a mask is used to specify the fields that are to be changed </li>
+  <li>the other approach is based on a set of convenience functions that allow the programmer
+    to change each of the GC fields individually </li>
+  <li>this is easier when there are only a few fields that need to be changed </li>
+  <li>the declaration of the XGCValues data structure is: <pre>
+  typedef struct {
+       int function;              /* logical operation */
+       unsigned long plane_mask;  /* plane mask */
+       unsigned long foreground;  /* foreground pixel */
+       unsigned long background;  /* background pixel */
+       int line_width;            /* line width */
+       int line_style;            /* LineSolid, LineOnOffDash, LineDoubleDash */
+       int cap_style;             /* CapNotLast, CapButt, CapRound, CapProjecting */
+       int join_style;            /* JoinMiter, JoinRound, JoinBevel */
+       int fill_style;            /* FillSolid, FillTiled, FillStippled, FillOpaeueStippled */
+       int fill_rule;             /* EvenOddRule, WindingRule */
+       int arc_mode;              /* ArcChord, ArcPieSlice */
+       Pixmap tile;               /* tile pixmap for tiling operations */
+       Pixmap stipple;            /* stipple 1 plane pixmap for stipping */
+       int ts_x_origin;           /* offset for tile or stipple operations */
+       int ts_y_origin;
+       Font font;                 /* default text font for text operations */
+       int subwindow_mode;        /* ClipByChildren, IncludeInferiors */
+       Bool graphics_exposures;   /* boolean, should exposures be generated */
+       int clip_x_origin;         /* origin for clipping */
+       int clip_y_origin;
+       Pixmap clip_mask;          /* bitmap clipping; other calls for rects */
+       int dash_offset;           /* patterned/dashed line information */
+       char dashes;
+  } XGCValues;
+</pre>
+  </li>
+  <li>the mask values that can be used to specify the XGCValues field to use are: <pre>
+  #define GCFunction              (1L &lt;&lt; 0)
+  #define GCPlaneMask             (1L &lt;&lt; 1)
+  #define GCForeground            (1L &lt;&lt; 2)
+  #define GCBackground            (1L &lt;&lt; 3)
+  #define GCLineWidth             (1L &lt;&lt; 4)
+  #define GCLineStyle             (1L &lt;&lt; 5)
+  #define GCCapStyle              (1L &lt;&lt; 6)
+  #define GCJoinStyle             (1L &lt;&lt; 7)
+  #define GCFillStyle             (1L &lt;&lt; 8)
+  #define GCFillRule              (1L &lt;&lt; 9)
+  #define GCTile                  (1L &lt;&lt; 10)
+  #define GCStipple               (1L &lt;&lt; 11)
+  #define GCTileStipXOrigin       (1L &lt;&lt; 12)
+  #define GCTileStipYOrigin       (1L &lt;&lt; 13)
+  #define GCFont                  (1L &lt;&lt; 14)
+  #define GCSubwindowMode         (1L &lt;&lt; 15)
+  #define GCGraphicsExposures     (1L &lt;&lt; 16)
+  #define GCClipXOrigin           (1L &lt;&lt; 17)
+  #define GCClipYOrigin           (1L &lt;&lt; 18)
+  #define GCClipMask              (1L &lt;&lt; 19)
+  #define GCDashOffset            (1L &lt;&lt; 20)
+  #define GCDashList              (1L &lt;&lt; 21)
+  #define GCArcMode               (1L &lt;&lt; 22)
+</pre>
+  </li>
+  <li>these values are or'ed together to specify the fields in the GC that will be changed </li>
+  <li>the function field specifies how the pixels are drawn in the drawable, this is like the
+    function that is used in the bitblt operation </li>
+  <li>for example if GXand is specified, then when a line is drawn the value of the pixels
+    covered by the line will be the and of the current value of the pixel and the foreground
+    colour in the GC </li>
+  <li>all the functions are specified in terms of the value of the source (the foreground
+    colour in the GC) and the destination (the pixel value in the drawable) </li>
+  <li>the possible values for the function field are: <pre>
+  #define GXclear          0x0       /* 0 */
+  #define GXand            0x1       /* src AND dst */
+  #define GXandReverse     0x2       /* src AND NOT dst */
+  #define GXcopy           0x3       /* src */
+  #define GXandInverted    0x4       /* NOT src AND dst */
+  #define GXnoop           0x5       /* dst */
+  #define GXxor            0x6       /* src XOR dst */
+  #define GXor             0x7       /* src OR dst */
+  #define GXnor            0x8       /* NOT src AND NOT dst */
+  #define GXequiv          0x9       /* NOT src XOR dst */
+  #define GXinvert         0xa       /* NOT dst */
+  #define GXorReverse      0xb       /* src OR NOT dst */
+  #define GXcopyInverted   0xc       /* NOT src */
+  #define GXorInverted     0xd       /* NOT src OR dst */
+  #define GXnand           0xe       /* NOT src OR NOT dst */
+  #define GXset            0xf       /* 1 */
+</pre>
+  </li>
+  <li>the default values for the fields in a graphics context are: <pre>
+  function            GXcopy
+  plane_mask          all ones
+  foreground          0
+  background          1
+  line_width          0
+  line_style          LineSolid
+  cap_style           CapButt
+  join_style          JoinMiter
+  fill_style          FillSolid
+  fill_rule           EvenOddRule
+  arc_mode            ArcPieSlice
+  tile                Pixmap of unspecified size filled with foreground
+  stipple             Pixmap of unspecified size filled with ones
+  ts_x_origin         0
+  tx_y_origin         0
+  font                implementation dependent
+  subwindow_mode      ClipByChildren
+  graphics_exposures  True
+  clip_x_origin       0
+  clip_y_origin       0
+  clip_mask           None
+  dash_offset         0
+  dashes              4
+</pre>
+  </li>
+  <li>a new GC can be created by calling the XCreateGC procedure, which has the following
+    declaration: <pre>
+    GC XCreateGC(display, drawable, valuemask, values)
+    Display        *display;
+    Drawable  drawable;
+    unsigned long  valuemask;
+    XGCValues *values;
+</pre>
+  </li>
+  <li>this procedure first creates a new graphics context using the default values, it then
+    substitutes in the new values in the values parameter, the valuemask parameter specifies
+    the fields that should be changed </li>
+  <li>the resulting GC can be used on any drawable that has the same root window and depth as
+    the drawable passed as a parameter </li>
+  <li>the values in one GC can be copied to another GC by using the XCopyGC procedure: <pre>
+    XCopyGC(display, source, valuemask, destination)
+    Display        *display;
+    GC        source;
+    unsigned long  valuemask;
+    GC        destination;
+</pre>
+  </li>
+  <li>the valuemask parameter specifies the fields in the source GC that are to be copied to
+    the destination GC </li>
+  <li>the fields in a GC can be changed by calling the XChangeGC procedure, which has the
+    following declaration: <pre>
+    XChangeGC(display, gc, valuemask, values)
+    Display        *display;
+    GC        gc;
+    unsigned long  valuemask;
+    XGCValues *values;
+</pre>
+  </li>
+  <li>the valuemask parameter specifies the fields in the GC parameter that are to be changed,
+    the new values for these fields are stored in the values parameter </li>
+  <li>the values of the fields of a GC can be retrieved using the XGetGCValues procedure, the
+    clip_mask and dashes fields cannot be retrieved <pre>
+    status XGetGCValues(display, gc, value_mask, values_return)
+    Display        *display;
+    GC        gc;
+    unsigned long  value_mask;
+    XGCValues *values_return
+</pre>
+  </li>
+  <li>the value_mask parameter specifies the fields that are to be retrieved from the gc,
+    these field values are returned in the values_returned parameter </li>
+  <li>the procedure returns a non-zero value if its was able to retrieve all the requested
+    fields, otherwise a zero value is returned </li>
+  <li>a graphics context can be freed by calling the XFreeGC procedure, the declaration of
+    this procedure is: <pre>
+    XFreeGC(display, gc)
+    Display   *display;
+    GC   gc;
+</pre>
+  </li>
+  <li>there are also a number of convenience routines that make it easier to set individual
+    fields of the graphics context </li>
+  <li>the XSetState function sets some of the more common GC fields, its declaration is: <pre>
+    XSetState(display, gc, foreground, background, function,
+	      plane_mask);
+    Display        *display;
+    GC        gc;
+    unsigned long  foreground;
+    unsigned long  background;
+    int       function;
+    unsigned long  plane_mask;
+</pre>
+  </li>
+  <li>the following four functions can be used to independently set the foreground colour,
+    background colour, function and plane mask <pre>
+    XSetForeground(display, gc, foreground)
+    Display        *display;
+    GC        gc;
+    unsigned long  foreground;
+
+    XSetBackground(display, gc, background)
+    Display        *display;
+    GC        gc;
+    unsigned long  background;
+
+    XSetFunction(display, gc, function)
+    Display        *display;
+    GC        gc;
+    int       function;
+
+    XSetPlaneMask(display, gc, plane_mask)
+    Display        *display;
+    GC        gc;
+    unsigned long  plane_mask;
+
+</pre>
+  </li>
+</ul>
+
+<hr>
+
+<p><font color="#FF0000"><a href="http://ergodic.ugr.es/cphys/Unix/athena6.html"><img alt
+src="../unix/izq.gif" WIDTH="44" HEIGHT="44"></a>&nbsp; Go to Colour in X &nbsp;&nbsp;&nbsp; <a
+href="http://ergodic.ugr.es/cphys/Unix/intro.html"><img alt src="../unix/up.gif" WIDTH="44"
+HEIGHT="44"></a>&nbsp;&nbsp; Go to Index &nbsp;&nbsp;&nbsp;&nbsp; <a
+href="http://ergodic.ugr.es/cphys/Unix/athena8.html"><img alt src="../unix/der.gif" WIDTH="44"
+HEIGHT="44"></a>&nbsp; Go to Graphics Functions</font></p>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<html>
+
+<head>
+<title>Pixmaps and Bitmaps</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#800000" vlink="#008080" alink="#FF0000">
+
+<h1><font color="#FF0000">4. Pixmaps and Bitmaps</font></h1>
+
+<ul>
+  <li>a pixmap is an off screen chunk of memory that has many of the properties that a window
+    has </li>
+  <li>both windows and pixmaps are call drawables in X, that is applications can draw in them,
+    in the case of windows the drawings are immediately visible on the screen, and in the case
+    of pixmaps they must be copied to the screen </li>
+  <li>like a window, a pixmap has a width and height, which specifies how many pixels are in
+    the pixmap and a depth which specifies the number of bits in each pixel </li>
+  <li>a bitmap is a pixmap with depth 1, that is the pixels can be either 0 or 1 </li>
+  <li>bitmaps and pixmaps have many uses in X applications, some of their uses are: <ol>
+      <li>icons </li>
+      <li>cursors </li>
+      <li>background patterns for windows </li>
+      <li>border patterns for windows </li>
+      <li>fill patterns </li>
+    </ol>
+  </li>
+  <li>we will look at how we create, modify and use pixmaps and bitmaps </li>
+  <li>we can create a pixmap (or bitmap) using the following procedure: <pre>
+    Pixmap XCreatePixmap(display, drawable, width, height,
+		   depth)
+    Display *display;
+    Drawable drawable;
+    unsigned int width, height;
+    unsigned int depth;
+</pre>
+  </li>
+  <li>a pixmap is associated with a particular X server and a particular screen on that
+    server, in most cases the pixmap will be stored in the server not the client program </li>
+  <li>the first parameter identifies the server where the pixmap will be stored </li>
+  <li>in Xt applications we can retrieve a display pointer from a widget using XtDisplay,
+    which behaves in the following way: <pre>
+    Display *XtWindow(w)
+    Widget w;
+</pre>
+  </li>
+  <li>the next parameter identifies the screen associated with the pixmap, this parameter is
+    one of the drawables that is already on the screen </li>
+  <li>in Xt applications we can use XtScreen to determine the screen for a widget, and then
+    use RootWindow of screen to find a drawable </li>
+  <li>to go from a widget, w, to a drawable, d, on its screen the following can be used <pre>
+    d = RootWindowOfScreen(XtScreen(w))
+</pre>
+  </li>
+  <li>the width and height parameters give the size of the pixmap </li>
+  <li>the depth parameter gives the number of bits in each pixel of the pixmap, if depth = 1
+    then a bitmap is created </li>
+  <li>the depth of a pixmap mustn't be greater than the depth of the screen it is associated
+    with, if the depth is greater the pixmap can't be displayed </li>
+  <li>given a screen, DefaultDepthOfScreen can be used to determine this maximum depth </li>
+  <li>given a widget, w, we can get the maximum depth of the corresponding screen, max, in the
+    following way: <pre>
+    max = DefaultDepthOfScreen(XtScreen(w))
+</pre>
+  </li>
+  <li>so if we have a widget w and we want to create a pixmap for it that is 100x50 pixels
+    than we would use the following: <pre>
+    Pixmap p;
+
+    p = XCreatePixmap(XtDisplay(w),
+	      RootWindowOfScreen(XtScreen(w)),
+	      100, 50, DefaultDepthOfScreen(XtScreen(w)));
+</pre>
+  </li>
+  <li>the resources occupied by a pixmap can be freed by calling XFreePixmap, this procedure
+    has the following declaration: <pre>
+    XFreePixmap(display, pixmap)
+    Display *display;
+    Pixmap pixmap;
+</pre>
+  </li>
+  <li>to free the previously allocated pixmap we could use the following call: <pre>
+    XFreePixmap(XtDisplay(w), p);
+</pre>
+  </li>
+  <li>it is a good idea to free all the pixmaps that your program created before exiting from
+    the program, pixmaps are stored in the server, if they are not freed they could remain
+    allocated after the program exits, if you create a lot of large pixmaps after running your
+    program several times you may run out of memory </li>
+  <li>bitmaps are very common, since all displays have a depth of at least one, they can be
+    used in all applications, as a result there are many utilities to support bitmaps </li>
+  <li>there is a standard format for storing bitmaps, this is an Ascii format that happens to
+    be valid C code </li>
+  <li>bitmap files have the following format: <pre>
+    #define name_width  nnn
+    #define name_height nnn
+    #define name_x_hot  x
+    #define name_y_hot  y
+    static char name_bits[] = {  ....  };
+</pre>
+  </li>
+  <li>name is the base name of the file that the bitmap is stored in </li>
+  <li>name_width and name_height are the size of the bitmap, and name_bits is an array
+    containing the actual bits the make up the bitmap image </li>
+  <li>name_x_hot and name_y_hot are the position of the hot spot if the bitmap is used to
+    define a cursor, these are optional </li>
+  <li>since a bitmap file is legal C code it can be included in any C program, this is one way
+    of retrieving the information stored in a bitmap file </li>
+  <li>on most systems there is a collection of standard bitmaps in the directory
+    /usr/include/X11/bitmaps, an example of one of these bitmaps is: <pre>
+    #define xlogo16_width 16
+    #define xlogo16_height 16
+    static char xlogo16_bits[] = {
+       0x0f, 0x80, 0x1e, 0x80, 0x3c, 0x40, 0x78, 0x20, 0x78, 0x10, 0xf0, 0x08,
+       0xe0, 0x09, 0xc0, 0x05, 0xc0, 0x02, 0x40, 0x07, 0x20, 0x0f, 0x20, 0x1e,
+       0x10, 0x1e, 0x08, 0x3c, 0x04, 0x78, 0x02, 0xf0};
+</pre>
+  </li>
+  <li>bitmaps can also be created using the bitmap editor, this is an interactive editor for
+    bitmaps </li>
+  <li>there are two ways for converting butmap files into bitmap, one includes the bitmap file
+    with the program source code and the other reads the file and creates the bitmap while the
+    program is running </li>
+  <li>in the first approach the bitmap file is included in the program itself, so for example
+    if we wanted to use the xlogo16 bitmap we would have the following include statement in
+    our program <pre>
+    #include  &lt; X11/bitmaps/xlogo16 &gt; 
+</pre>
+  </li>
+  <li>the bitmap can then be created using the the XCreateBitmapFromData procedure, that has
+    the following declaration: <pre>
+    Pixmap XCreateBitmapFromData(display, drawable, data,
+	      width, height);
+    Display        *display;
+    Drawable  drawable;
+    char      *data;
+    unsigned int   width, height;
+</pre>
+  </li>
+  <li>most of the information that we need for this procedure comes from the bitmap file, such
+    as the data, width and height parameters </li>
+  <li>given a widget w, and the xlogo16 bitmap file, we can create the bitmap in the following
+    way: <pre>
+    Pixmap logo
+
+    logo = XCreateBitmapFromData(XtDisplay(w),
+	      RootWindowOfScreen(XtScreen(w)), xlogo16_bits,
+	      xlogo16_width, xlogo16_height);
+</pre>
+  </li>
+  <li>in order to use this approach you must know the name of the bitmap when the program is
+    compiled, otherwise you can't include it with the program, this isn't always possible </li>
+  <li>the main advantage of this approach is that the bitmap file doesn't need to be shipped
+    with the application, it is already included in the program code </li>
+  <li>the other approach is to read the bitmap file while the program is executing and then
+    convert it to a bitmap </li>
+  <li>this can be done by calling the XReadBitmapFile procedure, which has the following
+    declaration: <pre>
+    int XReadBitmapFile(display, drawable, filename, width_return,
+	      height_return, bitmap_return, x_hot_return,
+	      y_hot_return)
+    Display        *display;
+    Drawable  drawable;
+    char      *filename;
+    unsigned int   *width_return, height_return;
+    Pixmap         *bitmap_return;
+    int       *x_hot_return, *y_hot_return;
+</pre>
+  </li>
+  <li>this procedure reads the file given by the filename parameter and constructs a bitmap
+    from the image in the file, if this is successful BitmapSuccess is returned as the value
+    of this procedure </li>
+  <li>the size of the bitmap is returned in the addresses given by width_return and
+    height_return, and a pointer to the bitmap is returned in bitmap_return </li>
+  <li>if the bitmap has a hot spot it is returned in the locations given by x_hot_return and
+    y_hot_return, if there is no hot spot the value -1 is returned for both of these
+    parameters </li>
+  <li>- there is also a procedure for writing bitmaps to a file, its declaration is: <pre>
+    int XWriteBitmapFile(display, filename, bitmap, width, height,
+	      x_hot, y_hot);
+    Display        *display;
+    char      *filename;
+    Pixmap         bitmap;
+    unsigned int   width, height;
+    int       x_spot, y_spot;
+</pre>
+  </li>
+  <li>if these procedure is successful is returns BitmapSuccess </li>
+  <li>if the bitmap doesn't have a hot spot the values of x_spot and y_spot should be -1 </li>
+  <li>a Pixmap of depth greater than 1 can also be created from the bitmap data in a bitmap
+    file </li>
+  <li>the XCreatePixmapFromBitmapData procedure is used for this, its declaration is: <pre>
+    Pixmap XCreatePixmapFromBitmapData(display, drawable, data
+	      width, height, fg, bg, depth);
+    Display        *display;
+    Drawable  drawable;
+    char      *data;
+    unsigned int   width, height;
+    unsigned long  fg, bg;
+    unsigned int   depth;
+</pre>
+  </li>
+  <li>in this procedure data, width and height come from the bitmap data and depth is the
+    depth of the resuling pixmap </li>
+  <li>the parameters fg, and bg are two colours (indices into the colourmap for the window)
+    that are used to convert the bitmap data into pixmap data </li>
+  <li>the bitmap pixels with value 1 are converted into pixmap pixels with value fg, and the
+    bitmap pixels with value 0 are converted into pixmap pixels with value bg </li>
+  <li>the resulting pixmap only has two colours in it, but it can be of any depth </li>
+  <li>to see how bitmaps are used we will build a simple program that allows us to view the
+    bitmaps in the standard X11 bitmap directory </li>
+  <li>this example program uses a label widget to show the bitmap, and its uses a list widget
+    to show all of the files in the directory </li>
+  <li>when the user selects a filename from the list widget the corresponding bitmap is shown
+    in the label widget <pre>
+  /****************************************************
+   *
+   *                dispmap.c
+   *
+   *  This program allows the user to view all the
+   *  bitmaps in the /usr/include/X11/bitmaps directory
+   *  A list widget is used to display the names of
+   *  all the bitmaps in this directory.  When the
+   *  user selects one of these bitmaps it is read in
+   *  and displayed in a label widget.
+   *
+   ****************************************************/
+
+  #include  &lt; X11/StringDefs.h &gt; 
+  #include  &lt; X11/Intrinsic.h &gt; 
+  #include  &lt; X11/Xaw/Box.h &gt; 
+  #include  &lt; X11/Xaw/Label.h &gt; 
+  #include  &lt; X11/Xaw/List.h &gt; 
+  #include &quot;../lib/lib.h&quot;
+  #include  &lt; dirent.h &gt; 
+
+  /*
+   *  base is the name of the directory containing
+   *  the bitmaps
+   */
+
+  char base[] = &quot;/usr/include/X11/bitmaps&quot;;
+
+  /*
+   *  show_bitmap is the callback procedure for
+   *  the list widget.  The procedure is called
+   *  when the user selects a filename from
+   *  the widget.  This procedure constructs
+   *  the complete pathname for the bitmap,
+   *  reads it, and then makes it the icon
+   *  for the label widget.
+   */
+
+  void show_bitmap(w,label,file)
+  Widget w;
+  Widget label;
+  XawListReturnStruct file; {
+       char filename[100];
+       unsigned int width, height;
+       Pixmap    bitmap;
+       int x_hot, y_hot;
+       Arg wargs[5];
+       int n;
+
+       strcpy(filename,base);
+       strcat(filename,&quot;/&quot;);
+       strcat(filename,file.string);
+
+       XReadBitmapFile(XtDisplay(w),
+	    RootWindowOfScreen(XtScreen(w)),
+	    filename, &amp;width, &amp;height, &amp;bitmap,
+	    &amp;x_hot, &amp;y_hot);
+
+       n = 0;
+       XtSetArg(wargs[n], XtNbitmap, bitmap); n++;
+
+       XtSetValues(label, wargs, n);
+
+  }
+
+
+  /*
+   *  The make_list procedure builds the list widget
+   *  that is used in this program.  It makes two
+   *  passes through the directory.  The firs pass
+   *  counts the number of files in the directory,
+   *  the is used to dynamically allocate the list
+   *  of file names.  The second pass actually
+   *  constructs the list of file names.  After
+   *  that the list is added to the list widget.
+   */
+
+  Widget make_list(box,label)
+  Widget box;
+  Widget label; {
+       Widget list;
+       char **labels;
+       int n;
+       int len;
+       DIR *dir;
+       struct dirent *entry;
+       int i;
+
+       list = XtCreateManagedWidget(&quot;bitmaps&quot;,listWidgetClass,
+		 box, NULL, 0);
+
+       dir = opendir(base);
+
+       n = 0;
+       while(readdir(dir) != NULL) n++;
+
+       rewinddir(dir);
+
+       labels = (char **) malloc((n+1) * (sizeof *labels));
+
+       i = 0;
+       while((entry = readdir(dir)) != NULL) {
+	    /*
+	     *  don't include . and .. in the list
+	     */
+	    if(strcmp(entry-&gt;d_name,&quot;.&quot;) == 0)
+		 continue;
+	    if(strcmp(entry-&gt;d_name,&quot;..&quot;) == 0)
+		 continue;
+
+	    len = entry-&gt;d_namlen + 1;
+	    labels[i] = (char *) malloc(len+1);
+	    strcpy(labels[i],entry-&gt;d_name);
+	    i++;
+       }
+       labels[i] = 0;
+
+       closedir(dir);
+
+       XawListChange(list,labels,0, 0, 1);
+
+       XtAddCallback(list, XtNcallback, show_bitmap, label);
+
+       return(list);
+
+  }
+
+  main(argc,argv)
+  int argc;
+  char **argv; {
+       Widget toplevel;
+       Widget box;
+       Widget list;
+       Widget label;
+       Widget quit;
+
+       toplevel = XtInitialize(argv[0],&quot;display&quot;, NULL, 0,
+		 &amp;argc,argv);
+
+       box = XtCreateManagedWidget(&quot;box&quot;,boxWidgetClass,
+		 toplevel, NULL, 0);
+
+       label = XtCreateManagedWidget(&quot;icon&quot;,labelWidgetClass,
+		 box, NULL, 0);
+
+       quit = quit_button(box);
+
+       list = make_list(box,label);
+
+       XtRealizeWidget(toplevel);
+
+       XtMainLoop();
+
+  }
+
+</pre>
+  </li>
+</ul>
+
+<hr>
+
+<p><font color="#FF0000"><a href="http://ergodic.ugr.es/cphys/Unix/athena4.html"><img alt
+src="../unix/izq.gif" WIDTH="44" HEIGHT="44"></a>&nbsp; Go to Composite Widgets &nbsp;&nbsp;&nbsp;
+<a href="http://ergodic.ugr.es/cphys/Unix/intro.html"><img alt src="../unix/up.gif" WIDTH="44"
+HEIGHT="44"></a>&nbsp;&nbsp; Go to Index &nbsp;&nbsp;&nbsp;&nbsp; <a
+href="http://ergodic.ugr.es/cphys/Unix/athena6.html"><img alt src="../unix/der.gif" WIDTH="44"
+HEIGHT="44"></a>&nbsp; Go to Colour in X</font></p>
+</body>
+</html>

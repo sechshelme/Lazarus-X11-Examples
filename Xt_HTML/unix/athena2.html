@@ -1,0 +1,656 @@
+<html>
+
+<head>
+<title>Xt and the Athena Widgets</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#800000" vlink="#008080" alink="#FF0000">
+
+<h1><font color="#FF0000">1. Xt and the Athena Widgets</font></h1>
+
+<h2><font color="#FF0000">Athena Widgets </font></h2>
+
+<ul>
+  <li>this course is based on the Athena widgets </li>
+  <li>this is the original widget set, and by current standards is quite primitive </li>
+  <li>we are using this widget set for the following reasons: <ol>
+      <li>Athena is widely available - it is part of the standard X distribution and should be
+        available on any workstation that runs X </li>
+      <li>It is fairly simple - this is about the simplest widget set, it is easy to learn </li>
+      <li>Athena is efficient - all the widgets are quite simple and require a minimum amount of
+        CPU resources </li>
+    </ol>
+  </li>
+</ul>
+
+<h2><font color="#FF0000">Basic Xt Functions </font></h2>
+
+<ul>
+  <li>we will start by looking at some of the standard Xt functions that are required by all
+    Athena applications </li>
+  <li>once we have seen a few of these functions we will look at a simple example </li>
+</ul>
+
+<h3><font color="#0000FF">1) XtInitialize </font></h3>
+
+<ul>
+  <li>this function is called at the beginning of the program, it initializes the toolkit,
+    connects to the X server and does many other things </li>
+  <li>there are other ways of initializing X and the toolkit, but this is the easiest way </li>
+  <li>the declaration of XtInitialize is: </li>
+</ul>
+
+<pre>
+    Widget XtInitialize(shell_name, application_class, options,
+	 num_options, argc, argv)
+    String         shell_name;
+    String         application_name;
+    XrmOptionDescRec options[];
+    int            num_options;
+    int            *argc;
+    char           *argv[];
+</pre>
+
+<ul>
+  <li>we won't use the options and num_options parameters, NULL and 0 should be used as their
+    values </li>
+  <li>the value shell_name is ignored </li>
+  <li>application class is the name that is used for the application, we will see how this is
+    used later - choose a unique name for this </li>
+  <li>the argc and argv parameters come from the corresponding parameters to main, X parses
+    the parameters to all X programs looking for standard X parameters </li>
+  <li>on return argc contains the number of non-X parameters and argv contain the actual non-X
+    parameters </li>
+  <li>XtInitialize returns an applicationShell widget, this becomes the root of the widget
+    hierarchy of the application that you are writing </li>
+</ul>
+
+<h3><font color="#0000FF">2) XtCreateManagedWidget</font></h3>
+
+<ul>
+  <li>the XtCreateManagedWidget function is used to create a new widget and have its parent
+    manage the newly created widget </li>
+  <li>when a widget is managed the parent will assign it screen space within its own space,
+    and the widget will be displayed whenever the parent is displayed </li>
+  <li>the declaration of XtCreateManagedWidget is:<pre>
+
+    Widget XtCreateManagedWidget(name, widget_class, parent,
+	      args, num_args)
+    String         name;
+    WidgetClass    widget_class
+    Widget         parent;
+    ArgList        args;
+    int            num_args;
+</pre>
+  </li>
+  <li>the value returned by XtCreateManagedWidget is the newly created widget </li>
+  <li>the name parameter is a character string that will be the name of the newly created
+    widget, names should be unique within an application </li>
+  <li>widget_class is the type of widget to be created, there are symbolic constants for all
+    the widget classes in a toolkit, these names are used for this parameter </li>
+  <li>parent is the parent widget of the newly created widget, this widget must have been
+    previously created </li>
+  <li>args is a list of resource values for the widget, when the widget is created resource
+    values can be passed through this parameter, or NULL can be used if no resources are
+    passed </li>
+  <li>num_args - the number of entries in the args array </li>
+</ul>
+
+<h3><font color="#0000FF">3) XtRealizeWidget</font></h3>
+
+<ul>
+  <li>when a widget is created at the beginning of a program a window is not automatically
+    assigned to it, this is for efficiency </li>
+  <li>first all the widgets are created, then the underlying window hierarchy is constructed
+    for all the widgets in a single step, this is done by XtRealizeWidget </li>
+  <li>this procedure has the following declaration: <pre>
+    void XtRealizeWidget(w)
+    Widget w;
+</pre>
+  </li>
+  <li>the parameter passed to this procedure is a widget, this widget and all of its
+    descendants are realized </li>
+  <li>usually the parameter passed to XtRealizeWidget is the top level shell created by
+    XtInitialize </li>
+</ul>
+
+<h3><font color="#0000FF">4) XtMainLoop </font></h3>
+
+<ul>
+  <li>the XtMainLoop procedure is called when the initial widgets for the program have been
+    realized and are ready for interaction </li>
+  <li>once this procedure is called, the application program has lost control and control is
+    transferred to X </li>
+  <li>XtMainLoop waits for an event to occur and when it does it sends the event to the widget
+    that should handle it, this is the interaction part of the program </li>
+  <li>the declaration of this procedure is: <pre>
+    void XtMainLoop()
+</pre>
+  </li>
+  <li>note that this procedure never returns </li>
+</ul>
+
+<h3><font color="#0000FF">5) XtAddCallback </font></h3>
+
+<ul>
+  <li>callback procedures are used for communications between widgets and the application,
+    whenever something important occurs in a widget callback procedures can be called </li>
+  <li>a widget usually has several callback lists, each lists corresponds to a particular
+    situation, when this situation occurs all the procedures on the list are called </li>
+  <li>the XtAddCallback procedure is used to add a procedure to a callback list, it doesn't
+    remove any of the existing procedures on the list </li>
+  <li>the declaration of this procedure is: <pre>
+    void XtAddCallback(object, callback_name, callback,
+	      client_data)
+    Widget              object;
+    String              callback_name;
+    XtCallbackProc callback;
+    XtPointer           client_data
+</pre>
+  </li>
+  <li>the first parameter is the widget the callback is being added to, and callback_name is
+    the callback list that the callback will be added to </li>
+  <li>the callback parameter is the name of the callback procedure </li>
+  <li>the client_data parameter is a pointer to a data structure that will be passed to the
+    callback procedure when it is called </li>
+  <li>a callback procedure is declared in the following way: <pre>
+
+    void callback_proc(w, client_data, call_data)
+    Widget              w;
+    XtPointer      client_data;
+    XtPointer      call_data;
+</pre>
+  </li>
+  <li>the first parameter is the widget that the callback was called from, the same callback
+    procedure could be used with more than one widget </li>
+  <li>the second parameter is the client data that was passed when the callback procedure was
+    added to the callback list, this is from the call to XtAddCallback </li>
+  <li>since the client_data parameter is a pointer, the callback procedure can modify the data
+    structure that it points to </li>
+  <li>the same client_data structure can be shared by several callback procedures, it can be
+    used to pass information between these procedures, later we will see examples of how this
+    is used </li>
+  <li>the third parameter is a pointer to a data structure that is provided by the widget, the
+    contents of this data structure depend on the widget and the reason for the callback </li>
+  <li>for example in the case of a scrollbar, the call_data will contain the new position of
+    the thumb, the callback procedure can use this information to move the information that is
+    displayed in the corresponding display widget </li>
+</ul>
+
+<h2><font color="#FF0000">Example Program</font> </h2>
+
+<ul>
+  <li>the first example program puts a button on the screen, when the left mouse button is
+    pressed in this button the programs exits </li>
+  <li>a Command widget is used for the button, the name of this widget is used as the label
+    for the button </li>
+  <li>all Xt programs must include the &amp;ltX11/StringDefs.h&gt; and
+    &amp;ltX11/Intrinsic.h&gt; include files, in addition an include file for each widget
+    class used in the application must also be included </li>
+  <li>in this example the Command widget is used so we must also include
+    &amp;ltX11/Xaw/Command.h&gt; </li>
+  <li>the main program initializes the toolkit, creates the command widget, adds a callback to
+    the command widget, realizes the widget hierarchy and then calls XtMainLoop </li>
+  <li>the callback procedure simply exits from the program </li>
+</ul>
+
+<pre>
+
+  /*****************************************************
+   *
+   *                simple.c
+   *
+   *  A very simple X program that uses the Athena
+   *  widgets
+   *
+   ****************************************************/
+
+  #include &lt; X11/StringDefs.h &gt;
+  #include  &lt; X11/Intrinsic.h &gt; 
+  #include  &lt; X11/Xaw/Command.h &gt; 
+
+  main(argc,argv)
+  int argc;
+  char **argv; {
+       Widget toplevel;
+       Widget command;
+       void quit();
+
+       toplevel = XtInitialize(argv[0],&quot;simple&quot;,NULL, 0,
+		 &amp;argc, argv);
+
+       command = XtCreateManagedWidget(&quot;press and die&quot;,
+		 commandWidgetClass, toplevel, NULL, 0);
+
+       XtAddCallback(command,XtNcallback,quit, NULL);
+
+       XtRealizeWidget(toplevel);
+
+       XtMainLoop();
+
+  }
+
+
+  void quit(w,client,call)
+  Widget w;
+  XtPointer client;
+  XtPointer call; {
+
+       exit(0);
+
+  }
+
+</pre>
+
+<h2><font color="#FF0000">Setting Resource Values </font></h2>
+
+<ul>
+  <li>resources are used to specify all aspects of a widget that can be changed </li>
+  <li>the case of the command widget, the widget label, its size, its position, the colour and
+    font of the text, etc can all be modified by setting resource values </li>
+  <li>there are many ways of setting resource values, we will only look at one of them, this
+    technique works for most resource values, and is quite flexible </li>
+  <li>a resource consists of a name and a value, the name is represented by a character
+    string, and the value is represented by some type that is implementation dependent </li>
+  <li>usually the value representation is a 32 bit word, so integers and floats can be stored
+    directly in it, and for all other types of values a pointer must be used </li>
+  <li>the technique that we will use largely avoids the representation issue </li>
+  <li>the following structure is used to represent resources: <pre>
+    typedef &quot;something&quot; XtArgVal;
+
+    typedef struct {
+	 String    name;
+	 XtArgVal  value;
+    } Arg, *ArgList;
+</pre>
+  </li>
+  <li>&quot;something&quot; is the data structure that the implementation uses to represent
+    resources </li>
+  <li>the name field is the name of the resource, a character string </li>
+  <li>the value field is the value of the resource </li>
+  <li>most Xt routines actually take arrays of Arg structures and not single resource
+    specifications </li>
+  <li>the XtSetArg macro can be used to fill in the entries in this structure </li>
+  <li>the XtSetArg macro behaves in the following way: XtSetArg(arg, name, value) Arg arg;
+    String name; XtArgVal value; </li>
+  <li>arg is an entry in an Arg array, name is the name of the resource, and value is the
+    resource value </li>
+  <li>for each widget the <b>Quick Reference Guide</b> gives a list of its resources, the type
+    of the resource value, and the resource's default value (some of these are wrong) </li>
+  <li>the actual string from this table can be used, for example in the case of the label
+    resource the string &quot;label&quot; can be used as the resource name, spelling mistakes
+    are not errors, the resource is ignored </li>
+  <li>a safer way to specify the resource name is to use a set of constants that the widget
+    defines in its include file </li>
+  <li>there is a standard way to determine these constants, the letters XtN are added to the
+    front of the resource name </li>
+  <li>for example, for the label resource the constanct XtNlabel can be used as the resource
+    name </li>
+  <li>when we want to establish the resource values for a widget the following program
+    skeleton is used: <pre>
+    Arg args[10]
+    int n;
+
+
+    n = 0;
+    XtSetArg(args[n],XtNheight,200); n++;
+    XtSetArg(args[n],XtNwidth,200); n++;
+    XtSetArg(args[n],XtNlabel,&quot;my label&quot;); n++;
+</pre>
+  </li>
+  <li>the XtSetValues procedure can be used to add the resource values to the widget, the
+    declaration of this procedure is: <pre>
+    void XtSetValues(w, args, num_args)
+    Widget    w;
+    ArgList   args;
+    int  num_args;
+</pre>
+  </li>
+  <li>w is the widget the resources are added to, args is the list of resource values, and
+    num_args is the number of entries in the list </li>
+  <li>for the above example, we can add the resouces using the following procedure call <pre>
+    XtSetValues(w, args, n);
+</pre>
+  </li>
+</ul>
+
+<h2><font color="#FF0000">Example Program </font></h2>
+
+<ul>
+  <li>the next example program sets some of the resources in the command widget </li>
+  <li>first the size of the widget is changed to be 200 pixel high and 200 pixels wide, this
+    is done by setting the height and width resources of the widget </li>
+  <li>then the label of the widget is changed to &quot;press and die&quot;, this is done by
+    setting the label resource for the widget </li>
+  <li>now we can give the widget a reasonable name, like &quot;command&quot; </li>
+</ul>
+
+<pre>
+  /*****************************************************
+   *
+   *                simple.c
+   *
+   *  A very simple X program that uses the Athena
+   *  widgets
+   *
+   ****************************************************/
+
+  #include  &lt; X11/StringDefs.h &gt; 
+  #include  &lt; X11/Intrinsic.h &gt; 
+  #include  &lt; X11/Xaw/Command.h &gt; 
+
+  main(argc,argv)
+  int argc;
+  char **argv; {
+       Widget toplevel;
+       Widget command;
+       void quit();
+       Arg  wargs[10];
+       int  n;
+
+       toplevel = XtInitialize(argv[0],&quot;simple&quot;,NULL, 0,
+		 &amp;argc, argv);
+
+       command = XtCreateManagedWidget(&quot;command&quot;,
+		 commandWidgetClass, toplevel, NULL, 0);
+
+       n = 0;
+       XtSetArg(wargs[n],XtNheight,200); n++;
+       XtSetArg(wargs[n],XtNwidth,200); n++;
+       XtSetArg(wargs[n],XtNlabel,&quot;press and die&quot;); n++;
+       XtSetValues(command,wargs,n);
+
+       XtAddCallback(command,XtNcallback,quit, NULL);
+
+       XtRealizeWidget(toplevel);
+
+       XtMainLoop();
+
+  }
+
+
+  void quit(w,client,call)
+  Widget w;
+  XtPointer client;
+  XtPointer call; {
+
+       exit(0);
+
+  }
+
+
+
+</pre>
+
+<h2><font color="#FF0000">Example Program </font></h2>
+
+<ul>
+  <li>this example program uses three widgets, two simple widgets and a composite widget </li>
+  <li>a label widget is used to give a label to the user interface, in this case &quot;Hello
+    World&quot; </li>
+  <li>the same command widget is used exit from the program and it is set up in the same way
+    as in the previous programs </li>
+  <li>a box widget is used to contain the two simple widgets, they are placed in the box in
+    the order that they are created </li>
+  <li>the box is set up to stack the child widgets vertically and put 10 pixels between the
+    widgets </li>
+</ul>
+
+<pre>
+
+  /*****************************************************
+   *
+   *                simple.c
+   *
+   *  A very simple X program that uses the Athena
+   *  widgets
+   *
+   ****************************************************/
+
+  #include  &lt; X11/StringDefs.h &gt; 
+  #include  &lt; X11/Intrinsic.h &gt; 
+  #include  &lt; X11/Xaw/Box.h &gt; 
+  #include  &lt; X11/Xaw/Command.h &gt; 
+  #include  &lt; X11/Xaw/Label.h &gt; 
+
+  main(argc,argv)
+  int argc;
+  char **argv; {
+       Widget toplevel;
+       Widget box;
+       Widget command;
+       Widget label;
+       void quit();
+       Arg  wargs[10];
+       int  n;
+
+       toplevel = XtInitialize(argv[0],&quot;simple&quot;,NULL, 0,
+		 &amp;argc, argv);
+
+       box = XtCreateManagedWidget(&quot;box&quot;,boxWidgetClass,
+		 toplevel, NULL, 0);
+
+       n = 0;
+       XtSetArg(wargs[n],XtNorientation,XtorientVertical); n++;
+       XtSetArg(wargs[n],XtNvSpace,10); n++;
+       XtSetValues(box,wargs,n);
+
+       label = XtCreateManagedWidget(&quot;label&quot;,
+		 labelWidgetClass, box, NULL, 0);
+
+       n = 0;
+       XtSetArg(wargs[n],XtNlabel,&quot;Hello World&quot;); n++;
+       XtSetValues(label,wargs,n);
+
+       command = XtCreateManagedWidget(&quot;command&quot;,
+		 commandWidgetClass, box, NULL, 0);
+
+       n = 0;
+       XtSetArg(wargs[n],XtNlabel,&quot;press and die&quot;); n++;
+       XtSetValues(command,wargs,n);
+
+       XtAddCallback(command,XtNcallback,quit, NULL);
+
+       XtRealizeWidget(toplevel);
+
+       XtMainLoop();
+
+  }
+
+
+  void quit(w,client,call)
+  Widget w;
+  XtPointer client;
+  XtPointer call; {
+
+       exit(0);
+
+  }
+
+
+</pre>
+
+<h2><font color="#FF0000">Creating and Managing Widgets </font></h2>
+
+<ul>
+  <li>the XtCreateManagedWidget procedure really performs two tasks, it creates a widget and
+    then manages it under its parent </li>
+  <li>when a parent only has a few widgets this is the easiest way to create the children, but
+    it can lead to inefficiency when a parent has a lot of children, or not all of them should
+    be visible at the same time </li>
+  <li>when a widget is managed the parent must find some screen space for it, this means that
+    the parent itself may need to grow and other widgets may need to move </li>
+  <li>if a parent has a lot of children, these operations are repeated each time a new widget
+    is created using XtCreateManagedWidget, in this case it would be more efficient to batch
+    all the manage requests and do the widget layout once </li>
+  <li>managing and creating widgets can be done using the following procedures: <pre>
+    Widget XtCreateWidget(name, object_class, parent, args,
+	  num_args)
+    String         name;
+    WidgetClass    object_class;
+    Widget         parent;
+    ArgList        args;
+    int            num_args;
+
+    XtManageChild(child)
+    Widget         child;
+
+    XtManageChildren(children,num_children)
+    WidgetList     children
+    int            num_children
+</pre>
+  </li>
+  <li>the XtCreateWidget procedure creates a new widget without managing it </li>
+  <li>the XtManageChild procedure will make the named child managed, which will make it
+    visible </li>
+  <li>the XtManageChildren procedure takes a list of children, all the widgets on this list
+    must have the same parent widget, and manages them, this operation saves time </li>
+  <li>the WidgetList type is an array of widgets </li>
+  <li>widgets can also be unmanaged, when this occurs the widget disappears from the screen,
+    and depending upon the parent its screen space can be reused by other widgets </li>
+  <li>managing and unmanaging widgets can be used to control the widgets that are visible on
+    the screen, if you don't want a command to be active at a particular point in time you can
+    unmanage its widgets </li>
+  <li>the widget unmanaging procedure have the following declarations <pre>
+    XtUnmanageChild(child)
+    Widget         child;
+
+    XtUnmanageChildren(children,num_children)
+    WidgetList     children;
+    int       num_children;
+		 
+</pre>
+  </li>
+</ul>
+
+<h2><font color="#FF0000">Example Program </font></h2>
+
+<ul>
+  <li>the next example program shows how widgets can be created and managed separately, and
+    how the client data can be used in a callback procedure </li>
+  <li>this example program creates an arbitrary number of buttons in a box widget </li>
+  <li>a char array, called names, contains the names of the buttons and one command widget is
+    created for each entry in the array </li>
+  <li>a parallel array, called values, contains an integer value for each entry in the names
+    array, this value is printed each time the corresponding command widget is selected </li>
+  <li>the same callback procedure is used for all of the command widgets, when XtAddCallback
+    is called the appropriate entry in the values array is passed as the client data, note
+    that a pointer must be used for this </li>
+</ul>
+
+<pre>
+
+  /*****************************************************
+   *
+   *                simple.c
+   *
+   *  A very simple X program that uses the Athena
+   *  widgets
+   *
+   ****************************************************/
+
+  #include  &lt; X11/StringDefs.h &gt; 
+  #include  &lt; X11/Intrinsic.h &gt; 
+  #include  &lt; X11/Xaw/Box.h &gt; 
+  #include  &lt; X11/Xaw/Command.h &gt; 
+  #include  &lt; stdio.h &gt; 
+
+  char *names[] = {
+       &quot;button1&quot;,
+       &quot;button2&quot;,
+       &quot;button3&quot;,
+       &quot;button4&quot;,
+       &quot;button5&quot;,
+       0
+  };
+
+
+  int values[] = {
+       1,
+       2,
+       3,
+       4,
+       5
+  };
+
+
+  main(argc,argv)
+  int argc;
+  char **argv; {
+       Widget toplevel;
+       Widget box;
+       Widget command;
+       void quit();
+       void bprint();
+       Arg  wargs[10];
+       int  n;
+       Widget    buttons[20];
+       int  nbuttons;
+
+       toplevel = XtInitialize(argv[0],&quot;simple&quot;,NULL, 0,
+		 &amp;argc, argv);
+
+       box = XtCreateManagedWidget(&quot;box&quot;,boxWidgetClass,
+		 toplevel, NULL, 0);
+
+       n = 0;
+       XtSetArg(wargs[n],XtNorientation,XtorientVertical); n++;
+       XtSetArg(wargs[n],XtNvSpace,10); n++;
+       XtSetValues(box,wargs,n);
+
+       command = XtCreateManagedWidget(&quot;quit&quot;,
+		 commandWidgetClass, box, NULL, 0);
+
+       XtAddCallback(command,XtNcallback,quit, NULL);
+
+       nbuttons = 0;
+       while(names[nbuttons] != 0) {
+	    buttons[nbuttons] = XtCreateWidget(names[nbuttons],
+			   commandWidgetClass, box, NULL, 0);
+
+	    XtAddCallback(buttons[nbuttons],XtNcallback,bprint,
+			   &amp;values[nbuttons]);
+
+	    nbuttons++;
+       }
+
+       XtManageChildren(buttons,nbuttons);
+
+       XtRealizeWidget(toplevel);
+
+       XtMainLoop();
+
+  }
+
+
+  void quit(w,client,call)
+  Widget w;
+  XtPointer client;
+  XtPointer call; {
+
+       exit(0);
+
+  }
+
+
+  bprint(w,client,call)
+  Widget w;
+  int  *client;
+  XtPointer call; {
+
+       printf(&quot;button %d\n&quot;,*client);
+  }
+
+
+</pre>
+
+<hr>
+
+<p><font color="#FF0000"><a href="http://ergodic.ugr.es/cphys/Unix/intro.html"><img alt
+src="../unix/izq.gif" WIDTH="44" HEIGHT="44"></a>&nbsp; Go to Introduction &nbsp;&nbsp;&nbsp; <a
+href="http://ergodic.ugr.es/cphys/Unix/intro.html"><img alt src="../unix/up.gif" WIDTH="44"
+HEIGHT="44"></a>&nbsp;&nbsp; Go to Index &nbsp;&nbsp;&nbsp;&nbsp; <a
+href="http://ergodic.ugr.es/cphys/Unix/athena3.html"><img alt src="../unix/der.gif" WIDTH="44"
+HEIGHT="44"></a>&nbsp; Go to Simple Widgets</font></p>
+</body>
+</html>

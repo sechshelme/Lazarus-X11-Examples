@@ -1,0 +1,238 @@
+<html>
+
+<head>
+<title>Introduction</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#800000" vlink="#008080">
+
+<dl>
+  <dd><p align="center"><strong><font color="#800040"><font face="Times New Roman"><big><big><big>X-windows:
+    programming with Athena widgets</big></big></big></font><br>
+    </font></strong></p>
+  </dd>
+  <div align="center"><center>
+  <dt><font color="#FF8040">(modified by P.L. Garrido for the Computational Physics Course ©
+    1999)</font></dt>
+  </center></div>
+  <dd><br>
+    <hr color="#FF0000">
+  </dd>
+</dl>
+
+<ul>
+  <h1><font color="#FF0000">Contents</font></h1>
+  <p><font color="#FF0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </font><font color="#000000">0. Introduction</font><font color="#FF0000"><br>
+  </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="../unix/athena2.html" target="principal">1. Xt and the Athena Widget</a><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="../unix/athena3.html" target="principal">2. Simple Widgets</a><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="../unix/athena4.html" target="principal">3. Composite Widgets</a><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="../unix/athena5.html" target="principal">4. Pixmaps and Bitmaps</a><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="../unix/athena6.html" target="principal">5. Coulour in X</a><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="../unix/athena7.html" target="principal">6. Graphics Contexts</a><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="../unix/athena8.html" target="principal">7. Graphics Functions</a><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="../unix/athena9.html" target="principal">8. Events</a><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="../unix/athena10.html" target="principal">9. Text Widgets</a><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="../unix/athena11.html" target="principal">10. Menus</a></p>
+  <h1><font color="#FF0000" face="Times New Roman">0. Introduction </font></h1>
+  <ul>
+    <li>the <b>X Window System</b> is a software system for producing graphical user interfaces
+      in a networked environment </li>
+    <li>X is based on a client/server architecture the <b>server </b>runs on a workstation, it
+      produces the graphics and collects input from the keyboard and mouse the <b>client</b>
+      program can run anywhere on the network, it performs the actual computation </li>
+    <li>X is a very large system and has been evolving over the years, there are many details,
+      any many ways of doing even the simplest things </li>
+    <li>learning X can take a long time if you concentrate on all of the details </li>
+    <li>we will not look at all the details of X programming, skip a lot of the details,
+      concentrate on producing user interfaces without a lot of work </li>
+  </ul>
+  <h2><font color="#FF0000" face="Times New Roman">Why Use X?</font></h2>
+  <ol>
+    <li>Industry Standard - all Unix workstations support some version of X - possible to write
+      highly portable programs in X </li>
+    <li>Vast Amount of Support Software - a large amount of software has been written to support
+      the development of X applications, makes programming somewhat easier </li>
+    <li>Network Support - X works well in a distributed, networked environment, X programs can
+      work with multiple workstations, easier to write distributed applications </li>
+    <li>Customization - users can easily customize X programs, can change the default appearance
+      and screen layout, etc </li>
+    <li>Features - X has more features that any other window system </li>
+    <li>Cost - X is free </li>
+  </ol>
+  <h2><font color="#FF0000" face="Times New Roman">Software Layers </font></h2>
+  <ul>
+    <li>there are basically four software layers in an X application </li>
+  </ul>
+  <ol>
+    <li>X Protocol - this is the actual byte stream that goes between the client and the server </li>
+    <li>Xlib - a C library interface to the X protocol </li>
+    <li>Xt or Intrinsics - a C library for constructing and using Widgets, a collection of
+      Widgets is usually called a toolkit </li>
+    <li>Widgets - a collection of user interface abstractions, each widget is a separate
+      interaction technique </li>
+  </ol>
+  <ul>
+    <li>most X programming occurs at the widget level, though occasionally routines are the Xlib
+      level are required</li>
+  </ul>
+  <pre>
+
+
+		  +-----------------------------+
+		  |      application            |
+		  |                             |
+		  +--------------+              |
+		  |   Widgets    |              |
+		  |              |              |
+		  +--------------+----+         |
+		  |   Xt Intrinsics   |         |
+		  |                   |         |
+		  +-------------------+----+    |
+		  |         Xlib           |    |
+		  |                        |    |
+		  +------------------------+----+
+		  |         X Protocol          |
+		  |                             |
+		  +-----------------------------+
+</pre>
+  <h2><font color="#FF0000" face="Times New Roman">Terminology</font></h2>
+  <ul>
+    <li>there are a large number of terms in X programming, we will start by defining some of
+      the important ones, some of them we will come back to later to fill in the details </li>
+  </ul>
+  <h3><font color="#0000FF" face="Times New Roman">1) Window</font></h3>
+  <ul>
+    <li>the basic unit in an X program, and abstraction of a terminal a window provides a place
+      to draw graphics and collects input from devices </li>
+    <li>the important properties of windows are: <ol>
+        <li><b>parent</b> all windows have a parent window, the windows in an application form a
+          tree, a window must lie within the coordinate space of its parent </li>
+        <li><b>window ID</b> an integer that identifies the window, this is a server resource,
+          several processes can refer to the same window using its ID </li>
+        <li><b>position</b> the location of the upper left corner of the window within its parent's
+          coordinate system </li>
+        <li><b>width, height</b> and <b>border width</b>, the width is the size of the window in the
+          x direction, the height is the size of the window in the y direction, and the border width
+          is the width of its border, all measured in pixels </li>
+        <li><b>coordination system</b> each window has its own coordinate system. The origin is in
+          the upper left corner, x increases to the right, y increases towards the bottom,
+          coordinates are integers and correspond to pixels </li>
+        <li><b>attributes</b>, there are many of these, including background colour, border colour,
+          cursor, colourmap, etc </li>
+      </ol>
+    </li>
+  </ul>
+  <pre>
+    +---------------------------------------++-
+    |+--------------x increasing            ||
+    ||                                      ||
+    ||                                      ||
+    ||    parent window                     ||
+    ||                       child origin   ||
+    ||                                      ||
+    ||                                      ||
+    ||              +-----------------+     ||
+    |y increasing   |                 |     ||
+    |               | child window    |     ||
+    |               |                 |     ||height
+    |               |                 |     ||
+    |               |                 |     ||
+    |               |                 |     ||
+    |               |                 |     ||
+    |               |                 |     ||
+    |               +-----------------+     ||
+    |                                       ||
+    |                                       ||
+    |                                       ||
+    |                                       ||
+    |                                       ||
+    +---------------------------------------++-
+    +---------------------------------------+
+    |                 width                 |
+</pre>
+  <h3><font color="#0000FF" face="Times New Roman">2) Widget</font></h3>
+  <ul>
+    <li>a widget is a user interface abstraction, it implements some part of a user interface,
+      for example menu, scrollbar, button, text entry, etc </li>
+    <li>each widget has a window where it displays its information, it also reacts to user
+      actions, such as the mouse and keyboard </li>
+    <li>a widget is like an abstract data type, or an object in an object-oriented system </li>
+    <li>most X programming deals with widgets </li>
+  </ul>
+  <h3><font color="#0000FF" face="Times New Roman">3) Resources</font></h3>
+  <ul>
+    <li>a resource is a named piece of data, usually part of a widget </li>
+    <li>the user or application can set the value of a widget, the application can also retrieve
+      resource values </li>
+    <li>resources are mainly used to control widgets, all the important properties of a widget
+      are resources </li>
+  </ul>
+  <h3><font color="#0000FF" face="Times New Roman">4) Callbacks</font></h3>
+  <ul>
+    <li>a callback is an application procedure, has a particular format </li>
+    <li>a callback is called when something happens in a widget, for example, when a button is
+      pressed, or a scrollbar is moved </li>
+    <li>this is the main communications mechanism between widgets and the application </li>
+    <li>X has control of the application, all application computing occurs through callbacks </li>
+  </ul>
+  <h3><font color="#0000FF" face="Times New Roman">5) Translations </font></h3>
+  <ul>
+    <li>translations specify how user events (button presses) are processed </li>
+    <li>for each widget you can specify what a button press &quot;means&quot;, the procedure
+      that will be executed when the action occurs </li>
+    <li>this gives the user more control over the application </li>
+  </ul>
+  <h3><font color="#0000FF" face="Times New Roman">6) Widget Classes </font></h3>
+  <ul>
+    <li>all widgets belong to a widget class, all the widgets in a class have the same basic
+      appearance and behave in the same way </li>
+    <li>like objects and classes in object-oriented programming </li>
+    <li>the class defines the widget, when a widget is created the widget class is used to
+      specify the type of widget to be created </li>
+    <li>widget classes are organized into a hierarchy, each widget, except for the root (core
+      widget) has a parent </li>
+    <li>a widget class inherits from its parent, it can inherit resources, appearance and
+      behavior </li>
+    <li>in order to determine what a widget does you must know where its widget class fits into
+      the widget class hierarchy </li>
+  </ul>
+  <h3><font color="#0000FF" face="Times New Roman">7) Widget Hierarchy </font></h3>
+  <ul>
+    <li>the widget instances also form a hierarchy </li>
+    <li>when a widget is created its parent instance must be specified, the widget instance is
+      placed within its parent </li>
+    <li>the parent widget controls where the child widget is placed on the screen, and when it
+      appears on the screen </li>
+    <li>the widget hierarchy is used in resource naming </li>
+    <li>the widget hierarchy is an important part of the user documentation for a X program, the
+      user needs this information to customize the widgets </li>
+  </ul>
+  <h3><font color="#0000FF" face="Times New Roman">8) Widget Sets or Toolkits </font></h3>
+  <ul>
+    <li>widgets classes are collected into widget sets or toolkits, a set of widgets that work
+      together, provide the basic functionality required to construct user interfaces </li>
+    <li>there are many widget sets, differ in appearance and some behavior, all have the same
+      basic functionality </li>
+    <li>once you know one set, learning other is quite easy </li>
+  </ul>
+</ul>
+
+<hr>
+
+<p><font color="#FF0000"><a href="http://ergodic.ugr.es/cphys/Unix/athena2.html"><img alt
+src="../unix/der.gif" WIDTH="44" HEIGHT="44"></a>&nbsp; Go to Xt and the Athena Widgets</font></p>
+
+<p>&nbsp;</p>
+</body>
+</html>

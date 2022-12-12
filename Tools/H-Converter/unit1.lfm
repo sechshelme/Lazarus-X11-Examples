@@ -1,17 +1,17 @@
 object Form1: TForm1
-  Left = 1550
-  Height = 240
-  Top = 468
-  Width = 320
+  Left = 996
+  Height = 1066
+  Top = 78
+  Width = 1233
   Caption = 'Form1'
-  ClientHeight = 240
-  ClientWidth = 320
+  ClientHeight = 1066
+  ClientWidth = 1233
   LCLVersion = '2.2.2.0'
   inline SynEdit1: TSynEdit
     Left = 24
-    Height = 168
+    Height = 994
     Top = 16
-    Width = 280
+    Width = 1193
     Anchors = [akTop, akLeft, akRight, akBottom]
     Font.Height = 13
     Font.Name = 'DejaVu Sans Mono'
@@ -470,6 +470,7 @@ object Form1: TForm1
     MouseLinkColor.Foreground = clBlue
     LineHighlightColor.Background = clNone
     LineHighlightColor.Foreground = clNone
+    OnChange = SynEdit1Change
     inline SynLeftGutterPartList1: TSynGutterPartList
       object SynGutterMarks1: TSynGutterMarks
         Width = 24
@@ -506,14 +507,24 @@ object Form1: TForm1
       end
     end
   end
-  object Button1: TButton
-    Left = 224
+  object CreateBtn: TButton
+    Left = 1137
     Height = 25
-    Top = 200
+    Top = 1026
     Width = 75
     Anchors = [akRight, akBottom]
-    Caption = 'Button1'
-    OnClick = Button1Click
+    Caption = 'Create'
+    OnClick = CreateBtnClick
     TabOrder = 1
+  end
+  object SaveBtn: TButton
+    Left = 1048
+    Height = 25
+    Top = 1026
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'Save'
+    OnClick = SaveBtnClick
+    TabOrder = 2
   end
 end

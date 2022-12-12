@@ -1,0 +1,510 @@
+<html>
+
+<head>
+<title>Graphics Functions</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#800000" vlink="#008080" alink="#FF0000">
+
+<h1><font color="#FF0000">7. Graphics Functions </font></h1>
+
+<ul>
+  <li>X has a number of primitive graphics functions, all of these functions work in integer
+    pixel coordinates, with the origin in the upper left corner of the window, the x axis
+    running from left to right, and the y axis running from top to bottom </li>
+  <li>there are no transformations in X, but the graphics primitives are clipped at window
+    edges </li>
+  <li>the XClearWindow procedure is used to clear an entire window, the declaration of this
+    procedure is: <pre>
+    XClearWindow(display, window)
+    Display   *display;
+    Window    window;
+</pre>
+  </li>
+  <li>the background colour for the window is used in this operation </li>
+  <li>an area within a window can be cleared by calling the XClearArea procedure <pre>
+    XClearArea(display, window, x, y, width, height, exposures)
+    Display        *display;
+    Window         window;
+    int            x;
+    int            y;
+    unsigned int   width;
+    unsigned int   height;
+    Bool           exposures;
+</pre>
+  </li>
+  <li>this procedure clears a rectangular area of the screen, the upper left corner of this
+    rectangle is (x,y) and the width height is given by the corresponding parameters </li>
+  <li>if width is zero, the width is set to the width of the window minus x, that is the clear
+    will go from x to the right boundary of the window </li>
+  <li>similarly if height is zero, the height is set to the height of the window minus y </li>
+  <li>the exposures flag indicates whether an exposure events should be generated for this
+    operation, if the value of this flag is true then an event will be generated, if it is
+    false no events will be generated - more on this later </li>
+  <li>the clear functions can only be used on windows, all the other graphics functions can be
+    used on any drawable, that is they can be used with both windows and pixmaps </li>
+  <li>there are two routines that can be used for drawing points, the declarations of these
+    routines are: <pre>
+    XDrawPoint(display, drawable, gc, x, y)
+    Display   *display;
+    Drawable  drawable;
+    GC        gc;
+    int       x;
+    int       y;
+
+    XDrawPoints(display, drawable, gc, points, npoints, mode)
+    Display   *display;
+    Drawable  drawable;
+    GC        gc;
+    Xpoint    *points;
+    int       npoints;
+    int       mode;
+</pre>
+  </li>
+  <li>the XDrawPoint procedure draws a single point at the pixel given by (x,y), the
+    foreground colour and function in gc are used to draw this point </li>
+  <li>the XDrawPoints function is used to draw more than one point, the number of points to be
+    drawn is given by the parameter npoints, and points is an array containing the coordinates
+    of the points </li>
+  <li>the declaration of Xpoint is <pre>
+    typedef struct {
+	 short     x, y;
+    } Xpoint;
+</pre>
+  </li>
+  <li>the mode parameter specifies how the coordinates in the points array are interpreted </li>
+  <li>if the value of this parameter is CoordModeOrigin then the coordinates of the point are
+    treated as being relative to the origin of the window </li>
+  <li>if the value of mode is CoordModePrevious then the corrdinates of point i are treated as
+    being relative to point i-1 </li>
+  <li>that is the first point in the array is relative to the origin, the second entry in the
+    array gives the offset to the second point from the first point, etc </li>
+  <li>there are three procedures that can be used to draw lines, the simplest of these is
+    XDrawLine <pre>
+    XDrawLine(display, drawable, gc, x1, y1, x2, y2)
+    Display        *display;
+    Drawable  drawable;
+    GC        gc;
+    int       x1, y1;
+    int       x2, y2;
+</pre>
+  </li>
+  <li>this procedure draws a single line, in the drawable given by the parameter drawable </li>
+  <li>the end points of the line are (x1, y1) and (x2, y2) </li>
+  <li>the appearance of the line is given by the gc parameter, this includes the colour of the
+    line, its thickness and the function used to draw it </li>
+  <li>the XDrawLines procedure is used to draw polyline, the declaration of this procedure is:
+    <pre>
+    XDrawLines(display, drawable, gc, points, npoints, mode)
+    Display        *display;
+    Drawable  drawable;
+    GC        gc;
+    Xpoint         *points;
+    int       npoints;
+    int       mode;
+</pre>
+  </li>
+  <li>this procedure draws a polyline that connects the points given by the array points, the
+    parameter npoints contains the number of points in this array </li>
+  <li>if the width of the line is greater than 1, X treats the joins between the line segments
+    according to the specification in the GC parameter </li>
+  <li>the mode parameter is interpreted in the same way as in the XDrawPoints procedure </li>
+  <li>if line segments are connected this procedure should be used to draw them, since it
+    attempts to do a nice job of the joint between line segments </li>
+  <li>the XDrawSegments procedure can be used to draw more than 1 non-connected line segments,
+    the declaration of this procedure is <pre>
+    XDrawSegments(display, drawable, gc, segments, nsegments)
+    Display        *display;
+    Drawable  drawable;
+    GC        gc;
+    XSegment  segments;
+    int       nsegments;
+</pre>
+  </li>
+  <li>the parameter segments is an array containing the end points of the line segments to be
+    drawn </li>
+  <li>the definition of XSegment is <pre>
+    typedef struct {
+	 short x1, y1, x2, y2;
+    } Xsegment;
+</pre>
+  </li>
+  <li>it is assumed that segments don't share end points and no special processing is done at
+    the end of the segments </li>
+  <li>the parameter nsegments is the number of entries in the segments array </li>
+  <li>the XDrawRectangle procedure can be used to draw rectangles <pre>
+    XDrawRectangle(Display, drawable, gc, x, y, width, height)
+    Display        *display;
+    Drawable  drawable;
+    GC        gc;
+    int       x
+    int       y;
+    unsigned int   width;
+    unsigned int   height;
+</pre>
+  </li>
+  <li>this procedure draws the outline of the rectangle that has its origin at (x,y) and the
+    width of the rectangle is given by the width parameter and the height of the rectangle is
+    given by the height parameter </li>
+  <li>the sides of the rectangle drawn by this procedure are parallel to the x and y axis of
+    the window </li>
+  <li>multiple rectangles are drawn by the XDrawRectangles procedure, the declaration of this
+    procedure is: <pre>
+    XDrawRectangles(display, drawable, gc, rectangles, nrectangles)
+    Display        *display;
+    Drawable  drawable;
+    GC        gc;
+    XRectangle     *rectangles;
+    int       nrectangles;
+</pre>
+  </li>
+  <li>the parameter rectangles is an array of rectangles, and the parameter nrectangles is the
+    number of rectangles in this array </li>
+  <li>the declaration of the XRectangle data structure is: <pre>
+    typedef struct {
+	 int x, y;
+	 unsigned short width, height;
+    } XRectangle;
+</pre>
+  </li>
+  <li>filled rectangles can be drawn using the following two procedures <pre>
+    XFillRectangle(display, drawable, gc, x, y, width, height)
+    Display        *display;
+    Drawable  drawable;
+    GC        gc;
+    int       x;
+    int       y;
+    unsigned int   width;
+    unsigned int   height;
+
+    XFillRectangles(display, drawable, gc, rectangles, nrectangles)
+    Display        *display;
+    Drawable  drawable;
+    GC        gc;
+    XRectangle     *rectangles;
+    int       nrectangles;
+</pre>
+  </li>
+  <li>these routines behave in essentially the same way as the previous two routines, except
+    that the inside of the rectangle is filled </li>
+  <li>a filled polygon can be produced by calling the XFillPolygon procedure, this procedure
+    has the following declaration: <pre>
+    XFillPolygon(display, drawable, gc, points, npoints,
+	      shape, mode)
+    Display        *display;
+    Drawable  drawable;
+    GC        gc;
+    Xpoint         *points;
+    int       npoints;
+    int       shape;
+    int       mode;
+</pre>
+  </li>
+  <li>the array points contains the polygon vertices and the parameter npoints contains the
+    number of points in this array, the inside of the polygon defined by these vertices is
+    filled </li>
+  <li>the shape parameter is used to optimize the polygon filling operation, this parameter
+    gives the server hints about the shape of the polygon, there are three possible values for
+    this parameter <ol>
+      <li>Complex - the polygon can have any shape, the path defined by the vertices can
+        intersect, so polygons that look like bow ties can be filled </li>
+      <li>Nonconvex - the polygon could be concave, but the path defined by the vertices doesn't
+        intersect, this is not as general but more efficient </li>
+      <li>Convex - the polygon must be convex, this is the least general case, but it is the most
+        efficient </li>
+    </ol>
+  </li>
+  <li>the value of the mode parameter can be either CoordModeOrigin or CoordModePrevious </li>
+  <li>X can also draw arcs and filled arcs, the basic arc drawing procedure is: <pre>
+    XDrawArc(display,drawable,gc,x,y,width,height,angle1,angle2)
+    Display        *display;
+    Drawable  drawable;
+    GC        gc;
+    int       x;
+    int       y;
+    unsigned int   width;
+    unsigned int   height;
+    int       angle1;
+    int       angle2;
+</pre>
+  </li>
+  <li>this procedure draws with a circular or elliptical arc, the parameters x, y, width, and
+    height define a rectangle that the arc is draw inside of, if width and height are equal
+    then a circular arc is produced, otherwise an elliptical arc is produced - this rectangle
+    defines the size and position of the circle or ellipse that the arc is part of </li>
+  <li>the two parameters angle1 and angle2 define the start and end of the arc, both of these
+    parameters are measured clockwise starting at the positive x-axis, in other words a line
+    parallel to the x-axis pointing to the right has an angle of zero </li>
+  <li>the arc runs counter clockwise starting at angle1 and going to angle2 </li>
+  <li>the unit of measurement for the angles is degrees/64 and is an integer, to draw a
+    complete circle angle1 can be set to zero and angle2 set to 360*64 </li>
+  <li>in the case of elliptical arcs the angles are measured relative to the containing
+    rectangle, for example a 45 degree line will go through the upper right corner of the
+    rectangle, that is the angles really aren't specified in degrees when the rectnagle isn't
+    a square </li>
+  <li>multiple arcs can be draw using the XDrawArcs procedure, which has the following
+    declaration: <pre>
+    XDrawArcs(display,drawable,gc,arcs,narcs)
+    Display        *display;
+    Drawable  drawable;
+    GC        gc;
+    XArc      *arcs;
+    int       narcs;
+</pre>
+  </li>
+  <li>the arcs parameter is an array of arcs, and the narcs parameter is the length of this
+    array </li>
+  <li>the declaration of the XArc data structure is: <pre>
+    typedef struct {
+	 short     x, y;
+	 unsigned short width, height;
+	 short     angle1, angle2;
+    } XArc;
+</pre>
+  </li>
+  <li>the following two procedures can be used to draw filled arcs <pre>
+    XFillArc(display,drawable,gc,x,y,width,height,angle1,angle2)
+    Display        *display;
+    Drawable  drawable;
+    GC        gc;
+    int       x;
+    int       y;
+    unsigned int   width;
+    unsigned int   height;
+    int       angle1;
+    int       angle2;
+
+    XFillArcs(display,drawable,gc,arcs,narcs)
+    Display        *display;
+    Drawable  drawable;
+    GC        gc;
+    XArc      *xarcs;
+    int       narcs;
+</pre>
+  </li>
+</ul>
+
+<h2><font color="#FF0000">Exposures</font></h2>
+
+<ul>
+  <li>the X server is responsible for displaying the information in a window, but the client
+    program executes the commands that specify the information to be drawn in that window </li>
+  <li>all the server has is the actual pixels in the window, it doesn't have any description
+    of the geometry </li>
+  <li>this works okay as long as the window is always visible and the user never changes it
+    size, problems occur when a window is covered and then uncovered, or the user changes the
+    size of a window </li>
+  <li>if a covered part of a window is uncovered, the X server must be able to draw the
+    freshly exposed part of the window, it needs to know the information to be drawn their </li>
+  <li>this could be handled in the server by keeping a copy of all the covered parts of
+    windows, the contents of the window could be stored in a pixmap and then copied to the
+    newly exposed part of the window, this has two problems: <ol>
+      <li>the pixmaps must be stored in the server, for colour displays this requires a
+        significant amount of memory </li>
+      <li>all graphics must be drawn in both the window and the pixmap, this slows down all
+        graphics operations by a factor of 2 </li>
+    </ol>
+  </li>
+  <li>some X servers do maintain copies of all windows, or have it as an option, but an
+    application program can't rely on this </li>
+  <li>if the window resized there is nothing that the server can do to help, when the window
+    is resized the contents of the window must be redrawn taking into account the new window
+    size, this often involves scaling the information that is displayed </li>
+  <li>in this case the client program must redraw the window, since it is the only program
+    that knows how to resize the information in the window </li>
+  <li>X has a general mechanism, called events, that can be used to signal when the user has
+    done something </li>
+  <li>these events are usually generated by the server and sent to one or more of the client
+    programs, these events inform the client programs that they must do something </li>
+  <li>as we will see later these events can be used for input processing or for sending
+    information from one client program to another </li>
+  <li>the X server generates an Expose event when the contents of a window must be redrawn </li>
+  <li>at the Xt level we can use event handlers to process the events that are sent from the X
+    server </li>
+  <li>an event handler is a procedure, that is like a callback procedure, that can be attached
+    to a widget, this procedure is used to process a particular type of event that is sent to
+    the window for that widget </li>
+  <li>event handlers have three parameters, the widget where the event occured, client data,
+    and an event structure, the contents of the event structure depends upon the type of the
+    event </li>
+  <li>an event handler procedure is declared in the following way: <pre>
+    void event_handler(widget, client_data, event, continue)
+    Widget         w;
+    XtPointer client_data;
+    XEvent         *event;
+    Boolean        *continue;
+</pre>
+  </li>
+  <li>the continue parameter is optional, this parameter is a pointer to a boolean variable
+    that is initialized to True before the event handler is called, if this variable is set to
+    false by the event handler the event will not be sent to any other event handlers, this is
+    normally not done, so most of the time this parameter is ignored </li>
+  <li>in the case of an exposure event, the event structure is: <pre>
+    typedef struct {
+	 int            type;
+	 unsigned long  serial;
+	 Bool           send_event;
+	 Display        *display;
+	 Window         window;
+	 int            x, y;
+	 int            width, height;
+	 int            count;
+    } XExposeEvent;
+</pre>
+  </li>
+  <li>most of the fields of this event structure will be discussed later, the last 5 fields
+    are the ones that are of interest to us now </li>
+  <li>each time part of a window is exposed an exposure event is generated, this event
+    contains a part of the window that is now visible, each of these regions is a rectangle
+    that is given by the x, y, width and height parameters </li>
+  <li>note that there may be several of these areas generated when part of the window is
+    exposed, so several exposure events may be generated by a single user action </li>
+  <li>the count field contains the number of exposure events that follow this exposure event,
+    if this field is zero there are no more events to follow this one, this is the last
+    exposure event for the user action </li>
+  <li>these fields allow us to optimize the redrawing operation </li>
+  <li>for example, we may only want to redraw if the count field is zero, at that point we
+    redraw the entire contents of the window, once instead of on each exposure event </li>
+  <li>similarly, the rectangle in the exposure event can be used to just redraw the part of
+    the window that has been exposed, this is used when redrawing the contents of the entire
+    window is quite expensive, we only need to update the part that needs to be changed </li>
+  <li>an event handler is added to a widget by calling the XtAddEventHandler procedure, the
+    declaration of this procedure is: <pre>
+    XtAddEventHandler(widget, event_mask, nonmaskable, proc,
+	      client_data)
+    Widget              w;
+    EventMask           event_mask;
+    Boolean             nonmaskable;
+    XtEventHandler      proc;
+    XtPointer           client_data;
+</pre>
+  </li>
+  <li>the event mask parameter specifies the events that the event handler processes, this
+    field is the or of the codes for these events </li>
+  <li>for the exposure event the event code is ExposureMask </li>
+  <li>the nonmaskable parameter is set to TRUE if the event handler is used for nonmaskable
+    events, we will talk about these later, for the time being FALSE should be used as the
+    value for this parameter </li>
+  <li>the parameter proc is the event handler procedure, and the parameter client_data is the
+    client data to be sent to the event handler </li>
+  <li>an event handler can be removed by calling the XtRemoveEventHandler procedure, which has
+    the following declaration: <pre>
+    XtRemoveEventHandler(widget, event_mask, nonmaskable, proc,
+	      client_data)
+    Widget              widget;
+    EventMask      event_mask;
+    Boolean             nonmaskable;
+    XtEventHandler      proc;
+    XtPointer      client_data;
+</pre>
+  </li>
+  <li>the parameters to this procedure are essentially the same as XtAddEventHandler </li>
+  <li>for each event in the event_mask, the event handler given by the proc parameter will no
+    longer be called and if the nonmaskable parameter is TRUE this event handler will no
+    longer be called for nonmaskable events </li>
+  <li>now that we can handle exposure events we can use a core widget for displaying graphical
+    information, the following example program shows how this can be done <pre>
+  /**************************************************************
+   *
+   *                    drawing.c
+   *
+   *  A simple program that shows how to set up a widget for
+   *  drawing, and how the Xlib drawing routines are used.
+   *
+   **************************************************************/
+
+  #include  &lt; X11/StringDefs.h &gt; 
+  #include  &lt; X11/Intrinsic.h &gt; 
+  #include  &lt; X11/Core.h &gt; 
+  #include  &lt; X11/Xaw/Box.h &gt; 
+  #include &quot;../lib/lib.h&quot;
+
+
+  void redisplay_event(w, client, ev)
+  Widget w;
+  XtPointer client;
+  XExposeEvent *ev; {
+
+       if(ev-&gt;count != 0)
+	    return;
+
+       XClearWindow(XtDisplay(w),XtWindow(w));
+
+       draw_graphics(w);
+
+  }
+
+
+  main(argc,argv)
+  int argc;
+  char **argv; {
+       Widget toplevel;
+       Widget box;
+       Widget drawing;
+       Widget quit;
+       int n;
+       Arg wargs[10];
+
+       toplevel = XtInitialize(argv[0],&quot;drawing&quot;, NULL, 0,
+		      &amp;argc, argv);
+
+       box = XtCreateManagedWidget(&quot;box&quot;, boxWidgetClass,
+		 toplevel, NULL, 0);
+
+       quit = quit_button(box);
+
+       drawing = XtCreateManagedWidget(&quot;drawing&quot;,coreWidgetClass,
+		 box, NULL, 0);
+
+       n = 0;
+       XtSetArg(wargs[n], XtNheight, 300); n++;
+       XtSetArg(wargs[n], XtNwidth, 300); n++;
+       XtSetValues(drawing, wargs, n);
+
+       XtAddEventHandler(drawing, ExposureMask, FALSE,
+		 redisplay_event, NULL);
+
+       XtRealizeWidget(toplevel);
+
+       XtMainLoop();
+
+  }
+
+
+  draw_graphics(w)
+  Widget w; {
+       Display *display;
+       Drawable window;
+       GC gc;
+
+       display = XtDisplay(w);
+       window = XtWindow(w);
+
+       gc = XCreateGC(display, window, NULL, NULL);
+       XSetForeground(display, gc, 1);
+       XSetBackground(display, gc, 0);
+
+       XDrawLine(display, window, gc, 10, 10, 100, 100);
+
+       XDrawRectangle(display, window, gc, 75, 110, 150, 100);
+
+       XDrawArc(display, window, gc, 75, 110, 150, 100, 45*64, 120*64);
+
+       XFreeGC(display, gc);
+
+  }
+
+</pre>
+  </li>
+</ul>
+
+<hr>
+
+<p><font color="#FF0000"><a href="http://ergodic.ugr.es/cphys/Unix/athena7.html"><img alt
+src="../unix/izq.gif" WIDTH="44" HEIGHT="44"></a>&nbsp; Go to Graphics Contexts &nbsp;&nbsp;&nbsp;
+<a href="http://ergodic.ugr.es/cphys/Unix/intro.html"><img alt src="../unix/up.gif" WIDTH="44"
+HEIGHT="44"></a>&nbsp;&nbsp; Go to Index &nbsp;&nbsp;&nbsp;&nbsp; <a
+href="http://ergodic.ugr.es/cphys/Unix/athena9.html"><img alt src="../unix/der.gif" WIDTH="44"
+HEIGHT="44"></a>&nbsp; Go to Events</font></p>
+</body>
+</html>
