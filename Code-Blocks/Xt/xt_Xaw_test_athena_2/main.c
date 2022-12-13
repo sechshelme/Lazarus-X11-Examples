@@ -18,7 +18,7 @@
   char *names[] = {
        "button1",
        "button2",
-       "button3",
+       "buttonbn3",
        "button4",
        "button5",
        "test",

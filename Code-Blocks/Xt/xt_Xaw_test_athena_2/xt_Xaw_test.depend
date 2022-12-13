@@ -33,3 +33,10 @@
 	<X11/Xaw/Command.h>
 	<stdio.h>
 
+1670863615 source:/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/Code-Blocks/Xt/xt_Xaw_test_athena_2/main.c
+	<X11/StringDefs.h>
+	<X11/Intrinsic.h>
+	<X11/Xaw/Box.h>
+	<X11/Xaw/Command.h>
+	<stdio.h>
+

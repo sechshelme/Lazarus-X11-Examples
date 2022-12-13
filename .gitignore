@@ -28,6 +28,10 @@ Project1
 backup/
 *.bak
 lib/
+Debug/
+debug/
+Release/
+release/
 
 # Application bundle for Mac OS
 *.app/
