@@ -22,7 +22,9 @@ int main(int argc, char **argv) {
   Arg args[] = {
     {XtNheight, 100},
     {XtNwidth, 200},
+    {XtNx, 200},
     {XtNlabel, "Label"},
+    {XtNborderWidth, 0},
     {XtNbackground, 0x888888},
   };
 
