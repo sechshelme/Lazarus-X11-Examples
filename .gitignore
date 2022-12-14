@@ -28,6 +28,8 @@ Project1
 backup/
 *.bak
 lib/
+
+# Codeblocks
 Debug/
 debug/
 Release/

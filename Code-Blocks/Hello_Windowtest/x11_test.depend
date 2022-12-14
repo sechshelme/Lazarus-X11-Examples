@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1668341769 source:/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/X11_test/Hello_Window/main.c
+	<stdio.h>
+	<stdlib.h>
+	<GL/glx.h>
+	<GL/gl.h>
+	<X11/X.h>
+	<X11/keysym.h>
+
+1670951332 source:/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/Code-Blocks/Hello_Windowtest/main.c
+	<X11/keysym.h>
+	<X11/Xlib.h>
+	<X11/Xutil.h>
+

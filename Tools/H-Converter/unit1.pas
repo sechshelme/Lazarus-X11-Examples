@@ -54,17 +54,19 @@ begin
   SynEdit1.Clear;
   SynEdit1.Lines.Add('#!/bin/bash');
   //  sl := FindAllFiles('/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/X11-Include/X11/Xaw', '*.h', True);
-  sl := FindAllFiles('/usr/include/X11', '*.h', True);
+//  sl := FindAllFiles('/usr/include/X11', '*.h', True);
+  sl := FindAllFiles('/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/Code-Blocks/Sourcen_X11/test', '*.h', True);
   //  SynEdit1.Lines := sl;
   for i := 0 to sl.Count - 1 do begin
     qpath := ExtractFileDir(sl[i]);
     qs := ExtractFileName(sl[i]);
     zs := Copy(qs, 1, Length(qs) - 2);
     zpath := Copy(qpath, 17);
-    zpath := '/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/X11-units' + zpath;
+    zpath := '/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/X11-units2';// + zpath;
 
     if not DirectoryExists(zpath) then begin
       MkDir(zpath);
+//      SynEdit1.Lines.Add('mkdir '+ zpath);
     end;
     SynEdit1.Lines.Add('echo --- ' + qpath + qs);
 

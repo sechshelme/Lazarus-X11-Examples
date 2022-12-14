@@ -37,7 +37,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="../X11-units/Xaw;../X11-units/Xmu;../X11-units"/>
+      <OtherUnitFiles Value="../../X11-units2"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
