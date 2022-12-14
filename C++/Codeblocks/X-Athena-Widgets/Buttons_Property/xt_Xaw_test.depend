@@ -47,3 +47,17 @@
 	<X11/Xaw/Command.h>
 	<stdio.h>
 
+1671025534 source:/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/C++/Codeblocks/X-Athena-Widgets/Buttons_1/main.c
+	<X11/StringDefs.h>
+	<X11/Intrinsic.h>
+	<X11/Xaw/Box.h>
+	<X11/Xaw/Command.h>
+	<stdio.h>
+
+1671029960 source:/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/C++/Codeblocks/X-Athena-Widgets/Buttons_Property/main.c
+	<X11/StringDefs.h>
+	<X11/Intrinsic.h>
+	<X11/Xaw/Box.h>
+	<X11/Xaw/Command.h>
+	<stdio.h>
+

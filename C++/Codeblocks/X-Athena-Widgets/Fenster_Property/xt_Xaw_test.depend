@@ -1,0 +1,61 @@
+# depslib dependency file v1.0
+1670776874 source:/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/Code-Blocks/xt_Xaw_test/main.c
+	<X11/Intrinsic.h>
+	<X11/StringDefs.h>
+	<X11/Shell.h>
+	<X11/Xaw/Form.h>
+	<X11/Xaw/Command.h>
+	<stdlib.h>
+
+1670777662 source:/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/Code-Blocks/xt_Xaw_test_2/main.c
+	<X11/Intrinsic.h>
+	<X11/StringDefs.h>
+	<X11/Shell.h>
+	<X11/Xaw/Form.h>
+	<X11/Xaw/Command.h>
+	<stdlib.h>
+	<X11/IntrinsicP.h>
+	<X11/ShellP.h>
+
+1670777973 source:/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/Code-Blocks/Xt/xt_Xaw_test_3/main.c
+	<X11/Intrinsic.h>
+	<X11/StringDefs.h>
+	<X11/Shell.h>
+	<X11/Xaw/Form.h>
+	<X11/Xaw/Command.h>
+	<stdlib.h>
+	<stdio.h>
+
+1670832061 source:/home/tux/Schreibtisch/Lazarus-X11-Tutorial-master/Code-Blocks/Xt/xt_Xaw_test_athena_2/main.c
+	<X11/StringDefs.h>
+	<X11/Intrinsic.h>
+	<X11/Xaw/Box.h>
+	<X11/Xaw/Command.h>
+	<stdio.h>
+
+1670863615 source:/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/Code-Blocks/Xt/xt_Xaw_test_athena_2/main.c
+	<X11/StringDefs.h>
+	<X11/Intrinsic.h>
+	<X11/Xaw/Box.h>
+	<X11/Xaw/Command.h>
+	<stdio.h>
+
+1671005109 source:/home/tux/Schreibtisch/Lazarus-X11-Tutorial-master/C++/Codeblocks/X-Athena-Widgets/Buttons/main.c
+	<X11/StringDefs.h>
+	<X11/Intrinsic.h>
+	<X11/Xaw/Box.h>
+	<X11/Xaw/Command.h>
+	<stdio.h>
+
+1671025534 source:/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/C++/Codeblocks/X-Athena-Widgets/Buttons_1/main.c
+	<X11/StringDefs.h>
+	<X11/Intrinsic.h>
+	<X11/Xaw/Box.h>
+	<X11/Xaw/Command.h>
+	<stdio.h>
+
+1671028158 source:/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/C++/Codeblocks/X-Athena-Widgets/Erstes_Fenster/main.c
+	<X11/StringDefs.h>
+	<X11/Intrinsic.h>
+	<X11/Xaw/Command.h>
+
