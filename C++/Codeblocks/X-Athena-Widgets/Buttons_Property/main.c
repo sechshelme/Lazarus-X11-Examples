@@ -15,41 +15,48 @@ void quit(Widget w, XtPointer *client, XtPointer call) {
 }
 
 int main(int argc, char **argv) {
-    Widget toplevel, box, command;
+    Widget toplevel, box, button1, button2;
     Arg  wargs[10];
-
+    int i;
 
     toplevel = XtInitialize("Mein Fenster", "simple", NULL, 0, &argc, argv);
 
+    // --- Button Gruppe
     box = XtCreateManagedWidget("Button Gruppe", boxWidgetClass, toplevel, NULL, 0);
 
-    command = XtCreateManagedWidget("Hello World !", commandWidgetClass, box, NULL, 0);
-    XtAddCallback(command,XtNcallback,hello, NULL);
+    i = 0;
+    XtSetArg(wargs[i], XtNlabel, "Box"); i++;
+    XtSetArg(wargs[i], XtNbackground, 0x88FF88); i++;
+    XtSetArg(wargs[i], XtNforeground, 0xFFFFFF); i++;
+    XtSetValues(box, wargs, i);
 
-    command = XtCreateManagedWidget("Programm beenden", commandWidgetClass, box, NULL, 0);
-    XtAddCallback(command, XtNcallback, quit, NULL);
+    // --- Button1
+    button1 = XtCreateManagedWidget("Hello", commandWidgetClass, box, NULL, 0);
+    XtAddCallback(button1, XtNcallback, hello, NULL);
 
-    int i = 0;
-    XtSetArg(wargs[i], XtNwidth, 320);
-    i++;
-
-    XtSetArg(wargs[i], XtNheight, 200);
-    i++;
-
-//    XtSetArg(wargs[i], XtNlabel, "Click = Quit");
-//    i++;
-
-    XtSetArg(wargs[i], XtNbackground, 0xFF);
-    i++;
-
-    XtSetArg(wargs[i], XtNforeground, 0xFFFFFF);
-    i++;
-
-    XtSetValues(command, wargs, i);
+    i = 0;
+    XtSetArg(wargs[i], XtNwidth, 75); i++;
+    XtSetArg(wargs[i], XtNheight, 25); i++;
+    XtSetArg(wargs[i], XtNlabel, "Hallo"); i++;
+    XtSetArg(wargs[i], XtNbackground, 0x8888FF); i++;
+    XtSetArg(wargs[i], XtNforeground, 0xFFFFFF); i++;
+    XtSetValues(button1, wargs, i);
 
 
+    // --- Button2
+    button2 = XtCreateManagedWidget("quit", commandWidgetClass, box, NULL, 0);
+    XtAddCallback(button2, XtNcallback, quit, NULL);
+
+    i = 0;
+    XtSetArg(wargs[i], XtNwidth, 75); i++;
+    XtSetArg(wargs[i], XtNheight, 25); i++;
+    XtSetArg(wargs[i], XtNlabel, "Beenden"); i++;
+    XtSetArg(wargs[i], XtNbackground, 0xFF8888); i++;
+    XtSetArg(wargs[i], XtNforeground, 0xFFFFFF); i++;
+    XtSetValues(button2, wargs, i);
+
+    // --- Alles inizialisieren
     XtRealizeWidget(toplevel);
-
     XtMainLoop();
 }
 
