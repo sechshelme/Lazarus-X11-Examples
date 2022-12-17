@@ -91,16 +91,9 @@ begin
 end;
 
 procedure TX11Component.SetHeight(AHeight: cint);
-var
-  h: cint;
 begin
   if FHeight <> AHeight then begin
-    if AHeight < 1 then begin
-      h := 1;
-    end else begin
-      h := AHeight;
-    end;
-    XResizeWindow(dis, Window, FWidth, h);
+    XResizeWindow(dis, Window, FWidth, AHeight);
     DoOnResize(FWidth, AHeight);
   end;
 end;
@@ -114,17 +107,9 @@ begin
 end;
 
 procedure TX11Component.SetWidth(AWidth: cint);
-var
-  w: cint;
 begin
   if FWidth <> AWidth then begin
-    if AWidth < 1 then begin
-      w := 1;
-    end else begin
-      w := AWidth;
-    end;
-    FWidth := AWidth;
-    XResizeWindow(dis, Window, w, FHeight);
+    XResizeWindow(dis, Window, AWidth, FHeight);
     DoOnResize(AWidth, FHeight);
   end;
 end;
@@ -189,7 +174,7 @@ begin
       FWindow := XCreateSimpleWindow(dis, RootWin, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
       XSelectInput(dis, FWindow, EventMask or StructureNotifyMask);
     end else begin
-      FWindow := XCreateSimpleWindow(dis, TheOwner.Window, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
+      FWindow := XCreateSimpleWindow(dis, TheOwner.Window, 0, 0, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
       XSelectInput(dis, FWindow, EventMask);
     end;
   end else begin
@@ -461,8 +446,8 @@ begin
       if (H <> FHeight) or (W <> FWidth) or (T <> FTop) or (L <> FLeft) then  begin
         FLeft := L;
         FTop := T;
-        DoOnResize(W, H);
         XMoveResizeWindow(dis, Window, L, T, W, H);
+        DoOnResize(W, H);
       end;
     end;
   end;

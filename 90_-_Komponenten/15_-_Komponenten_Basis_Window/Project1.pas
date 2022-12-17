@@ -22,7 +22,8 @@ uses
   X11Desktop,
   MyWindow,
   X11Edit,
-  X11Utils;
+  X11Utils,
+  X11Scrollbar;
 
 type
 
@@ -30,10 +31,13 @@ type
 
   TMyDesktop = class(TX11Desktop)
   private
-    Panel, PanelSub1, PanelSub2: TX11Panel;
+    Panel, PanelButtons, PanelSub2, PanelEdit, PanelScrollBar: TX11Panel;
     Button: array[0..3] of TX11Button;
     Edit: array[0..3] of TX11Edit;
-    NewButton, CloseButton, OutButton: TX11Button;
+    NewButton, CloseButton, OutpuButton: TX11Button;
+    ScrollBar: record
+      r, g, b: TX11ScrollBar;
+      end;
 
     SubWin: TX11Window;
     SubWinButton: TX11Button;
@@ -44,6 +48,7 @@ type
     procedure NewButtonClick(Sender: TObject);
     procedure NewButtonPaint(Sender: TObject; ADisplay: PDisplay; AWindowwin: TDrawable; AGC: TGC);
     procedure OutButtonClick(Sender: TObject);
+    procedure ScrollBarrChange(Sender: TObject);
     procedure SubWinButtonClick(Sender: TObject);
   protected
     procedure DoOnEventHandle(var Event: TXEvent); override;
@@ -92,12 +97,19 @@ var
     XDrawRectangle(ADisplay, AWindowwin, AGC, 5, 5, 50, 50);
   end;
 
-procedure TMyDesktop.OutButtonClick(Sender: TObject);
-var
-  i: Integer;
+  procedure TMyDesktop.OutButtonClick(Sender: TObject);
+  var
+    i: integer;
+  begin
+    for i := 0 to Length(Edit) - 1 do begin
+      WriteLn(Edit[i].Text);
+    end;
+    WriteLn();
+  end;
+
+procedure TMyDesktop.ScrollBarrChange(Sender: TObject);
 begin
-  for i:=0 to Length(Edit)-1 do WriteLn(Edit[i].Text);
-  WriteLn();
+  WriteLn('Scrollbar geklickt: ', ScrollBar.r.Position);
 end;
 
   procedure TMyDesktop.SubWinButtonClick(Sender: TObject);
@@ -109,7 +121,6 @@ end;
   var
     i: integer;
     s: string;
-    PanelSub3: TX11Panel;
   begin
     inherited Create(TheOwner);
     Color := $FF;
@@ -139,13 +150,14 @@ end;
       Left := 10;
       Top := 10;
       Width := Self.Width - 20;
-      Height := 250;
+      Height := 350;
       BorderWidth := 4;
       Anchors := [akTop, akLeft, akRight, akBottom];
     end;
 
-    PanelSub1 := TX11Panel.Create(Panel);
-    with PanelSub1 do begin
+    // --- 4 Buttons
+    PanelButtons := TX11Panel.Create(Panel);
+    with PanelButtons do begin
       Color := $999999;
       Left := 10;
       Top := 10;
@@ -155,30 +167,8 @@ end;
       Anchors := [akTop, akLeft];
     end;
 
-    PanelSub2 := TX11Panel.Create(Panel);
-    with PanelSub2 do begin
-      Color := $999999;
-      Left := 390;
-      Top := 10;
-      Width := Panel.Width - PanelSub1.Width - 30;
-      Height := 100 - 20;
-      Bevel := bvLowred;
-      Anchors := [akTop, akLeft, akRight];
-    end;
-
-    PanelSub3 := TX11Panel.Create(Panel);
-    with PanelSub3 do begin
-      Color := $999999;
-      Left := 10;
-      Top := 100;
-      Width := Panel.Width - 20;
-      Height := Panel.Height - PanelSub2.Height - 30;
-      Bevel := bvLowred;
-      Anchors := [akTop, akLeft, akRight, akBottom];
-    end;
-
     for i := 0 to Length(Button) - 1 do begin
-      Button[i] := TX11Button.Create(PanelSub1);
+      Button[i] := TX11Button.Create(PanelButtons);
       Button[i].Width := 80;
       Button[i].Left := 10 + i * (Button[0].Width + 5);
       Button[i].Top := 10;
@@ -193,8 +183,32 @@ end;
     Button[2].Color := $88FF88;
     Button[3].Color := $FF8888;
 
+    PanelSub2 := TX11Panel.Create(Panel);
+    with PanelSub2 do begin
+      Color := $999999;
+      Left := 390;
+      Top := 10;
+      Width := Panel.Width - PanelButtons.Width - 30;
+      Height := 100 - 20;
+      Bevel := bvLowred;
+      Anchors := [akTop, akLeft, akRight];
+    end;
+
+
+    //--- Edit Felder
+    PanelEdit := TX11Panel.Create(Panel);
+    with PanelEdit do begin
+      Color := $999999;
+      Left := 10;
+      Top := 100;
+      Width := Panel.Width - 20;
+      Height := 130;
+      Bevel := bvLowred;
+      Anchors := [akTop, akLeft, akRight, akBottom];
+    end;
+
     for i := 0 to Length(Edit) - 1 do begin
-      Edit[i] := TX11Edit.Create(PanelSub3);
+      Edit[i] := TX11Edit.Create(PanelEdit);
       //  if Parent=nil then WriteLn('nil');
       Edit[i].Width := Edit[i].Parent.Width - 20;
       Edit[i].Left := 10;
@@ -208,6 +222,52 @@ end;
     Button[2].Color := $88FF88;
     Button[3].Color := $FF8888;
 
+    // ScrollBars
+    PanelScrollBar := TX11Panel.Create(Panel);
+    with PanelScrollBar do begin
+      Color := $999999;
+      Left := 10;
+      Top := 240;
+      Width := Panel.Width - 20;
+      Height := Panel.Height - PanelButtons.Height - PanelEdit.Height - 45;
+      Bevel := bvLowred;
+      Anchors := [akLeft, akRight, akBottom];
+    end;
+
+    ScrollBar.r := TX11ScrollBar.Create(PanelScrollBar);
+    with ScrollBar.r do begin
+      Color := $8888FF;
+      Left := 10;
+      Top := 10;
+//      Width := Parent.Width - 20;
+      Height := 25;
+      Anchors := [akLeft, akRight, akTop];
+      OnChange:=@ScrollBarrChange;
+    end;
+
+    ScrollBar.g := TX11ScrollBar.Create(PanelScrollBar);
+    with ScrollBar.g do begin
+      Color := $88FF88;
+      Left := 10;
+      Top := 10 + 25;
+      Width := Parent.Width - 20;
+      Height := 25;
+      Anchors := [akLeft, akRight, akTop];
+      OnChange:=@ScrollBarrChange;
+    end;
+
+    ScrollBar.b := TX11ScrollBar.Create(PanelScrollBar);
+    with ScrollBar.b do begin
+      Color := $FF8888;
+      Left := 10;
+      Top := 10 + 50;
+      Width := Parent.Width - 20;
+      Height := 25;
+      Anchors := [akLeft, akRight, akTop];
+      OnChange:=@ScrollBarrChange;
+    end;
+
+    // --- Divers Buttons
     CloseButton := TX11Button.Create(Self);
     with CloseButton do begin
       Top := Panel.Height + 20;
@@ -224,7 +284,7 @@ end;
     NewButton := TX11Button.Create(Self);
     with NewButton do begin
       Anchors := [akRight, akBottom];
-      Top := Panel.Height + 20;
+      Top := CloseButton.Top;
       Left := 250;
       Height := 50;
       Width := 120;
@@ -233,16 +293,17 @@ end;
       OnPaint := @NewButtonPaint;
     end;
 
-    OutButton := TX11Button.Create(Self);
-    with OutButton do begin
+    OutpuButton := TX11Button.Create(Self);
+    with OutpuButton do begin
       Anchors := [akRight, akBottom];
-      Top := Panel.Height + 20;
+      Top := CloseButton.Top;
       Left := 400;
       Height := 50;
       Width := 120;
       Caption := 'Write';
-      OnClick :=@OutButtonClick;
+      OnClick := @OutButtonClick;
     end;
+
   end;
 
   destructor TMyDesktop.Destroy;
