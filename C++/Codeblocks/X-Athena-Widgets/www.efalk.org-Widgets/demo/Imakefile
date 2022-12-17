@@ -1,0 +1,14 @@
+CDEBUGFLAGS = -g -DDEBUG
+
+LOCAL_LIBRARIES = XawClientLibs
+
+SRCS = sampler.c Gauge.c
+OBJS = $(SRCS:.c=.o)
+
+MANPATH = /usr/local/man
+BINDIR = /usr/local/bin
+
+
+
+ComplexProgramTarget(sampler)
+

@@ -12,15 +12,6 @@
        *(rs->variable) = rs->value;
   }
 
-//    Arg args[] = {
-//    {XtNheight, 100},
-//    {XtNwidth, 200},
-//    {XtNx, 200},
-//    {XtNlabel, "Label"},
-//    {XtNborderWidth, 0},
-//    {XtNbackground, 0x888888},
-//  };
-
   Widget radio_box(Widget parent, char *names[], int *variable, int initial)
   {
        struct    radio_struct *rs;
