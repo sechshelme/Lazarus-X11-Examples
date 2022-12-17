@@ -36,13 +36,13 @@ implementation
 procedure TX11ScrollBar.FrontButtonClick(Sender: TObject);
 begin
   Dec(FPosition);
-  if OnChange<>nil then OnChange(Sender);
+  if OnChange<>nil then OnChange(Self);
 end;
 
 procedure TX11ScrollBar.BackButtonClick(Sender: TObject);
 begin
   Inc(FPosition);
-  if OnChange<>nil then OnChange(Sender);
+  if OnChange<>nil then OnChange(Self);
 end;
 
 constructor TX11ScrollBar.Create(TheOwner: TX11Component);

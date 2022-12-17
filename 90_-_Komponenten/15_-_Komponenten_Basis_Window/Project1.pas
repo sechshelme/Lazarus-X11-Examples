@@ -107,10 +107,18 @@ var
     WriteLn();
   end;
 
-procedure TMyDesktop.ScrollBarrChange(Sender: TObject);
-begin
-  WriteLn('Scrollbar geklickt: ', ScrollBar.r.Position);
-end;
+  procedure TMyDesktop.ScrollBarrChange(Sender: TObject);
+  begin
+    if Sender = ScrollBar.r then  begin
+      WriteLn('Scrollbar rot geklickt: ', ScrollBar.r.Position);
+    end;
+    if Sender = ScrollBar.g then  begin
+      WriteLn('Scrollbar grün geklickt: ', ScrollBar.g.Position);
+    end;
+    if Sender = ScrollBar.b then  begin
+      WriteLn('Scrollbar blau geklickt: ', ScrollBar.b.Position);
+    end;
+  end;
 
   procedure TMyDesktop.SubWinButtonClick(Sender: TObject);
   begin
@@ -239,10 +247,10 @@ end;
       Color := $8888FF;
       Left := 10;
       Top := 10;
-//      Width := Parent.Width - 20;
+      //      Width := Parent.Width - 20;
       Height := 25;
       Anchors := [akLeft, akRight, akTop];
-      OnChange:=@ScrollBarrChange;
+      OnChange := @ScrollBarrChange;
     end;
 
     ScrollBar.g := TX11ScrollBar.Create(PanelScrollBar);
@@ -253,7 +261,7 @@ end;
       Width := Parent.Width - 20;
       Height := 25;
       Anchors := [akLeft, akRight, akTop];
-      OnChange:=@ScrollBarrChange;
+      OnChange := @ScrollBarrChange;
     end;
 
     ScrollBar.b := TX11ScrollBar.Create(PanelScrollBar);
@@ -264,7 +272,7 @@ end;
       Width := Parent.Width - 20;
       Height := 25;
       Anchors := [akLeft, akRight, akTop];
-      OnChange:=@ScrollBarrChange;
+      OnChange := @ScrollBarrChange;
     end;
 
     // --- Divers Buttons
