@@ -43,10 +43,15 @@ type
     EventMask = KeyPressMask or ExposureMask;
   var
     xswa: TXSetWindowAttributes;
-    size_hints: TXSizeHints;
+    ANormalhints: TXSizeHints;
+
     RootWin: TWindow;
     FWidth: cuint = 320;
     FHeight: cuint = 240;
+
+    AWMHints: TXWMHints;
+    AClassHints: TXClassHint;
+    iconname: PXTextProperty;
   begin
     inherited Create;
 
@@ -67,7 +72,7 @@ type
     win := XCreateSimpleWindow(dis, RootWin, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
     XSelectInput(dis, win, EventMask or StructureNotifyMask);
 
-    with  size_hints do begin
+    with  ANormalhints do begin
       flags := PPosition or PSize or PPosition or PMinSize or PMaxSize or PResizeInc or PWinGravity;
       flags := PAllHints;
       Width := FWidth;
@@ -80,10 +85,13 @@ type
       max_height := 480;
       width_inc := 16;
       height_inc := 16;
-      win_gravity := $FF;
+      win_gravity := $0;
     end;
 
-    XSetStandardProperties(dis, win, 'noname', 'noname', None, nil, 0, @size_hints);
+    XSetStandardProperties(dis, win, 'noname', 'noname', None, nil, 0, @ANormalhints);
+//XSetZoomHints(dis,win,@ANormalhints);
+
+//    XSetWMProperties(dis,win,nil,nil,nil,0,@ANormalhints,@AWMHints,@AClassHints);
 
     XMapWindow(dis, win);
     CrateImage;
