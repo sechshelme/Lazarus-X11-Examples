@@ -32,6 +32,8 @@ type
   TMyDesktop = class(TX11Desktop)
   private
     Panel, PanelButtons, PanelSub2, PanelEdit, PanelScrollBar: TX11Panel;
+    IdlePanel: TX11Panel;
+    ColorPanel: TX11Panel;
     Button: array[0..3] of TX11Button;
     Edit: array[0..3] of TX11Edit;
     NewButton, CloseButton, OutpuButton: TX11Button;
@@ -44,6 +46,7 @@ type
     procedure ButtonClick(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
     procedure CloseButtonMouseMove(Sender: TObject; X, Y: integer);
+    procedure IdlePanelIdle(Sender: TObject);
     procedure MyDesktopKeyPress(Sender: TObject; UTF8Char: TUTF8Char);
     procedure NewButtonClick(Sender: TObject);
     procedure NewButtonPaint(Sender: TObject; ADisplay: PDisplay; AWindowwin: TDrawable; AGC: TGC);
@@ -77,6 +80,11 @@ var
   procedure TMyDesktop.CloseButtonMouseMove(Sender: TObject; X, Y: integer);
   begin
     //    WriteLn('move: ', x, '  ', y);
+  end;
+
+  procedure TMyDesktop.IdlePanelIdle(Sender: TObject);
+  begin
+    IdlePanel.Color := Random($ffffff);
   end;
 
   procedure TMyDesktop.MyDesktopKeyPress(Sender: TObject; UTF8Char: TUTF8Char);
@@ -138,6 +146,7 @@ var
 
     Caption := 'Mein Fenster';
 
+    // --- 2. Fenster
     SubWin := TX11Window.Create(Self, True);
     with SubWin do begin
       Height := 45;
@@ -152,7 +161,7 @@ var
       OnClick := @SubWinButtonClick;
     end;
 
-
+    // Grosses Panel
     Panel := TX11Panel.Create(Self);
     with Panel do begin
       Left := 10;
@@ -191,6 +200,7 @@ var
     Button[2].Color := $88FF88;
     Button[3].Color := $FF8888;
 
+    // Panel rechts-oben
     PanelSub2 := TX11Panel.Create(Panel);
     with PanelSub2 do begin
       Color := $999999;
@@ -200,6 +210,30 @@ var
       Height := 100 - 20;
       Bevel := bvLowred;
       Anchors := [akTop, akLeft, akRight];
+    end;
+
+    IdlePanel := TX11Panel.Create(PanelSub2);
+    with IdlePanel do begin
+      Name:='IdlePanel';
+      Left := 10;
+      Top := 10;
+      Width := PanelSub2.Width div 2 - 20;
+      Height := PanelSub2.Height - 20;
+      Bevel := bvLowred;
+      Anchors := [akTop, akLeft, akRight, akBottom];
+      OnIdle := @IdlePanelIdle;
+    end;
+
+    ColorPanel := TX11Panel.Create(PanelSub2);
+    with ColorPanel do begin
+      Name:='ColorPanel';
+      Left :=  PanelSub2.Width div 2 + 10;
+      Top := 10;
+      Width := PanelSub2.Width div 2 - 20;
+      Height := PanelSub2.Height - 20;
+      Bevel := bvLowred;
+      Anchors := [akTop, akLeft, akRight, akBottom];
+      OnIdle := @IdlePanelIdle;
     end;
 
 

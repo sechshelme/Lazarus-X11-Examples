@@ -24,19 +24,21 @@ type
 
     FOnPaint: TPaintEvent;
     FOnClick: TNotifyEvent;
+    FOnMouseDown: TEvent;
+    FOnMouseUp: TEvent;
     FOnMouseMove: TMouseMoveEvent;
     FOnKeyPress: TKeyPressEvent;
     FOnKeyDown: TEvent;
+    FOnIdle: TNotifyEvent;
 
     procedure SetCaption(AValue: string);
     procedure SetColor(AColor: culong);
+    procedure SetName(AValue: string);
     procedure SetWindowBorderWidth(AWindowBorderWidth: cint);
     procedure SetHeight(AHeight: cint);
     procedure SetTop(ATop: cint);
     procedure SetLeft(ALeft: cint);
     procedure SetWidth(AWidth: cint);
-
-    procedure DeleteActiveFocused;
   protected
     dis: PDisplay; static;
     scr: cint; static;
@@ -51,15 +53,17 @@ type
     procedure DoOnEventHandle(var Event: TXEvent); virtual;
     procedure DoOnPaint; virtual;
     procedure DoOnClick; virtual;
+    procedure DoOnMouseDown(var Event: TXEvent); virtual;
+    procedure DoOnMouseUp(var Event: TXEvent); virtual;
     procedure DoOnKeyPress(UTF8Char: TUTF8Char); virtual;
     procedure DoOnKeyDown(var Event: TXEvent); virtual;
-    procedure CursorOn; virtual;
-    procedure CursorOff; virtual;
     procedure DoOnResize(AWidth, AHeight: cint); virtual;
+    procedure DoOnIdle; virtual;
+    procedure DeleteActiveFocused; virtual;
   public
     property Window: TDrawable read FWindow;
     property Anchors: TAnchors read FAnchors write FAnchors;
-    property Name: string read FName write FName;
+    property Name: string read FName write SetName;
     property Caption: string read FCaption write SetCaption;
     property Parent: TX11Component read FParent;
     property WindowBorderWidth: cint read FWindowBorderWidth write SetWindowBorderWidth;
@@ -69,10 +73,13 @@ type
     property Width: cint read FWidth write SetWidth;
     property Height: cint read FHeight write SetHeight;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
+    property OnMouseDown: TEvent read FOnMouseDown write FOnMouseDown;
+    property OnMouseUp: TEvent read FOnMouseUp write FOnMouseUp;
+    property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     property OnPaint: TPaintEvent read FOnPaint write FOnPaint;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnKeyDown: TEvent read FOnKeyDown write FOnKeyDown;
-    property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
+    property OnIdle: TNotifyEvent read FOnIdle write FOnIdle;
     constructor Create(TheOwner: TX11Component; NewWindow: boolean = False);
     destructor Destroy; override;
     procedure Close;
@@ -125,8 +132,17 @@ end;
 procedure TX11Component.SetCaption(AValue: string);
 begin
   if FCaption <> AValue then begin
-    XStoreName(dis, Window, PChar(AValue));
+    //    XStoreName(dis, Window, PChar(AValue));
     FCaption := AValue;
+    DoOnPaint;
+  end;
+end;
+
+procedure TX11Component.SetName(AValue: string);
+begin
+  if FName <> AValue then begin
+    XStoreName(dis, Window, PChar(AValue));
+    FName := AValue;
   end;
 end;
 
@@ -135,6 +151,7 @@ begin
   if FColor <> AColor then begin
     FColor := AColor;
     XSetBackground(dis, gc, AColor);
+    DoOnPaint;
   end;
 end;
 
@@ -147,22 +164,20 @@ begin
   inherited Create;
 
   FParent := TheOwner;
-  OnPaint := nil;
-  OnClick := nil;
-  OnMouseMove := nil;
-  OnKeyPress := nil;
-  FOnKeyDown := nil;
+  //OnPaint := nil;
+  //OnClick := nil;
+  //OnMouseMove := nil;
+  //OnKeyPress := nil;
+  //FOnKeyDown := nil;
 
   FColor := $BBBBBB;
   Anchors := [akLeft, akTop];
-  FLeft := 0;
-  FTop := 0;
+  //  FLeft := 0;
+  //  FTop := 0;
   FWidth := 320;
   FHeight := 200;
 
-  //  ActiveComponent := -1;
-
-  Name := 'X11Component';
+  FName := UnitName;
 
   if TheOwner <> nil then begin
     len := Length(TheOwner.ComponentList);
@@ -195,7 +210,7 @@ begin
 
   XSetStandardProperties(dis, Window, 'noname', 'noname', None, nil, 0, @size_hints);
 
-  XStoreName(dis, FWindow, 'none');
+  XStoreName(dis, FWindow, PChar(FName));
   XSetBackground(dis, gc, $FF);
   XSetForeground(dis, gc, $FF00);
 
@@ -312,27 +327,30 @@ begin
       end;
     end;
     ButtonPress: begin
-      if (Event.xbutton.window = Window) and IsFocusable then begin
-        tempParent := Self;
-        while tempParent.Parent <> nil do begin
-          tempParent := tempParent.Parent;
+      if (Event.xbutton.window = Window) then begin
+        DoOnMouseDown(Event);
+        if IsFocusable then begin
+          tempParent := Self;
+          while tempParent.Parent <> nil do begin
+            tempParent := tempParent.Parent;
+          end;
+          tempParent.DeleteActiveFocused;
+          IsFocused := True;
+          tempParent := Self;
+          while tempParent.Parent <> nil do begin
+            tempParent.IsFocused := True;
+            tempParent := tempParent.Parent;
+          end;
+          XMapRaised(dis, Event.xbutton.window);
+          if IsInRegion then begin
+            IsMouseDown := True;
+            IsButtonDown := True;
+          end else begin
+            IsMouseDown := False;
+            IsButtonDown := False;
+          end;
+          DoOnPaint;
         end;
-        tempParent.DeleteActiveFocused;
-        IsFocused := True;
-        tempParent := Self;
-        while tempParent.Parent <> nil do begin
-          tempParent.IsFocused := True;
-          tempParent := tempParent.Parent;
-        end;
-        XMapRaised(dis, Event.xbutton.window);
-        if IsInRegion then begin
-          IsMouseDown := True;
-          IsButtonDown := True;
-        end else begin
-          IsMouseDown := False;
-          IsButtonDown := False;
-        end;
-        DoOnPaint;
       end;
     end;
     MotionNotify: begin
@@ -352,6 +370,7 @@ begin
     end;
     ButtonRelease: begin
       if Event.xbutton.window = Window then begin
+        DoOnMouseUp(Event);
         if IsMouseDown and IsInRegion then begin
           DoOnClick;
         end;
@@ -366,14 +385,28 @@ end;
 procedure TX11Component.DoOnPaint;
 begin
   if OnPaint <> nil then begin
-    OnPaint(self, dis, Window, gc);
+    OnPaint(Self, dis, Window, gc);
   end;
 end;
 
 procedure TX11Component.DoOnClick;
 begin
   if OnClick <> nil then begin
-    OnClick(self);
+    OnClick(Self);
+  end;
+end;
+
+procedure TX11Component.DoOnMouseDown(var Event: TXEvent);
+begin
+  if OnMouseDown <> nil then begin
+    OnMouseDown(Self, Event);
+  end;
+end;
+
+procedure TX11Component.DoOnMouseUp(var Event: TXEvent);
+begin
+  if OnMouseUp <> nil then begin
+    OnMouseUp(Self, Event);
   end;
 end;
 
@@ -391,21 +424,15 @@ begin
   end;
 end;
 
-procedure TX11Component.CursorOn;
+procedure TX11Component.DoOnIdle;
 var
   i: integer;
 begin
-  for i := 0 to Length(ComponentList) - 1 do begin
-    ComponentList[i].CursorOn;
+  if OnIdle <> nil then begin
+    OnIdle(self);
   end;
-end;
-
-procedure TX11Component.CursorOff;
-var
-  i: integer;
-begin
   for i := 0 to Length(ComponentList) - 1 do begin
-    ComponentList[i].CursorOff;
+    ComponentList[i].DoOnIdle;
   end;
 end;
 
@@ -460,7 +487,7 @@ begin
   IsFocused := False;
   for i := 0 to Length(ComponentList) - 1 do begin
     ComponentList[i].DeleteActiveFocused;
-    ComponentList[i].CursorOff;
+    //    ComponentList[i].CursorOff;
   end;
 end;
 

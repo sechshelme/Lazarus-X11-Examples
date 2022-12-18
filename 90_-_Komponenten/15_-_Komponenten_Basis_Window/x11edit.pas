@@ -20,13 +20,15 @@ type
     CursorPos, FontWidht, ofsx, EditWidht: integer;
     function Gettext: string;
     procedure SetText(const AValue: string);
+    procedure CursorOn;
+    procedure CursorOff;
   protected
     procedure DoOnPaint; override;
     procedure DoOnKeyPress(UTF8Char: TUTF8Char); override;
     procedure DoOnKeyDown(var Event: TXEvent); override;
-    procedure CursorOn; override;
-    procedure CursorOff; override;
     procedure DoOnResize(AWidth, AHeight: cint); override;
+    procedure DeleteActiveFocused; override;
+    procedure DoOnIdle; override;
   public
     property Text: string read Gettext write SetText;
     constructor Create(TheOwner: TX11Component);
@@ -79,12 +81,12 @@ begin
   if CursorPos + ofsx < 1 then begin
     ofsx := 1 - CursorPos;
   end;
-//
-//  Write('ofsx: ', ofsx);
-//  Write('  curp: ', CursorPos);
-//  Write('  wid: ', EditWidht);
-//  WriteLn();
-//
+  //
+  //  Write('ofsx: ', ofsx);
+  //  Write('  curp: ', CursorPos);
+  //  Write('  wid: ', EditWidht);
+  //  WriteLn();
+  //
 
   XSetForeground(dis, gc, $000000);
   XDrawString16(dis, Window, gc, Left + ofsx * FontWidht, Height - BorderWidth - 2, @Char2BArr[0], Length(Char2BArr));
@@ -179,7 +181,6 @@ end;
 
 procedure TX11Edit.CursorOn;
 begin
-  inherited CursorOn;
   if IsFocused then begin
     XSetForeground(dis, gc, $000000);
     XFillRectangle(dis, Window, gc, (CursorPos + ofsx) * FontWidht, Height - BorderWidth - 0, FontWidht, 2);
@@ -188,7 +189,6 @@ end;
 
 procedure TX11Edit.CursorOff;
 begin
-  inherited CursorOff;
   XSetForeground(dis, gc, Color);
   XFillRectangle(dis, Window, gc, (CursorPos + ofsx) * FontWidht, Height - BorderWidth - 0, FontWidht, 2);
 end;
@@ -198,6 +198,28 @@ begin
   inherited DoOnResize(AWidth, AHeight);
   EditWidht := AWidth div FontWidht - 1;
   WriteLn(EditWidht);
+end;
+
+procedure TX11Edit.DeleteActiveFocused;
+begin
+  inherited DeleteActiveFocused;
+  CursorOff;
+end;
+
+procedure TX11Edit.DoOnIdle;
+const
+  maxZ = 40;
+  z: integer = 0;
+begin
+  inherited DoOnIdle;
+  Inc(z);
+  if z > maxZ * 3 then  begin
+    CursorOff;
+    z := 0;
+  end;
+  if z > maxZ then  begin
+    CursorOn;
+  end;
 end;
 
 constructor TX11Edit.Create(TheOwner: TX11Component);

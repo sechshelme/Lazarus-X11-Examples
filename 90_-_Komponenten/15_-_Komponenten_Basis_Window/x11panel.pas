@@ -40,7 +40,7 @@ begin
   ColLeftTop := $EEEEEE;
   FBorderWidth := 3;
   Bevel := bvRaised;
-  Name:='Panel';
+//  Name:='Panel';
 end;
 
 procedure TX11Panel.DoOnPaint;

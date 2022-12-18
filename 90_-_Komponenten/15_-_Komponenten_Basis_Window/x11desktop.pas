@@ -58,7 +58,6 @@ begin
   end;
   // End UTF8 Key
 
-
   scr := DefaultScreen(dis);
   //  gc := DefaultGC(dis, scr);
   RootWin := RootWindow(dis, scr);
@@ -111,11 +110,8 @@ begin
 end;
 
 procedure TX11Desktop.Run;
-const
-  maxZ = 40;
 var
   Event: TXEvent;
-  z: integer = 0;
 begin
   // Ereignisschleife
   while not AppClose do begin
@@ -124,14 +120,7 @@ begin
       DoOnEventHandle(Event);
     end else begin
       wait;
-      Inc(z);
-      if z > maxZ * 3 then  begin
-        CursorOff;
-        z := 0;
-      end;
-      if z > maxZ then  begin
-        CursorOn;
-      end;
+      DoOnIdle;
     end;
   end;
 end;
