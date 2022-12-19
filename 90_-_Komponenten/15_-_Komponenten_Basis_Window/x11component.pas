@@ -23,6 +23,7 @@ type
     FHeight, FLeft, FTop, FWidth, FWindowBorderWidth: cint;
 
     FOnPaint: TPaintEvent;
+    FOnResize: TNotifyEvent;
     FOnClick: TNotifyEvent;
     FOnMouseDown: TEvent;
     FOnMouseUp: TEvent;
@@ -77,6 +78,7 @@ type
     property OnMouseUp: TEvent read FOnMouseUp write FOnMouseUp;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     property OnPaint: TPaintEvent read FOnPaint write FOnPaint;
+    property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnKeyDown: TEvent read FOnKeyDown write FOnKeyDown;
     property OnIdle: TNotifyEvent read FOnIdle write FOnIdle;
@@ -100,6 +102,7 @@ end;
 procedure TX11Component.SetHeight(AHeight: cint);
 begin
   if FHeight <> AHeight then begin
+//    FHeight:=AHeight;
     XResizeWindow(dis, Window, FWidth, AHeight);
     DoOnResize(FWidth, AHeight);
   end;
@@ -116,6 +119,7 @@ end;
 procedure TX11Component.SetWidth(AWidth: cint);
 begin
   if FWidth <> AWidth then begin
+//    FWidth:=AWidth;
     XResizeWindow(dis, Window, AWidth, FHeight);
     DoOnResize(AWidth, FHeight);
   end;
@@ -132,7 +136,6 @@ end;
 procedure TX11Component.SetCaption(AValue: string);
 begin
   if FCaption <> AValue then begin
-    //    XStoreName(dis, Window, PChar(AValue));
     FCaption := AValue;
     DoOnPaint;
   end;
@@ -226,8 +229,6 @@ begin
   if xic = nil then begin
     WriteLn('Could not open IC');
   end;
-  //  XSetICFocus(xic);
-
 end;
 
 destructor TX11Component.Destroy;
@@ -478,6 +479,9 @@ begin
       end;
     end;
   end;
+  if OnResize <> nil then begin
+    OnResize(Self);
+  end;
 end;
 
 procedure TX11Component.DeleteActiveFocused;
@@ -487,7 +491,6 @@ begin
   IsFocused := False;
   for i := 0 to Length(ComponentList) - 1 do begin
     ComponentList[i].DeleteActiveFocused;
-    //    ComponentList[i].CursorOff;
   end;
 end;
 

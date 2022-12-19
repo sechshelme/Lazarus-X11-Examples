@@ -126,6 +126,7 @@ var
     if Sender = ScrollBar.b then  begin
       WriteLn('Scrollbar blau geklickt: ', ScrollBar.b.Position);
     end;
+    ColorPanel.Color:=ScrollBar.b.Position+ScrollBar.g.Position shl 8+ScrollBar.r.Position shl 16;
   end;
 
   procedure TMyDesktop.SubWinButtonClick(Sender: TObject);
@@ -214,7 +215,7 @@ var
 
     IdlePanel := TX11Panel.Create(PanelSub2);
     with IdlePanel do begin
-      Name:='IdlePanel';
+      Name := 'IdlePanel';
       Left := 10;
       Top := 10;
       Width := PanelSub2.Width div 2 - 20;
@@ -226,13 +227,13 @@ var
 
     ColorPanel := TX11Panel.Create(PanelSub2);
     with ColorPanel do begin
-      Name:='ColorPanel';
-      Left :=  PanelSub2.Width div 2 + 10;
+      Name := 'ColorPanel';
+      Left := PanelSub2.Width div 2 + 10;
       Top := 10;
       Width := PanelSub2.Width div 2 - 20;
       Height := PanelSub2.Height - 20;
       Bevel := bvLowred;
-      Anchors := [akTop, akLeft, akRight, akBottom];
+      Anchors := [akTop, akRight, akBottom];
       OnIdle := @IdlePanelIdle;
     end;
 
@@ -278,10 +279,10 @@ var
 
     ScrollBar.r := TX11ScrollBar.Create(PanelScrollBar);
     with ScrollBar.r do begin
-      Color := $8888FF;
+      Color := $FF8888;
       Left := 10;
       Top := 10;
-      //      Width := Parent.Width - 20;
+      Width := Parent.Width - 20;
       Height := 25;
       Anchors := [akLeft, akRight, akTop];
       OnChange := @ScrollBarrChange;
@@ -300,7 +301,7 @@ var
 
     ScrollBar.b := TX11ScrollBar.Create(PanelScrollBar);
     with ScrollBar.b do begin
-      Color := $FF8888;
+      Color := $8888FF;
       Left := 10;
       Top := 10 + 50;
       Width := Parent.Width - 20;
