@@ -21,21 +21,24 @@ type
     FOnChange: TNotifyEvent;
     FrontButton, BackButton, FaceButton: TX11Button;
     FSmallChange: integer;
-    isFaceDown:Boolean;
+    isFaceDown: boolean;
+    FirstMousePos, FirstFacePos: integer;
     procedure BackButtonClick(Sender: TObject);
     procedure FaceButtonMouseMove(Sender: TObject; Event: TXEvent);
     procedure FaceButtonMouseUp(Sender: TObject; Event: TXEvent);
     procedure FrontButtonClick(Sender: TObject);
     procedure FaceButtonMouseDown(Sender: TObject; Event: TXEvent);
     procedure SetFacePosition;
+    procedure SetMax(AValue: integer);
+    procedure SetMin(AValue: integer);
   protected
     procedure DoOnResize(AWidth, AHeight: cint); override;
     procedure DoOnMouseMove(var Event: TXEvent); override;
   public
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Position: integer read FPosition write FPosition;
-    property Min: integer read FMin write FMin;
-    property Max: integer read FMax write FMax;
+    property Min: integer read FMin write SetMin;
+    property Max: integer read FMax write SetMax;
     property SmallChange: integer read FSmallChange write FSmallChange;
     constructor Create(TheOwner: TX11Component);
     destructor Destroy; override;
@@ -57,29 +60,6 @@ begin
   SetFacePosition;
 end;
 
-procedure TX11ScrollBar.FaceButtonMouseDown(Sender: TObject; Event: TXEvent);
-begin
-  isFaceDown:=True;
-  WriteLn('down');
-end;
-
-procedure TX11ScrollBar.FaceButtonMouseUp(Sender: TObject; Event: TXEvent);
-begin
-  isFaceDown:=False;
-  WriteLn('up');
-end;
-
-procedure TX11ScrollBar.FaceButtonMouseMove(Sender: TObject; Event: TXEvent);
-begin
-  if isFaceDown then  WriteLn(Event.xbutton.x,'    ',Event.xbutton.x_root);
-
-end;
-
-procedure TX11ScrollBar.DoOnMouseMove(var Event: TXEvent);
-begin
-  inherited DoOnMouseMove(Event);
-end;
-
 procedure TX11ScrollBar.BackButtonClick(Sender: TObject);
 begin
   Inc(FPosition, FSmallChange);
@@ -92,6 +72,50 @@ begin
   SetFacePosition;
 end;
 
+procedure TX11ScrollBar.FaceButtonMouseDown(Sender: TObject; Event: TXEvent);
+begin
+  isFaceDown := True;
+  FirstMousePos := Event.xmotion.x_root;
+  FirstFacePos := FaceButton.Left;
+end;
+
+procedure TX11ScrollBar.FaceButtonMouseUp(Sender: TObject; Event: TXEvent);
+begin
+  isFaceDown := False;
+end;
+
+procedure TX11ScrollBar.FaceButtonMouseMove(Sender: TObject; Event: TXEvent);
+var
+  L, dif: integer;
+  trackSrc, track: integer;
+begin
+  if isFaceDown then  begin
+    dif := Event.xmotion.x_root - FirstMousePos;
+
+    L := FirstFacePos + dif;
+    if L < BackButton.Width then begin
+      L := BackButton.Width;
+    end;
+    if L > Width - BackButton.Width * 2 then begin
+      L := Width - BackButton.Width * 2;
+    end;
+    FaceButton.Left := L;
+    L := L - FrontButton.Width;
+
+    trackSrc := Width - FrontButton.Width - FaceButton.Width - BackButton.Width;
+    track := FMax - FMin;
+    Position := L * track div trackSrc + Min;
+    if OnChange <> nil then begin
+      OnChange(Self);
+    end;
+  end;
+end;
+
+procedure TX11ScrollBar.DoOnMouseMove(var Event: TXEvent);
+begin
+  inherited DoOnMouseMove(Event);
+end;
+
 procedure TX11ScrollBar.SetFacePosition;
 var
   trackSrc, track: integer;
@@ -99,6 +123,22 @@ begin
   trackSrc := Width - FrontButton.Width - BackButton.Width - FaceButton.Width;
   track := FMax - FMin;
   FaceButton.Left := (FPosition - FMin) * trackSrc div track + FrontButton.Width;
+end;
+
+procedure TX11ScrollBar.SetMax(AValue: integer);
+begin
+  if FMax <> AValue then begin
+    FMax := AValue;
+    Position:=(FMin+ FMax)div 2;
+  end;
+end;
+
+procedure TX11ScrollBar.SetMin(AValue: integer);
+begin
+  if FMin <> AValue then begin
+    FMin := AValue;
+    Position:=(FMin+ FMax)div 2;
+  end;
 end;
 
 procedure TX11ScrollBar.DoOnResize(AWidth, AHeight: cint);
@@ -144,9 +184,9 @@ begin
     Caption := 'O';
     Anchors := [akTop, akLeft, akBottom];
     SetFacePosition;
-    OnMouseDown:=@FaceButtonMouseDown;
-    OnMouseUp:=@FaceButtonMouseUp;
-    OnMouseMove:=@FaceButtonMouseMove;
+    OnMouseDown := @FaceButtonMouseDown;
+    OnMouseUp := @FaceButtonMouseUp;
+    OnMouseMove := @FaceButtonMouseMove;
   end;
 end;
 

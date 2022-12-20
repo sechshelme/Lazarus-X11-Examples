@@ -45,7 +45,7 @@ type
     SubWinButton: TX11Button;
     procedure ButtonClick(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
-    procedure CloseButtonMouseMove(Sender: TObject; Event:TXEvent);
+    procedure CloseButtonMouseMove(Sender: TObject; Event: TXEvent);
     procedure IdlePanelIdle(Sender: TObject);
     procedure MyDesktopKeyPress(Sender: TObject; UTF8Char: TUTF8Char);
     procedure NewButtonClick(Sender: TObject);
@@ -77,7 +77,7 @@ var
     AppClose := True;
   end;
 
-        procedure TMyDesktop.CloseButtonMouseMove(Sender: TObject; Event: TXEvent);
+  procedure TMyDesktop.CloseButtonMouseMove(Sender: TObject; Event: TXEvent);
   begin
     //    WriteLn('move: ', x, '  ', y);
   end;
@@ -126,7 +126,7 @@ var
     if Sender = ScrollBar.b then  begin
       WriteLn('Scrollbar blau geklickt: ', ScrollBar.b.Position);
     end;
-    ColorPanel.Color:=ScrollBar.b.Position+ScrollBar.g.Position shl 8+ScrollBar.r.Position shl 16;
+    ColorPanel.Color := ScrollBar.b.Position + ScrollBar.g.Position shl 8 + ScrollBar.r.Position shl 16;
   end;
 
   procedure TMyDesktop.SubWinButtonClick(Sender: TObject);
@@ -282,7 +282,7 @@ var
       Left := 10;
       Top := 10;
       Width := Parent.Width - 20;
-      Name:='ScrollBarRed';
+      Name := 'ScrollBarRed';
       Height := 25;
       Anchors := [akLeft, akRight, akTop];
       OnChange := @ScrollBarrChange;
@@ -294,7 +294,7 @@ var
       Left := 10;
       Top := 10 + 25;
       Width := Parent.Width - 20;
-      Name:='ScrollBarGreen';
+      Name := 'ScrollBarGreen';
       Height := 25;
       Anchors := [akLeft, akRight, akTop];
       OnChange := @ScrollBarrChange;
@@ -306,7 +306,7 @@ var
       Left := 10;
       Top := 10 + 50;
       Width := Parent.Width - 20;
-      Name:='ScrollBarBlue';
+      Name := 'ScrollBarBlue';
       Height := 25;
       Anchors := [akLeft, akRight, akTop];
       OnChange := @ScrollBarrChange;
