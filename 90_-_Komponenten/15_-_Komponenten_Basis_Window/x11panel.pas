@@ -9,12 +9,7 @@ uses
   X11Component;
 
 type
-
-  //  Panel1.BevelOuter:=bvRaised;
-  //  Panel1.BevelInner:=bvLowered;
   TBevels = (bvRaised, bvLowred, bvNone);
-  //  TBevels = set of TBevelKind;
-
 
   { TX11Panel }
 
@@ -40,7 +35,6 @@ begin
   ColLeftTop := $EEEEEE;
   FBorderWidth := 3;
   Bevel := bvRaised;
-//  Name:='Panel';
 end;
 
 procedure TX11Panel.DoOnPaint;

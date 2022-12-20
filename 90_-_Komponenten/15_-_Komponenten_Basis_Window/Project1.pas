@@ -252,7 +252,6 @@ var
 
     for i := 0 to Length(Edit) - 1 do begin
       Edit[i] := TX11Edit.Create(PanelEdit);
-      //  if Parent=nil then WriteLn('nil');
       Edit[i].Width := Edit[i].Parent.Width - 20;
       Edit[i].Left := 10;
       Edit[i].Top := 10 + i * (Edit[0].Height + 5);
@@ -283,6 +282,7 @@ var
       Left := 10;
       Top := 10;
       Width := Parent.Width - 20;
+      Name:='ScrollBarRed';
       Height := 25;
       Anchors := [akLeft, akRight, akTop];
       OnChange := @ScrollBarrChange;
@@ -294,6 +294,7 @@ var
       Left := 10;
       Top := 10 + 25;
       Width := Parent.Width - 20;
+      Name:='ScrollBarGreen';
       Height := 25;
       Anchors := [akLeft, akRight, akTop];
       OnChange := @ScrollBarrChange;
@@ -305,10 +306,13 @@ var
       Left := 10;
       Top := 10 + 50;
       Width := Parent.Width - 20;
+      Name:='ScrollBarBlue';
       Height := 25;
       Anchors := [akLeft, akRight, akTop];
       OnChange := @ScrollBarrChange;
     end;
+
+
 
     // --- Divers Buttons
     CloseButton := TX11Button.Create(Self);

@@ -197,7 +197,7 @@ procedure TX11Edit.DoOnResize(AWidth, AHeight: cint);
 begin
   inherited DoOnResize(AWidth, AHeight);
   EditWidht := AWidth div FontWidht - 1;
-  WriteLn(EditWidht);
+//  WriteLn(EditWidht);
 end;
 
 procedure TX11Edit.DeleteActiveFocused;

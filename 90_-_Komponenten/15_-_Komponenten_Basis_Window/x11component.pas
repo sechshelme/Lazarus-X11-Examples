@@ -85,6 +85,8 @@ type
     constructor Create(TheOwner: TX11Component; NewWindow: boolean = False);
     destructor Destroy; override;
     procedure Close;
+
+    procedure WriteRectData;
   end;
 
 implementation
@@ -102,7 +104,6 @@ end;
 procedure TX11Component.SetHeight(AHeight: cint);
 begin
   if FHeight <> AHeight then begin
-//    FHeight:=AHeight;
     XResizeWindow(dis, Window, FWidth, AHeight);
     DoOnResize(FWidth, AHeight);
   end;
@@ -119,7 +120,6 @@ end;
 procedure TX11Component.SetWidth(AWidth: cint);
 begin
   if FWidth <> AWidth then begin
-//    FWidth:=AWidth;
     XResizeWindow(dis, Window, AWidth, FHeight);
     DoOnResize(AWidth, FHeight);
   end;
@@ -492,6 +492,11 @@ begin
   for i := 0 to Length(ComponentList) - 1 do begin
     ComponentList[i].DeleteActiveFocused;
   end;
+end;
+
+procedure TX11Component.WriteRectData;
+begin
+  WriteLn('Name: ', FName, ' Left: ', FLeft, ' Top: ', FTop, ' Width: ', FWidth, ' Height: ', FHeight);
 end;
 
 end.

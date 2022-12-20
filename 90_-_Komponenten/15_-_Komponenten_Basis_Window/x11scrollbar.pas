@@ -76,7 +76,7 @@ end;
 
 procedure TX11ScrollBar.DoOnResize(AWidth, AHeight: cint);
 begin
-  inherited DoOnResize(AWidth,AHeight);
+  inherited DoOnResize(AWidth, AHeight);
   SetFacePosition;
 end;
 
@@ -94,32 +94,28 @@ begin
   FrontButton := TX11Button.Create(Self);
   with FrontButton do begin
     Width := 25;
-    Height := 25;
+    Height := Self.Height;
     Caption := '<';
-    //    Anchors := [akTop, akRight];
-    //    Anchors := [akLeft, akRight, akBottom];
+    Anchors := [akLeft, akTop, akBottom];
     OnClick := @FrontButtonClick;
   end;
 
   BackButton := TX11Button.Create(Self);
   with BackButton do begin
     Width := 25;
-    Height := 25;
+    Height := Self.Height;
     Left := Self.Width - 25;
     Caption := '>';
-    //    Anchors := [akTop, akRight, akBottom];
-    Anchors := [akTop, akRight];
+    Anchors := [akTop, akRight, akBottom];
     OnClick := @BackButtonClick;
   end;
 
   FaceButton := TX11Button.Create(Self);
   with FaceButton do begin
     Width := 25;
-    Height := 25;
-    //    Left:=50;
+    Height := Self.Height;
     Caption := 'O';
-    //    Anchors := [akTop, akLeft, akBottom];
-    Anchors := [akTop, akLeft];
+    Anchors := [akTop, akLeft, akBottom];
     SetFacePosition;
   end;
 end;
