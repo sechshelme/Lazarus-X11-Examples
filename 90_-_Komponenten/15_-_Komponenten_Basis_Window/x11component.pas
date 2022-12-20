@@ -27,7 +27,7 @@ type
     FOnClick: TNotifyEvent;
     FOnMouseDown: TEvent;
     FOnMouseUp: TEvent;
-    FOnMouseMove: TMouseMoveEvent;
+    FOnMouseMove: TEvent;
     FOnKeyPress: TKeyPressEvent;
     FOnKeyDown: TEvent;
     FOnIdle: TNotifyEvent;
@@ -56,6 +56,7 @@ type
     procedure DoOnClick; virtual;
     procedure DoOnMouseDown(var Event: TXEvent); virtual;
     procedure DoOnMouseUp(var Event: TXEvent); virtual;
+    procedure DoOnMouseMove(var Event: TXEvent); virtual;
     procedure DoOnKeyPress(UTF8Char: TUTF8Char); virtual;
     procedure DoOnKeyDown(var Event: TXEvent); virtual;
     procedure DoOnResize(AWidth, AHeight: cint); virtual;
@@ -76,7 +77,7 @@ type
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
     property OnMouseDown: TEvent read FOnMouseDown write FOnMouseDown;
     property OnMouseUp: TEvent read FOnMouseUp write FOnMouseUp;
-    property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
+    property OnMouseMove: TEvent read FOnMouseMove write FOnMouseMove;
     property OnPaint: TPaintEvent read FOnPaint write FOnPaint;
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
@@ -355,10 +356,10 @@ begin
       end;
     end;
     MotionNotify: begin
+      DoOnMouseMove(Event);
       if Event.xmotion.window = Window then begin
-        if IsInRegion and (OnMouseMove <> nil) then begin
-          OnMouseMove(self, x, y);
-        end;
+//        if IsInRegion and (OnMouseMove <> nil) then begin
+//        end;
         if IsMouseDown then begin
           if IsInRegion then begin
             IsButtonDown := True;
@@ -408,6 +409,13 @@ procedure TX11Component.DoOnMouseUp(var Event: TXEvent);
 begin
   if OnMouseUp <> nil then begin
     OnMouseUp(Self, Event);
+  end;
+end;
+
+procedure TX11Component.DoOnMouseMove(var Event: TXEvent);
+begin
+  if OnMouseMove <> nil then begin
+    OnMouseMove(Self, Event);
   end;
 end;
 

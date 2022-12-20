@@ -117,6 +117,7 @@ begin
   while not AppClose do begin
     if XPending(dis) <> 0 then begin
       XNextEvent(dis, @Event);
+//      WriteLn(Event.xmotion.x);
       DoOnEventHandle(Event);
     end else begin
       wait;

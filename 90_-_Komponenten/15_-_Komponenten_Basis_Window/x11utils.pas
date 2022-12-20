@@ -21,7 +21,7 @@ type
 
   TNotifyEvent = procedure(Sender: TObject) of object;
   TEvent = procedure(Sender: TObject; Event: TXEvent) of object;
-  TMouseMoveEvent = procedure(Sender: TObject; X, Y: integer) of object;
+//  TMouseMoveEvent = procedure(Sender: TObject; X, Y: integer) of object;
   TKeyPressEvent = procedure(Sender: TObject; UTF8Char: TUTF8Char) of object;
   TPaintEvent = procedure(Sender: TObject; ADisplay: PDisplay; AWindowwin: TDrawable; AGC: TGC) of object;
 

@@ -45,7 +45,7 @@ type
     SubWinButton: TX11Button;
     procedure ButtonClick(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
-    procedure CloseButtonMouseMove(Sender: TObject; X, Y: integer);
+    procedure CloseButtonMouseMove(Sender: TObject; Event:TXEvent);
     procedure IdlePanelIdle(Sender: TObject);
     procedure MyDesktopKeyPress(Sender: TObject; UTF8Char: TUTF8Char);
     procedure NewButtonClick(Sender: TObject);
@@ -77,7 +77,7 @@ var
     AppClose := True;
   end;
 
-  procedure TMyDesktop.CloseButtonMouseMove(Sender: TObject; X, Y: integer);
+        procedure TMyDesktop.CloseButtonMouseMove(Sender: TObject; Event: TXEvent);
   begin
     //    WriteLn('move: ', x, '  ', y);
   end;

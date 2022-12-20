@@ -19,14 +19,18 @@ type
     FMax, FMin: integer;
     FPosition: integer;
     FOnChange: TNotifyEvent;
-
     FrontButton, BackButton, FaceButton: TX11Button;
     FSmallChange: integer;
+    isFaceDown:Boolean;
     procedure BackButtonClick(Sender: TObject);
+    procedure FaceButtonMouseMove(Sender: TObject; Event: TXEvent);
+    procedure FaceButtonMouseUp(Sender: TObject; Event: TXEvent);
     procedure FrontButtonClick(Sender: TObject);
+    procedure FaceButtonMouseDown(Sender: TObject; Event: TXEvent);
     procedure SetFacePosition;
   protected
     procedure DoOnResize(AWidth, AHeight: cint); override;
+    procedure DoOnMouseMove(var Event: TXEvent); override;
   public
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Position: integer read FPosition write FPosition;
@@ -51,6 +55,29 @@ begin
     OnChange(Self);
   end;
   SetFacePosition;
+end;
+
+procedure TX11ScrollBar.FaceButtonMouseDown(Sender: TObject; Event: TXEvent);
+begin
+  isFaceDown:=True;
+  WriteLn('down');
+end;
+
+procedure TX11ScrollBar.FaceButtonMouseUp(Sender: TObject; Event: TXEvent);
+begin
+  isFaceDown:=False;
+  WriteLn('up');
+end;
+
+procedure TX11ScrollBar.FaceButtonMouseMove(Sender: TObject; Event: TXEvent);
+begin
+  if isFaceDown then  WriteLn(Event.xbutton.x,'    ',Event.xbutton.x_root);
+
+end;
+
+procedure TX11ScrollBar.DoOnMouseMove(var Event: TXEvent);
+begin
+  inherited DoOnMouseMove(Event);
 end;
 
 procedure TX11ScrollBar.BackButtonClick(Sender: TObject);
@@ -117,6 +144,9 @@ begin
     Caption := 'O';
     Anchors := [akTop, akLeft, akBottom];
     SetFacePosition;
+    OnMouseDown:=@FaceButtonMouseDown;
+    OnMouseUp:=@FaceButtonMouseUp;
+    OnMouseMove:=@FaceButtonMouseMove;
   end;
 end;
 
