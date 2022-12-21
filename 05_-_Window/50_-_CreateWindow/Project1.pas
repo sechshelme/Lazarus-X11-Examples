@@ -57,7 +57,8 @@ type
     xswa.event_mask:=KeyPressMask or ExposureMask;
 
 
-    win := XCreateWindow(dis, RootWindow(dis, scr), 10, 10, 512, 512, 10, DefaultDepth(dis, scr), CopyFromParent, DefaultVisual(dis, scr), CWEventMask or CWBorderPixel or CWBackPixel, @xswa);
+    win := XCreateWindow(dis, RootWindow(dis, scr), 10, 10, 512, 512, 10, DefaultDepth(dis, scr), CopyFromParent, DefaultVisual(dis, scr), 
+      CWEventMask or CWBorderPixel or CWBackPixel, @xswa);
 
     XMapWindow(dis, win);
     CrateImage;
