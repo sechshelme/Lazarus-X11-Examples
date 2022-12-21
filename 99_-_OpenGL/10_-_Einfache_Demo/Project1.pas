@@ -44,9 +44,7 @@ type
     dblBuf: array of integer = (GLX_RGBA, GLX_DEPTH_SIZE, 16, GLX_DOUBLEBUFFER, None);
     vi: PXVisualInfo;
     cx: GLXContext;
-    cmap: TColormap;
     OpenGLRootWin: TWindow;
-    swa: TXSetWindowAttributes;
   begin
     inherited Create;
 
@@ -75,38 +73,21 @@ type
     if vi^._class <> TrueColor then begin
       fatalError('TrueColor visual required for this program');
     end;
+
+    // Erstellt das Fenster
+    OpenGLRootWin := RootWindow(dis, vi^.screen);
+    win := XCreateSimpleWindow(dis, OpenGLRootWin, 0, 0, 300, 300, 0, $FFFFFF, $000000);
+    XSelectInput(dis, win, KeyPressMask or ExposureMask or ButtonPressMask or StructureNotifyMask);
+    XStoreName(dis, win, 'GLX-Demo');
+    XMapWindow(dis, win);
+
+    // Context erzeugen
     cx := glXCreateContext(dis, vi, nil, True);
     if cx = nil then begin
       fatalError('could not create rendering context');
     end;
-
-    OpenGLRootWin := RootWindow(dis, vi^.screen);
-    cmap := XCreateColormap(dis, OpenGLRootWin, vi^.visual, AllocNone);
-
-    swa.colormap := cmap;
-    swa.border_pixel := 0;
-    swa.event_mask := KeyPressMask or ExposureMask or ButtonPressMask or StructureNotifyMask;
-
-    // Erstellt das Fenster
-    win := XCreateWindow(dis, OpenGLRootWin, 0, 0, 300, 300, 0, vi^.depth, InputOutput, vi^.visual, CWBorderPixel or CWColormap or CWEventMask, @swa);
-    XSetStandardProperties(dis, win, 'GLX', 'GLX', 0, nil, 0, nil);
-
     glXMakeCurrent(dis, win, cx);
-
-    // Fenster Titel festlegen
-    //    XStoreName(dis, win, 'Fenster mit Classen');
-
-    // Fenster anzeigen
-    XMapWindow(dis, win);
-
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glClearDepth(1.0);
-    glClearColor(1.0, 0.5, 0.5, 0);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 10.0);
-    glViewport(0, 0, 300, 300);
+    glClearColor(0.5, 0.1, 0.1, 0.0);
   end;
 
   destructor TMyWin.Destroy;
@@ -145,7 +126,7 @@ type
         glMatrixMode(GL_MODELVIEW);
 
         glLoadIdentity();
-        glTranslatef(0.0, 0.0, -3.0);
+        glScaled(0.5, 0.5, 1.0);
 
         glRotatef(zAngle, 0.0, 0.0, 1.0);
         zAngle := zAngle + 1.0;
@@ -157,10 +138,10 @@ type
         glColor3f(0.7, 0.7, 0.1);
         glVertex3f(1.0, 1.0, 1.0);
 
-        glColor3f(0.0, 0.7, 0.1);
+        glColor3f(0.7, 0.1, 0.7);
         glVertex3f(1.0, -1.0, 1.0);
 
-        glColor3f(0.7, 0.7, 0.1);
+        glColor3f(0.1, 0.7, 0.7);
         glVertex3f(-1.0, -1.0, 1.0);
         glEnd();
 
@@ -177,13 +158,8 @@ var
   MyWindows: TMyWin;
 
 begin
-  // Programm inizialisieren
   MyWindows := TMyWin.Create;
-
-  // Programm ablaufen lassen
   MyWindows.Run;
-
-  // Alles aufräumen und beenden
   MyWindows.Free;
 end.
 //code-
