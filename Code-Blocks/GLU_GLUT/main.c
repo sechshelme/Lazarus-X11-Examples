@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <GL/glx.h>    /* this includes the necessary X headers */
+//#include <GL/glx.h>    /* this includes the necessary X headers */
 #include <GL/glut.h>
 #include <GL/glu.h>
 #include <GL/gl.h>
