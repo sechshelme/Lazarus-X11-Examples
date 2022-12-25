@@ -29,7 +29,7 @@ var
   var
     rem, Req: timespec;
   begin
-    Req.tv_nsec := 10000;
+    Req.tv_nsec := 10000000;
     Req.tv_sec := 0;
     fpNanoSleep(@Req, @rem);
   end;
@@ -64,7 +64,7 @@ type
     gc := XCreateGC(dis, win, 0, nil);
     XDrawRectangle(dis, win, gc, random(200), random(200), random(200), random(200));
 
-//    XSetBackground(dis,gc,$ff);
+    //    XSetBackground(dis,gc,$ff);
   end;
 
   destructor TMyWin.Destroy;
@@ -78,31 +78,36 @@ type
   end;
 
 var
-  MyWindows: array[0..3] of TMyWin;
-  i: integer;
+  MyWindows: array[0..15] of TMyWin;
   condVar, condMutex: pthread_cond_t;
   mutex: pthread_mutex_t;
+  i: Integer;
 
 
   function thread_function(para: Pointer): Pointer; cdecl;
   var
     win: TWindow;
+    i: integer;
   begin
     win := PMyWin(para)^.win;
     repeat
       pthread_mutex_lock(@mutex);
-//                pthread_cond_wait(@condVar, @mutex);
-//                WriteLn(win);
-XSetForeground(dis,gc,random($FFFFFF));
+      //                pthread_cond_wait(@condVar, @mutex);
+      //                WriteLn(win);
+      for i:=1 to 100 do begin
+      XSetForeground(dis, gc, random($FFFFFF));
       XDrawRectangle(dis, win, gc, random(200), random(200), random(200), random(200));
-//      XDrawRectangle(dis,win,gc,10,10,100,100);
 
-//     WriteLn(win);
+      //      XDrawRectangle(dis,win,gc,10,10,100,100);
+      end;
+
+      //     WriteLn(win);
+      XFlush(dis);
       wait;
-
       pthread_mutex_unlock(@mutex);
+      wait;
     until Ende;
-    Result:=nil;
+    Result := nil;
   end;
 
 
@@ -116,9 +121,9 @@ begin
   scr := DefaultScreen(dis);
   rootwin := RootWindow(dis, scr);
 
-    pthread_mutex_init(@mutex, nil);
-    pthread_mutex_init(@condMutex, nil);
-      pthread_cond_init(@condVar, nil);
+  pthread_mutex_init(@mutex, nil);
+//  pthread_mutex_init(@condMutex, nil);
+//  pthread_cond_init(@condVar, nil);
 
   // Programm inizialisieren
   for i := 0 to Length(MyWindows) - 1 do begin
@@ -135,31 +140,39 @@ begin
       KeyPress: begin
         // Beendet das Programm bei [ESC]
         if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
-          Ende:=True;
+          Ende := True;
         end;
       end;
       Expose: begin
-//          XDrawRectangle(dis, win, gc, 10, 10, Event.xexpose.Width - 20, Event.xexpose.Height - 20);
+        //          XDrawRectangle(dis, win, gc, 10, 10, Event.xexpose.Width - 20, Event.xexpose.Height - 20);
       end;
     end;
 
   until Ende;
-  halt;
-
-  pthread_mutex_lock(@mutex);
-
-  pthread_cond_broadcast(@condVar);
-  pthread_mutex_unlock(@mutex);
-
-  WriteLn('key');
+  //halt;
+  //
+  //pthread_mutex_lock(@mutex);
+  //
+  //pthread_cond_broadcast(@condVar);
+  //pthread_mutex_unlock(@mutex);
 
   // Alles aufräumen und beenden
-  for i := 0 to Length(MyWindows) - 1 do begin
-    WriteLn('key');
-    pthread_join(MyWindows[i].Thread,nil);
-    WriteLn('key');
-    MyWindows[i].Free;
+    pthread_mutex_destroy(@mutex);
 
+  for i := 0 to Length(MyWindows) - 1 do begin
+    pthread_join(MyWindows[i].Thread, nil);
+  end;
+  wait;
+  wait;
+  wait;
+  wait;
+  wait;
+  wait;
+  wait;
+
+  for i := 0 to Length(MyWindows) - 1 do begin
+    MyWindows[i].Free;
+    WriteLn('key');
   end;
 end.
 //code-
