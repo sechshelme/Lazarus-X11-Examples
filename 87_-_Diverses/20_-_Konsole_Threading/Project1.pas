@@ -7,7 +7,7 @@ Dies macht es übersichtlicher und ausbaufähiger.
 //code+
 program Project1;
 
-uses         crt,
+uses
   BaseUnix,
   pthreads;
 
@@ -53,7 +53,7 @@ begin
     Thread[i].index := i;
     pthread_create(@Thread[i].Thread, nil, @thread_function, @Thread[i]);
   end;
-  ReadKey; // Auf Tastendruck warten
+  ReadLn;
   Ende := True;
   for i := 0 to Length(Thread) - 1 do begin
     pthread_join(Thread[i].Thread, nil);
