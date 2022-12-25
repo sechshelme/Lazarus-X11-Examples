@@ -85,7 +85,8 @@ const
 
   procedure TMyWin.Paint;
   const
-    Hello = 'Hello World !, ich habe "äüö ÄÜÖ ÿŸäüö   ggg" !äöü';
+//    Hello = 'Hello World !, ich habe "äüö ÄÜÖ ÿŸäüö   ggg" !äöü';
+    Hello = 'ŸŸŸ';
   var
     fontStructure: PXFontStruct;
     direction, ascent, descent: cint;
@@ -102,6 +103,10 @@ const
 
     Writeln('str: ', Length(Hello));
     UTF8toXChar2b(Char2BArr, Hello);
+
+    WriteLn(Char2BArr[0].byte1);
+    WriteLn(Char2BArr[0].byte2);
+
     WriteLn('b2: ', Length(Char2BArr));
 
     XTextExtents16(fontStructure, @Char2BArr[0], Length(Char2BArr), @direction, @ascent, @descent, @overall);
