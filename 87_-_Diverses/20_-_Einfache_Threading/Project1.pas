@@ -7,7 +7,7 @@ Dies macht es übersichtlicher und ausbaufähiger.
 //code+
 program Project1;
 
-uses
+uses         crt,
   BaseUnix,
   pthreads;
 
@@ -19,10 +19,9 @@ type
     index: integer;
   end;
 var
-  Thread: array[0..1] of TThread;
+  Thread: array[0..1000000] of TThread;
   mutex: pthread_mutex_t;
   Ende: boolean = False;
-  buf: array[0..8] of char;
   i: integer;
 
   procedure wait;
@@ -42,9 +41,9 @@ var
     repeat
       pthread_mutex_lock(@mutex);
       Write(Thread.index, ' ');
-            wait;
+//            wait;
       pthread_mutex_unlock(@mutex);
-          wait;
+  //        wait;
     until Ende;
     Result := nil;
   end;
@@ -54,7 +53,7 @@ begin
     Thread[i].index := i;
     pthread_create(@Thread[i].Thread, nil, @thread_function, @Thread[i]);
   end;
-  fpread(0, @buf, 1); // Auf Tastendruck warten
+  ReadKey; // Auf Tastendruck warten
   Ende := True;
   for i := 0 to Length(Thread) - 1 do begin
     pthread_join(Thread[i].Thread, nil);
