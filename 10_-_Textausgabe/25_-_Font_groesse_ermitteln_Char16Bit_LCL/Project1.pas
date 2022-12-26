@@ -19,10 +19,6 @@ uses
   LazUTF8;
 
 type
-  TXChar2BArray = array of TXChar2b;
-
-  { TMyWin }
-
   TMyWin = class(TObject)
   private
     dis: PDisplay;
@@ -52,10 +48,11 @@ const
     overall: TXCharStruct;
     Left, Top: cint;
     Char2BArr: TChar2BString;
+    s: string;
 
   begin
     Char2BArr := UTF8ToUTF16(Hello);
-    WriteLn(Char2BArr);
+    WriteLn('ws: ', Char2BArr);
 
     fontStructure := XLoadQueryFont(dis, '9x15bold');
     if fontStructure = nil then begin
@@ -66,7 +63,7 @@ const
     Writeln('str: ', Length(Hello));
     WriteLn('ws: ', Length(Char2BArr));
 
-    XTextExtents16(fontStructure, @Char2BArr[1], Length(Char2BArr)shr 1, @direction, @ascent, @descent, @overall);
+    XTextExtents16(fontStructure, @Char2BArr[1], Length(Char2BArr) shr 1, @direction, @ascent, @descent, @overall);
     Left := (Width - overall.Width) div 2;
     Top := (Height - ascent) div 2;
 
@@ -78,6 +75,9 @@ const
 
     XDrawString16(dis, win, gc, Left, Top + ascent - descent, @Char2BArr[1], Length(Char2BArr) shr 1);
     XDrawString16(dis, win, gc, 50, 50, @Char2BArr[1], Length(Char2BArr) shr 1);
+
+    s := UTF16ToUTF8(Char2BArr);
+    WriteLn('as: ', s);
 
     XFreeFont(dis, fontStructure);
   end;

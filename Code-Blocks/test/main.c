@@ -88,6 +88,7 @@ static pthread_mutex_t Mutex;
 static pthread_cond_t CondVar;
 static pthread_mutex_t CondMutex;
 
+wchar_t abc;
 
 static void
 Error(const char *msg)

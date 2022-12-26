@@ -29,13 +29,10 @@
         <Mode0 Name="default"/>
       </Modes>
     </RunParams>
-    <RequiredPackages Count="2">
+    <RequiredPackages Count="1">
       <Item1>
-        <PackageName Value="LCL"/>
-      </Item1>
-      <Item2>
         <PackageName Value="LCLBase"/>
-      </Item2>
+      </Item1>
     </RequiredPackages>
     <Units Count="1">
       <Unit0>
