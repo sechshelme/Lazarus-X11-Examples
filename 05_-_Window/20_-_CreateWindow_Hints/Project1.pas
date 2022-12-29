@@ -64,16 +64,16 @@ type
 
     RootWin := RootWindow(dis, scr);
 
-    win := XCreateSimpleWindow(dis, RootWin, 10, 10, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    win := XCreateSimpleWindow(dis, RootWin, 2000, 100, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
     XSelectInput(dis, win, EventMask or StructureNotifyMask);
 
     with  size_hints do begin
       flags := PPosition or PSize or PPosition or PMinSize or PMaxSize or PResizeInc or PWinGravity;
-      flags := PAllHints;
+      flags := PAllHints ;
       Width := FWidth;
       Height := FHeight;
-      x := 300;
-      y := 200;
+//      x := 300;
+  //    y := 200;
       min_width := 100;
       min_height := 100;
       max_width := 640;

@@ -162,13 +162,6 @@ begin
   for i := 0 to Length(MyWindows) - 1 do begin
     pthread_join(MyWindows[i].Thread, nil);
   end;
-  wait;
-  wait;
-  wait;
-  wait;
-  wait;
-  wait;
-  wait;
 
   for i := 0 to Length(MyWindows) - 1 do begin
     MyWindows[i].Free;
