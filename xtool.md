@@ -1,7 +1,7 @@
 # Event Tool
 Zeigt Event-Rückgabe an.
 ```bash
-$xev
+xev
 ```
 Doku:
  - [xev](https://www.commandlinux.com/man-page/man1/xev.1.html)
@@ -13,24 +13,24 @@ Doku:
 ## Konsolen Tools:
 Listet alle Fonts auf:
 ```bash
-$xlsfonts
+xlsfonts
 ```
 
 Zeigt den Font an, Ausgabe in X11
 ```bash
-$xfd -fn [fontname]
+xfd -fn [fontname]
 ```
 
 ## Grafisches Tool für Schriften:
 
 ```bash
-$xfontsel
+xfontsel
 ```
 
 ## Font Editor
 
 ```bash
-$gbdfed
+gbdfed
 ```
 Muss evtl. installiert werden.
 ```
@@ -41,7 +41,7 @@ Meht infos:
 
 ## Diverses
 ```bash
-$bitmap
+bitmap
 ```
 
 

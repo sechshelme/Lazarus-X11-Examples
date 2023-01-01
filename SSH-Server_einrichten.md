@@ -69,7 +69,11 @@ Ausführen:
 Beispiel auf Display ":13"
 ```bash
 Xephyr :13
+DISPLAY=:13
 ```
+
+
+
 
 - [Infos](https://wiki.ubuntuusers.de/Xephyr/)
 
