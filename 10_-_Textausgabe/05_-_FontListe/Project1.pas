@@ -130,7 +130,6 @@ const
     fontStructure: PXFontStruct;
     direction, ascent, descent: cint;
     overall: TXCharStruct;
-    ff: TXID;
   begin
     WriteLn(FontList.Count);
     ofs := 890;

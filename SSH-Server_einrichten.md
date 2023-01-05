@@ -68,7 +68,7 @@ sudo apt-get install xserver-xephyr
 Ausführen:
 Beispiel auf Display ":13"
 ```bash
-Xephyr :13
+Xephyr :13 -screen 1024x768 
 DISPLAY=:13
 ```
 
