@@ -145,7 +145,7 @@ const
 
       XSetFont(dis, gc, fontStructure^.fid);
       XTextExtents(fontStructure, info, Length(info), @direction, @ascent, @descent, @overall);
-      XDrawRectangle(dis, win, gc, 10, 20 * i, overall.Width, descent);
+//      XDrawRectangle(dis, win, gc, 10, 20 * i, overall.Width, descent);
 
       XDrawString(dis, win, gc, 10, i * 20 + 20, PChar(info), Length(info));
       XUnloadFont(dis, fontname);

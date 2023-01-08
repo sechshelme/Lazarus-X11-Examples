@@ -81,7 +81,7 @@ var
   MyWindows: array[0..15] of TMyWin;
   condVar, condMutex: pthread_cond_t;
   mutex: pthread_mutex_t;
-  i: Integer;
+  i: integer;
 
 
   function thread_function(para: Pointer): Pointer; cdecl;
@@ -94,11 +94,11 @@ var
       pthread_mutex_lock(@mutex);
       //                pthread_cond_wait(@condVar, @mutex);
       //                WriteLn(win);
-      for i:=1 to 100 do begin
-      XSetForeground(dis, gc, random($FFFFFF));
-      XDrawRectangle(dis, win, gc, random(200), random(200), random(200), random(200));
+      for i := 1 to 100 do begin
+        XSetForeground(dis, gc, random($FFFFFF));
+        XDrawRectangle(dis, win, gc, random(200), random(200), random(200), random(200));
 
-      //      XDrawRectangle(dis,win,gc,10,10,100,100);
+        //      XDrawRectangle(dis,win,gc,10,10,100,100);
       end;
 
       //     WriteLn(win);
@@ -122,8 +122,8 @@ begin
   rootwin := RootWindow(dis, scr);
 
   pthread_mutex_init(@mutex, nil);
-//  pthread_mutex_init(@condMutex, nil);
-//  pthread_cond_init(@condVar, nil);
+  //  pthread_mutex_init(@condMutex, nil);
+  //  pthread_cond_init(@condVar, nil);
 
   // Programm inizialisieren
   for i := 0 to Length(MyWindows) - 1 do begin
@@ -157,14 +157,20 @@ begin
   //pthread_mutex_unlock(@mutex);
 
   // Alles aufräumen und beenden
-    pthread_mutex_destroy(@mutex);
+  pthread_mutex_destroy(@mutex);
+
+
+    for i := 1 to 100 do begin
+//      wait;
+      WriteLn(i);
+    end;
 
   for i := 0 to Length(MyWindows) - 1 do begin
     pthread_join(MyWindows[i].Thread, nil);
   end;
 
   for i := 0 to Length(MyWindows) - 1 do begin
-    MyWindows[i].Free;
+//    MyWindows[i].Free;
     WriteLn('key');
   end;
 end.

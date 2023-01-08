@@ -479,6 +479,15 @@ int main( int argc, char* args[] )
         return 1;
     }
 
+
+SDL_VideoInfo v;
+v=*SDL_GetVideoInfo();
+printf("%i\n",v.hw_available);
+printf("%i\n",v.wm_available);
+printf("%i\n",v.current_w);
+printf("%i\n",v.current_h);
+
+
     //While the user hasn't quit
     while( quit == false )
     {
