@@ -79,7 +79,6 @@ type
 
 var
   MyWindows: array[0..15] of TMyWin;
-  condVar, condMutex: pthread_cond_t;
   mutex: pthread_mutex_t;
   i: integer;
 
@@ -102,7 +101,7 @@ var
       end;
 
       //     WriteLn(win);
-      XFlush(dis);
+//      XFlush(dis);
       wait;
       pthread_mutex_unlock(@mutex);
       wait;
