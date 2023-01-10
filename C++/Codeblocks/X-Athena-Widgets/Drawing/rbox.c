@@ -62,6 +62,7 @@
        Drawable window;
        GC gc;
 
+
        display = XtDisplay(w);
        window = XtWindow(w);
 

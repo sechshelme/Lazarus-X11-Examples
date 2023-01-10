@@ -25,6 +25,7 @@ void redisplay_event( Widget w, XtPointer client, XExposeEvent *ev)
     {
         return;
     }
+
     XClearWindow(XtDisplay(w),XtWindow(w));
 //    draw_graphics(w);
 
@@ -32,6 +33,8 @@ void redisplay_event( Widget w, XtPointer client, XExposeEvent *ev)
    Display *display;
     Drawable window;
     GC gc;
+
+
 
     display = XtDisplay(w);
     window = XtWindow(w);
@@ -55,7 +58,7 @@ void click_event( Widget w, XtPointer client, XButtonEvent  *ev)
 
 int main(int argc, char **argv)
 {
-    Widget toplevel, box, drawing, command;
+    Widget toplevel, box, drawing, drawing2, command;
     int n;
 
     toplevel = XtInitialize(argv[0],"drawing", NULL, 0, &argc, argv);
@@ -84,8 +87,20 @@ int main(int argc, char **argv)
     drawing = XtCreateManagedWidget("drawing",coreWidgetClass, box, args, XtNumber(args));
 
 
+        Arg args2[] =
+    {
+        {XtNheight, 200},
+        {XtNwidth, 200},
+        {XtNbackground, 0X88FF88},
+        {XtNresize, TRUE},
+    };
 
-//    XtSetValues(drawing, args, XtNumber(args));
+
+    drawing2 = XtCreateManagedWidget("drawing",coreWidgetClass, box, args2, XtNumber(args2));
+
+
+
+    XtSetValues(drawing, args, XtNumber(args));
     XtAddEventHandler(drawing, ExposureMask, FALSE, redisplay_event, NULL);
     XtAddEventHandler(drawing, ButtonPressMask, FALSE, click_event, NULL);
     XtRealizeWidget(toplevel);
