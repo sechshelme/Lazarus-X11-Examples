@@ -23,7 +23,7 @@ type
     FHeight, FLeft, FTop, FWidth, FWindowBorderWidth: cint;
 
     FOnPaint: TPaintEvent;
-    FOnResize: TNotifyEvent;
+    esize: TNotifyEvent;
     FOnClick: TNotifyEvent;
     FOnMouseDown: TEvent;
     FOnMouseUp: TEvent;
@@ -79,7 +79,7 @@ type
     property OnMouseUp: TEvent read FOnMouseUp write FOnMouseUp;
     property OnMouseMove: TEvent read FOnMouseMove write FOnMouseMove;
     property OnPaint: TPaintEvent read FOnPaint write FOnPaint;
-    property OnResize: TNotifyEvent read FOnResize write FOnResize;
+    property OnResize: TNotifyEvent read esize write esize;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnKeyDown: TEvent read FOnKeyDown write FOnKeyDown;
     property OnIdle: TNotifyEvent read FOnIdle write FOnIdle;
@@ -103,9 +103,15 @@ begin
 end;
 
 procedure TX11Component.SetHeight(AHeight: cint);
+var
+  h: cint;
 begin
   if FHeight <> AHeight then begin
-    XResizeWindow(dis, Window, FWidth, AHeight);
+    h := AHeight;
+    if h <= 0 then begin
+      h := 1;
+    end;
+    XResizeWindow(dis, Window, FWidth, h);
     DoOnResize(FWidth, AHeight);
   end;
 end;
@@ -119,9 +125,15 @@ begin
 end;
 
 procedure TX11Component.SetWidth(AWidth: cint);
+var
+  w: cint;
 begin
   if FWidth <> AWidth then begin
-    XResizeWindow(dis, Window, AWidth, FHeight);
+    w := AWidth;
+    if w <= 0 then begin
+      w := 1;
+    end;
+    XResizeWindow(dis, Window, w, FHeight);
     DoOnResize(AWidth, FHeight);
   end;
 end;
@@ -358,8 +370,8 @@ begin
     MotionNotify: begin
       DoOnMouseMove(Event);
       if Event.xmotion.window = Window then begin
-//        if IsInRegion and (OnMouseMove <> nil) then begin
-//        end;
+        //        if IsInRegion and (OnMouseMove <> nil) then begin
+        //        end;
         if IsMouseDown then begin
           if IsInRegion then begin
             IsButtonDown := True;
@@ -447,7 +459,7 @@ end;
 
 procedure TX11Component.DoOnResize(AWidth, AHeight: cint);
 var
-  dx, dy, L, T, W, H: cint;
+  dx, dy, L, T, W, H, w1, h1: cint;
   i: integer;
 begin
   dx := AWidth - FWidth;
@@ -482,7 +494,15 @@ begin
       if (H <> FHeight) or (W <> FWidth) or (T <> FTop) or (L <> FLeft) then  begin
         FLeft := L;
         FTop := T;
-        XMoveResizeWindow(dis, Window, L, T, W, H);
+        w1 := w;
+        if w1 <= 0 then begin
+          w1 := 1;
+        end;
+        h1 := h;
+        if h1 <= 0 then begin
+          h1 := 1;
+        end;
+        XMoveResizeWindow(dis, Window, L, T, w1, h1);
         DoOnResize(W, H);
       end;
     end;

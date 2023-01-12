@@ -4,6 +4,7 @@ and may not be redistributed without written permission.*/
 //The headers
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
+#include "SDL/SDL_thread.h"
 #include <string>
 #include <vector>
 
@@ -458,6 +459,7 @@ bool Timer::is_paused()
 
 int main( int argc, char* args[] )
 {
+
     //Quit flag
     bool quit = false;
 
