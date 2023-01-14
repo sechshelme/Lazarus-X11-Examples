@@ -94,8 +94,8 @@ var
       //      XLockDisplay(dis);
       WriteLn(win);
       for i := 1 to 100 do begin
-        XSetForeground(dis, gc, random($FFFFFF));
-        XDrawRectangle(dis, win, gc, random(200), random(200), random(200), random(200));
+//        XSetForeground(dis, gc, random($FFFFFF));
+//        XDrawRectangle(dis, win, gc, random(200), random(200), random(200), random(200));
 
         //      XDrawRectangle(dis,win,gc,10,10,100,100);
       end;
@@ -120,6 +120,8 @@ begin
   end;
   scr := DefaultScreen(dis);
   rootwin := RootWindow(dis, scr);
+
+  XInitThreads;
 
   // Programm inizialisieren
   sem_init(@mySem, 10, 1);

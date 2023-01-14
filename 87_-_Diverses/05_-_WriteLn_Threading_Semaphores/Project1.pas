@@ -9,7 +9,8 @@ program Project1;
 
 uses
   BaseUnix,
-  pthreads;
+  pthreads,
+  Crt;
 
 type
   PThread = ^TThread;
@@ -20,7 +21,6 @@ type
   end;
 var
   Thread: array[0..1000000] of TThread;
-  mutex: pthread_mutex_t;
   Ende: boolean = False;
   i: integer;
 
@@ -42,23 +42,24 @@ var
     Thread := PThread(para1)^;
     repeat
       sem_wait(@mySem);
-      //      pthread_mutex_lock(@mutex);
       Write(Thread.index, ' ');
       sem_post(@mySem);
-      //            wait;
-      //    pthread_mutex_unlock(@mutex);
-      //        wait;
     until Ende;
     Result := nil;
   end;
 
 begin
-  sem_init(@mySem, 10,1);
+  sem_init(@mySem, 10, 1);
   for i := 0 to Length(Thread) - 1 do begin
     Thread[i].index := i;
     pthread_create(@Thread[i].Thread, nil, @thread_function, @Thread[i]);
   end;
-  ReadLn;
+  repeat
+    sem_wait(@mySem);
+    TextAttr:=Random($F);
+    WriteLn('XXX');
+    sem_post(@mySem);
+  until KeyPressed;
   Ende := True;
   for i := 0 to Length(Thread) - 1 do begin
     pthread_join(Thread[i].Thread, nil);
