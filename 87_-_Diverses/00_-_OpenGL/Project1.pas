@@ -21,9 +21,7 @@ type
   TMyWin = class(TObject)
   private
     dis: PDisplay;
-    scr: cint;
-    rootwin, win: TWindow;
-    zAngle: GLfloat;
+    win: TWindow;
     doubleBuffer: GLboolean;
   public
     constructor Create;
@@ -123,26 +121,20 @@ type
 
       end else begin
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
-        glMatrixMode(GL_MODELVIEW);
-
-        glLoadIdentity();
-        glScaled(0.5, 0.5, 1.0);
-
-        glRotatef(zAngle, 0.0, 0.0, 1.0);
-        zAngle := zAngle + 1.0;
+        glRotatef(1.0, 0.0, 0.0, 1.0);
 
         glBegin(GL_QUADS);
         glColor3f(0.0, 0.7, 0.1);
-        glVertex3f(-1.0, 1.0, 1.0);
+        glVertex2f(-0.8, 0.8);
 
         glColor3f(0.7, 0.7, 0.1);
-        glVertex3f(1.0, 1.0, 1.0);
+        glVertex2f(0.8, 0.8);
 
         glColor3f(0.7, 0.1, 0.7);
-        glVertex3f(1.0, -1.0, 1.0);
+        glVertex2f(0.8, -0.8);
 
         glColor3f(0.1, 0.7, 0.7);
-        glVertex3f(-1.0, -1.0, 1.0);
+        glVertex2f(-0.8, -0.8);
         glEnd();
 
         if doubleBuffer <> 0 then begin
