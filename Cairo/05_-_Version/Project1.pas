@@ -31,19 +31,19 @@ var
   SIZEY: longint = 200;
   major, minor, micro: LongInt;
 
-  procedure Paint(cd: Pcairo_surface_t);
+  procedure Paint(cs: Pcairo_surface_t);
   var
-    c: Pcairo_t;
+    cr: Pcairo_t;
   begin
-    c := cairo_create(cs);
-    cairo_rectangle(c, 10.0, 10.0, SIZEX - 20, SIZEY - 20);
-    cairo_set_source_rgb(c, 0.0, 0.0, 0.5);
-    cairo_fill(c);
-    cairo_move_to(c, 20.0, 20.0);
-    cairo_set_source_rgb(c, 1.0, 1.0, 0.0);
-    cairo_show_text(c, 'Hello World!');
-    cairo_show_page(c);
-    cairo_destroy(c);
+    cr := cairo_create(cs);
+    cairo_rectangle(cr, 10.0, 10.0, SIZEX - 20, SIZEY - 20);
+    cairo_set_source_rgb(cr, 0.0, 0.0, 0.5);
+    cairo_fill(cr);
+    cairo_move_to(cr, 20.0, 20.0);
+    cairo_set_source_rgb(cr, 1.0, 1.0, 0.0);
+    cairo_show_text(cr, 'Hello World!');
+    cairo_show_page(cr);
+    cairo_destroy(cr);
   end;
 
 begin
@@ -56,7 +56,7 @@ begin
   scr := DefaultScreen(dis);
 
   // Erstellt das Fenster
-  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, SIZEX, SIZEY, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
   // Wählt die gewünschten Ereignisse aus
   // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.

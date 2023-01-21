@@ -18,8 +18,8 @@ uses
   xutil,
   keysym,
   x,
-
-  pango,pangocairo,
+  pango,
+  pangocairo,
   CairoXlib,
   Cairo;
 
@@ -32,19 +32,19 @@ var
   SIZEX: longint = 320;
   SIZEY: longint = 200;
 
-  procedure Paint(cd: Pcairo_surface_t);
+  procedure Paint(cs: Pcairo_surface_t);
   var
-    c: Pcairo_t;
+    cr: Pcairo_t;
   begin
-    c := cairo_create(cs);
-    cairo_rectangle(c, 10.0, 10.0, SIZEX - 20, SIZEY - 20);
-    cairo_set_source_rgb(c, 0.0, 0.0, 0.5);
-    cairo_fill(c);
-    cairo_move_to(c, 20.0, 20.0);
-    cairo_set_source_rgb(c, 1.0, 1.0, 0.0);
-    cairo_show_text(c, 'Hello World!');
-    cairo_show_page(c);
-    cairo_destroy(c);
+    cr := cairo_create(cs);
+    cairo_rectangle(cr, 10.0, 10.0, SIZEX - 20, SIZEY - 20);
+    cairo_set_source_rgb(cr, 0.0, 0.0, 0.5);
+    cairo_fill(cr);
+    cairo_move_to(cr, 20.0, 20.0);
+    cairo_set_source_rgb(cr, 1.0, 1.0, 0.0);
+    cairo_show_text(cr, 'Hello World!');
+    cairo_show_page(cr);
+    cairo_destroy(cr);
   end;
 
 begin
