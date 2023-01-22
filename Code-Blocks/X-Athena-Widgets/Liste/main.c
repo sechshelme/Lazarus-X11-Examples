@@ -16,6 +16,8 @@ void quit(Widget w, XtPointer *client, XtPointer call) {
 }
 
 int main(int argc, char **argv) {
+    Arg  wargs[10];
+
     Widget toplevel, box, command, l;
 
     toplevel = XtInitialize("Mein Fenster", "simple", NULL, 0, &argc, argv);
@@ -30,10 +32,16 @@ int main(int argc, char **argv) {
 
 
 
-    char **ch={"abc","def","ghi","jkl",0};
+    char *ch[]={"abc","def","ghi","jkl",0};
 
     l=XtCreateManagedWidget("Liste", listWidgetClass, box, NULL, 0);
-    XawListChange(l, ch, 4, 0, True);
+    XawListChange(l, ch, 0, 0, True);
+    int i = 0;
+    XtSetArg(wargs[i], XtNheight, 100); i++;
+    XtSetArg(wargs[i], XtNbackground, 0x88FF88); i++;
+    XtSetArg(wargs[i], XtNforeground, 0xFFFFFF); i++;
+    XtSetValues(l, wargs, i);
+
 
     XtRealizeWidget(toplevel);
 
