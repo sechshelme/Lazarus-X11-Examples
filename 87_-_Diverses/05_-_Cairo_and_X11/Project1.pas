@@ -30,7 +30,7 @@ var
   SIZEX: longint = 320;
   SIZEY: longint = 200;
 
-  procedure Paint(cd: Pcairo_surface_t);
+  procedure Paint(cs: Pcairo_surface_t);
   var
     c: Pcairo_t;
   begin
