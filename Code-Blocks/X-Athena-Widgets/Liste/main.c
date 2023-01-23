@@ -7,8 +7,19 @@
 #include  <X11/Xaw/List.h>
 #include  <stdio.h>
 
-void hello(Widget w, XtPointer *client, XtPointer call) {
-    printf("Hello World\n");
+Widget listl;
+
+void set3(Widget w, XtPointer *client, XtPointer call) {
+  XawListHighlight(listl, 3);
+}
+
+void clear(Widget w, XtPointer *client, XtPointer call) {
+  XawListUnhighlight(listl);
+}
+
+void viewList(Widget w, XtPointer *client, XtPointer call) {
+    XawListReturnStruct *info = XawListShowCurrent(listl);
+    printf("Index: %i   Text: %s\n",info->list_index, info->string);
 }
 
 void quit(Widget w, XtPointer *client, XtPointer call) {
@@ -18,29 +29,35 @@ void quit(Widget w, XtPointer *client, XtPointer call) {
 int main(int argc, char **argv) {
     Arg  wargs[10];
 
-    Widget toplevel, box, command, l;
+    Widget toplevel, box, command;
 
     toplevel = XtInitialize("Mein Fenster", "simple", NULL, 0, &argc, argv);
 
     box = XtCreateManagedWidget("Button Gruppe", boxWidgetClass, toplevel, NULL, 0);
 
-    command = XtCreateManagedWidget("Hello World !", commandWidgetClass, box, NULL, 0);
-    XtAddCallback(command, XtNcallback, hello, NULL);
+    command = XtCreateManagedWidget("Set 3", commandWidgetClass, box, NULL, 0);
+    XtAddCallback(command, XtNcallback, set3, NULL);
+
+    command = XtCreateManagedWidget("Liste", commandWidgetClass, box, NULL, 0);
+    XtAddCallback(command, XtNcallback, viewList, NULL);
+
+    command = XtCreateManagedWidget("Clear", commandWidgetClass, box, NULL, 0);
+    XtAddCallback(command, XtNcallback, clear, NULL);
 
     command = XtCreateManagedWidget("Programm beenden", commandWidgetClass, box, NULL, 0);
     XtAddCallback(command, XtNcallback, quit, NULL);
 
 
 
-    char *ch[]={"abc","def","ghi","jkl",0};
+    char *ch[]={"abc","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","Ich bin ein sehr langer Text",0};
 
-    l=XtCreateManagedWidget("Liste", listWidgetClass, box, NULL, 0);
-    XawListChange(l, ch, 0, 0, True);
+    listl = XtCreateManagedWidget("Liste", listWidgetClass, box, NULL, 0);
+    XawListChange(listl, ch, 0, 50, True);
     int i = 0;
-    XtSetArg(wargs[i], XtNheight, 100); i++;
+    XtSetArg(wargs[i], XtNheight,50); i++;
     XtSetArg(wargs[i], XtNbackground, 0x88FF88); i++;
     XtSetArg(wargs[i], XtNforeground, 0xFFFFFF); i++;
-    XtSetValues(l, wargs, i);
+    XtSetValues(listl, wargs, i);
 
 
     XtRealizeWidget(toplevel);
