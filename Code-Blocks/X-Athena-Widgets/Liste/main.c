@@ -9,24 +9,29 @@
 
 Widget listl;
 
-void set3(Widget w, XtPointer *client, XtPointer call) {
-  XawListHighlight(listl, 3);
+void set3(Widget w, XtPointer *client, XtPointer call)
+{
+    XawListHighlight(listl, 3);
 }
 
-void clear(Widget w, XtPointer *client, XtPointer call) {
-  XawListUnhighlight(listl);
+void clear(Widget w, XtPointer *client, XtPointer call)
+{
+    XawListUnhighlight(listl);
 }
 
-void viewList(Widget w, XtPointer *client, XtPointer call) {
+void viewList(Widget w, XtPointer *client, XtPointer call)
+{
     XawListReturnStruct *info = XawListShowCurrent(listl);
     printf("Index: %i   Text: %s\n",info->list_index, info->string);
 }
 
-void quit(Widget w, XtPointer *client, XtPointer call) {
+void quit(Widget w, XtPointer *client, XtPointer call)
+{
     exit(0);
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     Arg  wargs[10];
 
     Widget toplevel, box, command;
@@ -48,15 +53,14 @@ int main(int argc, char **argv) {
     XtAddCallback(command, XtNcallback, quit, NULL);
 
 
-
-    char *ch[]={"abc","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","Ich bin ein sehr langer Text",0};
+    char *ch[]= {"abc","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","Ich bin ein sehr langer Text",0};
 
     listl = XtCreateManagedWidget("Liste", listWidgetClass, box, NULL, 0);
     XawListChange(listl, ch, 0, 50, True);
     int i = 0;
     XtSetArg(wargs[i], XtNheight,50); i++;
     XtSetArg(wargs[i], XtNbackground, 0x88FF88); i++;
-    XtSetArg(wargs[i], XtNforeground, 0xFFFFFF); i++;
+    XtSetArg(wargs[i], XtNforeground, 0xFF88FF); i++;
     XtSetValues(listl, wargs, i);
 
 
