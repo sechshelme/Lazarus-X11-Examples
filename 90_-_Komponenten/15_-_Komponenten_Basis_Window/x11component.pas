@@ -238,8 +238,7 @@ begin
 
   // UTF8 Key
   xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow, Window, XNFocusWindow, Window, nil]);
-  //  xic := XCreateIC(xim, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, XNClientWindow,Window, nil]);
-  if xic = nil then begin
+if xic = nil then begin
     WriteLn('Could not open IC');
   end;
 end;
