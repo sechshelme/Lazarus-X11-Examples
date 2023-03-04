@@ -179,7 +179,7 @@ begin
 
   slGTK4Pas.Add('');
   slGTK4Pas.Add('end.');
-  slGTK4Pas.SaveToFile('/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/Tools/Athena_Konverter_Alpha/xaw.pas');
+  slGTK4Pas.SaveToFile('/n4800/DATEN/Programmierung/mit_GIT/Lazarus/Tutorial/X11/Tools/Athena_Konverter_Alpha/xt.pas');
   slGTK4Pas.Free;
 end;
 

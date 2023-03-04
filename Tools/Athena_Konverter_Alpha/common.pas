@@ -14,10 +14,10 @@ uses
 
 const
 //  HeaderPath = '/usr/include/gtk-4.0/';
-  HeaderPath =  '/usr/include/X11/';
+  HeaderPath =  '/usr/include/';
 
   HeaderDespPath = '/tmp/Xaw-Konverter-header/';
-  PackageDirectory='Xaw';
+  PackageDirectory='X11';
 
   //  HeaderMask = 'gtkb*.h';
 
