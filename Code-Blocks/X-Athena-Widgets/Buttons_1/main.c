@@ -21,11 +21,11 @@ int main(int argc, char **argv) {
 
     box = XtCreateManagedWidget("Button Gruppe", boxWidgetClass, toplevel, NULL, 0);
 
-    command = XtCreateManagedWidget("Hello World !", commandWidgetClass, box, NULL, 0);
-    XtAddCallback(command, XtNcallback, hello, NULL);
+//    command = XtCreateManagedWidget("Hello World !", commandWidgetClass, box, NULL, 0);
+    //XtAddCallback(command, XtNcallback, hello, NULL);
 
-    command = XtCreateManagedWidget("Programm beenden", commandWidgetClass, box, NULL, 0);
-    XtAddCallback(command, XtNcallback, quit, NULL);
+//    command = XtCreateManagedWidget("Programm beenden", commandWidgetClass, box, NULL, 0);
+    //XtAddCallback(command, XtNcallback, quit, NULL);
 
     XtRealizeWidget(toplevel);
 
