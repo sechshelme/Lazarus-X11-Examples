@@ -148,6 +148,8 @@ const
 const
   XtSpecificationRelease = 7;
 
+
+
 type
   PString = ^TString;
   TString = Pchar;
@@ -842,6 +844,7 @@ function XtQueryGeometry(para1:TWidget; para2:PXtWidgetGeometry; para3:PXtWidget
 
 function XtCreatePopupShell(_XtString:TXtString; para2:TWidgetClass; para3:TWidget; para4:TArgList; para5:TCardinal):TWidget;cdecl;external libXt;
 
+function XtVaCreatePopupShell(_XtString:TXtString; para2:TWidgetClass; para3:TWidget; args:array of const):TWidget;cdecl;external libXt;
 
 procedure XtPopup(para1:TWidget; para2:TXtGrabKind);cdecl;external libXt;
 
@@ -863,10 +866,16 @@ function XtCreateWidget(_XtString:TXtString; para2:TWidgetClass; para3:TWidget; 
 
 function XtCreateManagedWidget(_XtString:TXtString; para2:TWidgetClass; para3:TWidget; para4:TArgList; para5:TCardinal):TWidget;cdecl;external libXt;
 
+function XtVaCreateWidget(_XtString:TXtString; para2:TWidgetClass; para3:TWidget; args:array of const):TWidget;cdecl;external libXt;
+
 function XtCreateApplicationShell(_XtString:TXtString; para2:TWidgetClass; para3:TArgList; para4:TCardinal):TWidget;cdecl;external libXt;
+
+function XtVaCreateManagedWidget(_XtString:TXtString; para2:TWidgetClass; para3:TWidget; args:array of const):TWidget;cdecl;external libXt;
 
 function XtAppCreateShell(_XtString:TXtString; __XtString:TXtString; para3:TWidgetClass; para4:PDisplay; para5:TArgList; 
                para6:TCardinal):TWidget;cdecl;external libXt;
+
+function XtVaAppCreateShell(_XtString:TXtString; __XtString:TXtString; para3:TWidgetClass; para4:PDisplay; args:array of const):TWidget;cdecl;external libXt;
 
 procedure XtToolkitInitialize;cdecl;external libXt;
 
@@ -878,8 +887,14 @@ procedure XtDisplayInitialize(para1:TXtAppContext; para2:PDisplay; _XtString:TXt
 function XtOpenApplication(para1:PXtAppContext; _XtString:TXtString; para3:TXrmOptionDescList; para4:TCardinal; para5:Plongint; 
                para6:PXtString; para7:PString; para8:TWidgetClass; para9:TArgList; para10:TCardinal):TWidget;cdecl;external libXt;
 
+ function XtVaOpenApplication(para1:PXtAppContext; _XtString:TXtString; para3:TXrmOptionDescList; para4:TCardinal; para5:Plongint;
+               para6:PXtString; para7:PString; para8:TWidgetClass; args:array of const):TWidget;cdecl;external libXt;
+
 function XtAppInitialize(para1:PXtAppContext; _XtString:TXtString; para3:TXrmOptionDescList; para4:TCardinal; para5:Plongint; 
                para6:PXtString; para7:PString; para8:TArgList; para9:TCardinal):TWidget;cdecl;external libXt;
+
+ function XtVaAppInitialize(para1:PXtAppContext; _XtString:TXtString; para3:TXrmOptionDescList; para4:TCardinal; para5:Plongint;
+               para6:PXtString; para7:PString; args:array of const):TWidget;cdecl;external libXt;
 
 function XtInitialize(_XtString:TXtString; __XtString:TXtString; para3:PXrmOptionDescRec; para4:TCardinal; para5:Plongint; 
                para6:PXtString):TWidget;cdecl;external libXt;
@@ -907,16 +922,29 @@ procedure XtCloseDisplay(para1:PDisplay);cdecl;external libXt;
 procedure XtGetApplicationResources(para1:TWidget; para2:TXtPointer; para3:TXtResourceList; para4:TCardinal; para5:TArgList; 
                 para6:TCardinal);cdecl;external libXt;
 
+procedure XtVaGetApplicationResources(para1:TWidget; para2:TXtPointer; para3:TXtResourceList; para4:TCardinal; args:array of const);cdecl;external libXt;
+
 procedure XtGetSubresources(para1:TWidget; para2:TXtPointer; _XtString:TXtString; __XtString:TXtString; para5:TXtResourceList; 
                 para6:TCardinal; para7:TArgList; para8:TCardinal);cdecl;external libXt;
 
+procedure XtVaGetSubresources(para1:TWidget; para2:TXtPointer; _XtString:TXtString; __XtString:TXtString; para5:TXtResourceList;
+                para6:TCardinal; args:array of const);cdecl;external libXt;
+
 procedure XtSetValues(para1:TWidget; para2:TArgList; para3:TCardinal);cdecl;external libXt;
+
+procedure XtVaSetValues(para1:TWidget; args:array of const);cdecl;external libXt;
 
 procedure XtGetValues(para1:TWidget; para2:TArgList; para3:TCardinal);cdecl;external libXt;
 
+procedure XtVaGetValues(para1:TWidget; args:array of const);cdecl;external libXt;
+
 procedure XtSetSubvalues(para1:TXtPointer; para2:TXtResourceList; para3:TCardinal; para4:TArgList; para5:TCardinal);cdecl;external libXt;
 
+procedure XtVaSetSubvalues(para1:TXtPointer; para2:TXtResourceList; para3:TCardinal; args:array of const);cdecl;external libXt;
+
 procedure XtGetSubvalues(para1:TXtPointer; para2:TXtResourceList; para3:TCardinal; para4:TArgList; para5:TCardinal);cdecl;external libXt;
+
+procedure XtVaGetSubvalues(para1:TXtPointer; para2:TXtResourceList; para3:TCardinal; args:array of const);cdecl;external libXt;
 
 procedure XtGetResourceList(para1:TWidgetClass; para2:PXtResourceList; para3:PCardinal);cdecl;external libXt;
 

@@ -46,6 +46,7 @@ var
   procedure press_Hello(w: TWidget; p: Pointer; p2: Pointer); cdecl;
   begin
     WriteLn('Hello World');
+    if p<>nil then WriteLn(PChar( p));
   end;
 
   procedure quit(w: TWidget; p: Pointer; p2: Pointer); cdecl;
@@ -63,6 +64,21 @@ var
 
     command := XtCreateManagedWidget('Hello' + LineEnding + 'World !', commandWidgetClass, box, nil, 0);
     XtAddCallback(command, XtNcallback, @press_Hello, nil);
+
+    command := XtCreateManagedWidget('Hello' + LineEnding + 'World !', commandWidgetClass, box, nil, 0);
+    XtAddCallback(command, XtNcallback, @press_Hello, nil);
+
+    command := XtCreateManagedWidget('Hello' + LineEnding+ LineEnding + 'Ich bin ein sehr langer Text !', commandWidgetClass, box, nil, 0);
+    XtAddCallback(command, XtNcallback, @press_Hello, nil);
+
+    command := XtCreateManagedWidget('quit', commandWidgetClass, box, nil, 0);
+    XtAddCallback(command, XtNcallback, @quit, nil);
+
+    command:=    XtVaCreateManagedWidget('TestBox', commandWidgetClass,box,[XtNforeground,$FFFFFF, XtNbackground, $FF, nil]);
+    XtAddCallback(command, XtNcallback, @press_Hello, nil);
+
+    command:=    XtVaCreateManagedWidget('TestBox', commandWidgetClass,box,[XtNforeground,$FFFF00, XtNbackground, $000000, XtNheight,500, nil]);
+    XtAddCallback(command, XtNcallback, @press_Hello, PChar('Hallo Welt'));
 
     command := XtCreateManagedWidget('quit', commandWidgetClass, box, nil, 0);
     XtAddCallback(command, XtNcallback, @quit, nil);
