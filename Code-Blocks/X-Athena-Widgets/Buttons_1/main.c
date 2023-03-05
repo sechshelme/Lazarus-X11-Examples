@@ -15,6 +15,10 @@ void quit(Widget w, XtPointer *client, XtPointer call) {
 }
 
 int main(int argc, char **argv) {
+
+Arg xxx;
+//XrmStringToQuark()123.45);
+
     Widget toplevel, box, command;
 
     toplevel = XtInitialize("Mein Fenster", "simple", NULL, 0, &argc, argv);
