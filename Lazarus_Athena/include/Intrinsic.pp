@@ -229,16 +229,16 @@ in define line 82 *)
 {$ifdef VMS}
 
     const
-      external libXtref = globalref;      
+      externalref = globalref;      
 (* error 
-#define external libXtdef(psect) globaldef {"psect"} noshare
+#define externaldef(psect) globaldef {"psect"} noshare
 in define line 103 *)
 {$else}
 (* error 
-#define external libXtref extern
+#define externalref extern
 in define line 105 *)
 (* error 
-#define external libXtdef(psect)
+#define externaldef(psect)
 in define line 106 *)
 {$endif}
     { VMS  }
@@ -636,131 +636,131 @@ in declaration at line 509 *)
     { dpy  }    { converter  }    { args  }    { num_args  }    { from  }    { to_in_out  }    { cache_ref_return  }
 
 function XtCallConverter(para1:PDisplay; para2:TXtTypeConverter; para3:TXrmValuePtr; para4:TCardinal; para5:TXrmValuePtr; 
-               para6:PXrmValue; para7:PXtCacheRef):TBoolean;cdecl;external libXt;
+               para6:PXrmValue; para7:PXtCacheRef):TBoolean;cdecl;external;
     { event  }
-function XtDispatchEvent(para1:PXEvent):TBoolean;cdecl;external libXt;
+function XtDispatchEvent(para1:PXEvent):TBoolean;cdecl;external;
     { widget  }    { time  }
-function XtCallAcceptFocus(para1:TWidget; para2:PTime):TBoolean;cdecl;external libXt;
+function XtCallAcceptFocus(para1:TWidget; para2:PTime):TBoolean;cdecl;external;
     { obsolete  }
     { event_return  }
-function XtPeekEvent(para1:PXEvent):TBoolean;cdecl;external libXt;
+function XtPeekEvent(para1:PXEvent):TBoolean;cdecl;external;
     { app_context  }    { event_return  }
-function XtAppPeekEvent(para1:TXtAppContext; para2:PXEvent):TBoolean;cdecl;external libXt;
+function XtAppPeekEvent(para1:TXtAppContext; para2:PXEvent):TBoolean;cdecl;external;
     { widget  }    { widgetClass  }
-function XtIsSubclass(para1:TWidget; para2:TWidgetClass):TBoolean;cdecl;external libXt;
+function XtIsSubclass(para1:TWidget; para2:TWidgetClass):TBoolean;cdecl;external;
     { object  }
-function XtIsObject(para1:TWidget):TBoolean;cdecl;external libXt;
+function XtIsObject(para1:TWidget):TBoolean;cdecl;external;
     { implementation-private  }
     { object  }    { type_flag  }
-function _XtCheckSubclassFlag(para1:TWidget; para2:TXtXtEnum):TBoolean;cdecl;external libXt;
+function _XtCheckSubclassFlag(para1:TWidget; para2:TXtXtEnum):TBoolean;cdecl;external;
     { implementation-private  }
     { object  }    { widget_class  }    { flag_class  }    { type_flag  }
-function _XtIsSubclassOf(para1:TWidget; para2:TWidgetClass; para3:TWidgetClass; para4:TXtXtEnum):TBoolean;cdecl;external libXt;
+function _XtIsSubclassOf(para1:TWidget; para2:TWidgetClass; para3:TWidgetClass; para4:TXtXtEnum):TBoolean;cdecl;external;
     { rectobj  }
-function XtIsManaged(para1:TWidget):TBoolean;cdecl;external libXt;
+function XtIsManaged(para1:TWidget):TBoolean;cdecl;external;
     { widget  }
-function XtIsRealized(para1:TWidget):TBoolean;cdecl;external libXt;
+function XtIsRealized(para1:TWidget):TBoolean;cdecl;external;
     { widget  }
-function XtIsSensitive(para1:TWidget):TBoolean;cdecl;external libXt;
+function XtIsSensitive(para1:TWidget):TBoolean;cdecl;external;
     { widget  }    { selection  }    { time  }    { convert  }    { lose  }    { done  }
 function XtOwnSelection(para1:TWidget; para2:TAtom; para3:TTime; para4:TXtConvertSelectionProc; para5:TXtLoseSelectionProc; 
-               para6:TXtSelectionDoneProc):TBoolean;cdecl;external libXt;
+               para6:TXtSelectionDoneProc):TBoolean;cdecl;external;
     { widget  }    { selection  }    { time  }    { convert_callback  }    { lose_callback  }    { done_callback  }    { cancel_callback  }    { client_data  }
 function XtOwnSelectionIncremental(para1:TWidget; para2:TAtom; para3:TTime; para4:TXtConvertSelectionIncrProc; para5:TXtLoseSelectionIncrProc; 
-               para6:TXtSelectionDoneIncrProc; para7:TXtCancelConvertSelectionProc; para8:TXtPointer):TBoolean;cdecl;external libXt;
+               para6:TXtSelectionDoneIncrProc; para7:TXtCancelConvertSelectionProc; para8:TXtPointer):TBoolean;cdecl;external;
     { widget  }    { width  }    { height  }    { width_return  }    { height_return  }
-function XtMakeResizeRequest(para1:TWidget; para2:TXtDimension; para3:TXtDimension; para4:PDimension; para5:PDimension):TXtGeometryResult;cdecl;external libXt;
+function XtMakeResizeRequest(para1:TWidget; para2:TXtDimension; para3:TXtDimension; para4:PDimension; para5:PDimension):TXtGeometryResult;cdecl;external;
     { widget  }    { x  }    { y  }    { rootx_return  }    { rooty_return  }
-procedure XtTranslateCoords(para1:TWidget; para2:TXtPosition; para3:TXtPosition; para4:PPosition; para5:PPosition);cdecl;external libXt;
+procedure XtTranslateCoords(para1:TWidget; para2:TXtPosition; para3:TXtPosition; para4:PPosition; para5:PPosition);cdecl;external;
     { dpy  }    { min_keycode_return  }    { keysyms_per_keycode_return  }
-function XtGetKeysymTable(para1:PDisplay; para2:PKeyCode; para3:Plongint):PKeySym;cdecl;external libXt;
+function XtGetKeysymTable(para1:PDisplay; para2:PKeyCode; para3:Plongint):PKeySym;cdecl;external;
     { dpy  }    { keysym  }    { keycodes_return  }    { keycount_return  }
-procedure XtKeysymToKeycodeList(para1:PDisplay; para2:TKeySym; para3:PPKeyCode; para4:PCardinal);cdecl;external libXt;
+procedure XtKeysymToKeycodeList(para1:PDisplay; para2:TKeySym; para3:PPKeyCode; para4:PCardinal);cdecl;external;
     { obsolete  }
     { from_value  }    { to_type  }
-procedure XtStringConversionWarning(_XtString:TXconst; _XtString:TXconst);cdecl;external libXt;
+procedure XtStringConversionWarning(_XtString:TXconst; _XtString:TXconst);cdecl;external;
     { dpy  }    { from_value  }    { to_type  }
-procedure XtDisplayStringConversionWarning(para1:PDisplay; _XtString:TXconst; _XtString:TXconst);cdecl;external libXt;
+procedure XtDisplayStringConversionWarning(para1:PDisplay; _XtString:TXconst; _XtString:TXconst);cdecl;external;
 (* error 
-external libXtref XtConvertArgRec const colorConvertArgs[];
+externalref XtConvertArgRec const colorConvertArgs[];
  in declarator_list *)
 (* error 
-external libXtref XtConvertArgRec const screenConvertArg[];
+externalref XtConvertArgRec const screenConvertArg[];
  in declarator_list *)
     { obsolete  }
     { app_context  }    { from_type  }    { to_type  }    { converter  }    { convert_args  }    { num_args  }
 procedure XtAppAddConverter(para1:TXtAppContext; _XtString:TXconst; _XtString:TXconst; para4:TXtConverter; para5:TXtConvertArgList; 
-                para6:TCardinal);cdecl;external libXt;
+                para6:TCardinal);cdecl;external;
     { obsolete  }
     { from_type  }    { to_type  }    { converter  }    { convert_args  }    { num_args  }
-procedure XtAddConverter(_XtString:TXconst; _XtString:TXconst; para3:TXtConverter; para4:TXtConvertArgList; para5:TCardinal);cdecl;external libXt;
+procedure XtAddConverter(_XtString:TXconst; _XtString:TXconst; para3:TXtConverter; para4:TXtConvertArgList; para5:TCardinal);cdecl;external;
     { from_type  }    { to_type  }    { converter  }    { convert_args  }    { num_args  }    { cache_type  }    { destructor  }
 procedure XtSetTypeConverter(_XtString:TXconst; _XtString:TXconst; para3:TXtTypeConverter; para4:TXtConvertArgList; para5:TCardinal; 
-                para6:TXtCacheType; para7:TXtDestructor);cdecl;external libXt;
+                para6:TXtCacheType; para7:TXtDestructor);cdecl;external;
     { app_context  }    { from_type  }    { to_type  }    { converter  }    { convert_args  }    { num_args  }    { cache_type  }    { destructor  }
 procedure XtAppSetTypeConverter(para1:TXtAppContext; _XtString:TXconst; _XtString:TXconst; para4:TXtTypeConverter; para5:TXtConvertArgList; 
-                para6:TCardinal; para7:TXtCacheType; para8:TXtDestructor);cdecl;external libXt;
+                para6:TCardinal; para7:TXtCacheType; para8:TXtDestructor);cdecl;external;
     { obsolete  }
     { widget  }    { from_type  }    { from  }    { to_type  }    { to_return  }
-procedure XtConvert(para1:TWidget; _XtString:TXconst; para3:PXrmValue; _XtString:TXconst; para5:PXrmValue);cdecl;external libXt;
+procedure XtConvert(para1:TWidget; _XtString:TXconst; para3:PXrmValue; _XtString:TXconst; para5:PXrmValue);cdecl;external;
     { obsolete  }
     { converter  }    { args  }    { num_args  }    { from  }    { to_return  }
-procedure XtDirectConvert(para1:TXtConverter; para2:TXrmValuePtr; para3:TCardinal; para4:TXrmValuePtr; para5:PXrmValue);cdecl;external libXt;
+procedure XtDirectConvert(para1:TXtConverter; para2:TXrmValuePtr; para3:TCardinal; para4:TXrmValuePtr; para5:PXrmValue);cdecl;external;
     {***************************************************************
      *
      * Translation Management
      *
      *************************************************************** }
     { table  }
-function XtParseTranslationTable(_XtString:TXconst):TXtTranslations;cdecl;external libXt;
+function XtParseTranslationTable(_XtString:TXconst):TXtTranslations;cdecl;external;
     { source  }
-function XtParseAcceleratorTable(_XtString:TXconst):TXtAccelerators;cdecl;external libXt;
+function XtParseAcceleratorTable(_XtString:TXconst):TXtAccelerators;cdecl;external;
     { widget  }    { translations  }
-procedure XtOverrideTranslations(para1:TWidget; para2:TXtTranslations);cdecl;external libXt;
+procedure XtOverrideTranslations(para1:TWidget; para2:TXtTranslations);cdecl;external;
     { widget  }    { translations  }
-procedure XtAugmentTranslations(para1:TWidget; para2:TXtTranslations);cdecl;external libXt;
+procedure XtAugmentTranslations(para1:TWidget; para2:TXtTranslations);cdecl;external;
     { destination  }    { source  }
-procedure XtInstallAccelerators(para1:TWidget; para2:TWidget);cdecl;external libXt;
+procedure XtInstallAccelerators(para1:TWidget; para2:TWidget);cdecl;external;
     { destination  }    { source  }
-procedure XtInstallAllAccelerators(para1:TWidget; para2:TWidget);cdecl;external libXt;
+procedure XtInstallAllAccelerators(para1:TWidget; para2:TWidget);cdecl;external;
     { widget  }
-procedure XtUninstallTranslations(para1:TWidget);cdecl;external libXt;
+procedure XtUninstallTranslations(para1:TWidget);cdecl;external;
     { app_context  }    { actions  }    { num_actions  }
-procedure XtAppAddActions(para1:TXtAppContext; para2:TXtActionList; para3:TCardinal);cdecl;external libXt;
+procedure XtAppAddActions(para1:TXtAppContext; para2:TXtActionList; para3:TCardinal);cdecl;external;
     { obsolete  }
     { actions  }    { num_actions  }
-procedure XtAddActions(para1:TXtActionList; para2:TCardinal);cdecl;external libXt;
+procedure XtAddActions(para1:TXtActionList; para2:TCardinal);cdecl;external;
     { app_context  }    { proc  }    { client_data  }
-function XtAppAddActionHook(para1:TXtAppContext; para2:TXtActionHookProc; para3:TXtPointer):TXtActionHookId;cdecl;external libXt;
+function XtAppAddActionHook(para1:TXtAppContext; para2:TXtActionHookProc; para3:TXtPointer):TXtActionHookId;cdecl;external;
     { id  }
-procedure XtRemoveActionHook(para1:TXtActionHookId);cdecl;external libXt;
+procedure XtRemoveActionHook(para1:TXtActionHookId);cdecl;external;
     { widget_class  }    { actions_return  }    { num_actions_return  }
-procedure XtGetActionList(para1:TWidgetClass; para2:PXtActionList; para3:PCardinal);cdecl;external libXt;
+procedure XtGetActionList(para1:TWidgetClass; para2:PXtActionList; para3:PCardinal);cdecl;external;
     { widget  }    { action  }    { event  }    { params  }    { num_params  }
-procedure XtCallActionProc(para1:TWidget; _XtString:TXconst; para3:PXEvent; para4:PString; para5:TCardinal);cdecl;external libXt;
+procedure XtCallActionProc(para1:TWidget; _XtString:TXconst; para3:PXEvent; para4:PString; para5:TCardinal);cdecl;external;
     { action_proc  }    { owner_events  }    { event_mask  }    { pointer_mode  }    { keyboard_mode  }
-procedure XtRegisterGrabAction(para1:TXtActionProc; para2:TXtBoolean; para3:dword; para4:longint; para5:longint);cdecl;external libXt;
+procedure XtRegisterGrabAction(para1:TXtActionProc; para2:TXtBoolean; para3:dword; para4:longint; para5:longint);cdecl;external;
     { dpy  }    { milliseconds  }
-procedure XtSetMultiClickTime(para1:PDisplay; para2:longint);cdecl;external libXt;
+procedure XtSetMultiClickTime(para1:PDisplay; para2:longint);cdecl;external;
     { dpy  }
-function XtGetMultiClickTime(para1:PDisplay):longint;cdecl;external libXt;
+function XtGetMultiClickTime(para1:PDisplay):longint;cdecl;external;
     { event  }    { modifiers_return  }
-function XtGetActionKeysym(para1:PXEvent; para2:PModifiers):TKeySym;cdecl;external libXt;
+function XtGetActionKeysym(para1:PXEvent; para2:PModifiers):TKeySym;cdecl;external;
     {**************************************************************
      *
      * Keycode and Keysym procedures for translation management
      *
      *************************************************************** }
     { dpy  }    { keycode  }    { modifiers  }    { modifiers_return  }    { keysym_return  }
-procedure XtTranslateKeycode(para1:PDisplay; para2:TXtKeyCode; para3:TModifiers; para4:PModifiers; para5:PKeySym);cdecl;external libXt;
+procedure XtTranslateKeycode(para1:PDisplay; para2:TXtKeyCode; para3:TModifiers; para4:PModifiers; para5:PKeySym);cdecl;external;
     { dpy  }    { keycode  }    { modifiers  }    { modifiers_return  }    { keysym_return  }
-procedure XtTranslateKey(para1:PDisplay; para2:TXtKeyCode; para3:TModifiers; para4:PModifiers; para5:PKeySym);cdecl;external libXt;
+procedure XtTranslateKey(para1:PDisplay; para2:TXtKeyCode; para3:TModifiers; para4:PModifiers; para5:PKeySym);cdecl;external;
     { dpy  }    { proc  }
-procedure XtSetKeyTranslator(para1:PDisplay; para2:TXtKeyProc);cdecl;external libXt;
+procedure XtSetKeyTranslator(para1:PDisplay; para2:TXtKeyProc);cdecl;external;
     { dpy  }    { proc  }    { start  }    { stop  }
-procedure XtRegisterCaseConverter(para1:PDisplay; para2:TXtCaseProc; para3:TKeySym; para4:TKeySym);cdecl;external libXt;
+procedure XtRegisterCaseConverter(para1:PDisplay; para2:TXtCaseProc; para3:TKeySym; para4:TKeySym);cdecl;external;
     { dpy  }    { keysym  }    { lower_return  }    { upper_return  }
-procedure XtConvertCase(para1:PDisplay; para2:TKeySym; para3:PKeySym; para4:PKeySym);cdecl;external libXt;
+procedure XtConvertCase(para1:PDisplay; para2:TKeySym; para3:PKeySym; para4:PKeySym);cdecl;external;
     {***************************************************************
      *
      * Event Management
@@ -773,55 +773,55 @@ procedure XtConvertCase(para1:PDisplay; para2:TKeySym; para3:PKeySym; para4:PKey
     function XtAllEvents : TEventMask;      
 
     { widget  }    { event_mask  }    { nonmaskable  }    { proc  }    { closure  }
-procedure XtAddEventHandler(para1:TWidget; para2:TEventMask; para3:TXtBoolean; para4:TXtEventHandler; para5:TXtPointer);cdecl;external libXt;
+procedure XtAddEventHandler(para1:TWidget; para2:TEventMask; para3:TXtBoolean; para4:TXtEventHandler; para5:TXtPointer);cdecl;external;
     { widget  }    { event_mask  }    { nonmaskable  }    { proc  }    { closure  }
-procedure XtRemoveEventHandler(para1:TWidget; para2:TEventMask; para3:TXtBoolean; para4:TXtEventHandler; para5:TXtPointer);cdecl;external libXt;
+procedure XtRemoveEventHandler(para1:TWidget; para2:TEventMask; para3:TXtBoolean; para4:TXtEventHandler; para5:TXtPointer);cdecl;external;
     { widget  }    { event_mask  }    { nonmaskable  }    { proc  }    { closure  }
-procedure XtAddRawEventHandler(para1:TWidget; para2:TEventMask; para3:TXtBoolean; para4:TXtEventHandler; para5:TXtPointer);cdecl;external libXt;
+procedure XtAddRawEventHandler(para1:TWidget; para2:TEventMask; para3:TXtBoolean; para4:TXtEventHandler; para5:TXtPointer);cdecl;external;
     { widget  }    { event_mask  }    { nonmaskable  }    { proc  }    { closure  }
-procedure XtRemoveRawEventHandler(para1:TWidget; para2:TEventMask; para3:TXtBoolean; para4:TXtEventHandler; para5:TXtPointer);cdecl;external libXt;
+procedure XtRemoveRawEventHandler(para1:TWidget; para2:TEventMask; para3:TXtBoolean; para4:TXtEventHandler; para5:TXtPointer);cdecl;external;
     { widget  }    { event_mask  }    { nonmaskable  }    { proc  }    { closure  }    { position  }
 procedure XtInsertEventHandler(para1:TWidget; para2:TEventMask; para3:TXtBoolean; para4:TXtEventHandler; para5:TXtPointer; 
-                para6:TXtListPosition);cdecl;external libXt;
+                para6:TXtListPosition);cdecl;external;
     { widget  }    { event_mask  }    { nonmaskable  }    { proc  }    { closure  }    { position  }
 procedure XtInsertRawEventHandler(para1:TWidget; para2:TEventMask; para3:TXtBoolean; para4:TXtEventHandler; para5:TXtPointer; 
-                para6:TXtListPosition);cdecl;external libXt;
+                para6:TXtListPosition);cdecl;external;
     { dpy  }    { event_type  }    { proc  }
-function XtSetEventDispatcher(para1:PDisplay; para2:longint; para3:TXtEventDispatchProc):TXtEventDispatchProc;cdecl;external libXt;
+function XtSetEventDispatcher(para1:PDisplay; para2:longint; para3:TXtEventDispatchProc):TXtEventDispatchProc;cdecl;external;
     { widget  }    { event  }
-function XtDispatchEventToWidget(para1:TWidget; para2:PXEvent):TBoolean;cdecl;external libXt;
+function XtDispatchEventToWidget(para1:TWidget; para2:PXEvent):TBoolean;cdecl;external;
     { widget  }    { type  }    { select_data  }    { proc  }    { closure  }    { position  }
 procedure XtInsertEventTypeHandler(para1:TWidget; para2:longint; para3:TXtPointer; para4:TXtEventHandler; para5:TXtPointer; 
-                para6:TXtListPosition);cdecl;external libXt;
+                para6:TXtListPosition);cdecl;external;
     { widget  }    { type  }    { select_data  }    { proc  }    { closure  }
-procedure XtRemoveEventTypeHandler(para1:TWidget; para2:longint; para3:TXtPointer; para4:TXtEventHandler; para5:TXtPointer);cdecl;external libXt;
+procedure XtRemoveEventTypeHandler(para1:TWidget; para2:longint; para3:TXtPointer; para4:TXtEventHandler; para5:TXtPointer);cdecl;external;
     { widget  }
-function XtBuildEventMask(para1:TWidget):TEventMask;cdecl;external libXt;
+function XtBuildEventMask(para1:TWidget):TEventMask;cdecl;external;
     { dpy  }    { min_event_type  }    { max_event_type  }    { proc  }    { client_data  }
-procedure XtRegisterExtensionSelector(para1:PDisplay; para2:longint; para3:longint; para4:TXtExtensionSelectProc; para5:TXtPointer);cdecl;external libXt;
+procedure XtRegisterExtensionSelector(para1:PDisplay; para2:longint; para3:longint; para4:TXtExtensionSelectProc; para5:TXtPointer);cdecl;external;
     { widget  }    { exclusive  }    { spring_loaded  }
-procedure XtAddGrab(para1:TWidget; para2:TXtBoolean; para3:TXtBoolean);cdecl;external libXt;
+procedure XtAddGrab(para1:TWidget; para2:TXtBoolean; para3:TXtBoolean);cdecl;external;
     { widget  }
-procedure XtRemoveGrab(para1:TWidget);cdecl;external libXt;
+procedure XtRemoveGrab(para1:TWidget);cdecl;external;
     { obsolete  }
     { mask  }
-procedure XtProcessEvent(para1:TXtInputMask);cdecl;external libXt;
+procedure XtProcessEvent(para1:TXtInputMask);cdecl;external;
     { app_context  }    { mask  }
-procedure XtAppProcessEvent(para1:TXtAppContext; para2:TXtInputMask);cdecl;external libXt;
+procedure XtAppProcessEvent(para1:TXtAppContext; para2:TXtInputMask);cdecl;external;
     { obsolete  }
-procedure XtMainLoop;cdecl;external libXt;
+procedure XtMainLoop;cdecl;external;
     { app_context  }
-procedure XtAppMainLoop(para1:TXtAppContext);cdecl;external libXt;
+procedure XtAppMainLoop(para1:TXtAppContext);cdecl;external;
     { event  }    { region  }
-procedure XtAddExposureToRegion(para1:PXEvent; para2:TRegion);cdecl;external libXt;
+procedure XtAddExposureToRegion(para1:PXEvent; para2:TRegion);cdecl;external;
     { subtree  }    { descendent  }
-procedure XtSetKeyboardFocus(para1:TWidget; para2:TWidget);cdecl;external libXt;
+procedure XtSetKeyboardFocus(para1:TWidget; para2:TWidget);cdecl;external;
     { widget  }
-function XtGetKeyboardFocusWidget(para1:TWidget):TWidget;cdecl;external libXt;
+function XtGetKeyboardFocusWidget(para1:TWidget):TWidget;cdecl;external;
     { dpy  }
-function XtLastEventProcessed(para1:PDisplay):PXEvent;cdecl;external libXt;
+function XtLastEventProcessed(para1:PDisplay):PXEvent;cdecl;external;
     { dpy  }
-function XtLastTimestampProcessed(para1:PDisplay):TTime;cdecl;external libXt;
+function XtLastTimestampProcessed(para1:PDisplay):TTime;cdecl;external;
     {***************************************************************
      *
      * Event Gathering Routines
@@ -829,30 +829,30 @@ function XtLastTimestampProcessed(para1:PDisplay):TTime;cdecl;external libXt;
      *************************************************************** }
     { obsolete  }
     { interval  }    { proc  }    { closure  }
-function XtAddTimeOut(para1:dword; para2:TXtTimerCallbackProc; para3:TXtPointer):TXtIntervalId;cdecl;external libXt;
+function XtAddTimeOut(para1:dword; para2:TXtTimerCallbackProc; para3:TXtPointer):TXtIntervalId;cdecl;external;
     { app_context  }    { interval  }    { proc  }    { closure  }
-function XtAppAddTimeOut(para1:TXtAppContext; para2:dword; para3:TXtTimerCallbackProc; para4:TXtPointer):TXtIntervalId;cdecl;external libXt;
+function XtAppAddTimeOut(para1:TXtAppContext; para2:dword; para3:TXtTimerCallbackProc; para4:TXtPointer):TXtIntervalId;cdecl;external;
     { timer  }
-procedure XtRemoveTimeOut(para1:TXtIntervalId);cdecl;external libXt;
+procedure XtRemoveTimeOut(para1:TXtIntervalId);cdecl;external;
     { obsolete  }
     { source  }    { condition  }    { proc  }    { closure  }
-function XtAddInput(para1:longint; para2:TXtPointer; para3:TXtInputCallbackProc; para4:TXtPointer):TXtInputId;cdecl;external libXt;
+function XtAddInput(para1:longint; para2:TXtPointer; para3:TXtInputCallbackProc; para4:TXtPointer):TXtInputId;cdecl;external;
     { app_context  }    { source  }    { condition  }    { proc  }    { closure  }
-function XtAppAddInput(para1:TXtAppContext; para2:longint; para3:TXtPointer; para4:TXtInputCallbackProc; para5:TXtPointer):TXtInputId;cdecl;external libXt;
+function XtAppAddInput(para1:TXtAppContext; para2:longint; para3:TXtPointer; para4:TXtInputCallbackProc; para5:TXtPointer):TXtInputId;cdecl;external;
     { id  }
-procedure XtRemoveInput(para1:TXtInputId);cdecl;external libXt;
-    { proc  }    { closure  }function XtAddSignal(para1:TXtSignalCallbackProc; para2:TXtPointer):TXtSignalId;cdecl;external libXt;
+procedure XtRemoveInput(para1:TXtInputId);cdecl;external;
+    { proc  }    { closure  }function XtAddSignal(para1:TXtSignalCallbackProc; para2:TXtPointer):TXtSignalId;cdecl;external;
     { app_context  }    { proc  }    { closure  }
-function XtAppAddSignal(para1:TXtAppContext; para2:TXtSignalCallbackProc; para3:TXtPointer):TXtSignalId;cdecl;external libXt;
+function XtAppAddSignal(para1:TXtAppContext; para2:TXtSignalCallbackProc; para3:TXtPointer):TXtSignalId;cdecl;external;
     { id  }
-procedure XtRemoveSignal(para1:TXtSignalId);cdecl;external libXt;
+procedure XtRemoveSignal(para1:TXtSignalId);cdecl;external;
     { id  }
-procedure XtNoticeSignal(para1:TXtSignalId);cdecl;external libXt;
+procedure XtNoticeSignal(para1:TXtSignalId);cdecl;external;
     { obsolete  }
     { event  }
-procedure XtNextEvent(para1:PXEvent);cdecl;external libXt;
+procedure XtNextEvent(para1:PXEvent);cdecl;external;
     { app_context  }    { event_return  }
-procedure XtAppNextEvent(para1:TXtAppContext; para2:PXEvent);cdecl;external libXt;
+procedure XtAppNextEvent(para1:TXtAppContext; para2:PXEvent);cdecl;external;
     const
       XtIMXEvent = 1;      
       XtIMTimer = 2;      
@@ -861,13 +861,13 @@ procedure XtAppNextEvent(para1:TXtAppContext; para2:PXEvent);cdecl;external libX
       XtIMAll = ((XtIMXEvent or XtIMTimer) or XtIMAlternateInput) or XtIMSignal;      
     { obsolete  }
 
-function XtPending:TBoolean;cdecl;external libXt;
+function XtPending:TBoolean;cdecl;external;
     { app_context  }
-function XtAppPending(para1:TXtAppContext):TXtInputMask;cdecl;external libXt;
+function XtAppPending(para1:TXtAppContext):TXtInputMask;cdecl;external;
     { app_context  }    { proc  }    { client_data  }
-function XtAppAddBlockHook(para1:TXtAppContext; para2:TXtBlockHookProc; para3:TXtPointer):TXtBlockHookId;cdecl;external libXt;
+function XtAppAddBlockHook(para1:TXtAppContext; para2:TXtBlockHookProc; para3:TXtPointer):TXtBlockHookId;cdecl;external;
     { id  }
-procedure XtRemoveBlockHook(para1:TXtBlockHookId);cdecl;external libXt;
+procedure XtRemoveBlockHook(para1:TXtBlockHookId);cdecl;external;
     {***************************************************************
      *
      * Random utility routines
@@ -899,7 +899,7 @@ procedure XtRemoveBlockHook(para1:TXtBlockHookId);cdecl;external libXt;
     function XtIsShell(widget : longint) : longint;    
 
 {$undef XtIsOverrideShell}
-    { object  }function XtIsOverrideShell(para1:TWidget):TBoolean;cdecl;external libXt;
+    { object  }function XtIsOverrideShell(para1:TWidget):TBoolean;cdecl;external;
     { was #define dname(params) para_def_expr }
     { argument types are unknown }
     { return type might be wrong }   
@@ -911,14 +911,14 @@ procedure XtRemoveBlockHook(para1:TXtBlockHookId);cdecl;external libXt;
     function XtIsWMShell(widget : longint) : longint;    
 
 {$undef XtIsVendorShell}
-    { object  }function XtIsVendorShell(para1:TWidget):TBoolean;cdecl;external libXt;
+    { object  }function XtIsVendorShell(para1:TWidget):TBoolean;cdecl;external;
     { was #define dname(params) para_def_expr }
     { argument types are unknown }
     { return type might be wrong }   
     function XtIsVendorShell(widget : longint) : longint;    
 
 {$undef XtIsTransientShell}
-    { object  }function XtIsTransientShell(para1:TWidget):TBoolean;cdecl;external libXt;
+    { object  }function XtIsTransientShell(para1:TWidget):TBoolean;cdecl;external;
     { was #define dname(params) para_def_expr }
     { argument types are unknown }
     { return type might be wrong }   
@@ -930,35 +930,35 @@ procedure XtRemoveBlockHook(para1:TXtBlockHookId);cdecl;external libXt;
     function XtIsTopLevelShell(widget : longint) : longint;    
 
 {$undef XtIsApplicationShell}
-    { object  }function XtIsApplicationShell(para1:TWidget):TBoolean;cdecl;external libXt;
+    { object  }function XtIsApplicationShell(para1:TWidget):TBoolean;cdecl;external;
     { was #define dname(params) para_def_expr }
     { argument types are unknown }
     { return type might be wrong }   
     function XtIsApplicationShell(widget : longint) : longint;    
 
 {$undef XtIsSessionShell}
-    { object  }function XtIsSessionShell(para1:TWidget):TBoolean;cdecl;external libXt;
+    { object  }function XtIsSessionShell(para1:TWidget):TBoolean;cdecl;external;
     { was #define dname(params) para_def_expr }
     { argument types are unknown }
     { return type might be wrong }   
     function XtIsSessionShell(widget : longint) : longint;    
 
     { widget  }
-procedure XtRealizeWidget(para1:TWidget);cdecl;external libXt;
+procedure XtRealizeWidget(para1:TWidget);cdecl;external;
     { widget  }
-procedure XtUnrealizeWidget(para1:TWidget);cdecl;external libXt;
+procedure XtUnrealizeWidget(para1:TWidget);cdecl;external;
     { widget  }
-procedure XtDestroyWidget(para1:TWidget);cdecl;external libXt;
+procedure XtDestroyWidget(para1:TWidget);cdecl;external;
     { widget  }    { sensitive  }
-procedure XtSetSensitive(para1:TWidget; para2:TXtBoolean);cdecl;external libXt;
+procedure XtSetSensitive(para1:TWidget; para2:TXtBoolean);cdecl;external;
     { widget  }    { mapped_when_managed  }
-procedure XtSetMappedWhenManaged(para1:TWidget; para2:TXtBoolean);cdecl;external libXt;
+procedure XtSetMappedWhenManaged(para1:TWidget; para2:TXtBoolean);cdecl;external;
     { reference  }    { names  }
-function XtNameToWidget(para1:TWidget; _XtString:TXconst):TWidget;cdecl;external libXt;
+function XtNameToWidget(para1:TWidget; _XtString:TXconst):TWidget;cdecl;external;
     { display  }    { window  }
-function XtWindowToWidget(para1:PDisplay; para2:TWindow):TWidget;cdecl;external libXt;
+function XtWindowToWidget(para1:PDisplay; para2:TWindow):TWidget;cdecl;external;
     { object_class  }    { byte_offset  }    { type  }    { version  }    { record_size  }
-function XtGetClassExtension(para1:TWidgetClass; para2:TCardinal; para3:TXrmQuark; para4:longint; para5:TCardinal):TXtPointer;cdecl;external libXt;
+function XtGetClassExtension(para1:TWidgetClass; para2:TCardinal; para3:TXrmQuark; para4:longint; para5:TCardinal):TXtPointer;cdecl;external;
     {**************************************************************
      *
      * Arg lists
@@ -968,7 +968,7 @@ function XtGetClassExtension(para1:TWidgetClass; para2:TCardinal; para3:TXrmQuar
     ((void)( (arg).name = (n), (arg).value = (XtArgVal)(d) ))
 in define line 1161 *)
     { args1  }    { num_args1  }    { args2  }    { num_args2  }
-function XtMergeArgLists(para1:TArgList; para2:TCardinal; para3:TArgList; para4:TCardinal):TArgList;cdecl;external libXt;
+function XtMergeArgLists(para1:TArgList; para2:TCardinal; para3:TArgList; para4:TCardinal):TArgList;cdecl;external;
     {**************************************************************
      *
      * Vararg lists
@@ -978,8 +978,8 @@ function XtMergeArgLists(para1:TArgList; para2:TCardinal; para3:TArgList; para4:
       XtVaNestedList = 'XtVaNestedList';      
       XtVaTypedArg = 'XtVaTypedArg';      
     {unused }    {333333333333333333333333333333333******************************** }
-function XtVaCreateArgsList(para1:TXtPointer; args:array of const):TXtVarArgsList;cdecl;external libXt;
-function XtVaCreateArgsList(para1:TXtPointer):TXtVarArgsList;cdecl;external libXt;
+function XtVaCreateArgsList(para1:TXtPointer; args:array of const):TXtVarArgsList;cdecl;external;
+function XtVaCreateArgsList(para1:TXtPointer):TXtVarArgsList;cdecl;external;
     {************************************************************
      *
      * Information routines
@@ -989,186 +989,186 @@ function XtVaCreateArgsList(para1:TXtPointer):TXtVarArgsList;cdecl;external libX
     { We're not included from the private file, so define these  }
     { widget  }
 
-function XtDisplay(para1:TWidget):PDisplay;cdecl;external libXt;
+function XtDisplay(para1:TWidget):PDisplay;cdecl;external;
     { object  }
-function XtDisplayOfObject(para1:TWidget):PDisplay;cdecl;external libXt;
+function XtDisplayOfObject(para1:TWidget):PDisplay;cdecl;external;
     { widget  }
-function XtScreen(para1:TWidget):PScreen;cdecl;external libXt;
+function XtScreen(para1:TWidget):PScreen;cdecl;external;
     { object  }
-function XtScreenOfObject(para1:TWidget):PScreen;cdecl;external libXt;
+function XtScreenOfObject(para1:TWidget):PScreen;cdecl;external;
     { widget  }
-function XtWindow(para1:TWidget):TWindow;cdecl;external libXt;
+function XtWindow(para1:TWidget):TWindow;cdecl;external;
     { object  }
-function XtWindowOfObject(para1:TWidget):TWindow;cdecl;external libXt;
+function XtWindowOfObject(para1:TWidget):TWindow;cdecl;external;
     { object  }
-function XtName(para1:TWidget):TString;cdecl;external libXt;
+function XtName(para1:TWidget):TString;cdecl;external;
     { object  }
-function XtSuperclass(para1:TWidget):TWidgetClass;cdecl;external libXt;
+function XtSuperclass(para1:TWidget):TWidgetClass;cdecl;external;
     { object  }
-function XtClass(para1:TWidget):TWidgetClass;cdecl;external libXt;
+function XtClass(para1:TWidget):TWidgetClass;cdecl;external;
     { widget  }
-function XtParent(para1:TWidget):TWidget;cdecl;external libXt;
+function XtParent(para1:TWidget):TWidget;cdecl;external;
 {$endif}
     {_XtIntrinsicP_h }
 {$undef XtMapWidget}
     { w  }
-procedure XtMapWidget(para1:TWidget);cdecl;external libXt;
+procedure XtMapWidget(para1:TWidget);cdecl;external;
     { was #define dname(params) para_def_expr }
     { argument types are unknown }
     { return type might be wrong }   
     function XtMapWidget(widget : longint) : longint;    
 
 {$undef XtUnmapWidget}
-    { w  }procedure XtUnmapWidget(para1:TWidget);cdecl;external libXt;
+    { w  }procedure XtUnmapWidget(para1:TWidget);cdecl;external;
     { was #define dname(params) para_def_expr }
     { argument types are unknown }
     { return type might be wrong }   
     function XtUnmapWidget(widget : longint) : longint;    
 
     { widget  }    { callback_name  }    { callback  }    { closure  }
-procedure XtAddCallback(para1:TWidget; _XtString:TXconst; para3:TXtCallbackProc; para4:TXtPointer);cdecl;external libXt;
+procedure XtAddCallback(para1:TWidget; _XtString:TXconst; para3:TXtCallbackProc; para4:TXtPointer);cdecl;external;
     { widget  }    { callback_name  }    { callback  }    { closure  }
-procedure XtRemoveCallback(para1:TWidget; _XtString:TXconst; para3:TXtCallbackProc; para4:TXtPointer);cdecl;external libXt;
+procedure XtRemoveCallback(para1:TWidget; _XtString:TXconst; para3:TXtCallbackProc; para4:TXtPointer);cdecl;external;
     { widget  }    { callback_name  }    { callbacks  }
-procedure XtAddCallbacks(para1:TWidget; _XtString:TXconst; para3:TXtCallbackList);cdecl;external libXt;
+procedure XtAddCallbacks(para1:TWidget; _XtString:TXconst; para3:TXtCallbackList);cdecl;external;
     { widget  }    { callback_name  }    { callbacks  }
-procedure XtRemoveCallbacks(para1:TWidget; _XtString:TXconst; para3:TXtCallbackList);cdecl;external libXt;
+procedure XtRemoveCallbacks(para1:TWidget; _XtString:TXconst; para3:TXtCallbackList);cdecl;external;
     { widget  }    { callback_name  }
-procedure XtRemoveAllCallbacks(para1:TWidget; _XtString:TXconst);cdecl;external libXt;
+procedure XtRemoveAllCallbacks(para1:TWidget; _XtString:TXconst);cdecl;external;
     { widget  }    { callback_name  }    { call_data  }
-procedure XtCallCallbacks(para1:TWidget; _XtString:TXconst; para3:TXtPointer);cdecl;external libXt;
+procedure XtCallCallbacks(para1:TWidget; _XtString:TXconst; para3:TXtPointer);cdecl;external;
     { widget  }    { callbacks  }    { call_data  }
-procedure XtCallCallbackList(para1:TWidget; para2:TXtCallbackList; para3:TXtPointer);cdecl;external libXt;
+procedure XtCallCallbackList(para1:TWidget; para2:TXtCallbackList; para3:TXtPointer);cdecl;external;
     { widget  }    { callback_name  }
-function XtHasCallbacks(para1:TWidget; _XtString:TXconst):TXtCallbackStatus;cdecl;external libXt;
+function XtHasCallbacks(para1:TWidget; _XtString:TXconst):TXtCallbackStatus;cdecl;external;
     {***************************************************************
      *
      * Geometry Management
      *
      *************************************************************** }
     { widget  }    { request  }    { reply_return  }
-function XtMakeGeometryRequest(para1:TWidget; para2:PXtWidgetGeometry; para3:PXtWidgetGeometry):TXtGeometryResult;cdecl;external libXt;
+function XtMakeGeometryRequest(para1:TWidget; para2:PXtWidgetGeometry; para3:PXtWidgetGeometry):TXtGeometryResult;cdecl;external;
     { widget  }    { intended  }    { preferred_return  }
-function XtQueryGeometry(para1:TWidget; para2:PXtWidgetGeometry; para3:PXtWidgetGeometry):TXtGeometryResult;cdecl;external libXt;
+function XtQueryGeometry(para1:TWidget; para2:PXtWidgetGeometry; para3:PXtWidgetGeometry):TXtGeometryResult;cdecl;external;
     { name  }    { widgetClass  }    { parent  }    { args  }    { num_args  }
-function XtCreatePopupShell(_XtString:TXconst; para2:TWidgetClass; para3:TWidget; para4:TArgList; para5:TCardinal):TWidget;cdecl;external libXt;
-    { name  }    { widgetClass  }    { parent  }    {}function XtVaCreatePopupShell(_XtString:TXconst; para2:TWidgetClass; para3:TWidget; args:array of const):TWidget;cdecl;external libXt;
-function XtVaCreatePopupShell(_XtString:TXconst; para2:TWidgetClass; para3:TWidget):TWidget;cdecl;external libXt;
+function XtCreatePopupShell(_XtString:TXconst; para2:TWidgetClass; para3:TWidget; para4:TArgList; para5:TCardinal):TWidget;cdecl;external;
+    { name  }    { widgetClass  }    { parent  }    {333333333333333333333333333333333******************************** }function XtVaCreatePopupShell(_XtString:TXconst; para2:TWidgetClass; para3:TWidget; args:array of const):TWidget;cdecl;external;
+function XtVaCreatePopupShell(_XtString:TXconst; para2:TWidgetClass; para3:TWidget):TWidget;cdecl;external;
     { popup_shell  }    { grab_kind  }
-procedure XtPopup(para1:TWidget; para2:TXtGrabKind);cdecl;external libXt;
+procedure XtPopup(para1:TWidget; para2:TXtGrabKind);cdecl;external;
     { popup_shell  }
-procedure XtPopupSpringLoaded(para1:TWidget);cdecl;external libXt;
+procedure XtPopupSpringLoaded(para1:TWidget);cdecl;external;
     { widget  }    { closure  }    { call_data  }
-procedure XtCallbackNone(para1:TWidget; para2:TXtPointer; para3:TXtPointer);cdecl;external libXt;
+procedure XtCallbackNone(para1:TWidget; para2:TXtPointer; para3:TXtPointer);cdecl;external;
     { widget  }    { closure  }    { call_data  }
-procedure XtCallbackNonexclusive(para1:TWidget; para2:TXtPointer; para3:TXtPointer);cdecl;external libXt;
+procedure XtCallbackNonexclusive(para1:TWidget; para2:TXtPointer; para3:TXtPointer);cdecl;external;
     { widget  }    { closure  }    { call_data  }
-procedure XtCallbackExclusive(para1:TWidget; para2:TXtPointer; para3:TXtPointer);cdecl;external libXt;
+procedure XtCallbackExclusive(para1:TWidget; para2:TXtPointer; para3:TXtPointer);cdecl;external;
     { popup_shell  }
-procedure XtPopdown(para1:TWidget);cdecl;external libXt;
+procedure XtPopdown(para1:TWidget);cdecl;external;
     { widget  }    { closure  }    { call_data  }
-procedure XtCallbackPopdown(para1:TWidget; para2:TXtPointer; para3:TXtPointer);cdecl;external libXt;
+procedure XtCallbackPopdown(para1:TWidget; para2:TXtPointer; para3:TXtPointer);cdecl;external;
     { widget  }    { event  }    { params  }    { num_params  }
-procedure XtMenuPopupAction(para1:TWidget; para2:PXEvent; para3:PString; para4:PCardinal);cdecl;external libXt;
+procedure XtMenuPopupAction(para1:TWidget; para2:PXEvent; para3:PString; para4:PCardinal);cdecl;external;
     { name  }    { widget_class  }    { parent  }    { args  }    { num_args  }
-function XtCreateWidget(_XtString:TXconst; para2:TWidgetClass; para3:TWidget; para4:TArgList; para5:TCardinal):TWidget;cdecl;external libXt;
+function XtCreateWidget(_XtString:TXconst; para2:TWidgetClass; para3:TWidget; para4:TArgList; para5:TCardinal):TWidget;cdecl;external;
     { name  }    { widget_class  }    { parent  }    { args  }    { num_args  }
-function XtCreateManagedWidget(_XtString:TXconst; para2:TWidgetClass; para3:TWidget; para4:TArgList; para5:TCardinal):TWidget;cdecl;external libXt;
-    { name  }    { widget  }    { parent  }    {3 }function XtVaCreateWidget(_XtString:TXconst; para2:TWidgetClass; para3:TWidget; args:array of const):TWidget;cdecl;external libXt;
-function XtVaCreateWidget(_XtString:TXconst; para2:TWidgetClass; para3:TWidget):TWidget;cdecl;external libXt;
-    { name  }    { widget_class  }    { parent  }    {3 }function XtVaCreateManagedWidget(_XtString:TXconst; para2:TWidgetClass; para3:TWidget; args:array of const):TWidget;cdecl;external libXt;
-function XtVaCreateManagedWidget(_XtString:TXconst; para2:TWidgetClass; para3:TWidget):TWidget;cdecl;external libXt;
+function XtCreateManagedWidget(_XtString:TXconst; para2:TWidgetClass; para3:TWidget; para4:TArgList; para5:TCardinal):TWidget;cdecl;external;
+    { name  }    { widget  }    { parent  }    {333333333333333333333333333333333******************************** }function XtVaCreateWidget(_XtString:TXconst; para2:TWidgetClass; para3:TWidget; args:array of const):TWidget;cdecl;external;
+function XtVaCreateWidget(_XtString:TXconst; para2:TWidgetClass; para3:TWidget):TWidget;cdecl;external;
+    { name  }    { widget_class  }    { parent  }    {333333333333333333333333333333333******************************** }function XtVaCreateManagedWidget(_XtString:TXconst; para2:TWidgetClass; para3:TWidget; args:array of const):TWidget;cdecl;external;
+function XtVaCreateManagedWidget(_XtString:TXconst; para2:TWidgetClass; para3:TWidget):TWidget;cdecl;external;
     { obsolete  }
     { name  }    { widget_class  }    { args  }    { num_args  }
-function XtCreateApplicationShell(_XtString:TXconst; para2:TWidgetClass; para3:TArgList; para4:TCardinal):TWidget;cdecl;external libXt;
+function XtCreateApplicationShell(_XtString:TXconst; para2:TWidgetClass; para3:TArgList; para4:TCardinal):TWidget;cdecl;external;
     { application_name  }    { application_class  }    { widget_class  }    { display  }    { args  }    { num_args  }
 function XtAppCreateShell(_XtString:TXconst; _XtString:TXconst; para3:TWidgetClass; para4:PDisplay; para5:TArgList; 
-               para6:TCardinal):TWidget;cdecl;external libXt;
-    { application_name  }    { application_class  }    { widget_class  }    { display  }    {}function XtVaAppCreateShell(_XtString:TXconst; _XtString:TXconst; para3:TWidgetClass; para4:PDisplay; args:array of const):TWidget;cdecl;external libXt;
-function XtVaAppCreateShell(_XtString:TXconst; _XtString:TXconst; para3:TWidgetClass; para4:PDisplay):TWidget;cdecl;external libXt;
+               para6:TCardinal):TWidget;cdecl;external;
+    { application_name  }    { application_class  }    { widget_class  }    { display  }    {333333333333333333333333333333333******************************** }function XtVaAppCreateShell(_XtString:TXconst; _XtString:TXconst; para3:TWidgetClass; para4:PDisplay; args:array of const):TWidget;cdecl;external;
+function XtVaAppCreateShell(_XtString:TXconst; _XtString:TXconst; para3:TWidgetClass; para4:PDisplay):TWidget;cdecl;external;
     {***************************************************************
      *
      * Toolkit initialization
      *
      *************************************************************** }
-procedure XtToolkitInitialize;cdecl;external libXt;
+procedure XtToolkitInitialize;cdecl;external;
     { app_context  }    { proc  }    { client_data  }
-function XtSetLanguageProc(para1:TXtAppContext; para2:TXtLanguageProc; para3:TXtPointer):TXtLanguageProc;cdecl;external libXt;
+function XtSetLanguageProc(para1:TXtAppContext; para2:TXtLanguageProc; para3:TXtPointer):TXtLanguageProc;cdecl;external;
     { app_context  }    { dpy  }    { application_name  }    { application_class  }    { options  }    { num_options  }    { argc  }    { argv  }
 procedure XtDisplayInitialize(para1:TXtAppContext; para2:PDisplay; _XtString:TXconst; _XtString:TXconst; para5:PXrmOptionDescRec; 
-                para6:TCardinal; para7:Plongint; para8:PXtString);cdecl;external libXt;
+                para6:TCardinal; para7:Plongint; para8:PXtString);cdecl;external;
     { app_context_return  }    { application_class  }    { options  }    { num_options  }    { argc_in_out  }    { argv_in_out  }    { fallback_resources  }    { widget_class  }    { args  }    { num_args  }
 function XtOpenApplication(para1:PXtAppContext; _XtString:TXconst; para3:TXrmOptionDescList; para4:TCardinal; para5:Plongint; 
-               para6:PXtString; para7:PString; para8:TWidgetClass; para9:TArgList; para10:TCardinal):TWidget;cdecl;external libXt;
-    { app_context_return  }    { application_class  }    { options  }    { num_options  }    { argc_in_out  }    { argv_in_out  }    { fallback_resources  }    { widget_class  }    {}function XtVaOpenApplication(para1:PXtAppContext; _XtString:TXconst; para3:TXrmOptionDescList; para4:TCardinal; para5:Plongint; 
-               para6:PXtString; para7:PString; para8:TWidgetClass; args:array of const):TWidget;cdecl;external libXt;
+               para6:PXtString; para7:PString; para8:TWidgetClass; para9:TArgList; para10:TCardinal):TWidget;cdecl;external;
+    { app_context_return  }    { application_class  }    { options  }    { num_options  }    { argc_in_out  }    { argv_in_out  }    { fallback_resources  }    { widget_class  }    {333333333333333333333333333333333******************************** }function XtVaOpenApplication(para1:PXtAppContext; _XtString:TXconst; para3:TXrmOptionDescList; para4:TCardinal; para5:Plongint; 
+               para6:PXtString; para7:PString; para8:TWidgetClass; args:array of const):TWidget;cdecl;external;
 function XtVaOpenApplication(para1:PXtAppContext; _XtString:TXconst; para3:TXrmOptionDescList; para4:TCardinal; para5:Plongint; 
-               para6:PXtString; para7:PString; para8:TWidgetClass):TWidget;cdecl;external libXt;
+               para6:PXtString; para7:PString; para8:TWidgetClass):TWidget;cdecl;external;
     { obsolete  }
     { app_context_return  }    { application_class  }    { options  }    { num_options  }    { argc_in_out  }    { argv_in_out  }    { fallback_resources  }    { args  }    { num_args  }
 function XtAppInitialize(para1:PXtAppContext; _XtString:TXconst; para3:TXrmOptionDescList; para4:TCardinal; para5:Plongint; 
-               para6:PXtString; para7:PString; para8:TArgList; para9:TCardinal):TWidget;cdecl;external libXt;
+               para6:PXtString; para7:PString; para8:TArgList; para9:TCardinal):TWidget;cdecl;external;
     { obsolete  }
-    { app_context_return  }    { application_class  }    { options  }    { num_options  }    { argc_in_out  }    { argv_in_out  }    { fallback_resources  }    { }function XtVaAppInitialize(para1:PXtAppContext; _XtString:TXconst; para3:TXrmOptionDescList; para4:TCardinal; para5:Plongint; 
-               para6:PXtString; para7:PString; args:array of const):TWidget;cdecl;external libXt;
+    { app_context_return  }    { application_class  }    { options  }    { num_options  }    { argc_in_out  }    { argv_in_out  }    { fallback_resources  }    {333333333333333333333333333333333******************************** }function XtVaAppInitialize(para1:PXtAppContext; _XtString:TXconst; para3:TXrmOptionDescList; para4:TCardinal; para5:Plongint; 
+               para6:PXtString; para7:PString; args:array of const):TWidget;cdecl;external;
 function XtVaAppInitialize(para1:PXtAppContext; _XtString:TXconst; para3:TXrmOptionDescList; para4:TCardinal; para5:Plongint; 
-               para6:PXtString; para7:PString):TWidget;cdecl;external libXt;
+               para6:PXtString; para7:PString):TWidget;cdecl;external;
     { obsolete  }
     { shell_name  }    { application_class  }    { options  }    { num_options  }    { argc  }    { argv  }
 function XtInitialize(_XtString:TXconst; _XtString:TXconst; para3:PXrmOptionDescRec; para4:TCardinal; para5:Plongint; 
-               para6:PXtString):TWidget;cdecl;external libXt;
+               para6:PXtString):TWidget;cdecl;external;
     { app_context  }    { display_string  }    { application_name  }    { application_class  }    { options  }    { num_options  }    { argc  }    { argv  }
 function XtOpenDisplay(para1:TXtAppContext; _XtString:TXconst; _XtString:TXconst; _XtString:TXconst; para5:PXrmOptionDescRec; 
-               para6:TCardinal; para7:Plongint; para8:PXtString):PDisplay;cdecl;external libXt;
-function XtCreateApplicationContext:TXtAppContext;cdecl;external libXt;
+               para6:TCardinal; para7:Plongint; para8:PXtString):PDisplay;cdecl;external;
+function XtCreateApplicationContext:TXtAppContext;cdecl;external;
     { app_context  }    { specification_list  }
-procedure XtAppSetFallbackResources(para1:TXtAppContext; para2:PString);cdecl;external libXt;
+procedure XtAppSetFallbackResources(para1:TXtAppContext; para2:PString);cdecl;external;
     { app_context  }
-procedure XtDestroyApplicationContext(para1:TXtAppContext);cdecl;external libXt;
+procedure XtDestroyApplicationContext(para1:TXtAppContext);cdecl;external;
     { widget_class  }
-procedure XtInitializeWidgetClass(para1:TWidgetClass);cdecl;external libXt;
+procedure XtInitializeWidgetClass(para1:TWidgetClass);cdecl;external;
     { widget  }
-function XtWidgetToApplicationContext(para1:TWidget):TXtAppContext;cdecl;external libXt;
+function XtWidgetToApplicationContext(para1:TWidget):TXtAppContext;cdecl;external;
     { dpy  }
-function XtDisplayToApplicationContext(para1:PDisplay):TXtAppContext;cdecl;external libXt;
+function XtDisplayToApplicationContext(para1:PDisplay):TXtAppContext;cdecl;external;
     { dpy  }
-function XtDatabase(para1:PDisplay):TXrmDatabase;cdecl;external libXt;
+function XtDatabase(para1:PDisplay):TXrmDatabase;cdecl;external;
     { screen  }
-function XtScreenDatabase(para1:PScreen):TXrmDatabase;cdecl;external libXt;
+function XtScreenDatabase(para1:PScreen):TXrmDatabase;cdecl;external;
     { dpy  }
-procedure XtCloseDisplay(para1:PDisplay);cdecl;external libXt;
+procedure XtCloseDisplay(para1:PDisplay);cdecl;external;
     { widget  }    { base  }    { resources  }    { num_resources  }    { args  }    { num_args  }
 procedure XtGetApplicationResources(para1:TWidget; para2:TXtPointer; para3:TXtResourceList; para4:TCardinal; para5:TArgList; 
-                para6:TCardinal);cdecl;external libXt;
-    { widget  }    { base  }    { resources  }    { num_resources  }   procedure XtVaGetApplicationResources(para1:TWidget; para2:TXtPointer; para3:TXtResourceList; para4:TCardinal; args:array of const);cdecl;external libXt;
-procedure XtVaGetApplicationResources(para1:TWidget; para2:TXtPointer; para3:TXtResourceList; para4:TCardinal);cdecl;external libXt;
+                para6:TCardinal);cdecl;external;
+    { widget  }    { base  }    { resources  }    { num_resources  }    {333333333333333333333333333333333******************************** }procedure XtVaGetApplicationResources(para1:TWidget; para2:TXtPointer; para3:TXtResourceList; para4:TCardinal; args:array of const);cdecl;external;
+procedure XtVaGetApplicationResources(para1:TWidget; para2:TXtPointer; para3:TXtResourceList; para4:TCardinal);cdecl;external;
     { widget  }    { base  }    { name  }    { class  }    { resources  }    { num_resources  }    { args  }    { num_args  }
 procedure XtGetSubresources(para1:TWidget; para2:TXtPointer; _XtString:TXconst; _XtString:TXconst; para5:TXtResourceList; 
-                para6:TCardinal; para7:TArgList; para8:TCardinal);cdecl;external libXt;
-    { widget  }    { base  }    { name  }    { class  }    { resources  }    { num_resources  }   procedure XtVaGetSubresources(para1:TWidget; para2:TXtPointer; _XtString:TXconst; _XtString:TXconst; para5:TXtResourceList; 
-                para6:TCardinal; args:array of const);cdecl;external libXt;
+                para6:TCardinal; para7:TArgList; para8:TCardinal);cdecl;external;
+    { widget  }    { base  }    { name  }    { class  }    { resources  }    { num_resources  }    {333333333333333333333333333333333******************************** }procedure XtVaGetSubresources(para1:TWidget; para2:TXtPointer; _XtString:TXconst; _XtString:TXconst; para5:TXtResourceList; 
+                para6:TCardinal; args:array of const);cdecl;external;
 procedure XtVaGetSubresources(para1:TWidget; para2:TXtPointer; _XtString:TXconst; _XtString:TXconst; para5:TXtResourceList; 
-                para6:TCardinal);cdecl;external libXt;
+                para6:TCardinal);cdecl;external;
     { widget  }    { args  }    { num_args  }
-procedure XtSetValues(para1:TWidget; para2:TArgList; para3:TCardinal);cdecl;external libXt;
-    { widget  }    {}procedure XtVaSetValues(para1:TWidget; args:array of const);cdecl;external libXt;
-procedure XtVaSetValues(para1:TWidget);cdecl;external libXt;
+procedure XtSetValues(para1:TWidget; para2:TArgList; para3:TCardinal);cdecl;external;
+    { widget  }    {333333333333333333333333333333333******************************** }procedure XtVaSetValues(para1:TWidget; args:array of const);cdecl;external;
+procedure XtVaSetValues(para1:TWidget);cdecl;external;
     { widget  }    { args  }    { num_args  }
-procedure XtGetValues(para1:TWidget; para2:TArgList; para3:TCardinal);cdecl;external libXt;
-    { widget  }    { }procedure XtVaGetValues(para1:TWidget; args:array of const);cdecl;external libXt;
-procedure XtVaGetValues(para1:TWidget);cdecl;external libXt;
+procedure XtGetValues(para1:TWidget; para2:TArgList; para3:TCardinal);cdecl;external;
+    { widget  }    {333333333333333333333333333333333******************************** }procedure XtVaGetValues(para1:TWidget; args:array of const);cdecl;external;
+procedure XtVaGetValues(para1:TWidget);cdecl;external;
     { base  }    { resources  }    { num_resources  }    { args  }    { num_args  }
-procedure XtSetSubvalues(para1:TXtPointer; para2:TXtResourceList; para3:TCardinal; para4:TArgList; para5:TCardinal);cdecl;external libXt;
-    { base  }    { resources  }    { num_resources  }    { }procedure XtVaSetSubvalues(para1:TXtPointer; para2:TXtResourceList; para3:TCardinal; args:array of const);cdecl;external libXt;
-procedure XtVaSetSubvalues(para1:TXtPointer; para2:TXtResourceList; para3:TCardinal);cdecl;external libXt;
+procedure XtSetSubvalues(para1:TXtPointer; para2:TXtResourceList; para3:TCardinal; para4:TArgList; para5:TCardinal);cdecl;external;
+    { base  }    { resources  }    { num_resources  }    {333333333333333333333333333333333******************************** }procedure XtVaSetSubvalues(para1:TXtPointer; para2:TXtResourceList; para3:TCardinal; args:array of const);cdecl;external;
+procedure XtVaSetSubvalues(para1:TXtPointer; para2:TXtResourceList; para3:TCardinal);cdecl;external;
     { base  }    { resources  }    { num_resources  }    { args  }    { num_args  }
-procedure XtGetSubvalues(para1:TXtPointer; para2:TXtResourceList; para3:TCardinal; para4:TArgList; para5:TCardinal);cdecl;external libXt;
-    { base  }    { resources  }    { num_resources  }    { }procedure XtVaGetSubvalues(para1:TXtPointer; para2:TXtResourceList; para3:TCardinal; args:array of const);cdecl;external libXt;
-procedure XtVaGetSubvalues(para1:TXtPointer; para2:TXtResourceList; para3:TCardinal);cdecl;external libXt;
+procedure XtGetSubvalues(para1:TXtPointer; para2:TXtResourceList; para3:TCardinal; para4:TArgList; para5:TCardinal);cdecl;external;
+    { base  }    { resources  }    { num_resources  }    {333333333333333333333333333333333******************************** }procedure XtVaGetSubvalues(para1:TXtPointer; para2:TXtResourceList; para3:TCardinal; args:array of const);cdecl;external;
+procedure XtVaGetSubvalues(para1:TXtPointer; para2:TXtResourceList; para3:TCardinal);cdecl;external;
     { widget_class  }    { resources_return  }    { num_resources_return  }
-procedure XtGetResourceList(para1:TWidgetClass; para2:PXtResourceList; para3:PCardinal);cdecl;external libXt;
+procedure XtGetResourceList(para1:TWidgetClass; para2:PXtResourceList; para3:PCardinal);cdecl;external;
     { widget_class  }    { resources_return  }    { num_resources_return  }
-procedure XtGetConstraintResourceList(para1:TWidgetClass; para2:PXtResourceList; para3:PCardinal);cdecl;external libXt;
+procedure XtGetConstraintResourceList(para1:TWidgetClass; para2:PXtResourceList; para3:PCardinal);cdecl;external;
     { was #define dname def_expr }
     function XtUnspecifiedPixmap : TPixmap;      
 
@@ -1234,22 +1234,22 @@ in define line 1675 *)
       PXtCheckpointToken = ^TXtCheckpointToken;
     { widget  }
 
-function XtSessionGetToken(para1:TWidget):TXtCheckpointToken;cdecl;external libXt;
+function XtSessionGetToken(para1:TWidget):TXtCheckpointToken;cdecl;external;
     { token  }
-procedure XtSessionReturnToken(para1:TXtCheckpointToken);cdecl;external libXt;
+procedure XtSessionReturnToken(para1:TXtCheckpointToken);cdecl;external;
     {************************************************************
      *
      * Error Handling
      *
      *********************************************************** }
-    { app_context  }    { handler  }function XtAppSetErrorMsgHandler(para1:TXtAppContext; _X_NORETURN:TXtErrorMsgHandler):TXtErrorMsgHandler;cdecl;external libXt;
+    { app_context  }    { handler  }function XtAppSetErrorMsgHandler(para1:TXtAppContext; _X_NORETURN:TXtErrorMsgHandler):TXtErrorMsgHandler;cdecl;external;
     { obsolete  }
-    { handler  }procedure XtSetErrorMsgHandler(_X_NORETURN:TXtErrorMsgHandler);cdecl;external libXt;
+    { handler  }procedure XtSetErrorMsgHandler(_X_NORETURN:TXtErrorMsgHandler);cdecl;external;
     { app_context  }    { handler  }
-function XtAppSetWarningMsgHandler(para1:TXtAppContext; para2:TXtErrorMsgHandler):TXtErrorMsgHandler;cdecl;external libXt;
+function XtAppSetWarningMsgHandler(para1:TXtAppContext; para2:TXtErrorMsgHandler):TXtErrorMsgHandler;cdecl;external;
     { obsolete  }
     { handler  }
-procedure XtSetWarningMsgHandler(para1:TXtErrorMsgHandler);cdecl;external libXt;
+procedure XtSetWarningMsgHandler(para1:TXtErrorMsgHandler);cdecl;external;
     { app_context  }    { name  }    { type  }    { class  }    { default  }    { params  }    { num_params  }
 (* error 
 ) _X_NORETURN;
@@ -1265,19 +1265,19 @@ procedure XtSetWarningMsgHandler(para1:TXtErrorMsgHandler);cdecl;external libXt;
     { app_context  }    { name  }    { type  }    { class  }    { default  }    { params  }    { num_params  }
 
 procedure XtAppWarningMsg(para1:TXtAppContext; _XtString:TXconst; _XtString:TXconst; _XtString:TXconst; _XtString:TXconst; 
-                para6:PString; para7:PCardinal);cdecl;external libXt;
+                para6:PString; para7:PCardinal);cdecl;external;
     { obsolete  }
     { name  }    { type  }    { class  }    { default  }    { params  }    { num_params  }
 procedure XtWarningMsg(_XtString:TXconst; _XtString:TXconst; _XtString:TXconst; _XtString:TXconst; para5:PString; 
-                para6:PCardinal);cdecl;external libXt;
-    { app_context  }    { handler  }function XtAppSetErrorHandler(para1:TXtAppContext; _X_NORETURN:TXtErrorHandler):TXtErrorHandler;cdecl;external libXt;
+                para6:PCardinal);cdecl;external;
+    { app_context  }    { handler  }function XtAppSetErrorHandler(para1:TXtAppContext; _X_NORETURN:TXtErrorHandler):TXtErrorHandler;cdecl;external;
     { obsolete  }
-    { handler  }procedure XtSetErrorHandler(_X_NORETURN:TXtErrorHandler);cdecl;external libXt;
+    { handler  }procedure XtSetErrorHandler(_X_NORETURN:TXtErrorHandler);cdecl;external;
     { app_context  }    { handler  }
-function XtAppSetWarningHandler(para1:TXtAppContext; para2:TXtErrorHandler):TXtErrorHandler;cdecl;external libXt;
+function XtAppSetWarningHandler(para1:TXtAppContext; para2:TXtErrorHandler):TXtErrorHandler;cdecl;external;
     { obsolete  }
     { handler  }
-procedure XtSetWarningHandler(para1:TXtErrorHandler);cdecl;external libXt;
+procedure XtSetWarningHandler(para1:TXtErrorHandler);cdecl;external;
     { app_context  }    { message  }
 (* error 
 ) _X_NORETURN;
@@ -1292,34 +1292,34 @@ procedure XtSetWarningHandler(para1:TXtErrorHandler);cdecl;external libXt;
  : pointer;
     { app_context  }    { message  }
 
-procedure XtAppWarning(para1:TXtAppContext; _XtString:TXconst);cdecl;external libXt;
+procedure XtAppWarning(para1:TXtAppContext; _XtString:TXconst);cdecl;external;
     { obsolete  }
     { message  }
-procedure XtWarning(_XtString:TXconst);cdecl;external libXt;
+procedure XtWarning(_XtString:TXconst);cdecl;external;
     { app_context  }
-function XtAppGetErrorDatabase(para1:TXtAppContext):PXrmDatabase;cdecl;external libXt;
+function XtAppGetErrorDatabase(para1:TXtAppContext):PXrmDatabase;cdecl;external;
     { obsolete  }
-function XtGetErrorDatabase:PXrmDatabase;cdecl;external libXt;
+function XtGetErrorDatabase:PXrmDatabase;cdecl;external;
     { app_context  }    { name  }    { type  }    { class  }    { default  }    { buffer_return  }    { nbytes  }    { database  }
 procedure XtAppGetErrorDatabaseText(para1:TXtAppContext; _XtString:TXconst; _XtString:TXconst; _XtString:TXconst; _XtString:TXconst; 
-                para6:TXtString; para7:longint; para8:TXrmDatabase);cdecl;external libXt;
+                para6:TXtString; para7:longint; para8:TXrmDatabase);cdecl;external;
     { obsolete  }
     { name  }    { type  }    { class  }    { default  }    { buffer_return  }    { nbytes  }
 procedure XtGetErrorDatabaseText(_XtString:TXconst; _XtString:TXconst; _XtString:TXconst; _XtString:TXconst; para5:TXtString; 
-                para6:longint);cdecl;external libXt;
+                para6:longint);cdecl;external;
     {***************************************************************
      *
      * Memory Management
      *
      *************************************************************** }
     { size  }
-function XtMalloc(para1:TCardinal):Pchar;cdecl;external libXt;
+function XtMalloc(para1:TCardinal):Pchar;cdecl;external;
     { num  }    { size  }
-function XtCalloc(para1:TCardinal; para2:TCardinal):Pchar;cdecl;external libXt;
+function XtCalloc(para1:TCardinal; para2:TCardinal):Pchar;cdecl;external;
     { ptr  }    { num  }
-function XtRealloc(para1:Pchar; para2:TCardinal):Pchar;cdecl;external libXt;
+function XtRealloc(para1:Pchar; para2:TCardinal):Pchar;cdecl;external;
     { ptr  }
-procedure XtFree(para1:Pchar);cdecl;external libXt;
+procedure XtFree(para1:Pchar);cdecl;external;
 {$ifndef _X_RESTRICT_KYWD}
 {$define _X_RESTRICT_KYWD}    
 {$endif}
@@ -1337,23 +1337,23 @@ procedure XtFree(para1:Pchar);cdecl;external libXt;
     { size  }(* Const before type ignored *)
     { file  }    { line  }
 
-function _XtMalloc(para1:TCardinal; para2:Pchar; para3:longint):Pchar;cdecl;external libXt;
+function _XtMalloc(para1:TCardinal; para2:Pchar; para3:longint):Pchar;cdecl;external;
     { implementation-private  }
     { ptr  }    { size  }(* Const before type ignored *)
     { file  }    { line  }
-function _XtRealloc(para1:Pchar; para2:TCardinal; para3:Pchar; para4:longint):Pchar;cdecl;external libXt;
+function _XtRealloc(para1:Pchar; para2:TCardinal; para3:Pchar; para4:longint):Pchar;cdecl;external;
     { implementation-private  }
     { num  }    { size  }(* Const before type ignored *)
     { file  }    { line  }
-function _XtCalloc(para1:TCardinal; para2:TCardinal; para3:Pchar; para4:longint):Pchar;cdecl;external libXt;
+function _XtCalloc(para1:TCardinal; para2:TCardinal; para3:Pchar; para4:longint):Pchar;cdecl;external;
     { implementation-private  }
     { ptr  }
-procedure _XtFree(para1:Pchar);cdecl;external libXt;
+procedure _XtFree(para1:Pchar);cdecl;external;
     { implementation-private  }
-    { ptr  }function _XtIsValidPointer(para1:Pchar):TBoolean;cdecl;external libXt;
+    { ptr  }function _XtIsValidPointer(para1:Pchar):TBoolean;cdecl;external;
     { implementation-private  }
 (* Const before type ignored *)
-    { filename  }procedure _XtPrintMemory(para1:Pchar);cdecl;external libXt;
+    { filename  }procedure _XtPrintMemory(para1:Pchar);cdecl;external;
     { was #define dname(params) para_def_expr }
     { argument types are unknown }
     { return type might be wrong }   
@@ -1382,7 +1382,7 @@ procedure _XtFree(para1:Pchar);cdecl;external libXt;
     function XtNew(_type : longint) : Ptype;    
 
 {$undef XtNewString}
-    { str  }function XtNewString(para1:TString):TString;cdecl;external libXt;
+    { str  }function XtNewString(para1:TString):TString;cdecl;external;
     { was #define dname(params) para_def_expr }
     { argument types are unknown }
     { return type might be wrong }   
@@ -1395,44 +1395,44 @@ procedure _XtFree(para1:Pchar);cdecl;external libXt;
      ************************************************************* }
     { obsolete  }
     { proc  }    { closure  }
-function XtAddWorkProc(para1:TXtWorkProc; para2:TXtPointer):TXtWorkProcId;cdecl;external libXt;
+function XtAddWorkProc(para1:TXtWorkProc; para2:TXtPointer):TXtWorkProcId;cdecl;external;
     { app_context  }    { proc  }    { closure  }
-function XtAppAddWorkProc(para1:TXtAppContext; para2:TXtWorkProc; para3:TXtPointer):TXtWorkProcId;cdecl;external libXt;
+function XtAppAddWorkProc(para1:TXtAppContext; para2:TXtWorkProc; para3:TXtPointer):TXtWorkProcId;cdecl;external;
     { id  }
-procedure XtRemoveWorkProc(para1:TXtWorkProcId);cdecl;external libXt;
+procedure XtRemoveWorkProc(para1:TXtWorkProcId);cdecl;external;
     {***************************************************************
      *
      * Graphic Context Management
      **************************************************************** }
     { widget  }    { valueMask  }    { values  }
-function XtGetGC(para1:TWidget; para2:TXtGCMask; para3:PXGCValues):TGC;cdecl;external libXt;
+function XtGetGC(para1:TWidget; para2:TXtGCMask; para3:PXGCValues):TGC;cdecl;external;
     { widget  }    { depth  }    { valueMask  }    { values  }    { dynamicMask  }    { unusedMask  }
 function XtAllocateGC(para1:TWidget; para2:TCardinal; para3:TXtGCMask; para4:PXGCValues; para5:TXtGCMask; 
-               para6:TXtGCMask):TGC;cdecl;external libXt;
+               para6:TXtGCMask):TGC;cdecl;external;
     { This implementation of XtDestroyGC differs from the formal specification
      * for historic backwards compatibility reasons.  As other implementations
      * may conform to the spec, use of XtReleaseGC is strongly encouraged.
       }
     { obsolete  }
     { gc  }
-procedure XtDestroyGC(para1:TGC);cdecl;external libXt;
+procedure XtDestroyGC(para1:TGC);cdecl;external;
     { object  }    { gc  }
-procedure XtReleaseGC(para1:TWidget; para2:TGC);cdecl;external libXt;
+procedure XtReleaseGC(para1:TWidget; para2:TGC);cdecl;external;
     { app_context  }    { cache_ref  }
-procedure XtAppReleaseCacheRefs(para1:TXtAppContext; para2:PXtCacheRef);cdecl;external libXt;
+procedure XtAppReleaseCacheRefs(para1:TXtAppContext; para2:PXtCacheRef);cdecl;external;
     { widget  }    { closure  }    { XtCacheRef  }
     { call_data  }
-procedure XtCallbackReleaseCacheRef(para1:TWidget; para2:TXtPointer; para3:TXtPointer);cdecl;external libXt;
+procedure XtCallbackReleaseCacheRef(para1:TWidget; para2:TXtPointer; para3:TXtPointer);cdecl;external;
     { widget  }    { closure  }    { XtCacheRef*  }
     { call_data  }
-procedure XtCallbackReleaseCacheRefList(para1:TWidget; para2:TXtPointer; para3:TXtPointer);cdecl;external libXt;
+procedure XtCallbackReleaseCacheRefList(para1:TWidget; para2:TXtPointer; para3:TXtPointer);cdecl;external;
     { widget  }    { list  }    { count  }
-procedure XtSetWMColormapWindows(para1:TWidget; para2:PWidget; para3:TCardinal);cdecl;external libXt;
+procedure XtSetWMColormapWindows(para1:TWidget; para2:PWidget; para3:TCardinal);cdecl;external;
     { path  }    { substitutions  }    { num_substitutions  }    { predicate  }
-function XtFindFile(_XtString:TXconst; para2:TSubstitution; para3:TCardinal; para4:TXtFilePredicate):TXtString;cdecl;external libXt;
+function XtFindFile(_XtString:TXconst; para2:TSubstitution; para3:TCardinal; para4:TXtFilePredicate):TXtString;cdecl;external;
     { dpy  }    { type  }    { filename  }    { suffix  }    { path  }    { substitutions  }    { num_substitutions  }    { predicate  }
 function XtResolvePathname(para1:PDisplay; _XtString:TXconst; _XtString:TXconst; _XtString:TXconst; _XtString:TXconst; 
-               para6:TSubstitution; para7:TCardinal; para8:TXtFilePredicate):TXtString;cdecl;external libXt;
+               para6:TSubstitution; para7:TCardinal; para8:TXtFilePredicate):TXtString;cdecl;external;
     {***************************************************************
      *
      * Selections
@@ -1442,73 +1442,73 @@ function XtResolvePathname(para1:PDisplay; _XtString:TXconst; _XtString:TXconst;
     function XT_CONVERT_FAIL : TAtom;      
 
     { widget  }    { selection  }    { time  }
-procedure XtDisownSelection(para1:TWidget; para2:TAtom; para3:TTime);cdecl;external libXt;
+procedure XtDisownSelection(para1:TWidget; para2:TAtom; para3:TTime);cdecl;external;
     { widget  }    { selection  }    { target  }    { callback  }    { closure  }    { time  }
 procedure XtGetSelectionValue(para1:TWidget; para2:TAtom; para3:TAtom; para4:TXtSelectionCallbackProc; para5:TXtPointer; 
-                para6:TTime);cdecl;external libXt;
+                para6:TTime);cdecl;external;
     { widget  }    { selection  }    { targets  }    { count  }    { callback  }    { closures  }    { time  }
 procedure XtGetSelectionValues(para1:TWidget; para2:TAtom; para3:PAtom; para4:longint; para5:TXtSelectionCallbackProc; 
-                para6:PXtPointer; para7:TTime);cdecl;external libXt;
+                para6:PXtPointer; para7:TTime);cdecl;external;
     { app_context  }    { timeout  }
-procedure XtAppSetSelectionTimeout(para1:TXtAppContext; para2:dword);cdecl;external libXt;
+procedure XtAppSetSelectionTimeout(para1:TXtAppContext; para2:dword);cdecl;external;
     { obsolete  }
     { timeout  }
-procedure XtSetSelectionTimeout(para1:dword);cdecl;external libXt;
+procedure XtSetSelectionTimeout(para1:dword);cdecl;external;
     { app_context  }
-function XtAppGetSelectionTimeout(para1:TXtAppContext):dword;cdecl;external libXt;
+function XtAppGetSelectionTimeout(para1:TXtAppContext):dword;cdecl;external;
     { obsolete  }
-function XtGetSelectionTimeout:dword;cdecl;external libXt;
+function XtGetSelectionTimeout:dword;cdecl;external;
     { widget  }    { selection  }    { request_id  }
-function XtGetSelectionRequest(para1:TWidget; para2:TAtom; para3:TXtRequestId):PXSelectionRequestEvent;cdecl;external libXt;
+function XtGetSelectionRequest(para1:TWidget; para2:TAtom; para3:TXtRequestId):PXSelectionRequestEvent;cdecl;external;
     { widget  }    { selection  }    { target  }    { selection_callback  }    { client_data  }    { time  }
 procedure XtGetSelectionValueIncremental(para1:TWidget; para2:TAtom; para3:TAtom; para4:TXtSelectionCallbackProc; para5:TXtPointer; 
-                para6:TTime);cdecl;external libXt;
+                para6:TTime);cdecl;external;
     { widget  }    { selection  }    { targets  }    { count  }    { callback  }    { client_data  }    { time  }
 procedure XtGetSelectionValuesIncremental(para1:TWidget; para2:TAtom; para3:PAtom; para4:longint; para5:TXtSelectionCallbackProc; 
-                para6:PXtPointer; para7:TTime);cdecl;external libXt;
+                para6:PXtPointer; para7:TTime);cdecl;external;
     { requestor  }    { selection  }    { type  }    { value  }    { length  }    { format  }
 procedure XtSetSelectionParameters(para1:TWidget; para2:TAtom; para3:TAtom; para4:TXtPointer; para5:dword; 
-                para6:longint);cdecl;external libXt;
+                para6:longint);cdecl;external;
     { owner  }    { selection  }    { request_id  }    { type_return  }    { value_return  }    { length_return  }    { format_return  }
 procedure XtGetSelectionParameters(para1:TWidget; para2:TAtom; para3:TXtRequestId; para4:PAtom; para5:PXtPointer; 
-                para6:Pdword; para7:Plongint);cdecl;external libXt;
+                para6:Pdword; para7:Plongint);cdecl;external;
     { requestor  }    { selection  }
-procedure XtCreateSelectionRequest(para1:TWidget; para2:TAtom);cdecl;external libXt;
+procedure XtCreateSelectionRequest(para1:TWidget; para2:TAtom);cdecl;external;
     { requestor  }    { selection  }    { time  }
-procedure XtSendSelectionRequest(para1:TWidget; para2:TAtom; para3:TTime);cdecl;external libXt;
+procedure XtSendSelectionRequest(para1:TWidget; para2:TAtom; para3:TTime);cdecl;external;
     { requestor  }    { selection  }
-procedure XtCancelSelectionRequest(para1:TWidget; para2:TAtom);cdecl;external libXt;
+procedure XtCancelSelectionRequest(para1:TWidget; para2:TAtom);cdecl;external;
     { widget  }
-function XtReservePropertyAtom(para1:TWidget):TAtom;cdecl;external libXt;
+function XtReservePropertyAtom(para1:TWidget):TAtom;cdecl;external;
     { widget  }    { selection  }
-procedure XtReleasePropertyAtom(para1:TWidget; para2:TAtom);cdecl;external libXt;
+procedure XtReleasePropertyAtom(para1:TWidget; para2:TAtom);cdecl;external;
     { widget  }    { keycode  }    { modifiers  }    { owner_events  }    { pointer_mode  }    { keyboard_mode  }
 procedure XtGrabKey(para1:TWidget; para2:TXtKeyCode; para3:TModifiers; para4:TXtBoolean; para5:longint; 
-                para6:longint);cdecl;external libXt;
+                para6:longint);cdecl;external;
     { widget  }    { keycode  }    { modifiers  }
-procedure XtUngrabKey(para1:TWidget; para2:TXtKeyCode; para3:TModifiers);cdecl;external libXt;
+procedure XtUngrabKey(para1:TWidget; para2:TXtKeyCode; para3:TModifiers);cdecl;external;
     { widget  }    { owner_events  }    { pointer_mode  }    { keyboard_mode  }    { time  }
-function XtGrabKeyboard(para1:TWidget; para2:TXtBoolean; para3:longint; para4:longint; para5:TTime):longint;cdecl;external libXt;
+function XtGrabKeyboard(para1:TWidget; para2:TXtBoolean; para3:longint; para4:longint; para5:TTime):longint;cdecl;external;
     { widget  }    { time  }
-procedure XtUngrabKeyboard(para1:TWidget; para2:TTime);cdecl;external libXt;
+procedure XtUngrabKeyboard(para1:TWidget; para2:TTime);cdecl;external;
     { widget  }    { button  }    { modifiers  }    { owner_events  }    { event_mask  }    { pointer_mode  }    { keyboard_mode  }    { confine_to  }    { cursor  }
 procedure XtGrabButton(para1:TWidget; para2:longint; para3:TModifiers; para4:TXtBoolean; para5:dword; 
-                para6:longint; para7:longint; para8:TWindow; para9:TCursor);cdecl;external libXt;
+                para6:longint; para7:longint; para8:TWindow; para9:TCursor);cdecl;external;
     { widget  }    { button  }    { modifiers  }
-procedure XtUngrabButton(para1:TWidget; para2:dword; para3:TModifiers);cdecl;external libXt;
+procedure XtUngrabButton(para1:TWidget; para2:dword; para3:TModifiers);cdecl;external;
     { widget  }    { owner_events  }    { event_mask  }    { pointer_mode  }    { keyboard_mode  }    { confine_to  }    { cursor  }    { time  }
 function XtGrabPointer(para1:TWidget; para2:TXtBoolean; para3:dword; para4:longint; para5:longint; 
-               para6:TWindow; para7:TCursor; para8:TTime):longint;cdecl;external libXt;
+               para6:TWindow; para7:TCursor; para8:TTime):longint;cdecl;external;
     { widget  }    { time  }
-procedure XtUngrabPointer(para1:TWidget; para2:TTime);cdecl;external libXt;
+procedure XtUngrabPointer(para1:TWidget; para2:TTime);cdecl;external;
     { dpy  }    { name_return  }    { class_return  }
-procedure XtGetApplicationNameAndClass(para1:PDisplay; para2:PString; para3:PString);cdecl;external libXt;
+procedure XtGetApplicationNameAndClass(para1:PDisplay; para2:PString; para3:PString);cdecl;external;
     { dpy  }    { drawable  }    { widget  }
-procedure XtRegisterDrawable(para1:PDisplay; para2:TDrawable; para3:TWidget);cdecl;external libXt;
+procedure XtRegisterDrawable(para1:PDisplay; para2:TDrawable; para3:TWidget);cdecl;external;
     { dpy  }    { drawable  }
-procedure XtUnregisterDrawable(para1:PDisplay; para2:TDrawable);cdecl;external libXt;
+procedure XtUnregisterDrawable(para1:PDisplay; para2:TDrawable);cdecl;external;
     { dpy  }
-function XtHooksOfDisplay(para1:PDisplay):TWidget;cdecl;external libXt;
+function XtHooksOfDisplay(para1:PDisplay):TWidget;cdecl;external;
     type
       PXtCreateHookDataRec = ^TXtCreateHookDataRec;
       TXtCreateHookDataRec = record
@@ -1570,16 +1570,16 @@ function XtHooksOfDisplay(para1:PDisplay):TWidget;cdecl;external libXt;
       PXtDestroyHookData = ^TXtDestroyHookData;
     { app_context  }    { dpy_return  }    { num_dpy_return  }
 
-procedure XtGetDisplays(para1:TXtAppContext; para2:PPPDisplay; para3:PCardinal);cdecl;external libXt;
-function XtToolkitThreadInitialize:TBoolean;cdecl;external libXt;
+procedure XtGetDisplays(para1:TXtAppContext; para2:PPPDisplay; para3:PCardinal);cdecl;external;
+function XtToolkitThreadInitialize:TBoolean;cdecl;external;
     { app_context  }
-procedure XtAppSetExitFlag(para1:TXtAppContext);cdecl;external libXt;
+procedure XtAppSetExitFlag(para1:TXtAppContext);cdecl;external;
     { app_context  }
-function XtAppGetExitFlag(para1:TXtAppContext):TBoolean;cdecl;external libXt;
+function XtAppGetExitFlag(para1:TXtAppContext):TBoolean;cdecl;external;
     { app_context  }
-procedure XtAppLock(para1:TXtAppContext);cdecl;external libXt;
+procedure XtAppLock(para1:TXtAppContext);cdecl;external;
     { app_context  }
-procedure XtAppUnlock(para1:TXtAppContext);cdecl;external libXt;
+procedure XtAppUnlock(para1:TXtAppContext);cdecl;external;
     {
      *	Predefined Resource Converters
       }
@@ -1587,145 +1587,145 @@ procedure XtAppUnlock(para1:TXtAppContext);cdecl;external libXt;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToAcceleratorTable(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { Display  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToAtom(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToBool(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToBoolean(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToCommandArgArray(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { Display  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToCursor(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToDimension(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToDirectoryString(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToDisplay(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToFile(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToFloat(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { Display  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToFont(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { Display, locale  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToFontSet(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { Display  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToFontStruct(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToGravity(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToInitialState(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToInt(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { Screen, Colormap  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToPixel(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     const
       XtCvtStringToPosition = XtCvtStringToShort;      
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 
 function XtCvtStringToRestartStyle(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToShort(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToTranslationTable(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToUnsignedChar(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { Screen, depth  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtStringToVisual(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { int converters  }
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtIntToBool(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtIntToBoolean(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { Screen, Colormap  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtIntToColor(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     const
       XtCvtIntToDimension = XtCvtIntToShort;      
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 
 function XtCvtIntToFloat(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtIntToFont(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtIntToPixel(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtIntToPixmap(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     const
       XtCvtIntToPosition = XtCvtIntToShort;      
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 
 function XtCvtIntToShort(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtIntToUnsignedChar(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { Color converter  }
     { dpy  }    { args  }    { none  }
     { num_args  }    { fromVal  }    { toVal  }    { closure_ret  }
 function XtCvtColorToPixel(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; para4:TXrmValuePtr; para5:TXrmValuePtr; 
-               para6:PXtPointer):TBoolean;cdecl;external libXt;
+               para6:PXtPointer):TBoolean;cdecl;external;
     { Pixel converter  }
     const
       XtCvtPixelToColor = XtCvtIntToColor;      
