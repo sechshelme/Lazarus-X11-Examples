@@ -19,13 +19,15 @@ int main(int argc, char **argv) {
     Arg  wargs[10];
     int i;
 
+    printf("Version: %i\n",__STDC_VERSION__);
+
     toplevel = XtInitialize("Mein Fenster", "simple", NULL, 0, &argc, argv);
 
     // --- Button Gruppe
     box = XtCreateManagedWidget("Button Gruppe", boxWidgetClass, toplevel, NULL, 0);
 
     i = 0;
-    XtSetArg(wargs[i], XtNlabel, "Box"); i++;
+    XtSetArg(wargs[i], XtNlabel, "Box1"); i++;
     XtSetArg(wargs[i], XtNbackground, 0x88FF88); i++;
     XtSetArg(wargs[i], XtNforeground, 0xFFFFFF); i++;
     XtSetValues(box, wargs, i);
@@ -45,7 +47,10 @@ int main(int argc, char **argv) {
 
     // --- Button2
     button2 = XtCreateManagedWidget("quit", commandWidgetClass, box, NULL, 0);
-    XtAddCallback(button2, XtNcallback, quit, NULL);
+    XtAddCallback(button2,
+     XtNcallback,
+     quit,
+     NULL);
 
     i = 0;
     XtSetArg(wargs[i], XtNwidth, 75); i++;

@@ -179,7 +179,7 @@ in define line 82 *)
       _XtDimension = dword;      
       _XtKeyCode = dword;      
       _XtPosition = longint;      
-      _XtXtEnum = dword;      
+      _XtXtEnum = PtrUInt;      
 //{$else}
 
     //const
@@ -257,7 +257,7 @@ in define line 82 *)
       TBoolean = Boolean;
 
       PXtArgVal = ^TXtArgVal;
-      TXtArgVal = longint;
+      TXtArgVal = PChar;
 
       PXtEnum = ^TXtEnum;
       TXtEnum = byte;
@@ -408,10 +408,12 @@ in define line 82 *)
       PArg = ^TArg;
       TArg = record
           name : TString;
-          value : TXtArgVal;
+          case Byte of
+          0:(valueP : PChar);
+          1:(valueI : PtrUInt);
         end;
-      TArgList = PArg;
-      PArgList = ^PArg;
+      TArgList = ^TArg;
+      PArgList = ^TArgList;
 
       PXtVarArgsList = ^TXtVarArgsList;
       TXtVarArgsList = TXtPointer;
@@ -525,9 +527,7 @@ in define line 82 *)
       TXtExtensionSelectProc = procedure (para1:TWidget; para2:Plongint; para3:PXtPointer; para4:longint; para5:TXtPointer);cdecl;
 
 
-function XtNumber(arr : TArgList) : Cardinal;
-
-
+      function XtNumber(arr: array of TArg): Cardinal;
 
 
 function XtCallConverter(para1:PDisplay; para2:TXtTypeConverter; para3:TXrmValuePtr; para4:TCardinal; para5:TXrmValuePtr; 
@@ -784,9 +784,9 @@ function XtWindowToWidget(para1:PDisplay; para2:TWindow):TWidget;cdecl;external 
 
 function XtGetClassExtension(para1:TWidgetClass; para2:TCardinal; para3:TXrmQuark; para4:longint; para5:TCardinal):TXtPointer;cdecl;external libXt;
 
-(* error 
-    ((void)( (arg).name = (n), (arg).value = (XtArgVal)(d) ))
-in define line 1161 *)
+
+procedure XtSetArg(var arg: TArg; n: TXtString; d: PChar);
+procedure XtSetArg(var arg: TArg; n: TXtString; d: PtrInt);
 
 function XtMergeArgLists(para1:TArgList; para2:TCardinal; para3:TArgList; para4:TCardinal):TArgList;cdecl;external libXt;
 
@@ -931,6 +931,7 @@ procedure XtVaGetSubresources(para1:TWidget; para2:TXtPointer; _XtString:TXtStri
                 para6:TCardinal; args:array of const);cdecl;external libXt;
 
 procedure XtSetValues(para1:TWidget; para2:TArgList; para3:TCardinal);cdecl;external libXt;
+//procedure XtSetValues(para1:TWidget; para2:Pointer; para3:TCardinal);cdecl;external libXt;
 
 procedure XtVaSetValues(para1:TWidget; args:array of const);cdecl;external libXt;
 
@@ -1427,7 +1428,7 @@ function XtCvtColorToPixel(para1:PDisplay; para2:TXrmValuePtr; para3:PCardinal; 
 
 implementation
 
-        function XtNumber(arr: TArgList): Cardinal;
+    function XtNumber(arr: array of TArg): Cardinal;
     begin
 //      XtNumber:=TCardinal((sizeof(arr))/(sizeof(arr[0])));
       XtNumber:=(sizeof(arr)) div (sizeof(TArg));
@@ -1462,6 +1463,18 @@ implementation
     begin
       XtIsShell:=_XtCheckSubclassFlag(widget,TXtEnum($20));
     end;
+
+procedure XtSetArg(var arg: TArg; n: TXtString; d: PChar);
+begin
+  arg.Name := n;
+  arg.valueP := d;
+end;
+
+procedure XtSetArg(var arg: TArg; n: TXtString; d: PtrInt);
+begin
+  arg.Name := n;
+  arg.valueI := d;
+end;
 
     //function XtIsOverrideShell(widget : longint) : longint;
     //begin

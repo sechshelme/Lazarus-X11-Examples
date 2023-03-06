@@ -54,10 +54,16 @@ var
     Halt;
   end;
 
-
   procedure main;
   var
     toplevel, box, command: TWidget;
+    wargs:array[0..3]of TArg;
+
+    colargs:array of TArg=(
+      (name: XtNbackground; valueI:$FF00),
+      (name: XtNforeground; valueI:$FFFF00),
+      (name:XtNlabel;valueP:'$FFFF00'));
+
   begin
     toplevel := XtInitialize('Mein Fenster', 'noname', nil, 0, @argc, argv);
     box := XtCreateManagedWidget('hallo', boxWidgetClass, toplevel, nil, 0);
@@ -74,10 +80,21 @@ var
     command := XtCreateManagedWidget('quit', commandWidgetClass, box, nil, 0);
     XtAddCallback(command, XtNcallback, @quit, nil);
 
+    XtSetValues(command,@colargs[0],Length(colargs));
+
+
+    command := XtCreateManagedWidget('Test XtSetArg', commandWidgetClass, box, nil, 0);
+    XtAddCallback(command, XtNcallback, @press_Hello, nil);
+
+    XtSetArg(wargs[0], XtNlabel,'Quadrat');
+    XtSetArg(wargs[1], XtNwidth,75);
+    XtSetArg(wargs[2], XtNheight,75);
+    XtSetValues(command,wargs,3);
+
     command:=    XtVaCreateManagedWidget('TestBox', commandWidgetClass,box,[XtNforeground,$FFFFFF, XtNbackground, $FF, nil]);
     XtAddCallback(command, XtNcallback, @press_Hello, nil);
 
-    command:=    XtVaCreateManagedWidget('TestBox', commandWidgetClass,box,[XtNforeground,$FFFF00, XtNbackground, $000000, XtNheight,500, nil]);
+    command:=    XtVaCreateManagedWidget('TestBox', commandWidgetClass,box,[XtNlabel,'label', XtNforeground,$FFFF00, XtNbackground, $000000, XtNheight,500, nil]);
     XtAddCallback(command, XtNcallback, @press_Hello, PChar('Hallo Welt'));
 
     command := XtCreateManagedWidget('quit', commandWidgetClass, box, nil, 0);
