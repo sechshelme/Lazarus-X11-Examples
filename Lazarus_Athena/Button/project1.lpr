@@ -15,7 +15,7 @@ uses
 // h2pas -p -T -S -d -c Intrinsic.h
 
 //https://www.tutorialspoint.com/cprogramming/c_pointer_to_pointer.htm
-
+// define pointer of pointer
 
   procedure press_Hello(w: TWidget; p: Pointer; p2: Pointer); cdecl;
   begin
