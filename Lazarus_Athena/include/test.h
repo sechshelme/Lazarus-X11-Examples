@@ -1,7 +1,9 @@
 
 #define tt "sdfsdafsdfsfdasffsdf"
 
-#define ch *("abc","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","Ich bin ein sehr langer Text",0)
+//const **ch (char *[]{"abc","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","Ich bin ein sehr langer Text",0}
+
+char **temp = (char *[]){"abc", "def","fg"};
 
 typedef struct _WidgetClassRec *CoreWidgetClass;
 typedef struct _WidgetRec *CoreWidget;

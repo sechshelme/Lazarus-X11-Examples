@@ -14,20 +14,20 @@ interface
     test.h
 }
 
-    { Pointers to basic pascal types, inserted by h2pas conversion program.}
-    Type
-      PLongint  = ^Longint;
-      PSmallInt = ^SmallInt;
-      PByte     = ^Byte;
-      PWord     = ^Word;
-      PDWord    = ^DWord;
-      PDouble   = ^Double;
+{ Pointers to basic pascal types, inserted by h2pas conversion program.}
+Type
+  PLongint  = ^Longint;
+  PSmallInt = ^SmallInt;
+  PByte     = ^Byte;
+  PWord     = ^Word;
+  PDWord    = ^DWord;
+  PDouble   = ^Double;
 
-    Type
-    PCoreWidget  = ^CoreWidget;
-    PCoreWidgetClass  = ^CoreWidgetClass;
-    PWidgetClassRec  = ^WidgetClassRec;
-    PWidgetRec  = ^WidgetRec;
+Type
+PCoreWidget  = ^CoreWidget;
+PCoreWidgetClass  = ^CoreWidgetClass;
+PWidgetClassRec  = ^WidgetClassRec;
+PWidgetRec  = ^WidgetRec;
 {$IFDEF FPC}
 {$PACKRECORDS C}
 {$ENDIF}
@@ -36,24 +36,34 @@ interface
 
 const
   tt = 'sdfsdafsdfsfdasffsdf';  
+{const **ch (char *[]"abc","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","Ich bin ein sehr langer Text",0 }
 (* error 
-#define ch *("abc","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","def","ghi","jkl","Ich bin ein sehr langer Text",0)
-in define line 4 *)
-    type
-      PCoreWidgetClass = ^TCoreWidgetClass;
-      TCoreWidgetClass = PWidgetClassRec;
+char **temp = (char *[]){"abc", "def","fg"};
+ in declarator_list *)
+(* error 
+char **temp = (char *[]){"abc", "def","fg"};
+(* error 
+char **temp = (char *[]){"abc", "def","fg"};
+(* error 
+char **temp = (char *[]){"abc", "def","fg"};
+ in declarator_list *)
+ in declarator_list *)
+ in declarator_list *)
+type
+  PCoreWidgetClass = ^TCoreWidgetClass;
+  TCoreWidgetClass = PWidgetClassRec;
 
-      PCoreWidget = ^TCoreWidget;
-      TCoreWidget = PWidgetRec;
-      var
-        coreWidgetClass : TWidgetClass;cvar;external;
+  PCoreWidget = ^TCoreWidget;
+  TCoreWidget = PWidgetRec;
+  var
+    coreWidgetClass : TWidgetClass;cvar;external;
 {$ifndef VMS}
-      var
-        widgetClass : TWidgetClass;cvar;external;
+  var
+    widgetClass : TWidgetClass;cvar;external;
 {$endif}
 {$endif}
-    { _XtCore_h  }
-    { DON'T ADD STUFF AFTER THIS #endif  }
+{ _XtCore_h  }
+{ DON'T ADD STUFF AFTER THIS #endif  }
 
 implementation
 

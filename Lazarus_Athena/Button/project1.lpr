@@ -14,6 +14,8 @@ uses
 
 // h2pas -p -T -S -d -c Intrinsic.h
 
+//https://www.tutorialspoint.com/cprogramming/c_pointer_to_pointer.htm
+
 
   procedure press_Hello(w: TWidget; p: Pointer; p2: Pointer); cdecl;
   begin
@@ -30,15 +32,16 @@ uses
 
   procedure main;
   const
-//    ListData: PPChar = (('abc'), ('def'), ('ghi'), (nil));
+//    ListData: PPChar = 'abc', 'def', 'ghi', nil;
     ListDatas: PPChar = nil;
   var
-    ld:PPChar;
+    c:PChar;
     i: integer;
     toplevel, box, command, label1, list: TWidget;
     wargs: array[0..3] of TArg;
 
     colargs: array of TArg = ((Name: XtNbackground; valueI: $FF00), (Name: XtNforeground; valueI: $FFFF00), (Name: XtNlabel; valueP: '$FFFF00'));
+    ld: PPChar;
 
   begin
     toplevel := XtInitialize('Mein Fenster', 'noname', nil, 0, @argc, argv);
@@ -82,7 +85,8 @@ uses
 
     list := XtVaCreateManagedWidget('Liste', commandWidgetClass, box, [XtNlabel, 'label', XtNforeground, $FF88FF, XtNbackground, $88FF88, XtNheight, 50, nil]);
 
-//    Getmem(ListDatas, (Length(ListData) + 1) * SizeOf(PPChar));
+//((    Getmem(ListDatas, (Length(ListData) + 1) * SizeOf(PPChar));
+    Getmem(ListDatas,  SizeOf(PPChar)*2);
 //
 //    ld:=ListDatas;
 //    for i := 0 to Length(ListData) - 1 do begin
@@ -91,6 +95,13 @@ uses
 //    end;
 //    ld:=nil;
 //
+
+  c:='abc;';
+
+   ld :=ListDatas;
+   ld:=@c;
+   inc(ld);
+   ld:=nil;
 
 //    XawListChange(list, ListDatas, 0, 50, True);
 
