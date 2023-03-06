@@ -1,5 +1,5 @@
 
-unit Xresource;
+unit X11Xresource;
 interface
 
 {

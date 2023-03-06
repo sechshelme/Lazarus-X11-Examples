@@ -32,10 +32,7 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Linker>
-			<Add library="GL" />
-			<Add library="X11" />
-			<Add library="Xaw" />
-			<Add library="Xt" />
+			<Add option="`pkg-config xaw7 --libs`" />
 		</Linker>
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
