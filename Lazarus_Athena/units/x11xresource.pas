@@ -14,8 +14,8 @@ interface
 }
 
 uses
-  sysutils,
-  Strings,
+ // sysutils,
+//  Strings,
   xlib,x;
 
 { Pointers to basic pascal types, inserted by h2pas conversion program.}
@@ -219,21 +219,11 @@ function XrmEnumerateDatabase(para1:TXrmDatabase; para2:TXrmNameList; para3:TXrm
 function XrmLocaleOfDatabase(para1:TXrmDatabase):Pchar;cdecl;external libX11;
 
 
-
-
-
-
-
-
-
-type
+ type
   PXrmOptionKind = ^TXrmOptionKind;
   TXrmOptionKind = (XrmoptionNoArg,XrmoptionIsArg,XrmoptionStickyArg,
     XrmoptionSepArg,XrmoptionResArg,XrmoptionSkipArg,
     XrmoptionSkipLine,XrmoptionSkipNArgs);
-
-
-
 
 
   PXrmOptionDescRec = ^TXrmOptionDescRec;

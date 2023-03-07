@@ -7,9 +7,9 @@ uses
   Xresource,
   X11StringDefs,
   XTCore,
-  XawBox,
   XawList,
   X11Intrinsic,
+  XawBox,
   XawLabel,
   XawCommand;
 
@@ -108,8 +108,9 @@ uses
 
     drawing := XtVaCreateManagedWidget('drawing', coreWidgetClass, box, [XtNheight, 300, XtNwidth, 300, XtNbackground, $FF8888, nil]);
     XtAddEventHandler(drawing, ExposureMask, False, @draw_event, nil);
+    XtAddEventHandler(drawing, ButtonPressMask, False, @press_Hello, nil);
 
-    //        XtAddCallback(drawing, XtNcallback, @press_Hello, nil);
+//            XtAddCallback(drawing, XtNcallback, @press_Hello, nil);
 
     XtRealizeWidget(toplevel);
 

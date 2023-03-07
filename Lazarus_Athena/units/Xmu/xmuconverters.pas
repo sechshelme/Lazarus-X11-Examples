@@ -4,7 +4,10 @@ unit XmuConverters;
 interface
 
 uses
-  xlib, Xresource, X11Intrinsic;
+  xlib,
+  Xresource,
+  X11Intrinsic;
+
 
 const
   libXmu = 'libXmu.so';
