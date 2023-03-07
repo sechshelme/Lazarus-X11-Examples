@@ -6,11 +6,11 @@ uses
   x,
   Xresource,
   X11StringDefs,
-  X11Intrinsic,
   XTCore,
-  XawList,
-  XawLabel,
   XawBox,
+  XawList,
+  X11Intrinsic,
+  XawLabel,
   XawCommand;
 
 // h2pas -p -T -d -c Intrinsic.h
@@ -53,7 +53,6 @@ uses
   procedure main;
   const
     ListData: array of PChar = (('abc'#0), ('def'#0), ('ghi'#0), (nil));
-    PPC: PPChar = nil;
   var
     c: PChar;
     i: integer;
@@ -61,9 +60,7 @@ uses
     wargs: array[0..3] of TArg;
 
     colargs: array of TArg = ((Name: XtNbackground;
-      valueI: $FF00), (Name: XtNforeground; valueI: $FFFF00), (Name: XtNlabel;
-      valueP: '$FFFF00'));
-    ld: PPChar;
+      valueI: $FF00), (Name: XtNforeground; valueI: $FFFF00), (Name: XtNlabel; valueP: '$FFFF00'));
 
   begin
     toplevel := XtInitialize('Mein Fenster', 'noname', nil, 0, @argc, argv);
@@ -107,7 +104,6 @@ uses
 
     list := XtVaCreateManagedWidget('Liste', listWidgetClass, box, [XtNlabel, 'label', XtNforeground, $FF88FF, XtNbackground, $88FF88, XtNheight, 500, XtNwidth, 500, nil]);
 
-    PPC := @ListData[0];
     XawListChange(list, @ListData[0], 0, 50, True);
 
     drawing := XtVaCreateManagedWidget('drawing', coreWidgetClass, box, [XtNheight, 300, XtNwidth, 300, XtNbackground, $FF8888, nil]);
