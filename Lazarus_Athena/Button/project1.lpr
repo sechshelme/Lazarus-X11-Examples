@@ -7,12 +7,13 @@ uses
   Xresource,
   X11StringDefs,
   X11Intrinsic,
+  XTCore,
   XawList,
   XawLabel,
   XawBox,
   XawCommand;
 
-// h2pas -p -T -S -d -c Intrinsic.h
+// h2pas -p -T -d -c Intrinsic.h
 
 //https://www.tutorialspoint.com/cprogramming/c_pointer_to_pointer.htm
 // define pointer of pointer
@@ -30,17 +31,33 @@ uses
     Halt;
   end;
 
+procedure draw_event(w: TWidget; p: Pointer; p2: PXEvent;b:PBoolean); cdecl;
+var
+  dis: PDisplay;
+  win: TWindow;
+  gc: TGC;
+begin
+  dis:=XtDisplay(w);
+  win:=XtWindow(w);
+  gc:=XCreateGC(dis,win,0,nil);
+  XSetForeground(dis,gc,$0);
+  XDrawLine(dis, win, gc, 10, 10, 100, 100);
+  XFree(gc);
+  end;
+
   procedure main;
   const
-//    ListData: PPChar = 'abc', 'def', 'ghi', nil;
-    ListDatas: PPChar = nil;
+    ListData: array of PChar = (('abc'#0), ('def'#0), ('ghi'#0), (nil));
+    PPC: PPChar = nil;
   var
-    c:PChar;
+    c: PChar;
     i: integer;
-    toplevel, box, command, label1, list: TWidget;
+    toplevel, box, command, label1, list, drawing: TWidget;
     wargs: array[0..3] of TArg;
 
-    colargs: array of TArg = ((Name: XtNbackground; valueI: $FF00), (Name: XtNforeground; valueI: $FFFF00), (Name: XtNlabel; valueP: '$FFFF00'));
+    colargs: array of TArg = ((Name: XtNbackground;
+      valueI: $FF00), (Name: XtNforeground; valueI: $FFFF00), (Name: XtNlabel;
+      valueP: '$FFFF00'));
     ld: PPChar;
 
   begin
@@ -48,7 +65,7 @@ uses
 
     box := XtCreateManagedWidget('hallo', boxWidgetClass, toplevel, nil, 0);
 
-    label1 := XtVaCreateManagedWidget('Label für ein Titel', labelWidgetClass, box, [XtNborderWidth, 5, nil]);
+    label1 := XtVaCreateManagedWidget('Label für ein Titel', labelWidgetClass, box, [XtNborderWidth, 0, nil]);
 
 
     command := XtCreateManagedWidget('Hello' + LineEnding + 'World !', commandWidgetClass, box, nil, 0);
@@ -57,7 +74,7 @@ uses
     command := XtCreateManagedWidget('Hello' + LineEnding + 'World !', commandWidgetClass, box, nil, 0);
     XtAddCallback(command, XtNcallback, @press_Hello, nil);
 
-    command := XtCreateManagedWidget('Hello' + LineEnding + LineEnding + 'Ich bin ein sehr langer Text !', commandWidgetClass, box, nil, 0);
+    command := XtCreateManagedWidget('Hello' + LineEnding + LineEnding + 'Ich bin ein sehr langer Text !   Ich bin ein sehr langer Text !', commandWidgetClass, box, nil, 0);
     XtAddCallback(command, XtNcallback, @press_Hello, nil);
 
     command := XtCreateManagedWidget('quit', commandWidgetClass, box, nil, 0);
@@ -83,27 +100,15 @@ uses
     command := XtCreateManagedWidget('quit', commandWidgetClass, box, nil, 0);
     XtAddCallback(command, XtNcallback, @quit, nil);
 
-    list := XtVaCreateManagedWidget('Liste', commandWidgetClass, box, [XtNlabel, 'label', XtNforeground, $FF88FF, XtNbackground, $88FF88, XtNheight, 50, nil]);
+    list := XtVaCreateManagedWidget('Liste', listWidgetClass, box, [XtNlabel, 'label', XtNforeground, $FF88FF, XtNbackground, $88FF88, XtNheight, 500, XtNwidth, 500, nil]);
 
-//((    Getmem(ListDatas, (Length(ListData) + 1) * SizeOf(PPChar));
-    Getmem(ListDatas,  SizeOf(PPChar)*2);
-//
-//    ld:=ListDatas;
-//    for i := 0 to Length(ListData) - 1 do begin
-//      ld^ := nil;
-//      inc(ld);
-//    end;
-//    ld:=nil;
-//
+    PPC := @ListData[0];
+    XawListChange(list, @ListData[0], 0, 50, True);
 
-  c:='abc;';
+    drawing := XtVaCreateManagedWidget('drawing', coreWidgetClass, box, [XtNheight, 500, XtNwidth, 500,XtNbackground,$FF8888, nil]);
+        XtAddEventHandler(drawing, ExposureMask, False, @draw_event, nil);
 
-   ld :=ListDatas;
-   ld:=@c;
-   inc(ld);
-   ld:=nil;
-
-//    XawListChange(list, ListDatas, 0, 50, True);
+//        XtAddCallback(drawing, XtNcallback, @press_Hello, nil);
 
     XtRealizeWidget(toplevel);
 

@@ -2,7 +2,9 @@
 unit Core;
 interface
 uses
-xlib,x;
+xlib,x,
+  X11Intrinsic,
+  XawSimple;
 
 const
   libXt = 'libXt.so';

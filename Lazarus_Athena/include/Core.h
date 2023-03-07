@@ -50,10 +50,10 @@ SOFTWARE.
 
 typedef struct _WidgetClassRec *CoreWidgetClass;
 typedef struct _WidgetRec *CoreWidget;
-extern WidgetClass coreWidgetClass;
+// externalref WidgetClass coreWidgetClass;
 
 #ifndef VMS
-extern WidgetClass widgetClass;
+// externalref WidgetClass widgetClass;
 
 #endif
 

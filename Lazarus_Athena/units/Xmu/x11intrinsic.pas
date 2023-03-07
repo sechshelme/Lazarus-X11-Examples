@@ -382,6 +382,7 @@ type
 
 
   TXtEventHandler = procedure(para1: TWidget; para2: TXtPointer; para3: PXEvent; para4: PBoolean); cdecl;
+//  TXtEventHandler = procedure(para1: TWidget; para2: TXtPointer; para3: TXtPointer; para4: PBoolean); cdecl;
 
   PEventMask = ^TEventMask;
   TEventMask = dword;
