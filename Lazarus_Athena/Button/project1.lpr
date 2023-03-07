@@ -94,7 +94,7 @@ begin
     command := XtVaCreateManagedWidget('TestBox', commandWidgetClass, box, [XtNforeground, $FFFFFF, XtNbackground, $FF, nil]);
     XtAddCallback(command, XtNcallback, @press_Hello, nil);
 
-    command := XtVaCreateManagedWidget('TestBox', commandWidgetClass, box, [XtNlabel, 'label', XtNforeground, $FFFF00, XtNbackground, $000000, XtNheight, 500, nil]);
+    command := XtVaCreateManagedWidget('TestBox', commandWidgetClass, box, [XtNlabel, 'label', XtNforeground, $FFFF00, XtNbackground, $000000, XtNheight, 100, nil]);
     XtAddCallback(command, XtNcallback, @press_Hello, PChar('Hallo Welt'));
 
     command := XtCreateManagedWidget('quit', commandWidgetClass, box, nil, 0);
