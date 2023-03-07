@@ -645,7 +645,8 @@ procedure XtConvertCase(para1: PDisplay; para2: TKeySym; para3: PKeySym; para4: 
 function XtAllEvents: TEventMask;
 
 
-procedure XtAddEventHandler(para1: TWidget; para2: TEventMask; para3: TXtBoolean; para4: TXtEventHandler; para5: TXtPointer); cdecl; external libXt;
+//procedure XtAddEventHandler(para1: TWidget; para2: TEventMask; para3: TXtBoolean; para4: TXtEventHandler; para5: TXtPointer); cdecl; external libXt;
+procedure XtAddEventHandler(para1: TWidget; para2: TEventMask; para3: TXtBoolean; para4: Pointer; para5: TXtPointer); cdecl; external libXt;
 
 procedure XtRemoveEventHandler(para1: TWidget; para2: TEventMask; para3: TXtBoolean; para4: TXtEventHandler; para5: TXtPointer); cdecl; external libXt;
 

@@ -43,7 +43,7 @@ void redisplay_event( Widget w, XtPointer client, XExposeEvent *ev)
     XSetForeground(display, gc, 1);
     XSetBackground(display, gc, 0);
 
-    XDrawLine(display, window, gc, 10, 10, 100, 100);
+    XDrawLine(display, window, gc, 10, 10, 100, 101);
     XDrawRectangle(display, window, gc, 75, 110, 150, 100);
     XDrawArc(display, window, gc, 75, 110, 150, 100, 45*64, 120*64);
 
