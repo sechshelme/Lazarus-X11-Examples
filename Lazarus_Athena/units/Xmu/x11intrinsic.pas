@@ -381,8 +381,8 @@ type
   TXtCaseProc = procedure(para1: PDisplay; para2: TKeySym; para3: PKeySym; para4: PKeySym); cdecl;
 
 
-  TXtEventHandler = procedure(para1: TWidget; para2: TXtPointer; para3: PXEvent; para4: PBoolean); cdecl;
-//  TXtEventHandler = procedure(para1: TWidget; para2: TXtPointer; para3: TXtPointer; para4: PBoolean); cdecl;
+  //  TXtEventHandler = procedure(para1: TWidget; para2: TXtPointer; para3: PXEvent; para4: PBoolean); cdecl;
+  TXtEventHandler = Pointer;
 
   PEventMask = ^TEventMask;
   TEventMask = dword;
@@ -645,8 +645,7 @@ procedure XtConvertCase(para1: PDisplay; para2: TKeySym; para3: PKeySym; para4: 
 function XtAllEvents: TEventMask;
 
 
-//procedure XtAddEventHandler(para1: TWidget; para2: TEventMask; para3: TXtBoolean; para4: TXtEventHandler; para5: TXtPointer); cdecl; external libXt;
-procedure XtAddEventHandler(para1: TWidget; para2: TEventMask; para3: TXtBoolean; para4: Pointer; para5: TXtPointer); cdecl; external libXt;
+procedure XtAddEventHandler(para1: TWidget; para2: TEventMask; para3: TXtBoolean; para4: TXtEventHandler; para5: TXtPointer); cdecl; external libXt;
 
 procedure XtRemoveEventHandler(para1: TWidget; para2: TEventMask; para3: TXtBoolean; para4: TXtEventHandler; para5: TXtPointer); cdecl; external libXt;
 
@@ -868,11 +867,11 @@ function XtVaCreateWidget(_XtString: TXtString; para2: TWidgetClass; para3: TWid
 
 function XtCreateApplicationShell(_XtString: TXtString; para2: TWidgetClass; para3: TArgList; para4: TCardinal): TWidget; cdecl; external libXt;
 
-function XtVaCreateManagedWidget(_XtString: TXtString; para2: TWidgetClass; para3: TWidget; args: array of const): TWidget; cdecl; external libXt;
+function XtVaCreateManagedWidget(_XtString: TXtString; para2: TWidgetClass; para3: TWidget): TWidget; cdecl; varargs; external libXt;
 
 function XtAppCreateShell(_XtString: TXtString; __XtString: TXtString; para3: TWidgetClass; para4: PDisplay; para5: TArgList; para6: TCardinal): TWidget; cdecl; external libXt;
 
-function XtVaAppCreateShell(_XtString: TXtString; __XtString: TXtString; para3: TWidgetClass; para4: PDisplay; args: array of const): TWidget; cdecl; external libXt;
+function XtVaAppCreateShell(_XtString: TXtString; __XtString: TXtString; para3: TWidgetClass; para4: PDisplay): TWidget; cdecl; varargs; external libXt;
 
 procedure XtToolkitInitialize; cdecl; external libXt;
 
@@ -882,11 +881,11 @@ procedure XtDisplayInitialize(para1: TXtAppContext; para2: PDisplay; _XtString: 
 
 function XtOpenApplication(para1: PXtAppContext; _XtString: TXtString; para3: TXrmOptionDescList; para4: TCardinal; para5: PPtrUint; para6: PXtString; para7: PString; para8: TWidgetClass; para9: TArgList; para10: TCardinal): TWidget; cdecl; external libXt;
 
-function XtVaOpenApplication(para1: PXtAppContext; _XtString: TXtString; para3: TXrmOptionDescList; para4: TCardinal; para5: PPtrUint; para6: PXtString; para7: PString; para8: TWidgetClass; args: array of const): TWidget; cdecl; external libXt;
+function XtVaOpenApplication(para1: PXtAppContext; _XtString: TXtString; para3: TXrmOptionDescList; para4: TCardinal; para5: PPtrUint; para6: PXtString; para7: PString; para8: TWidgetClass): TWidget; cdecl; varargs; external libXt;
 
 function XtAppInitialize(para1: PXtAppContext; _XtString: TXtString; para3: TXrmOptionDescList; para4: TCardinal; para5: PPtrUint; para6: PXtString; para7: PString; para8: TArgList; para9: TCardinal): TWidget; cdecl; external libXt;
 
-function XtVaAppInitialize(para1: PXtAppContext; _XtString: TXtString; para3: TXrmOptionDescList; para4: TCardinal; para5: PPtrUint; para6: PXtString; para7: PString; args: array of const): TWidget; cdecl; external libXt;
+function XtVaAppInitialize(para1: PXtAppContext; _XtString: TXtString; para3: TXrmOptionDescList; para4: TCardinal; para5: PPtrUint; para6: PXtString; para7: PString): TWidget; cdecl; varargs; external libXt;
 
 function XtInitialize(_XtString: TXtString; __XtString: TXtString; para3: PXrmOptionDescRec; para4: TCardinal; para5: PPtrUint; para6: PXtString): TWidget; cdecl; external libXt;
 
@@ -1378,7 +1377,7 @@ function XtNumber(arr: array of TArg): cardinal;
 begin
   //      XtNumber:=TCardinal((sizeof(arr))/(sizeof(arr[0])));
   XtNumber := (sizeof(arr)) div (sizeof(TArg));
-  Result:=Length(arr);
+  Result := Length(arr);
 end;
 
 function XtAllEvents: TEventMask;
