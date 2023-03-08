@@ -68,8 +68,38 @@ uses
     win := XtWindow(w);
     gc := XCreateGC(dis, win, 0, nil);
     XSetForeground(dis, gc, $0);
-    XDrawLine(dis, win, gc, 10, 10, 100, 100);
+    XDrawLine(dis, win, gc, 100, 10, 10, 100);
     XFree(gc);
+  end;
+
+  procedure EventTest(w: TWidget; p: Pointer; ev: PXEvent; b: PXEvent); cdecl;
+  var
+    dis: PDisplay;
+    win: TWindow;
+    gc: TGC;
+  begin
+    WriteLn('event');
+    case
+      ev^._type of
+      Expose: begin
+        WriteLn('Expose');
+        dis := XtDisplay(w);
+        win := XtWindow(w);
+        gc := XCreateGC(dis, win, 0, nil);
+        XSetForeground(dis, gc, $0);
+        XDrawLine(dis, win, gc, 10, 10, 100, 100);
+        XFree(gc);
+      end;
+      KeyPress: begin
+        WriteLn('Keypress');
+      end;
+      ButtonPress:begin
+        WriteLn('ButtonPress');
+      end;
+      ButtonRelease:begin
+        WriteLn('ButtonRelease');
+      end;
+    end;
   end;
 
   procedure main;
@@ -141,8 +171,9 @@ uses
 
 
     drawing := XtVaCreateManagedWidget('drawing', coreWidgetClass, box, XtNheight, 300, XtNwidth, 300, XtNbackground, $FF8888, nil);
-    XtAddEventHandler(drawing, ExposureMask, False, @draw_event, nil);
-    XtAddEventHandler(drawing, ButtonPressMask, False, @press_Hello, nil);
+        XtAddEventHandler(drawing, ExposureMask, False, @draw_event, nil);
+    //    XtAddEventHandler(drawing, ButtonPressMask, False, @press_Hello, nil);
+    XtAddEventHandler(drawing, ExposureMask or ButtonPressMask or KeyPressMask or ButtonReleaseMask, False, @EventTest, nil);
 
     XtRealizeWidget(toplevel);
 
