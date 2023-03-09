@@ -189,7 +189,7 @@ var
     XtAddEventHandler(drawing, ButtonPressMask or KeyPressMask, False, @press_Hello, nil);
     XtAddEventHandler(box, ExposureMask or ButtonPressMask or KeyPressMask or ButtonReleaseMask, False, @EventTest, nil);
 
-    Rptr := XtCreateManagedWidget('repeaterWidgetClass BTN', repeaterWidgetClass, box, nil, 0);
+    Rptr := XtVaCreateManagedWidget('repeaterWidgetClass BTN', repeaterWidgetClass, box, XtNminimumDelay, 1000, nil);
     XtAddCallback(Rptr, XtNcallback, @press_Hello, nil);
 
 
