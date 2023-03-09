@@ -9,6 +9,7 @@ uses
   XTCore,
   XawList,
   X11Intrinsic,
+  XawRepeater,
   XawBox,
   XawLabel,
   XawCommand;
@@ -17,6 +18,9 @@ uses
 
 //https://www.tutorialspoint.com/cprogramming/c_pointer_to_pointer.htm
 // define pointer of pointer
+
+var
+  LabelListBox: TWidget;
 
   procedure press_Hello(w: TWidget; p: Pointer; p2: Pointer); cdecl;
   begin
@@ -46,12 +50,13 @@ uses
     sl: PXawListReturnStruct;
   begin
     sl := XawListShowCurrent(list);
+
+    XtVaSetValues(LabelListBox, XtNlabel, sl^._string, nil);
+
     WriteLn('String: ', sl^._string);
     WriteLn('Iterm:  ', sl^.list_index);
     XFree(sl);
   end;
-
-
 
   procedure draw_event(w: TWidget; p: Pointer; p2: PXExposeEvent; b: PXEvent); cdecl;
   var
@@ -93,10 +98,10 @@ uses
       KeyPress: begin
         WriteLn('Keypress');
       end;
-      ButtonPress:begin
+      ButtonPress: begin
         WriteLn('ButtonPress');
       end;
-      ButtonRelease:begin
+      ButtonRelease: begin
         WriteLn('ButtonRelease');
       end;
     end;
@@ -111,7 +116,7 @@ uses
   var
     c: PChar;
     i: integer;
-    list, toplevel, box, command, label1, drawing, BtnListSet3, BtnListCleraHiglight, BtnListShowSelect: TWidget;
+    list, toplevel, box, command, label1, drawing, BtnListSet3, BtnListCleraHiglight, BtnListShowSelect, Rptr, BoxList: TWidget;
     wargs: array[0..3] of TArg;
 
     colargs: array of TArg = ((Name: XtNbackground;
@@ -157,23 +162,36 @@ uses
     command := XtCreateManagedWidget('quit', commandWidgetClass, box, nil, 0);
     XtAddCallback(command, XtNcallback, @quit, nil);
 
-    list := XtVaCreateManagedWidget('Liste', listWidgetClass, box, XtNborderColor, $FF0000, XtNforeground, $FF88FF, XtNbackground, $88FF88, XtNwidth, 1, XtNinternalWidth, 200, XtNdefaultColumns, 5, XtNverticalList, True, nil);
+    // ListBox
+
+    BoxList := XtVaCreateManagedWidget('Listen Box', boxWidgetClass, box, XtNborderColor, $FF0000, XtNforeground, $8888FF, XtNbackground, $88FFFF, XtNwidth, 300, XtNheight, 300, nil);
+
+    list := XtVaCreateManagedWidget('Liste', listWidgetClass, BoxList, XtNborderColor, $FF0000, XtNforeground, $FF88FF, XtNbackground, $88FF88, XtNwidth, 1, XtNinternalWidth, 200, XtNdefaultColumns, 5, XtNverticalList, True, nil);
     XawListChange(list, @ListData[0], Length(ListData), 50, True);
 
-    BtnListSet3 := XtCreateManagedWidget('List Set 3', commandWidgetClass, box, nil, 0);
+    LabelListBox := XtVaCreateManagedWidget('Label für ein Titel', labelWidgetClass, BoxList, XtNborderWidth, 0, nil);
+
+    BtnListSet3 := XtCreateManagedWidget('List Set 3', commandWidgetClass, BoxList, nil, 0);
     XtAddCallback(BtnListSet3, XtNcallback, @ListSet3, list);
 
-    BtnListCleraHiglight := XtCreateManagedWidget('List Clear Higlight', commandWidgetClass, box, nil, 0);
+    BtnListCleraHiglight := XtCreateManagedWidget('List Clear Higlight', commandWidgetClass, BoxList, nil, 0);
     XtAddCallback(BtnListCleraHiglight, XtNcallback, @ListClearHiglight, list);
 
-    BtnListShowSelect := XtCreateManagedWidget('List Show Select', commandWidgetClass, box, nil, 0);
+    BtnListShowSelect := XtCreateManagedWidget('List Show Select', commandWidgetClass, BoxList, nil, 0);
     XtAddCallback(BtnListShowSelect, XtNcallback, @ListShowSelect, list);
 
 
+
+    // Draw Box
+
     drawing := XtVaCreateManagedWidget('drawing', coreWidgetClass, box, XtNheight, 300, XtNwidth, 300, XtNbackground, $FF8888, nil);
-        XtAddEventHandler(drawing, ExposureMask, False, @draw_event, nil);
-    //    XtAddEventHandler(drawing, ButtonPressMask, False, @press_Hello, nil);
-    XtAddEventHandler(drawing, ExposureMask or ButtonPressMask or KeyPressMask or ButtonReleaseMask, False, @EventTest, nil);
+    XtAddEventHandler(drawing, ExposureMask, False, @draw_event, nil);
+    XtAddEventHandler(drawing, ButtonPressMask or KeyPressMask, False, @press_Hello, nil);
+    XtAddEventHandler(box, ExposureMask or ButtonPressMask or KeyPressMask or ButtonReleaseMask, False, @EventTest, nil);
+
+    Rptr := XtCreateManagedWidget('repeaterWidgetClass BTN', repeaterWidgetClass, box, nil, 0);
+    XtAddCallback(Rptr, XtNcallback, @press_Hello, nil);
+
 
     XtRealizeWidget(toplevel);
 

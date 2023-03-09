@@ -1,4 +1,37 @@
-/*
+
+unit Repeater;
+interface
+
+{
+  Automatically converted by H2Pas 1.0.0 from Repeater.h
+  The following command line parameters were used:
+    -p
+    -T
+    -d
+    -c
+    Repeater.h
+}
+
+{ Pointers to basic pascal types, inserted by h2pas conversion program.}
+Type
+  PLongint  = ^Longint;
+  PSmallInt = ^SmallInt;
+  PByte     = ^Byte;
+  PWord     = ^Word;
+  PDWord    = ^DWord;
+  PDouble   = ^Double;
+
+Type
+PRepeaterClassRec  = ^RepeaterClassRec;
+PRepeaterRec  = ^RepeaterRec;
+PRepeaterWidget  = ^RepeaterWidget;
+PRepeaterWidgetClass  = ^RepeaterWidgetClass;
+{$IFDEF FPC}
+{$PACKRECORDS C}
+{$ENDIF}
+
+
+{
  *
 Copyright 1989, 1998  The Open Group
 
@@ -23,14 +56,11 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
  *
  * Author:  Jim Fulton, MIT X Consortium
- */
-
-#ifndef _XawRepeater_h
-#define _XawRepeater_h
-
-#include <X11/Xaw/Command.h>
-
-/*****************************************************************************
+  }
+{$ifndef _XawRepeater_h}
+{$define _XawRepeater_h}
+{$include <X11/Xaw/Command.h>}
+{****************************************************************************
  *
  * Repeater Widget (subclass of Command)
  *
@@ -49,25 +79,33 @@ in this Software without prior written authorization from The Open Group.
  *  startCallback	StartCallback	XtCallbackList	NULL
  *  stopCallback	StopCallback	XtCallbackList	NULL
  *
- *****************************************************************************/
+ **************************************************************************** }
 
-#define XtNdecay "decay"
-#define XtCDecay "Decay"
-#define XtNinitialDelay "initialDelay"
-#define XtCDelay "Delay"
-#define XtNminimumDelay "minimumDelay"
-#define XtCMinimumDelay "MinimumDelay"
-#define XtNrepeatDelay "repeatDelay"
-#define XtNflash "flash"
-#define XtNstartCallback "startCallback"
-#define XtCStartCallback "StartCallback"
-#define XtNstopCallback "stopCallback"
-#define XtCStopCallback "StopCallback"
+const
+  XtNdecay = 'decay';  
+  XtCDecay = 'Decay';  
+  XtNinitialDelay = 'initialDelay';  
+  XtCDelay = 'Delay';  
+  XtNminimumDelay = 'minimumDelay';  
+  XtCMinimumDelay = 'MinimumDelay';  
+  XtNrepeatDelay = 'repeatDelay';  
+  XtNflash = 'flash';  
+  XtNstartCallback = 'startCallback';  
+  XtCStartCallback = 'StartCallback';  
+  XtNstopCallback = 'stopCallback';  
+  XtCStopCallback = 'StopCallback';  
+  var
+    repeaterWidgetClass : TWidgetClass;cvar;external;
+type
+  PRepeaterWidgetClass = ^TRepeaterWidgetClass;
+  TRepeaterWidgetClass = PRepeaterClassRec;
+
+  PRepeaterWidget = ^TRepeaterWidget;
+  TRepeaterWidget = PRepeaterRec;
+{$endif}
+{ _XawRepeater_h  }
+
+implementation
 
 
-extern WidgetClass repeaterWidgetClass;
-
-typedef struct _RepeaterClassRec *RepeaterWidgetClass;
-typedef struct _RepeaterRec      *RepeaterWidget;
-
-#endif /* _XawRepeater_h */
+end.
