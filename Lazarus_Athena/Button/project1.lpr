@@ -9,7 +9,10 @@ uses
   XTCore,
   XawList,
   X11Intrinsic,
+  Cardinals,
+//  Dialog,
   XawRepeater,
+  XmuDrawing,
   XawBox,
   XawLabel,
   XawCommand;
@@ -179,8 +182,6 @@ var
 
     BtnListShowSelect := XtCreateManagedWidget('List Show Select', commandWidgetClass, BoxList, nil, 0);
     XtAddCallback(BtnListShowSelect, XtNcallback, @ListShowSelect, list);
-
-
 
     // Draw Box
 

@@ -2,37 +2,33 @@ program project1;
 
 uses
   xlib,
-  x  ,
-  XawBox,
-  XawCommand,
-  X11Intrinsic;
+  x ;
 
 const
   libXaw = 'libXaw.so';
   libXt = 'libXt.so';
 
-
-//type
-//  TWidget = Pointer;
-
-
-//var
-//  boxWidgetClass:Pointer;cvar; external libXaw;
-//  commandWidgetClass:Pointer;cvar; external libXaw;
-//  XtStrings:array[0..30000] of Char;cvar; external libXaw;
-
-//  type
-//  myfunc=procedure (w:WideChar;p:Pointer;p2:Pointer);
+type
+  TWidget = Pointer;
 
 
+var
+  boxWidgetClass:Pointer;cvar; external libXaw;
+  commandWidgetClass:Pointer;cvar; external libXaw;
+  XtStrings:array[0..30000] of Char;cvar; external libXaw;
 
-//  function XtInitialize(titel: PChar; Name: PChar; p: Pointer; i: integer; argc: PInteger; argv: PPChar): TWidget; cdecl; external libXt;
-//  function XtCreateManagedWidget(Name: PChar; boxWidgetC:Pointer; parent: TWidget; p:Pointer;i: integer): TWidget; cdecl; external libXt;
+  type
+  myfunc=procedure (w:WideChar;p:Pointer;p2:Pointer);
 
-//  function XtAddCallback(command:TWidget; p:Pointer; f:myfunc;p2:Pointer): TWidget; cdecl; external libXt;
 
-//  procedure XtRealizeWidget(w:TWidget);cdecl;external libX11;
-//  procedure XtMainLoop;cdecl; external libX11;
+
+  function XtInitialize(titel: PChar; Name: PChar; p: Pointer; i: integer; argc: PInteger; argv: PPChar): TWidget; cdecl; external libXt;
+  function XtCreateManagedWidget(Name: PChar; boxWidgetC:Pointer; parent: TWidget; p:Pointer;i: integer): TWidget; cdecl; external libXt;
+
+  function XtAddCallback(command:TWidget; p:Pointer; f:myfunc;p2:Pointer): TWidget; cdecl; external libXt;
+
+  procedure XtRealizeWidget(w:TWidget);cdecl;external libX11;
+  procedure XtMainLoop;cdecl; external libX11;
 
   procedure quit(w:WideChar;p:Pointer;p2:Pointer);
   begin
@@ -44,15 +40,14 @@ const
   var
     i: integer = 0;
     toplevel, box, command: TWidget;
-    p: TWidgetClass;
 
   begin
     toplevel := XtInitialize('Mein Fenster', 'noname', nil, 0, @i, nil);
     box:=XtCreateManagedWidget('hallo', boxWidgetClass, toplevel,nil,0);
 
-    command:=XtCreateManagedWidget('hallo', commandWidgetClass, box,nil,0);
+    command:=XtCreateManagedWidget('Hello Button', commandWidgetClass, box,nil,0);
 
-    command:=XtCreateManagedWidget('quit', commandWidgetClass, box,nil,0);
+    command:=XtCreateManagedWidget('Quit Button', commandWidgetClass, box,nil,0);
 //    XtAddCallback(command,  @XtStrings[136],@quit,nil);
 
     XtRealizeWidget(toplevel);

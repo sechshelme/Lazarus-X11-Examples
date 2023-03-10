@@ -5,6 +5,7 @@
 #include  <X11/Xaw/Box.h>
 #include  <X11/Xaw/Command.h>
 #include  <X11/Xaw/List.h>
+#include  <X11/Xmu/Drawing.h>
 #include  <stdio.h>
 
 Widget listl;
