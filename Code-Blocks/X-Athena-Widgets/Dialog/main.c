@@ -10,7 +10,9 @@
 void clickDialog(Widget w, XtPointer client, XtPointer call) {
     printf("Hello World %i\n", client);
 //    char *pc  = XawDialogGetValueString(XtParent(w));
-    XawDialogGetValueString(XtParent(w));
+    printf("widget: %i\n", w);
+    printf("widget->Parent: %i\n", XtParent(w));
+    //XawDialogGetValueString(XtParent(w));
 }
 
 int main(int argc, char **argv) {
@@ -22,6 +24,7 @@ int main(int argc, char **argv) {
     box = XtCreateManagedWidget("Button Gruppe", boxWidgetClass, toplevel, NULL, 0);
 
     dialog = XtVaCreateManagedWidget("doalog", dialogWidgetClass, box, XtNlabel,"speichern ?", NULL);
+    printf("dialog: %i\n", dialog);
     XawDialogAddButton(dialog,"Yes", clickDialog,0);
     XawDialogAddButton(dialog,"No", clickDialog,1);
     //XawDialogAddButton(dialog,"Help", clickDialog,2);
