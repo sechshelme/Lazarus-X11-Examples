@@ -1,38 +1,4 @@
-
-unit Dialog;
-interface
-
-{
-  Automatically converted by H2Pas 1.0.0 from Dialog.h
-  The following command line parameters were used:
-    -p
-    -T
-    -d
-    -c
-    Dialog.h
-}
-
-{ Pointers to basic pascal types, inserted by h2pas conversion program.}
-Type
-  PLongint  = ^Longint;
-  PSmallInt = ^SmallInt;
-  PByte     = ^Byte;
-  PWord     = ^Word;
-  PDWord    = ^DWord;
-  PDouble   = ^Double;
-
-Type
-Pchar  = ^char;
-PDialogClassRec  = ^DialogClassRec;
-PDialogRec  = ^DialogRec;
-PDialogWidget  = ^DialogWidget;
-PDialogWidgetClass  = ^DialogWidgetClass;
-{$IFDEF FPC}
-{$PACKRECORDS C}
-{$ENDIF}
-
-
-{**********************************************************
+/***********************************************************
 
 Copyright 1987, 1988, 1994, 1998  The Open Group
 
@@ -77,11 +43,14 @@ WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
 ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 SOFTWARE.
 
-***************************************************************** }
-{$ifndef _XawDialog_h}
-{$define _XawDialog_h}
-{$include <X11/Xaw/Form.h>}
-{ Resources:
+******************************************************************/
+
+#ifndef _XawDialog_h
+#define _XawDialog_h
+
+#include <X11/Xaw/Form.h>
+
+/* Resources:
 
  Name		     Class		RepType		Default Value
  ----		     -----		-------		-------------
@@ -99,27 +68,31 @@ SOFTWARE.
  x		     Position		Position	0
  y		     Position		Position	0
 
- }
+*/
 
-const
-  XtCIcon = 'Icon';  
-  XtNicon = 'icon';  
-type
-  PDialogWidgetClass = ^TDialogWidgetClass;
-  TDialogWidgetClass = PDialogClassRec;
+#define XtCIcon "Icon"
+#define XtNicon "icon"
 
-  PDialogWidget = ^TDialogWidget;
-  TDialogWidget = PDialogRec;
-  var
-    dialogWidgetClass : TWidgetClass;cvar;external;
-(* Const before type ignored *)
+typedef struct _DialogClassRec	*DialogWidgetClass;
+typedef struct _DialogRec	*DialogWidget;
 
-procedure XawDialogAddButton(dialog:TWidget; name:Pchar; _function:TXtCallbackProc; client_data:TXtPointer);cdecl;external;
-function XawDialogGetValueString(w:TWidget):Pchar;cdecl;external;
-{$endif}
-{ _XawDialog_h  }
+extern WidgetClass dialogWidgetClass;
 
-implementation
+_XFUNCPROTOBEGIN
 
+void XawDialogAddButton
+(
+ Widget			dialog,
+ _Xconst char		*name,
+ XtCallbackProc		function,
+ XtPointer		client_data
+ );
 
-end.
+char *XawDialogGetValueString
+(
+ Widget			w
+);
+
+_XFUNCPROTOEND
+
+#endif /* _XawDialog_h */

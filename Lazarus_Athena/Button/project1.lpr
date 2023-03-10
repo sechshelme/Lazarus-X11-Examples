@@ -9,15 +9,23 @@ uses
   XTCore,
   XawList,
   X11Intrinsic,
-  Cardinals,
-//  Dialog,
+  XawCardinals,
+  XawForm,
+  XawGrip,
+
+  XawSmeBSB,
+  XawSmeLine,
+  XawSme,
+  XawScrollbar,
+
+  XawDialog,
   XawRepeater,
   XmuDrawing,
   XawBox,
   XawLabel,
   XawCommand;
 
-// h2pas -p -T -d -c Intrinsic.h
+// h2pas -p -T -d -c -e Intrinsic.h
 
 //https://www.tutorialspoint.com/cprogramming/c_pointer_to_pointer.htm
 // define pointer of pointer
@@ -80,7 +88,7 @@ var
     XFree(gc);
   end;
 
-  procedure EventTest(w: TWidget; p: Pointer; ev: PXEvent; b: PXEvent); cdecl;
+  procedure EventTest(w: TWidget; p: Pointer; ev: PXEvent; b: Pointer); cdecl;
   var
     dis: PDisplay;
     win: TWindow;
@@ -110,6 +118,21 @@ var
     end;
   end;
 
+  procedure DialogClick(w: TWidget; p: TXtPointer; p2: TXtPointer); cdecl;
+  var
+    pc: PChar;
+    pw: TWidget;
+  begin
+    pw := XtParent(w);
+    WriteLn(PtrUInt(w));
+    WriteLn(PtrUInt(pw));
+    Getmem(pc, 30);
+    //  XawDialogGetValueString(pw);
+    //  WriteLn(pc);
+    XtDestroyWidget(pw);
+  end;
+
+
   procedure main;
   const
     ListData: array of PChar = (
@@ -119,7 +142,8 @@ var
   var
     c: PChar;
     i: integer;
-    list, toplevel, box, command, label1, drawing, BtnListSet3, BtnListCleraHiglight, BtnListShowSelect, Rptr, BoxList: TWidget;
+    list, toplevel, box, command, label1, drawing, BtnListSet3, BtnListCleraHiglight, BtnListShowSelect, Rptr, BoxList, form, dialog, grip,
+      sme, scrollbar: TWidget;
     wargs: array[0..3] of TArg;
 
     colargs: array of TArg = ((Name: XtNbackground;
@@ -183,16 +207,35 @@ var
     BtnListShowSelect := XtCreateManagedWidget('List Show Select', commandWidgetClass, BoxList, nil, 0);
     XtAddCallback(BtnListShowSelect, XtNcallback, @ListShowSelect, list);
 
-    // Draw Box
+    // Draw Box with core
 
     drawing := XtVaCreateManagedWidget('drawing', coreWidgetClass, box, XtNheight, 300, XtNwidth, 300, XtNbackground, $FF8888, nil);
     XtAddEventHandler(drawing, ExposureMask, False, @draw_event, nil);
     XtAddEventHandler(drawing, ButtonPressMask or KeyPressMask, False, @press_Hello, nil);
     XtAddEventHandler(box, ExposureMask or ButtonPressMask or KeyPressMask or ButtonReleaseMask, False, @EventTest, nil);
 
+    // Repeator Button
     Rptr := XtVaCreateManagedWidget('repeaterWidgetClass BTN', repeaterWidgetClass, box, XtNminimumDelay, 1000, nil);
     XtAddCallback(Rptr, XtNcallback, @press_Hello, nil);
 
+    // Form
+    form := XtVaCreateManagedWidget('drawing', formWidgetClass, box, XtNheight, 30, XtNwidth, 30, XtNbackground, $88FF88, nil);
+
+    // Dialog
+    dialog := XtVaCreateManagedWidget('dnnnrawing', dialogWidgetClass, box, XtNlabel, 'Äenderung im Projekt speichern ?', XtNbackground, $8888FF, nil);
+    XawDialogAddButton(dialog, 'Yes', @DialogClick, Pointer(0));
+    XawDialogAddButton(dialog, 'No', @DialogClick, Pointer(1));
+    XawDialogAddButton(dialog, 'Help', @DialogClick, Pointer(2));
+    XawDialogAddButton(dialog, 'Chancel', @DialogClick, Pointer(3));
+    WriteLn(PtrUInt(dialog));
+    //    WriteLn(PtrUInt(XtParent( dialog)));
+
+    grip := XtVaCreateManagedWidget('grip', gripWidgetClass, box, XtNlabel, 'grip', XtNheight, 300, XtNwidth, 30,XtNforeground,$FFFF88, XtNbackground, $8888FF, nil);
+
+//     sme := XtVaCreateManagedWidget('sme', smeBSBObjectClass, box, XtNlabel, 'Äenderung im Projekt speichern ?', XtNheight, 300, XtNwidth, 30,XtNforeground,$FFFF88, XtNbackground, $8888FF, nil);
+
+scrollbar := XtVaCreateManagedWidget('grip', scrollbarWidgetClass, box, XtNlabel, 'grip',xmn XtNheight, 300, XtNwidth, 15,XtNforeground,$FFFF88, XtNbackground, $8888FF, nil);
+XtAddCallback(scrollbar, XtNcallback, @press_Hello, nil);
 
     XtRealizeWidget(toplevel);
 
