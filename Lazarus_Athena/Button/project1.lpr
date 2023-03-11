@@ -234,7 +234,7 @@ var
 
 //     sme := XtVaCreateManagedWidget('sme', smeBSBObjectClass, box, XtNlabel, 'Äenderung im Projekt speichern ?', XtNheight, 300, XtNwidth, 30,XtNforeground,$FFFF88, XtNbackground, $8888FF, nil);
 
-scrollbar := XtVaCreateManagedWidget('grip', scrollbarWidgetClass, box, XtNlabel, 'grip',xmn XtNheight, 300, XtNwidth, 15,XtNforeground,$FFFF88, XtNbackground, $8888FF, nil);
+scrollbar := XtVaCreateManagedWidget('grip', scrollbarWidgetClass, box, XtNlabel, 'grip', XtNheight, 300, XtNwidth, 15,XtNforeground,$FFFF88, XtNbackground, $8888FF, nil);
 XtAddCallback(scrollbar, XtNcallback, @press_Hello, nil);
 
     XtRealizeWidget(toplevel);

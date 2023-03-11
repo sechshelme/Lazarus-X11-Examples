@@ -5,7 +5,15 @@ interface
 
 uses
   x, xlib,
-  X11Intrinsic;
+  X11Intrinsic,
+  XTCoreP;
+
+type
+  PCoreWidgetClass = ^TCoreWidgetClass;
+  TCoreWidgetClass = PWidgetClassRec;
+
+  PCoreWidget = ^TCoreWidget;
+  TCoreWidget = PWidgetRec;
 
 var
   coreWidgetClass : TWidgetClass;cvar;external libX11;
@@ -13,6 +21,5 @@ var
 
 
 implementation
-
 
 end.
