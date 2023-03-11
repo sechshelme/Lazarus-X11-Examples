@@ -5,7 +5,6 @@ interface
 
 uses
   xlib, x, xutil,
-//  XTCoreP,
   Xresource;
 
 const

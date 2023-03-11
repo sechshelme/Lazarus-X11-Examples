@@ -1,7 +1,6 @@
 program project1;
 
 uses
-  //Core,
   xlib,
   x,
   Xresource,
@@ -12,26 +11,25 @@ uses
   XawCardinals,
   XawForm,
   XawGrip,
-
   XawSmeBSB,
   XawSmeLine,
   XawSme,
   XawScrollbar,
-
   XawDialog,
   XawRepeater,
   XmuDrawing,
   XawBox,
   XawLabel,
-  XawCommand;
+  XawCommand,
+  awScrollBar,
+  awList,
+  awDialog,
+  awDrawScreBox, awUTF8Label;
 
 // h2pas -p -T -d -c -e Intrinsic.h
 
 //https://www.tutorialspoint.com/cprogramming/c_pointer_to_pointer.htm
 // define pointer of pointer
-
-var
-  LabelListBox: TWidget;
 
   procedure press_Hello(w: TWidget; p: Pointer; p2: Pointer); cdecl;
   begin
@@ -43,107 +41,14 @@ var
 
   procedure quit(w: TWidget; p: Pointer; p2: Pointer); cdecl;
   begin
+//    XtDestroyWidget(XtParent(XtParent(w)));
+//    XtCloseDisplay(XtDisplay(w));
     Halt;
   end;
 
-  procedure ListSet3(w: TWidget; list: TWidget; p2: Pointer); cdecl;
-  begin
-    XawListHighlight(list, 3);
-  end;
-
-  procedure ListClearHiglight(w: TWidget; list: TWidget; p2: Pointer); cdecl;
-  begin
-    XawListUnhighlight(list);
-  end;
-
-  procedure ListShowSelect(w: TWidget; list: TWidget; p2: Pointer); cdecl;
-  var
-    sl: PXawListReturnStruct;
-  begin
-    sl := XawListShowCurrent(list);
-
-    XtVaSetValues(LabelListBox, XtNlabel, sl^._string, nil);
-
-    WriteLn('String: ', sl^._string);
-    WriteLn('Iterm:  ', sl^.list_index);
-    XFree(sl);
-  end;
-
-  procedure draw_event(w: TWidget; p: Pointer; p2: PXExposeEvent; b: PXEvent); cdecl;
-  var
-    dis: PDisplay;
-    win: TWindow;
-    gc: TGC;
-  begin
-    WriteLn(p2^.x);
-    WriteLn(p2^.y);
-    WriteLn(p2^.Width);
-    WriteLn(p2^.Height);
-
-    dis := XtDisplay(w);
-    win := XtWindow(w);
-    gc := XCreateGC(dis, win, 0, nil);
-    XSetForeground(dis, gc, $0);
-    XDrawLine(dis, win, gc, 100, 10, 10, 100);
-    XFree(gc);
-  end;
-
-  procedure EventTest(w: TWidget; p: Pointer; ev: PXEvent; b: Pointer); cdecl;
-  var
-    dis: PDisplay;
-    win: TWindow;
-    gc: TGC;
-  begin
-    WriteLn('event');
-    case
-      ev^._type of
-      Expose: begin
-        WriteLn('Expose');
-        dis := XtDisplay(w);
-        win := XtWindow(w);
-        gc := XCreateGC(dis, win, 0, nil);
-        XSetForeground(dis, gc, $0);
-        XDrawLine(dis, win, gc, 10, 10, 100, 100);
-        XFree(gc);
-      end;
-      KeyPress: begin
-        WriteLn('Keypress');
-      end;
-      ButtonPress: begin
-        WriteLn('ButtonPress');
-      end;
-      ButtonRelease: begin
-        WriteLn('ButtonRelease');
-      end;
-    end;
-  end;
-
-  procedure DialogClick(w: TWidget; p: TXtPointer; p2: TXtPointer); cdecl;
-  var
-    pc: PChar;
-    pw: TWidget;
-  begin
-    pw := XtParent(w);
-    WriteLn(PtrUInt(w));
-    WriteLn(PtrUInt(pw));
-    Getmem(pc, 30);
-    //  XawDialogGetValueString(pw);
-    //  WriteLn(pc);
-    XtDestroyWidget(pw);
-  end;
-
-
   procedure main;
-  const
-    ListData: array of PChar = (
-      'abcabcabcabc', 'def', 'ghi', 'jkl', 'def', 'ghi', 'jkl', 'def', 'ghi', 'jkl', 'def', 'ghi', 'jkl', 'def', 'ghi', 'jkl', 'def', 'ghi', 'jkl', 'Ich bin ein sehr langer Text',
-      'abc', 'def', 'ghi', 'jkl', 'def', 'ghi', 'jkl', 'def', 'ghi', 'jkl', 'def', 'ghi', 'jkl', 'def', 'ghi', 'jkl', 'def', 'ghi', 'jkl', 'Ich bin ein sehr langer Text');
-
   var
-    c: PChar;
-    i: integer;
-    list, toplevel, box, command, label1, drawing, BtnListSet3, BtnListCleraHiglight, BtnListShowSelect, Rptr, BoxList, form, dialog, grip,
-      sme, scrollbar: TWidget;
+    list, toplevel, box, command, Rptr, label1, form, grip: TWidget;
     wargs: array[0..3] of TArg;
 
     colargs: array of TArg = ((Name: XtNbackground;
@@ -155,7 +60,6 @@ var
     box := XtCreateManagedWidget('hallo', boxWidgetClass, toplevel, nil, 0);
 
     label1 := XtVaCreateManagedWidget('Label für ein Titel', labelWidgetClass, box, XtNborderWidth, 0, nil);
-
 
     command := XtCreateManagedWidget('Hello' + LineEnding + 'World !', commandWidgetClass, box, nil, 0);
     XtAddCallback(command, XtNcallback, @press_Hello, nil);
@@ -190,29 +94,10 @@ var
     XtAddCallback(command, XtNcallback, @quit, nil);
 
     // ListBox
-
-    BoxList := XtVaCreateManagedWidget('Listen Box', boxWidgetClass, box, XtNborderColor, $FF0000, XtNforeground, $8888FF, XtNbackground, $88FFFF, XtNwidth, 300, XtNheight, 300, nil);
-
-    list := XtVaCreateManagedWidget('Liste', listWidgetClass, BoxList, XtNborderColor, $FF0000, XtNforeground, $FF88FF, XtNbackground, $88FF88, XtNwidth, 1, XtNinternalWidth, 200, XtNdefaultColumns, 5, XtNverticalList, True, nil);
-    XawListChange(list, @ListData[0], Length(ListData), 50, True);
-
-    LabelListBox := XtVaCreateManagedWidget('Label für ein Titel', labelWidgetClass, BoxList, XtNborderWidth, 0, nil);
-
-    BtnListSet3 := XtCreateManagedWidget('List Set 3', commandWidgetClass, BoxList, nil, 0);
-    XtAddCallback(BtnListSet3, XtNcallback, @ListSet3, list);
-
-    BtnListCleraHiglight := XtCreateManagedWidget('List Clear Higlight', commandWidgetClass, BoxList, nil, 0);
-    XtAddCallback(BtnListCleraHiglight, XtNcallback, @ListClearHiglight, list);
-
-    BtnListShowSelect := XtCreateManagedWidget('List Show Select', commandWidgetClass, BoxList, nil, 0);
-    XtAddCallback(BtnListShowSelect, XtNcallback, @ListShowSelect, list);
+    CreateList(box);
 
     // Draw Box with core
-
-    drawing := XtVaCreateManagedWidget('drawing', coreWidgetClass, box, XtNheight, 300, XtNwidth, 300, XtNbackground, $FF8888, nil);
-    XtAddEventHandler(drawing, ExposureMask, False, @draw_event, nil);
-    XtAddEventHandler(drawing, ButtonPressMask or KeyPressMask, False, @press_Hello, nil);
-    XtAddEventHandler(box, ExposureMask or ButtonPressMask or KeyPressMask or ButtonReleaseMask, False, @EventTest, nil);
+    CreateCoreBoxDraw(box);
 
     // Repeator Button
     Rptr := XtVaCreateManagedWidget('repeaterWidgetClass BTN', repeaterWidgetClass, box, XtNminimumDelay, 1000, nil);
@@ -222,20 +107,17 @@ var
     form := XtVaCreateManagedWidget('drawing', formWidgetClass, box, XtNheight, 30, XtNwidth, 30, XtNbackground, $88FF88, nil);
 
     // Dialog
-    dialog := XtVaCreateManagedWidget('dnnnrawing', dialogWidgetClass, box, XtNlabel, 'Äenderung im Projekt speichern ?', XtNbackground, $8888FF, nil);
-    XawDialogAddButton(dialog, 'Yes', @DialogClick, Pointer(0));
-    XawDialogAddButton(dialog, 'No', @DialogClick, Pointer(1));
-    XawDialogAddButton(dialog, 'Help', @DialogClick, Pointer(2));
-    XawDialogAddButton(dialog, 'Chancel', @DialogClick, Pointer(3));
-    WriteLn(PtrUInt(dialog));
-    //    WriteLn(PtrUInt(XtParent( dialog)));
+    CreateDialog(box);
 
-    grip := XtVaCreateManagedWidget('grip', gripWidgetClass, box, XtNlabel, 'grip', XtNheight, 300, XtNwidth, 30,XtNforeground,$FFFF88, XtNbackground, $8888FF, nil);
+    grip := XtVaCreateManagedWidget('grip', gripWidgetClass, box, XtNlabel, 'grip', XtNheight, 300, XtNwidth, 30, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
 
-//     sme := XtVaCreateManagedWidget('sme', smeBSBObjectClass, box, XtNlabel, 'Äenderung im Projekt speichern ?', XtNheight, 300, XtNwidth, 30,XtNforeground,$FFFF88, XtNbackground, $8888FF, nil);
+    //     sme := XtVaCreateManagedWidget('sme', smeBSBObjectClass, box, XtNlabel, 'Äenderung im Projekt speichern ?', XtNheight, 300, XtNwidth, 30,XtNforeground,$FFFF88, XtNbackground, $8888FF, nil);
 
-scrollbar := XtVaCreateManagedWidget('grip', scrollbarWidgetClass, box, XtNlabel, 'grip', XtNheight, 300, XtNwidth, 15,XtNforeground,$FFFF88, XtNbackground, $8888FF, nil);
-XtAddCallback(scrollbar, XtNcallback, @press_Hello, nil);
+    // scrollbar;
+
+    CreateUTF8Label(box);
+
+    CreateScrollBar(box);
 
     XtRealizeWidget(toplevel);
 

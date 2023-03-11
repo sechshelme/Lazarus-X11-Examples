@@ -125,8 +125,7 @@ XtPointer closure, call_data;
  */
 
 /* ARGSUSED */
-static XtCallbackProc
-Jumped(w, closure, call_data)
+static XtCallbackProc Jumped(w, closure, call_data)
 Widget w;
 XtPointer closure, call_data;
 {
