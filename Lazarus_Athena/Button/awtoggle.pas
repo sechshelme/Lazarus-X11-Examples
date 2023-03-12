@@ -88,6 +88,7 @@ begin
   index:=initial;
 
   init_name := names[index];
+  init_name:='xxx';
   XtSetArg(wargs[0], XtNradioData, PChar(init_name));
   XtSetValues(togs[index], wargs, 1);
   XawToggleSetCurrent(group, PChar(init_name));
@@ -108,7 +109,7 @@ end;
 procedure CreateRadioBox(Parent: TWidget);
 var
   box, btn1, cmd, btn2, btn3, Buttons: TWidget;
-  names: array of string = ('value1', 'value2', 'value3', 'value4', 'value5', 'value6', 'value7');
+  names: array of string = ('value0', 'value1', 'value2', 'value3', 'value4', 'value5', 'value6', 'value7');
 begin
   //  box := XtVaCreateManagedWidget('grip', boxWidgetClass, Parent, XtNheight, 250, XtNwidth, 250, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
   //btn1 := XtVaCreateManagedWidget('Radio 1', toggleWidgetClass, box, XtNheight, 150, XtNwidth, 150, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
