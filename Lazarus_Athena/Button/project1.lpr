@@ -1,6 +1,7 @@
 program project1;
 
 uses
+  heaptrc,
   xlib,
   x,
   Xresource,

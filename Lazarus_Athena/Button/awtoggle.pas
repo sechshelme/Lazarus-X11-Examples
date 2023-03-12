@@ -15,7 +15,7 @@ uses
 
 // https://ergodic.ugr.es/cphys_pedro/unix/athena3.html
 
-function radio_box(Parent: TWidget; names: array of PChar; var values: array of integer; var variable: integer; initial: integer): TWidget;
+function radio_box(Parent: TWidget; names: array of string; var variable: integer; initial: integer): TWidget;
 procedure CreateRadioBox(Parent: TWidget);
 
 
@@ -29,59 +29,63 @@ type
     Value: integer;
   end;
 
+procedure rgback(w: TWidget; para: Pradio_struct; rs2: Pradio_struct);
 var
-  rs: Pradio_struct;
-
-  val: integer=4;
-
-
-procedure rgback(w: TWidget; rs: Pradio_struct; call: TXtPointer);
+  i: integer;
 begin
-//  rs^.variable := @rs^.Value;
+  i := para^.Value;
+  para^.variable^ := i;
+
+  WriteLn('value:', i);
 end;
 
 
-function radio_box(Parent: TWidget; names: array of PChar; var values: array of integer; var variable: integer; initial: integer): TWidget;
+function radio_box(Parent: TWidget; names: array of string; var variable: integer; initial: integer): TWidget;
 var
   ntogs, index, i: integer;
   box, group: TWidget;
   togs: array[0..99] of TWidget;
-  rs: Tradio_struct;
   wargs: array[0..10] of TArg;
   init_name: string;
+  pr: Pradio_struct;
+
 begin
   box := XtVaCreateManagedWidget('box', boxWidgetClass, Parent, XtNwidth, 300, XtNheight, 300, nil);
   ntogs := 0;
-  while names[ntogs] <> nil do begin
+  for i := 0 to Length(names) - 1 do begin
     WriteLn(names[ntogs]);
-    togs[ntogs] := XtCreateWidget(names[ntogs], toggleWidgetClass, box, nil, 0);
+    togs[ntogs] := XtCreateWidget(PChar(names[ntogs]), toggleWidgetClass, box, nil, 0);
     if ntogs = 0 then begin
       group := togs[0];
     end;
     XawToggleChangeRadioGroup(togs[ntogs], group);
 
-//    rs.variable := @variable;
-//    rs.Value := values[ntogs];
+    new(pr);
+    pr^.Value := i;
+    pr^.variable := @variable;
 
-    XtAddCallback(togs[ntogs], XtNcallback, @rgback, @rs);
+
+    XtAddCallback(togs[ntogs], XtNcallback, @rgback, pr);
+
     Inc(ntogs);
   end;
 
   XtManageChildren(togs, ntogs);
 
-  index := -1;
-  for i := 0 to ntogs - 1 do begin
-    if values[i] = initial then begin
-      index := i;
-    end;
-  end;
-  if index < 0 then begin
-    index := 0;
-  end;
+  //index := -1;
+  //for i := 0 to ntogs - 1 do begin
+  //  if values[i] = initial then begin
+  //    index := i;
+  //  end;
+  //end;
+  //if index < 0 then begin
+  //  index := 0;
+  //end;
 
-  variable := values[index];
+  //  variable := values[index];
 
   //variable:=2;
+  index:=initial;
 
   init_name := names[index];
   XtSetArg(wargs[0], XtNradioData, PChar(init_name));
@@ -89,31 +93,33 @@ begin
   XawToggleSetCurrent(group, PChar(init_name));
 end;
 
+var
+  val: integer = 4;
+
 procedure var_Print(w: TWidget; p: PInteger; p2: Pointer); cdecl;
 begin
   Write('Es wurde gewählt: ');
   WriteLn(val);
   if p <> nil then begin
-//    WriteLn(p^);
+    //    WriteLn(p^);
   end;
 end;
 
 procedure CreateRadioBox(Parent: TWidget);
 var
   box, btn1, cmd, btn2, btn3, Buttons: TWidget;
-  names: array of PChar = ('value1', 'value2', 'value3', 'value4', 'value5', nil);
-  values: array of integer = (1, 2, 3, 4, 5);
+  names: array of string = ('value1', 'value2', 'value3', 'value4', 'value5', 'value6', 'value7');
 begin
   //  box := XtVaCreateManagedWidget('grip', boxWidgetClass, Parent, XtNheight, 250, XtNwidth, 250, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
   //btn1 := XtVaCreateManagedWidget('Radio 1', toggleWidgetClass, box, XtNheight, 150, XtNwidth, 150, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
   //btn2 := XtVaCreateManagedWidget('Radio 2', toggleWidgetClass, box, XtNheight, 150, XtNwidth, 150, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
   //btn3 := XtVaCreateManagedWidget('Radio 3', toggleWidgetClass, box, XtNheight, 150, XtNwidth, 150, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
 
-  Buttons := radio_box(Parent, names, values, val, 3);
+  Buttons := radio_box(Parent, names, val, 4);
 
   cmd := XtVaCreateManagedWidget('Print Toggle', commandWidgetClass, Parent, XtNforeground, $FF8888, XtNbackground, $8888FF, nil);
-//  XtAddCallback(cmd, XtNcallback, @var_Print, @val);
-  XtAddCallback(cmd, XtNcallback, @var_Print, nil);
+  XtAddCallback(cmd, XtNcallback, @var_Print, @val);
+  //  XtAddCallback(cmd, XtNcallback, @var_Print, nil);
 
 end;
 
