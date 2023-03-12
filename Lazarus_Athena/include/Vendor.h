@@ -45,21 +45,26 @@ SOFTWARE.
 
 ******************************************************************/
 
-#ifndef _XtCore_h
-#define _XtCore_h
+#ifndef _XtVendor_h
+#define _XtVendor_h
+
+#include <X11/Intrinsic.h>
+
+/***********************************************************************
+ *
+ * VendorShell Widget
+ *
+ ***********************************************************************/
+
+/* Class record constants */
+
+typedef struct _VendorShellClassRec *VendorShellWidgetClass;
 
 _XFUNCPROTOBEGIN
 
-typedef struct _WidgetClassRec *CoreWidgetClass;
-typedef struct _WidgetRec *CoreWidget;
-externalref WidgetClass coreWidgetClass;
-
-#ifndef VMS
-externalref WidgetClass widgetClass;
-
-#endif
+externalref WidgetClass vendorShellWidgetClass;
 
 _XFUNCPROTOEND
 
-#endif /* _XtCore_h */
+#endif /* _XtVendor_h */
 /* DON'T ADD STUFF AFTER THIS #endif */

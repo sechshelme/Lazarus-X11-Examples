@@ -42,7 +42,7 @@
 
        XtManageChildren(togs,ntogs);
 
-       variable = index;
+   //&    variable = index;
 
        strcpy(init_name, names[0]);
 

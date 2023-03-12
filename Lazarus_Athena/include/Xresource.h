@@ -63,7 +63,7 @@ SOFTWARE.
  ****************************************************************
  ****************************************************************/
 
-//_XFUNCPROTOBEGIN
+_XFUNCPROTOBEGIN
 
 /****************************************************************
  *
@@ -89,11 +89,11 @@ typedef char *XrmString;
 
 /* find quark for string, create new quark if none already exists */
 extern XrmQuark XrmStringToQuark(
-    const char* 	/* string */
+    _Xconst char* 	/* string */
 );
 
 extern XrmQuark XrmPermStringToQuark(
-    const char* 	/* string */
+    _Xconst char* 	/* string */
 );
 
 /* find string for quark */
@@ -117,12 +117,12 @@ extern XrmQuark XrmUniqueQuark(
 typedef enum {XrmBindTightly, XrmBindLoosely} XrmBinding, *XrmBindingList;
 
 extern void XrmStringToQuarkList(
-    const char*	/* string */,
+    _Xconst char*	/* string */,
     XrmQuarkList	/* quarks_return */
 );
 
 extern void XrmStringToBindingQuarkList(
-    const char*	/* string */,
+    _Xconst char*	/* string */,
     XrmBindingList	/* bindings_return */,
     XrmQuarkList	/* quarks_return */
 );
@@ -189,8 +189,8 @@ extern void XrmQPutResource(
 
 extern void XrmPutResource(
     XrmDatabase*	/* database */,
-    const char*	/* specifier */,
-    const char*	/* type */,
+    _Xconst char*	/* specifier */,
+    _Xconst char*	/* type */,
     XrmValue*		/* value */
 );
 
@@ -198,18 +198,18 @@ extern void XrmQPutStringResource(
     XrmDatabase*	/* database */,
     XrmBindingList      /* bindings */,
     XrmQuarkList	/* quarks */,
-    const char*	/* value */
+    _Xconst char*	/* value */
 );
 
 extern void XrmPutStringResource(
     XrmDatabase*	/* database */,
-    const char*	/* specifier */,
-    const char*	/* value */
+    _Xconst char*	/* specifier */,
+    _Xconst char*	/* value */
 );
 
 extern void XrmPutLineResource(
     XrmDatabase*	/* database */,
-    const char*	/* line */
+    _Xconst char*	/* line */
 );
 
 extern Bool XrmQGetResource(
@@ -222,8 +222,8 @@ extern Bool XrmQGetResource(
 
 extern Bool XrmGetResource(
     XrmDatabase		/* database */,
-    const char*	/* str_name */,
-    const char*	/* str_class */,
+    _Xconst char*	/* str_name */,
+    _Xconst char*	/* str_class */,
     char**		/* str_type_return */,
     XrmValue*		/* value_return */
 );
@@ -264,22 +264,22 @@ extern XrmDatabase XrmGetDatabase(
 #endif /* !_XP_PRINT_SERVER_ */
 
 extern XrmDatabase XrmGetFileDatabase(
-    const char*	/* filename */
+    _Xconst char*	/* filename */
 );
 
 extern Status XrmCombineFileDatabase(
-    const char* 	/* filename */,
+    _Xconst char* 	/* filename */,
     XrmDatabase*	/* target */,
     Bool		/* override */
 );
 
 extern XrmDatabase XrmGetStringDatabase(
-    const char*	/* data */  /*  null terminated string */
+    _Xconst char*	/* data */  /*  null terminated string */
 );
 
 extern void XrmPutFileDatabase(
     XrmDatabase		/* database */,
-    const char*	/* filename */
+    _Xconst char*	/* filename */
 );
 
 extern void XrmMergeDatabases(
@@ -347,12 +347,12 @@ extern void XrmParseCommand(
     XrmDatabase*	/* database */,
     XrmOptionDescList	/* table */,
     int			/* table_count */,
-    const char*	/* name */,
+    _Xconst char*	/* name */,
     int*		/* argc_in_out */,
     char**		/* argv_in_out */
 );
 
-//_XFUNCPROTOEND
+_XFUNCPROTOEND
 
 #endif /* _X11_XRESOURCE_H_ */
 /* DON'T ADD STUFF AFTER THIS #endif */

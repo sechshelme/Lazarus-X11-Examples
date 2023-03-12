@@ -39,7 +39,7 @@ void quit(Widget w, XtPointer *client, XtPointer call) {
 main(int argc, char **argv) {
     Widget toplevel, box, buttons, quit, print;
 
-    toplevel = XtInitialize(argv[0], "rtest",NULL, 0, &argc, argv);
+    toplevel = XtInitialize(argv[0], "test",NULL, 0, &argc, argv);
 
     box = XtCreateManagedWidget("main", boxWidgetClass, toplevel, NULL, 0);
 

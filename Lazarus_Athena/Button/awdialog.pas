@@ -32,7 +32,7 @@ procedure CreateDialog(Parent: TWidget);
 var
   dialog: TWidget;
 begin
-  dialog := XtVaCreateManagedWidget('dnnnrawing', dialogWidgetClass, Parent, XtNlabel, 'Äenderung im Projekt speichern ?', XtNbackground, $8888FF, nil);
+  dialog := XtVaCreateManagedWidget('dialog', dialogWidgetClass, Parent, XtNlabel, 'Äenderung im Projekt speichern ?', XtNbackground, $8888FF, nil);
   XawDialogAddButton(dialog, 'Yes', @DialogClick, Pointer(0));
   XawDialogAddButton(dialog, 'No', @DialogClick, Pointer(1));
   XawDialogAddButton(dialog, 'Help', @DialogClick, Pointer(2));

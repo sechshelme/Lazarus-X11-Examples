@@ -111,6 +111,15 @@ typedef char *String;
 #define TRUE 1
 #endif
 
+#if __STDC_VERSION__ >= 199901L
+#include <stdint.h>
+typedef intptr_t	XtIntPtr;
+typedef uintptr_t	XtUIntPtr;
+#else
+typedef long		XtIntPtr;
+typedef unsigned long	XtUIntPtr;
+#endif
+
 #define XtNumber(arr)		((Cardinal) (sizeof(arr) / sizeof(arr[0])))
 
 typedef struct _WidgetRec *Widget;
@@ -122,10 +131,10 @@ typedef struct _XtEventRec *XtEventTable;
 
 typedef struct _XtAppStruct *XtAppContext;
 typedef unsigned long	XtValueMask;
-typedef unsigned long	XtIntervalId;
-typedef unsigned long	XtInputId;
-typedef unsigned long	XtWorkProcId;
-typedef unsigned long	XtSignalId;
+typedef XtUIntPtr	XtIntervalId;
+typedef XtUIntPtr	XtInputId;
+typedef XtUIntPtr	XtWorkProcId;
+typedef XtUIntPtr	XtSignalId;
 typedef unsigned int	XtGeometryMask;
 typedef unsigned long	XtGCMask;   /* Mask of values that are used by widget*/
 typedef unsigned long	Pixel;	    /* Index into colormap		*/
@@ -157,7 +166,7 @@ typedef int		XtCacheType;
  *
  ****************************************************************/
 typedef char		Boolean;
-typedef long		XtArgVal;
+typedef XtIntPtr	XtArgVal;
 typedef unsigned char	XtEnum;
 
 typedef unsigned int	Cardinal;
@@ -165,6 +174,11 @@ typedef unsigned short	Dimension;  /* Size in pixels			*/
 typedef short		Position;   /* Offset from 0 coordinate		*/
 
 typedef void*		XtPointer;
+#if __STDC_VERSION__ >= 201112L
+_Static_assert(sizeof(XtArgVal) >= sizeof(XtPointer), "XtArgVal too small");
+_Static_assert(sizeof(XtArgVal) >= sizeof(long), "XtArgVal too small");
+#endif
+
 
 /* The type Opaque is NOT part of the Xt standard, do NOT use it. */
 /* (It remains here only for backward compatibility.) */
@@ -269,7 +283,7 @@ typedef void (*XtActionHookProc)(
     Cardinal*		/* num_params */
 );
 
-typedef unsigned long XtBlockHookId;
+typedef XtUIntPtr XtBlockHookId;
 
 typedef void (*XtBlockHookProc)(
     XtPointer		/* client_data */
@@ -1178,7 +1192,7 @@ extern ArgList XtMergeArgLists(
 
 extern XtVarArgsList XtVaCreateArgsList(
     XtPointer		/*unused*/, ...
-) /*333333333333333333333333333333333*********************************/;
+) _X_SENTINEL(0);
 
 /*************************************************************
  *
@@ -1322,7 +1336,7 @@ extern Widget XtVaCreatePopupShell(
     WidgetClass		/* widgetClass */,
     Widget		/* parent */,
     ...
-) /*333333333333333333333333333333333*********************************/;
+) _X_SENTINEL(0);
 
 extern void XtPopup(
     Widget 		/* popup_shell */,
@@ -1389,14 +1403,14 @@ extern Widget XtVaCreateWidget(
     WidgetClass		/* widget */,
     Widget		/* parent */,
     ...
-) /*333333333333333333333333333333333*********************************/;
+) _X_SENTINEL(0);
 
 extern Widget XtVaCreateManagedWidget(
     _Xconst _XtString	/* name */,
     WidgetClass		/* widget_class */,
     Widget		/* parent */,
     ...
-) /*333333333333333333333333333333333*********************************/;
+) _X_SENTINEL(0);
 
 extern Widget XtCreateApplicationShell( /* obsolete */
     _Xconst _XtString 	/* name */,
@@ -1420,7 +1434,7 @@ extern Widget XtVaAppCreateShell(
     WidgetClass		/* widget_class */,
     Display*		/* display */,
     ...
-) /*333333333333333333333333333333333*********************************/;
+) _X_SENTINEL(0);
 
 /****************************************************************
  *
@@ -1472,7 +1486,7 @@ extern Widget XtVaOpenApplication(
     String*		/* fallback_resources */,
     WidgetClass		/* widget_class */,
     ...
-) /*333333333333333333333333333333333*********************************/;
+) _X_SENTINEL(0);
 
 extern Widget XtAppInitialize( /* obsolete */
     XtAppContext*	/* app_context_return */,
@@ -1495,7 +1509,7 @@ extern Widget XtVaAppInitialize( /* obsolete */
     _XtString*		/* argv_in_out */,
     String*		/* fallback_resources */,
     ...
-) /*333333333333333333333333333333333*********************************/;
+) _X_SENTINEL(0);
 
 extern Widget XtInitialize( /* obsolete */
     _Xconst _XtString 	/* shell_name */,
@@ -1569,7 +1583,7 @@ extern void XtVaGetApplicationResources(
     XtResourceList	/* resources */,
     Cardinal		/* num_resources */,
     ...
-) /*333333333333333333333333333333333*********************************/;
+) _X_SENTINEL(0);
 
 extern void XtGetSubresources(
     Widget 		/* widget */,
@@ -1590,7 +1604,7 @@ extern void XtVaGetSubresources(
     XtResourceList	/* resources */,
     Cardinal		/* num_resources */,
     ...
-) /*333333333333333333333333333333333*********************************/;
+) _X_SENTINEL(0);
 
 extern void XtSetValues(
     Widget 		/* widget */,
@@ -1601,7 +1615,7 @@ extern void XtSetValues(
 extern void XtVaSetValues(
     Widget		/* widget */,
     ...
-) /*333333333333333333333333333333333*********************************/;
+) _X_SENTINEL(0);
 
 extern void XtGetValues(
     Widget 		/* widget */,
@@ -1612,7 +1626,7 @@ extern void XtGetValues(
 extern void XtVaGetValues(
     Widget		/* widget */,
     ...
-) /*333333333333333333333333333333333*********************************/;
+) _X_SENTINEL(0);
 
 extern void XtSetSubvalues(
     XtPointer 		/* base */,
@@ -1627,7 +1641,7 @@ extern void XtVaSetSubvalues(
     XtResourceList	/* resources */,
     Cardinal		/* num_resources */,
     ...
-) /*333333333333333333333333333333333*********************************/;
+) _X_SENTINEL(0);
 
 extern void XtGetSubvalues(
     XtPointer 		/* base */,
@@ -1642,7 +1656,7 @@ extern void XtVaGetSubvalues(
     XtResourceList	/* resources */,
     Cardinal		/* num_resources */,
     ...
-) /*333333333333333333333333333333333*********************************/;
+) _X_SENTINEL(0);
 
 extern void XtGetResourceList(
     WidgetClass 	/* widget_class */,

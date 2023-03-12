@@ -122,14 +122,14 @@ end;
 
     // scrollbar;
 
-    CreateUTF8Label(box);
+//    CreateUTF8Label(box);
 
     CreateScrollBar(box);
 
+    CreateRadioBox(box);
+
     command := XtCreateManagedWidget('Neuer' + LineEnding + 'Dialog !', commandWidgetClass, box, nil, 0);
     XtAddCallback(command, XtNcallback, @press_new_Dialog, nil);
-
-    CreateToggleBox(box);
 
 
     XtRealizeWidget(toplevel);

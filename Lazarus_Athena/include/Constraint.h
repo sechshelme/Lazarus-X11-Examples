@@ -45,21 +45,18 @@ SOFTWARE.
 
 ******************************************************************/
 
-#ifndef _XtCore_h
-#define _XtCore_h
+#ifndef _XtConstraint_h
+#define _XtConstraint_h
 
 _XFUNCPROTOBEGIN
 
-typedef struct _WidgetClassRec *CoreWidgetClass;
-typedef struct _WidgetRec *CoreWidget;
-externalref WidgetClass coreWidgetClass;
+typedef struct _ConstraintClassRec *ConstraintWidgetClass;
 
 #ifndef VMS
-externalref WidgetClass widgetClass;
-
+externalref WidgetClass constraintWidgetClass;
 #endif
 
 _XFUNCPROTOEND
 
-#endif /* _XtCore_h */
+#endif /* _XtConstraint_h */
 /* DON'T ADD STUFF AFTER THIS #endif */

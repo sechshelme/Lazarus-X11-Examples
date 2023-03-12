@@ -1,6 +1,6 @@
 /***********************************************************
 
-Copyright 1987, 1988, 1998  The Open Group
+Copyright 1987, 1988, 1994, 1998  The Open Group
 
 Permission to use, copy, modify, distribute, and sell this software and its
 documentation for any purpose is hereby granted without fee, provided that
@@ -45,21 +45,56 @@ SOFTWARE.
 
 ******************************************************************/
 
-#ifndef _XtCore_h
-#define _XtCore_h
+/****************************************************************
+ *
+ * Resources
+ *
+ ****************************************************************/
+
+#ifndef _XtresourceI_h
+#define _XtresourceI_h
+
+#define StringToQuark(string) XrmStringToQuark(string)
+#define StringToName(string) XrmStringToName(string)
+#define StringToClass(string) XrmStringToClass(string)
 
 _XFUNCPROTOBEGIN
 
-typedef struct _WidgetClassRec *CoreWidgetClass;
-typedef struct _WidgetRec *CoreWidget;
-externalref WidgetClass coreWidgetClass;
+extern void _XtDependencies(
+    XtResourceList  * /* class_resp */,
+    Cardinal	    * /* class_num_resp */,
+    XrmResourceList * /* super_res */,
+    Cardinal	     /* super_num_res */,
+    Cardinal	     /* super_widget_size */);
 
-#ifndef VMS
-externalref WidgetClass widgetClass;
+extern void _XtResourceDependencies(
+    WidgetClass  /* wc */
+);
 
-#endif
+extern void _XtConstraintResDependencies(
+    ConstraintWidgetClass  /* wc */
+);
+
+extern XtCacheRef* _XtGetResources(
+    Widget	    /* w */,
+    ArgList	    /* args */,
+    Cardinal	    /* num_args */,
+    XtTypedArgList  /* typed_args */,
+    Cardinal*	    /* num_typed_args */
+);
+
+extern void _XtCopyFromParent(
+    Widget		/* widget */,
+    int			/* offset */,
+    XrmValue*		/* value */
+);
+
+extern void _XtCopyToArg(char *src, XtArgVal *dst, unsigned int size);
+extern void _XtCopyFromArg(XtArgVal src, char *dst, unsigned int size);
+extern XrmResourceList* _XtCreateIndirectionTable(XtResourceList resources,
+						  Cardinal num_resources);
+extern void _XtResourceListInitialize(void);
 
 _XFUNCPROTOEND
 
-#endif /* _XtCore_h */
-/* DON'T ADD STUFF AFTER THIS #endif */
+#endif /* _XtresourceI_h */

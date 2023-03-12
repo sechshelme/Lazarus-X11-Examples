@@ -45,21 +45,58 @@ SOFTWARE.
 
 ******************************************************************/
 
-#ifndef _XtCore_h
-#define _XtCore_h
+/*
+ * VendorP.h - Private definitions for VendorShell widget
+ *
+ * Author:	Paul Asente
+ * 		Digital Equipment Corporation
+ * 		Western Software Laboratory
+ * Date:	Thu Dec 3, 1987
+ */
+
+/***********************************************************************
+ *
+ * VendorShell Widget Private Data
+ *
+ ***********************************************************************/
+
+#ifndef  _XtVendorPrivate_h
+#define _XtVendorPrivate_h
+
+#include <X11/Vendor.h>
+
+/* New fields for the VendorShell widget class record */
 
 _XFUNCPROTOBEGIN
 
-typedef struct _WidgetClassRec *CoreWidgetClass;
-typedef struct _WidgetRec *CoreWidget;
-externalref WidgetClass coreWidgetClass;
+typedef struct {
+    XtPointer       extension;          /* pointer to extension record      */
+} VendorShellClassPart;
 
-#ifndef VMS
-externalref WidgetClass widgetClass;
+typedef struct _VendorShellClassRec {
+  	CoreClassPart      core_class;
+	CompositeClassPart composite_class;
+	ShellClassPart  shell_class;
+	WMShellClassPart   wm_shell_class;
+	VendorShellClassPart vendor_shell_class;
+} VendorShellClassRec;
 
-#endif
+externalref VendorShellClassRec vendorShellClassRec;
+
+/* New fields for the vendor shell widget. */
+
+typedef struct {
+	int		vendor_specific;
+} VendorShellPart;
+
+typedef  struct {
+	CorePart 	core;
+	CompositePart 	composite;
+	ShellPart 	shell;
+	WMShellPart	wm;
+	VendorShellPart	vendor;
+} VendorShellRec, *VendorShellWidget;
 
 _XFUNCPROTOEND
 
-#endif /* _XtCore_h */
-/* DON'T ADD STUFF AFTER THIS #endif */
+#endif  /* _XtVendorPrivate_h */

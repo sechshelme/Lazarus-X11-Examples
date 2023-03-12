@@ -45,21 +45,58 @@ SOFTWARE.
 
 ******************************************************************/
 
-#ifndef _XtCore_h
-#define _XtCore_h
+#ifndef _XtComposite_h
+#define _XtComposite_h
 
-_XFUNCPROTOBEGIN
+typedef struct _CompositeClassRec *CompositeWidgetClass;
 
-typedef struct _WidgetClassRec *CoreWidgetClass;
-typedef struct _WidgetRec *CoreWidget;
-externalref WidgetClass coreWidgetClass;
+typedef Cardinal (*XtOrderProc)(
+    Widget 	/* child */
+);
+
+//_XFUNCPROTOBEGIN
+
+extern void XtManageChildren(
+    WidgetList 		/* children */,
+    Cardinal 		/* num_children */
+);
+
+extern void XtManageChild(
+    Widget 		/* child */
+);
+
+extern void XtUnmanageChildren(
+    WidgetList 		/* children */,
+    Cardinal 		/* num_children */
+);
+
+extern void XtUnmanageChild(
+    Widget 		/* child */
+);
+
+typedef void (*XtDoChangeProc)(
+    Widget		/* composite_parent */,
+    WidgetList		/* unmanage_children */,
+    Cardinal *		/* num_unmanage_children */,
+    WidgetList		/* manage_children */,
+    Cardinal *		/* num_manage_children */,
+    XtPointer		/* client_data */
+);
+
+extern void XtChangeManagedSet(
+    WidgetList		/* unmanage_children */,
+    Cardinal		/* num_unmanage_children */,
+    XtDoChangeProc	/* do_change_proc */,
+    XtPointer		/* client_data */,
+    WidgetList		/* manage_children */,
+    Cardinal		/* num_manage_children */
+);
+
+//_XFUNCPROTOEND
 
 #ifndef VMS
-externalref WidgetClass widgetClass;
-
+extern WidgetClass compositeWidgetClass;
 #endif
 
-_XFUNCPROTOEND
-
-#endif /* _XtCore_h */
+#endif /* _XtComposite_h */
 /* DON'T ADD STUFF AFTER THIS #endif */
