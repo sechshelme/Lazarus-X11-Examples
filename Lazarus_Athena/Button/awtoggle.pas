@@ -37,6 +37,8 @@ begin
   para^.variable^ := i;
 
   WriteLn('value:', i);
+  XawToggleGetCurrent((w));
+  WriteLn('toggle: ',PtrUInt( XawToggleGetCurrent((w))));
 end;
 
 
@@ -54,8 +56,9 @@ begin
   ntogs := 0;
   for i := 0 to Length(names) - 1 do begin
     WriteLn(names[ntogs]);
-    togs[ntogs] := XtCreateWidget(PChar(names[ntogs]), toggleWidgetClass, box, nil, 0);
-    if ntogs = 0 then begin
+//    togs[ntogs] := XtCreateWidget(PChar(names[ntogs]), toggleWidgetClass, box, nil, 0);
+    togs[ntogs] := XtVaCreateWidget(PChar(names[ntogs]), toggleWidgetClass, box, XtNradioData, i,  nil);
+    if i = 0 then begin
       group := togs[0];
     end;
     XawToggleChangeRadioGroup(togs[ntogs], group);
@@ -89,9 +92,10 @@ begin
 
   init_name := names[index];
   init_name:='xxx';
-  XtSetArg(wargs[0], XtNradioData, PChar(init_name));
-  XtSetValues(togs[index], wargs, 1);
-  XawToggleSetCurrent(group, PChar(init_name));
+//  XtSetArg(wargs[0], XtNradioData, PChar(init_name));
+//  XtSetValues(togs[index], wargs, 1);
+// XawToggleSetCurrent(group, PChar(init_name));
+ XawToggleSetCurrent(group, Pointer(initial));
 end;
 
 var
@@ -116,7 +120,7 @@ begin
   //btn2 := XtVaCreateManagedWidget('Radio 2', toggleWidgetClass, box, XtNheight, 150, XtNwidth, 150, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
   //btn3 := XtVaCreateManagedWidget('Radio 3', toggleWidgetClass, box, XtNheight, 150, XtNwidth, 150, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
 
-  Buttons := radio_box(Parent, names, val, 4);
+  Buttons := radio_box(Parent, names, val, 3);
 
   cmd := XtVaCreateManagedWidget('Print Toggle', commandWidgetClass, Parent, XtNforeground, $FF8888, XtNbackground, $8888FF, nil);
   XtAddCallback(cmd, XtNcallback, @var_Print, @val);
