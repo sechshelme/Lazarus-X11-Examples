@@ -8,6 +8,7 @@ uses
   XTCore,
   XawList,
   X11Intrinsic,
+  XawToggle,
   XawCardinals,
   XawForm,
   XawGrip,
@@ -25,7 +26,7 @@ uses
   awScrollBar,
   awList,
   awDialog,
-  awDrawScreBox, awUTF8Label, MyDialog;
+  awDrawScreBox, awUTF8Label, MyDialog, AwToggle;
 
 // h2pas -p -T -d -c -e Intrinsic.h
 
@@ -127,6 +128,8 @@ end;
 
     command := XtCreateManagedWidget('Neuer' + LineEnding + 'Dialog !', commandWidgetClass, box, nil, 0);
     XtAddCallback(command, XtNcallback, @press_new_Dialog, nil);
+
+    CreateToggleBox(box);
 
 
     XtRealizeWidget(toplevel);

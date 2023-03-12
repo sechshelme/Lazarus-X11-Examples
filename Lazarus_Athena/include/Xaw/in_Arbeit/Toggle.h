@@ -104,7 +104,7 @@ typedef struct _ToggleRec        *ToggleWidget;
  * Public Functions
  */
 
-_XFUNCPROTOBEGIN
+//_XFUNCPROTOBEGIN
 
 /*
  * Function:
@@ -174,6 +174,6 @@ void XawToggleUnsetCurrent
  Widget		radio_group
  );
 
-_XFUNCPROTOEND
+//_XFUNCPROTOEND
 
 #endif /* _XawToggle_h */

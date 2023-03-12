@@ -58,6 +58,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="MyDialog"/>
       </Unit>
+      <Unit>
+        <Filename Value="awtoggle.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="AwToggle"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
