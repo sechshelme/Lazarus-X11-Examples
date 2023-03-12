@@ -53,6 +53,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="awUTF8Label"/>
       </Unit>
+      <Unit>
+        <Filename Value="mydialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MyDialog"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

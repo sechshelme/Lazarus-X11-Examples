@@ -61,6 +61,14 @@ const
 var
   simpleWidgetClass : TWidgetClass;cvar;external libXaw;
 
+//type
+//  PSimpleWidgetClass = ^TSimpleWidgetClass;
+//  TSimpleWidgetClass = PSimpleClassRec;
+//
+//  PSimpleWidget = ^TSimpleWidget;
+//  TSimpleWidget = PSimpleRec;
+
+
 implementation
 
 end.

@@ -74,6 +74,13 @@ const
   var
     labelWidgetClass : TWidgetClass;cvar;external libXaw;
 
+  //type
+  //  PLabelWidgetClass = ^TLabelWidgetClass;
+  //  TLabelWidgetClass = PLabelClassRec;
+  //
+  //  PLabelWidget = ^TLabelWidget;
+  //  TLabelWidget = PLabelRec;
+
 implementation
 
 

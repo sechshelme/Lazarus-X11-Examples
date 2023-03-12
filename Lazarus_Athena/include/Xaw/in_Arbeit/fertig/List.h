@@ -1,15 +1,28 @@
-unit XawList;
+/*
+Copyright 1989, 1994, 1998  The Open Group
 
-interface
+Permission to use, copy, modify, distribute, and sell this software and its
+documentation for any purpose is hereby granted without fee, provided that
+the above copyright notice appear in all copies and that both that
+copyright notice and this permission notice appear in supporting
+documentation.
 
-uses
-  X11Intrinsic,
-  XawSimple;
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-const
-  libXaw = 'libXaw.so';
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+OPEN GROUP BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-{  This is the List widget, it is useful to display a list, without the
+Except as contained in this notice, the name of The Open Group shall not be
+used in advertising or otherwise to promote the sale, use or other dealings
+in this Software without prior written authorization from The Open Group.
+*/
+
+/*  This is the List widget, it is useful to display a list, without the
  *  overhead of having a widget for each item in the list.  It allows
  *  the user to select an item in a list and notifies the application through
  *  a callback function.
@@ -17,9 +30,14 @@ const
  *	Created:	8/13/88
  *	By:		Chris D. Peterson
  *                      MIT X Consortium
-  }
-//{$include <X11/Xaw/Simple.h>}
-{ Resources:
+ */
+
+#ifndef _XawList_h
+#define _XawList_h
+
+#include <X11/Xaw/Simple.h>
+
+/* Resources:
 
  Name		     Class		RepType		Default Value
  ----		     -----		-------		-------------
@@ -82,50 +100,53 @@ const
        XawListReturnStruct that is pointed to by the client_data
        in the CallbackProc.
 
- }
-{
+*/
+
+/*
  * Value returned when there are no highlighted objects
-  }
+ */
+#define XAW_LIST_NONE -1
 
-const
-  XAW_LIST_NONE = -(1);  
-  XtCList = 'List';  
-  XtCSpacing = 'Spacing';  
-  XtCColumns = 'Columns';  
-  XtCLongest = 'Longest';  
-  XtCNumberStrings = 'NumberStrings';  
-  XtNcursor = 'cursor';  
-  XtNcolumnSpacing = 'columnSpacing';  
-  XtNdefaultColumns = 'defaultColumns';  
-  XtNforceColumns = 'forceColumns';  
-  XtNlist = 'list';  
-  XtNlongest = 'longest';  
-  XtNnumberStrings = 'numberStrings';  
-  XtNpasteBuffer = 'pasteBuffer';  
-  XtNrowSpacing = 'rowSpacing';  
-  XtNverticalList = 'verticalList';  
-  XtNshowCurrent = 'showCurrent';  
-{$ifndef XtNfontSet}
+#define XtCList "List"
+#define XtCSpacing "Spacing"
+#define XtCColumns "Columns"
+#define XtCLongest "Longest"
+#define XtCNumberStrings "NumberStrings"
 
-const
-  XtNfontSet = 'fontSet';  
-{$endif}
-{$ifndef XtCFontSet}
+#define XtNcursor "cursor"
+#define XtNcolumnSpacing "columnSpacing"
+#define XtNdefaultColumns "defaultColumns"
+#define XtNforceColumns "forceColumns"
+#define XtNlist "list"
+#define XtNlongest "longest"
+#define XtNnumberStrings "numberStrings"
+#define XtNpasteBuffer "pasteBuffer"
+#define XtNrowSpacing "rowSpacing"
+#define XtNverticalList "verticalList"
+#define XtNshowCurrent "showCurrent"
 
-const
-  XtCFontSet = 'FontSet';  
-{$endif}
-  var
-    listWidgetClass : TWidgetClass;cvar;external;
-type
+#ifndef XtNfontSet
+#define XtNfontSet "fontSet"
+#endif
 
-  PXawListReturnStruct = ^TXawListReturnStruct;
-  TXawListReturnStruct = record
-      _string : TString;
-      list_index : longint;
-    end;
-{_XFUNCPROTOBEGIN }
-{
+#ifndef XtCFontSet
+#define XtCFontSet "FontSet"
+#endif
+
+extern WidgetClass listWidgetClass;
+
+typedef struct _ListClassRec *ListWidgetClass;
+typedef struct _ListRec      *ListWidget;
+
+/* list return structure */
+typedef struct _XawListReturnStruct {
+  String string;
+  int list_index;
+} XawListReturnStruct;
+
+//_XFUNCPROTOBEGIN
+
+/*
  * Function:
  *	XawListChange
  *
@@ -142,11 +163,21 @@ type
  * Note:
  *	If nitems of longest are <= 0 then they will be calculated
  *	If nitems is <= 0 then the list needs to be NULL terminated
-  }
-(* Const before type ignored *)
+ */
+void XawListChange
+(
+ Widget			w,
+ const char		**list,
+ int			nitems,
+ int			longest,
+//#if NeedWidePrototypes
+// int			resize
+//#else
+ Boolean		resize
+//#endif
+ );
 
-procedure XawListChange(w:TWidget; list:PPchar; nitems:longint; longest:longint; resize:TBoolean);cdecl;external libXaw;
-{
+/*
  * Function:
  *	XawListUnhighlight
  *
@@ -155,9 +186,13 @@ procedure XawListChange(w:TWidget; list:PPchar; nitems:longint; longest:longint;
  *
  * Description:
  *	Unlights the current highlighted element.
-  }
-procedure XawListUnhighlight(w:TWidget);cdecl;external libXaw;
-{
+ */
+void XawListUnhighlight
+(
+ Widget			w
+ );
+
+/*
  * Function:
  *	XawListHighlight
  *
@@ -167,9 +202,15 @@ procedure XawListUnhighlight(w:TWidget);cdecl;external libXaw;
  *
  * Description:
  *	Highlights the given item.
-  }
-procedure XawListHighlight(w:TWidget; item:longint);cdecl;external libXaw;
-{
+ */
+void XawListHighlight
+(
+ Widget			w,
+ int			item
+ );
+
+
+/*
  * Function:
  *	XawListShowCurrent
  *
@@ -181,19 +222,13 @@ procedure XawListHighlight(w:TWidget; item:longint);cdecl;external libXaw;
  *
  * Returns:
  *	The info about the currently highlighted object
-  }
-function XawListShowCurrent(w:TWidget):PXawListReturnStruct;cdecl;external libXaw;
+ */
 
-//type
-//  PListWidgetClass = ^TListWidgetClass;
-//  TListWidgetClass = PListClassRec;
-//
-//  PListWidget = ^TListWidget;
-//  TListWidget = PListRec;
-{ list return structure  }
+XawListReturnStruct *XawListShowCurrent
+(
+ Widget			w
+ );
 
+// _XFUNCPROTOEND
 
-implementation
-
-
-end.
+#endif /* _XawList_h */

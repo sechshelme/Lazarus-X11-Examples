@@ -95,6 +95,7 @@ const
   XtNwindow = 'window';
   XtNx = 'x';
   XtNy = 'y';
+
   XtCAccelerators = 'Accelerators';
   XtCBackground = 'Background';
   XtCBitmap = 'Bitmap';

@@ -2,7 +2,6 @@
 
 #include  <X11/StringDefs.h>
 #include  <X11/Intrinsic.h>
-#include  <X11/CoreP.h>
 #include  <X11/Xaw/Box.h>
 #include  <X11/Xaw/Command.h>
 #include  <stdio.h>
@@ -16,9 +15,6 @@ void quit(Widget w, XtPointer *client, XtPointer call) {
 }
 
 int main(int argc, char **argv) {
-
-Arg xxx;
-//XrmStringToQuark()123.45);
 
     Widget toplevel, box, command;
 

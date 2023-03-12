@@ -33,14 +33,15 @@ const
 const
   XtNinternational = 'international';  
 
-//type
-//  PSmeObjectClass = ^TSmeObjectClass;
-//  TSmeObjectClass = PSmeClassRec;
-//
-//  PSmeObject = ^TSmeObject;
-//  TSmeObject = PSmeRec;
   var
     smeObjectClass : TWidgetClass;cvar;external libXaw;
+
+    //type
+    //  PSmeObjectClass = ^TSmeObjectClass;
+    //  TSmeObjectClass = PSmeClassRec;
+    //
+    //  PSmeObject = ^TSmeObject;
+    //  TSmeObject = PSmeRec;
 
 implementation
 

@@ -33,18 +33,19 @@ const
 const
   XtCIcon = 'Icon';  
   XtNicon = 'icon';  
-//type
-//  PDialogWidgetClass = ^TDialogWidgetClass;
-//  TDialogWidgetClass = PDialogClassRec;
-//
-//  PDialogWidget = ^TDialogWidget;
-//  TDialogWidget = PDialogRec;
   var
     dialogWidgetClass : TWidgetClass;cvar;external libXaw;
 (* Const before type ignored *)
 
 procedure XawDialogAddButton(dialog:TWidget; name:Pchar; _function:TXtCallbackProc; client_data:TXtPointer);cdecl;external libXaw;
 function XawDialogGetValueString(w:TWidget):Pchar;cdecl;external libXaw;
+
+//type
+//  PDialogWidgetClass = ^TDialogWidgetClass;
+//  TDialogWidgetClass = PDialogClassRec;
+//
+//  PDialogWidget = ^TDialogWidget;
+//  TDialogWidget = PDialogRec;
 
 implementation
 

@@ -34,15 +34,6 @@ const
  y		     Position		Position	0
 
  }
-//type
-//  PSmeBSBObjectClass = ^TSmeBSBObjectClass;
-//  TSmeBSBObjectClass = PSmeBSBClassRec;
-//
-//  PSmeBSBObject = ^TSmeBSBObject;
-//  TSmeBSBObject = PSmeBSBRec;
-  var
-    smeBSBObjectClass : TWidgetClass;cvar;external libXaw;
-
 const
   XtNleftBitmap = 'leftBitmap';  
   XtNleftMargin = 'leftMargin';  
@@ -63,6 +54,16 @@ const
   XtCHorizontalMargins = 'HorizontalMargins';  
   XtCRightBitmap = 'RightBitmap';  
   XtCVertSpace = 'VertSpace';  
+
+var
+  smeBSBObjectClass : TWidgetClass;cvar;external libXaw;
+
+  //type
+  //  PSmeBSBObjectClass = ^TSmeBSBObjectClass;
+  //  TSmeBSBObjectClass = PSmeBSBClassRec;
+  //
+  //  PSmeBSBObject = ^TSmeBSBObject;
+  //  TSmeBSBObject = PSmeBSBRec;
 
 implementation
 

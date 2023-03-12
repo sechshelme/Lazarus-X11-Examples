@@ -1,6 +1,40 @@
-/***********************************************************
 
-Copyright 1987, 1988, 1994, 1998  The Open Group
+unit Box;
+interface
+
+{
+  Automatically converted by H2Pas 1.0.0 from Box.h
+  The following command line parameters were used:
+    -p
+    -T
+    -d
+    -c
+    -e
+    Box.h
+}
+
+{ Pointers to basic pascal types, inserted by h2pas conversion program.}
+Type
+  PLongint  = ^Longint;
+  PSmallInt = ^SmallInt;
+  PByte     = ^Byte;
+  PWord     = ^Word;
+  PDWord    = ^DWord;
+  PDouble   = ^Double;
+
+Type
+PBoxClassRec  = ^BoxClassRec;
+PBoxRec  = ^BoxRec;
+PBoxWidget  = ^BoxWidget;
+PBoxWidgetClass  = ^BoxWidgetClass;
+{$IFDEF FPC}
+{$PACKRECORDS C}
+{$ENDIF}
+
+
+{**********************************************************
+
+Copyright 1987, 1988, 1998  The Open Group
 
 Permission to use, copy, modify, distribute, and sell this software and its
 documentation for any purpose is hereby granted without fee, provided that
@@ -43,56 +77,69 @@ WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
 ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 SOFTWARE.
 
-******************************************************************/
-
-#ifndef _XawDialog_h
-#define _XawDialog_h
-
-#include <X11/Xaw/Form.h>
-
-/* Resources:
+***************************************************************** }
+{$ifndef _XawBox_h}
+{$define _XawBox_h}
+{$include <X11/Xmu/Converters.h>}
+{
+ * Box Widget (subclass of CompositeClass)
+  }
+{ Resources:
 
  Name		     Class		RepType		Default Value
  ----		     -----		-------		-------------
  background	     Background		Pixel		XtDefaultBackground
- borderColor	     BorderColor	Pixel		XtDefaultForeground
+ border		     BorderColor	Pixel		XtDefaultForeground
  borderWidth	     BorderWidth	Dimension	1
  destroyCallback     Callback		Pointer		NULL
- height		     Height		Dimension	computed at create
- icon		     Icon		Pixmap		0
- label		     Label		String		NULL
+ displayList	     DisplayList	XawDisplayList*	NULL
+ hSpace		     HSpace		Dimension	4
+ height		     Height		Dimension	0
  mappedWhenManaged   MappedWhenManaged	Boolean		True
- sensitive	     Sensitive		Boolean		True
- value		     Value		String		NULL
- width		     Width		Dimension	computed at create
+ orientation	     Orientation	XtOrientation	vertical
+ vSpace		     VSpace		Dimension	4
+ width		     Width		Dimension	0
  x		     Position		Position	0
  y		     Position		Position	0
 
-*/
+ }
+{$ifndef _XtStringDefs_h_}
 
-#define XtCIcon "Icon"
-#define XtNicon "icon"
+const
+  XtNhSpace = 'hSpace';  
+  XtNvSpace = 'vSpace';  
+{$endif}
+{$ifndef OLDXAW}
+{$ifndef XawNdisplayList}
 
-typedef struct _DialogClassRec	*DialogWidgetClass;
-typedef struct _DialogRec	*DialogWidget;
+const
+  XawNdisplayList = 'displayList';  
+{$endif}
+{$ifndef XawCDisplayList}
 
-extern WidgetClass dialogWidgetClass;
+const
+  XawCDisplayList = 'DisplayList';  
+{$endif}
+{$ifndef XawRDisplayList}
 
-_XFUNCPROTOBEGIN
+const
+  XawRDisplayList = 'XawDisplayList';  
+{$endif}
+{$endif}
+{ OLDXAW  }
+{ Class record constants  }
+  var
+    boxWidgetClass : TWidgetClass;cvar;external;
+type
+  PBoxWidgetClass = ^TBoxWidgetClass;
+  TBoxWidgetClass = PBoxClassRec;
 
-void XawDialogAddButton
-(
- Widget			dialog,
- _Xconst char		*name,
- XtCallbackProc		function,
- XtPointer		client_data
- );
+  PBoxWidget = ^TBoxWidget;
+  TBoxWidget = PBoxRec;
+{$endif}
+{ _XawBox_h  }
 
-char *XawDialogGetValueString
-(
- Widget			w
-);
+implementation
 
-_XFUNCPROTOEND
 
-#endif /* _XawDialog_h */
+end.

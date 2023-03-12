@@ -98,6 +98,13 @@ const
 
 procedure XawFormDoLayout(w:TWidget; do_layout:TBool);cdecl;external libXaw;
 
+//type
+//  PFormWidgetClass = ^TFormWidgetClass;
+//  TFormWidgetClass = PFormClassRec;
+//
+//  PFormWidget = ^TFormWidget;
+//  TFormWidget = PFormRec;
+
 implementation
 
 

@@ -31,14 +31,15 @@ const
   XtCStipple = 'Stipple';  
   XtNlineWidth = 'lineWidth';  
   XtNstipple = 'stipple';  
-//type
-//  PSmeLineObjectClass = ^TSmeLineObjectClass;
-//  TSmeLineObjectClass = PSmeLineClassRec;
-//
-//  PSmeLineObject = ^TSmeLineObject;
-//  TSmeLineObject = PSmeLineRec;
   var
     smeLineObjectClass : TWidgetClass;cvar;external libXaw;
+
+    //type
+    //  PSmeLineObjectClass = ^TSmeLineObjectClass;
+    //  TSmeLineObjectClass = PSmeLineClassRec;
+    //
+    //  PSmeLineObject = ^TSmeLineObject;
+    //  TSmeLineObject = PSmeLineRec;
 
 implementation
 

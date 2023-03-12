@@ -1,14 +1,62 @@
-unit XawList;
 
+unit List;
 interface
 
-uses
-  X11Intrinsic,
-  XawSimple;
+{
+  Automatically converted by H2Pas 1.0.0 from List.h
+  The following command line parameters were used:
+    -p
+    -T
+    -d
+    -c
+    -e
+    List.h
+}
 
-const
-  libXaw = 'libXaw.so';
+{ Pointers to basic pascal types, inserted by h2pas conversion program.}
+Type
+  PLongint  = ^Longint;
+  PSmallInt = ^SmallInt;
+  PByte     = ^Byte;
+  PWord     = ^Word;
+  PDWord    = ^DWord;
+  PDouble   = ^Double;
 
+Type
+Pchar  = ^char;
+PListClassRec  = ^ListClassRec;
+PListRec  = ^ListRec;
+PListWidget  = ^ListWidget;
+PListWidgetClass  = ^ListWidgetClass;
+PXawListReturnStruct  = ^XawListReturnStruct;
+{$IFDEF FPC}
+{$PACKRECORDS C}
+{$ENDIF}
+
+
+{
+Copyright 1989, 1994, 1998  The Open Group
+
+Permission to use, copy, modify, distribute, and sell this software and its
+documentation for any purpose is hereby granted without fee, provided that
+the above copyright notice appear in all copies and that both that
+copyright notice and this permission notice appear in supporting
+documentation.
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+OPEN GROUP BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Except as contained in this notice, the name of The Open Group shall not be
+used in advertising or otherwise to promote the sale, use or other dealings
+in this Software without prior written authorization from The Open Group.
+ }
 {  This is the List widget, it is useful to display a list, without the
  *  overhead of having a widget for each item in the list.  It allows
  *  the user to select an item in a list and notifies the application through
@@ -18,7 +66,9 @@ const
  *	By:		Chris D. Peterson
  *                      MIT X Consortium
   }
-//{$include <X11/Xaw/Simple.h>}
+{$ifndef _XawList_h}
+{$define _XawList_h}
+{$include <X11/Xaw/Simple.h>}
 { Resources:
 
  Name		     Class		RepType		Default Value
@@ -118,6 +168,12 @@ const
   var
     listWidgetClass : TWidgetClass;cvar;external;
 type
+  PListWidgetClass = ^TListWidgetClass;
+  TListWidgetClass = PListClassRec;
+
+  PListWidget = ^TListWidget;
+  TListWidget = PListRec;
+{ list return structure  }
 
   PXawListReturnStruct = ^TXawListReturnStruct;
   TXawListReturnStruct = record
@@ -144,8 +200,12 @@ type
  *	If nitems is <= 0 then the list needs to be NULL terminated
   }
 (* Const before type ignored *)
+{#if NeedWidePrototypes }
+{ int			resize }
+{#else }
+{#endif }
 
-procedure XawListChange(w:TWidget; list:PPchar; nitems:longint; longest:longint; resize:TBoolean);cdecl;external libXaw;
+procedure XawListChange(w:TWidget; list:PPchar; nitems:longint; longest:longint; resize:TBoolean);cdecl;external;
 {
  * Function:
  *	XawListUnhighlight
@@ -156,7 +216,7 @@ procedure XawListChange(w:TWidget; list:PPchar; nitems:longint; longest:longint;
  * Description:
  *	Unlights the current highlighted element.
   }
-procedure XawListUnhighlight(w:TWidget);cdecl;external libXaw;
+procedure XawListUnhighlight(w:TWidget);cdecl;external;
 {
  * Function:
  *	XawListHighlight
@@ -168,7 +228,7 @@ procedure XawListUnhighlight(w:TWidget);cdecl;external libXaw;
  * Description:
  *	Highlights the given item.
   }
-procedure XawListHighlight(w:TWidget; item:longint);cdecl;external libXaw;
+procedure XawListHighlight(w:TWidget; item:longint);cdecl;external;
 {
  * Function:
  *	XawListShowCurrent
@@ -182,16 +242,10 @@ procedure XawListHighlight(w:TWidget; item:longint);cdecl;external libXaw;
  * Returns:
  *	The info about the currently highlighted object
   }
-function XawListShowCurrent(w:TWidget):PXawListReturnStruct;cdecl;external libXaw;
-
-//type
-//  PListWidgetClass = ^TListWidgetClass;
-//  TListWidgetClass = PListClassRec;
-//
-//  PListWidget = ^TListWidget;
-//  TListWidget = PListRec;
-{ list return structure  }
-
+function XawListShowCurrent(w:TWidget):PXawListReturnStruct;cdecl;external;
+{ _XFUNCPROTOEND }
+{$endif}
+{ _XawList_h  }
 
 implementation
 

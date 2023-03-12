@@ -50,6 +50,13 @@ const
 var
     repeaterWidgetClass : TWidgetClass;cvar;external libXaw;
 
+//type
+//  PRepeaterWidgetClass = ^TRepeaterWidgetClass;
+//  TRepeaterWidgetClass = PRepeaterClassRec;
+//
+//  PRepeaterWidget = ^TRepeaterWidget;
+//  TRepeaterWidget = PRepeaterRec;
+
 
 implementation
 

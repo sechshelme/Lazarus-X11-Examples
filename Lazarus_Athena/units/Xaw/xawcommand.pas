@@ -72,6 +72,13 @@ const
 var
   commandWidgetClass : TWidgetClass;cvar;external libXaw;
 
+//type
+//  PCommandWidgetClass = ^TCommandWidgetClass;
+//  TCommandWidgetClass = PCommandClassRec;
+//
+//  PCommandWidget = ^TCommandWidget;
+//  TCommandWidget = PCommandRec;
+
 implementation
 
 end.

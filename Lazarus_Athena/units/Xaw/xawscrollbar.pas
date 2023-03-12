@@ -76,6 +76,14 @@ const
 
 procedure XawScrollbarSetThumb(scrollbar:TWidget; top:single; shown:single);cdecl;external libXaw;
 
+//type
+//  PScrollbarWidget = ^TScrollbarWidget;
+//  TScrollbarWidget = PScrollbarRec;
+//
+//  PScrollbarWidgetClass = ^TScrollbarWidgetClass;
+//  TScrollbarWidgetClass = PScrollbarClassRec;
+
+
 implementation
 
 end.

@@ -56,6 +56,7 @@ type
 { Class Record Constant  }
 var
     gripWidgetClass : TWidgetClass;cvar;external libXaw;
+
 //type
 //  PGripWidgetClass = ^TGripWidgetClass;
 //  TGripWidgetClass = PGripClassRec;

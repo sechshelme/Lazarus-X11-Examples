@@ -11,6 +11,7 @@ uses
   XawCardinals,
   XawForm,
   XawGrip,
+  XawSimple,
   XawSmeBSB,
   XawSmeLine,
   XawSme,
@@ -24,20 +25,25 @@ uses
   awScrollBar,
   awList,
   awDialog,
-  awDrawScreBox, awUTF8Label;
+  awDrawScreBox, awUTF8Label, MyDialog;
 
 // h2pas -p -T -d -c -e Intrinsic.h
 
 //https://www.tutorialspoint.com/cprogramming/c_pointer_to_pointer.htm
 // define pointer of pointer
 
-  procedure press_Hello(w: TWidget; p: Pointer; p2: Pointer); cdecl;
-  begin
-    WriteLn('Hello World');
-    if p <> nil then begin
-      WriteLn(PChar(p));
-    end;
+procedure press_Hello(w: TWidget; p: Pointer; p2: Pointer); cdecl;
+begin
+  WriteLn('Hello World');
+  if p <> nil then begin
+    WriteLn(PChar(p));
   end;
+end;
+
+procedure press_new_Dialog(w: TWidget; p: Pointer; p2: Pointer); cdecl;
+begin
+  CreateMyDialog(XtParent(w));
+end;
 
   procedure quit(w: TWidget; p: Pointer; p2: Pointer); cdecl;
   begin
@@ -118,6 +124,10 @@ uses
     CreateUTF8Label(box);
 
     CreateScrollBar(box);
+
+    command := XtCreateManagedWidget('Neuer' + LineEnding + 'Dialog !', commandWidgetClass, box, nil, 0);
+    XtAddCallback(command, XtNcallback, @press_new_Dialog, nil);
+
 
     XtRealizeWidget(toplevel);
 

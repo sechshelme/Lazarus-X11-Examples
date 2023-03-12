@@ -44,6 +44,13 @@ const
 var
     boxWidgetClass : TWidgetClass;cvar;external libXaw;
 
+//type
+//  PBoxWidgetClass = ^TBoxWidgetClass;
+//  TBoxWidgetClass = PBoxClassRec;
+//
+//  PBoxWidget = ^TBoxWidget;
+//  TBoxWidget = PBoxRec;
+
 implementation
 
 
