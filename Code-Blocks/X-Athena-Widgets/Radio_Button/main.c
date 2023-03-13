@@ -12,6 +12,7 @@
   #include  <X11/Intrinsic.h>
   #include  <X11/Xaw/Box.h>
   #include  <X11/Xaw/Command.h>
+#include  <X11/Xaw/AllWidgets.h>
 //  #include "lib.h"
   #include "rbox.c"
 

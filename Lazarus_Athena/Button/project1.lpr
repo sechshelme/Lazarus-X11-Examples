@@ -17,13 +17,18 @@ uses
   XawSmeBSB,
   XawSmeLine,
   XawSme,
+  XawTip,
   XawScrollbar,
   XawDialog,
   XawRepeater,
+  XmuConverters,
   XmuDrawing,
   XawBox,
+  XawAllWidgets,
   XawLabel,
   XawCommand,
+
+  XmuWidgetNode,
   awScrollBar,
   awList,
   awDialog,
@@ -56,7 +61,7 @@ end;
 
   procedure main;
   var
-    list, toplevel, box, command, Rptr, label1, form, grip: TWidget;
+    list, toplevel, box, command, Rptr, label1, form, grip, tip: TWidget;
     wargs: array[0..3] of TArg;
 
     colargs: array of TArg = ((Name: XtNbackground;
@@ -127,10 +132,16 @@ end;
 
     CreateScrollBar(box);
 
-    CreateRadioBox(box, 'Radio Group');
-
     command := XtCreateManagedWidget('Neuer' + LineEnding + 'Dialog !', commandWidgetClass, box, nil, 0);
     XtAddCallback(command, XtNcallback, @press_new_Dialog, nil);
+
+//    tip := XtCreateManagedWidget('Neuer' + LineEnding + 'Dialog !', tipWidgetClass, command, nil, 0);
+    XtVaSetValues(command,XtNtip,'Hier klicken fuer einen neuen Dialog !',nil);
+    XawTipEnable(command);
+
+    command := XtCreateManagedWidget('Ein Knopf', commandWidgetClass, box, nil, 0);
+    XtVaSetValues(command,XtNtip,'Ich bin ein einfacher Knopf !',nil);
+    XawTipEnable(command);
 
 
     XtRealizeWidget(toplevel);
