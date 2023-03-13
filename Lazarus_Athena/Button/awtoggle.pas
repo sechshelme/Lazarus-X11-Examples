@@ -9,6 +9,7 @@ uses
   X11Intrinsic,
   X11Composite,
   XawToggle,
+  XawLabel,
   XawCommand,
   XawBox,
   XawScrollbar;
@@ -16,7 +17,7 @@ uses
 // https://ergodic.ugr.es/cphys_pedro/unix/athena3.html
 
 function radio_box(Parent: TWidget; names: array of string; var variable: integer; initial: integer): TWidget;
-procedure CreateRadioBox(Parent: TWidget);
+procedure CreateRadioBox(Parent: TWidget; const Titel: string);
 
 
 implementation
@@ -50,10 +51,10 @@ var
   togs: array of TWidget;
 begin
   SetLength(togs, Length(names));
-  box := XtVaCreateManagedWidget('box', boxWidgetClass, Parent, XtNwidth, 300, XtNheight, 300, nil);
+  box := XtVaCreateManagedWidget('box', boxWidgetClass, Parent, nil);
   for i := 0 to Length(names) - 1 do begin
-    WriteLn(names[i]);
-    togs[i] := XtVaCreateWidget(PChar(names[i]), toggleWidgetClass, box, XtNradioData, i + 1, nil);
+    WriteLn(names[i],'   '   ,i);
+    togs[i] := XtVaCreateWidget(PChar(names[i]), toggleWidgetClass, box, XtNradioData, i + 1,XtNheight,10, nil);
     if i = 0 then begin
       group := togs[0];
     end;
@@ -63,7 +64,7 @@ begin
   end;
 
   if Length(togs) > 0 then  begin
-    XtManageChildren(@togs[0], i);
+    XtManageChildren(@togs[0], Length(names));
     XawToggleSetCurrent(group, Pointer(initial + 1));
   end;
   Result := box;
@@ -78,14 +79,28 @@ begin
   WriteLn(val);
 end;
 
-procedure CreateRadioBox(Parent: TWidget);
+procedure CreateRadioBox(Parent: TWidget; const Titel: string);
+const
+  RadioCount = 8;
 var
-  box, btn1, cmd, btn2, btn3, Buttons: TWidget;
-  names: array of string = ('value0', 'value1', 'value2', 'value3', 'value4', 'value5', 'value6', 'value7');
+  box,  cmd, Buttons, label1: TWidget;
+  names: array of string;
+  i: integer;
+  s: string;
 begin
-  Buttons := radio_box(Parent, names, val, 3);
+  SetLength(names, RadioCount);
+  for i := 0 to Length(names) - 1 do begin
+    str(i,s);
+    names[i] := 'RadioButton'+s;
+  end;
 
-  cmd := XtVaCreateManagedWidget('Print Toggle', commandWidgetClass, Parent, XtNforeground, $FF8888, XtNbackground, $8888FF, nil);
+  box := XtVaCreateManagedWidget('box', boxWidgetClass, Parent, XtNforeground, $88FF88, XtNbackground, $FF88FF, nil);
+
+  label1 := XtVaCreateManagedWidget(PChar(Titel), labelWidgetClass, box, XtNforeground, $88FF88, XtNbackground, $FF88FF, XtNborderWidth, 0, nil);
+
+  Buttons := radio_box(box, names, val, 3);
+
+  cmd := XtVaCreateManagedWidget('Print Toggle', commandWidgetClass, box, nil);
   XtAddCallback(cmd, XtNcallback, @var_Print, @val);
 end;
 

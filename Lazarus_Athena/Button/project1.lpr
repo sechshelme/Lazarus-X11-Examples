@@ -127,7 +127,7 @@ end;
 
     CreateScrollBar(box);
 
-    CreateRadioBox(box);
+    CreateRadioBox(box, 'Radio Group');
 
     command := XtCreateManagedWidget('Neuer' + LineEnding + 'Dialog !', commandWidgetClass, box, nil, 0);
     XtAddCallback(command, XtNcallback, @press_new_Dialog, nil);
