@@ -52,7 +52,7 @@ var
   BoxList, list, BtnListSet3, BtnListCleraHiglight,
     BtnListShowSelect: TWidget;
 begin
-  BoxList := XtVaCreateManagedWidget('Listen Box', boxWidgetClass, Parent, XtNborderColor, $FF0000, XtNforeground, $8888FF, XtNbackground, $88FFFF, XtNwidth, 300, XtNheight, 300, nil);
+  BoxList := XtVaCreateManagedWidget('Listen Box', boxWidgetClass, Parent, XtNborderColor, $FF0000, XtNforeground, $8888FF, XtNbackground, $88FFFF, XtNwidth, 500, XtNheight, 300, nil);
 
   list := XtVaCreateManagedWidget('Liste', listWidgetClass, BoxList, XtNborderColor, $FF0000, XtNforeground, $FF88FF, XtNbackground, $88FF88, XtNwidth, 1, XtNinternalWidth, 200, XtNdefaultColumns, 5, XtNverticalList, True, nil);
   XawListChange(list, @ListData[0], Length(ListData), 50, True);

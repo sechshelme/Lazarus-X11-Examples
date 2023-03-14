@@ -8,6 +8,9 @@ uses
   X11StringDefs,
   X11Intrinsic,
   XawMenuButton,
+  XawSmeBSB,
+  XawSmeLine,
+  XawForm,
   XawBox,
   XawSimpleMenu;
 
@@ -17,13 +20,20 @@ implementation
 
 procedure CreateMenu(Parent: TWidget);
 var
-  MenuDatei, MenuBearbeiten, MenuHilfe, box: TWidget;
+  MenuDatei, MenuBearbeiten, MenuHilfe, box, form, MenuSeperator: TWidget;
 begin
-  box := XtVaCreateManagedWidget('Datei', boxWidgetClass, Parent,XtNorientation,XtEhorizontal,  XtNborderColor, $FF0000, XtNforeground, $8888FF, XtNbackground, $88FFFF, nil);
+    form := XtVaCreateManagedWidget('form', formWidgetClass, Parent, XtNborderColor, $FF0000, XtNforeground, $8888FF, XtNbackground, $88FFFF, nil);
 
-  MenuDatei := XtVaCreateManagedWidget('Datei', menuButtonWidgetClass, box, XtNborderColor, $FF0000, XtNforeground, $8888FF, XtNbackground, $88FFFF, nil);
-  MenuBearbeiten := XtVaCreateManagedWidget('Bearbeiten', menuButtonWidgetClass, box, XtNborderColor, $FF0000, XtNforeground, $8888FF, XtNbackground, $88FFFF, nil);
-  MenuHilfe := XtVaCreateManagedWidget('Hilfe', menuButtonWidgetClass, box, XtNborderColor, $FF0000, XtNforeground, $8888FF, XtNbackground, $88FFFF, nil);
+    MenuDatei := XtVaCreateManagedWidget('Datei', menuButtonWidgetClass, form,XtNmenuName,'menu1', nil);
+
+//    menu1:=xtcretep
+
+
+    MenuBearbeiten := XtVaCreateManagedWidget('Bearbeiten', menuButtonWidgetClass,form,XtNmenuName,'menu2',XtNfromHoriz,MenuDatei, nil);
+
+
+    MenuHilfe := XtVaCreateManagedWidget('Hilfe', menuButtonWidgetClass,form,XtNmenuName,'menu3',XtNfromHoriz,MenuBearbeiten, nil);
+
 
 end;
 

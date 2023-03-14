@@ -79,7 +79,7 @@ typedef char *String;
  * #define String to something else if they choose, to avoid conflicts
  * with other C++ libraries.
  */
-#define _XtString char*
+//#define _XtString char*
 
 /* _Xt names are private to Xt implementation, do not use in client code */
 #if NeedWidePrototypes
@@ -98,13 +98,13 @@ typedef char *String;
 
 #include <stddef.h>
 
-#ifdef VMS
-#define externalref globalref
-#define externaldef(psect) globaldef {"psect"} noshare
-#else
-#define externalref extern
-#define externaldef(psect)
-#endif /* VMS */
+//#ifdef VMS
+//#define externalref globalref
+//#define externaldef(psect) globaldef {"psect"} noshare
+//#else
+//#define externalref extern
+//#define externaldef(psect)
+//#endif /* VMS */
 
 #ifndef FALSE
 #define FALSE 0
@@ -174,10 +174,10 @@ typedef unsigned short	Dimension;  /* Size in pixels			*/
 typedef short		Position;   /* Offset from 0 coordinate		*/
 
 typedef void*		XtPointer;
-#if __STDC_VERSION__ >= 201112L
-_Static_assert(sizeof(XtArgVal) >= sizeof(XtPointer), "XtArgVal too small");
-_Static_assert(sizeof(XtArgVal) >= sizeof(long), "XtArgVal too small");
-#endif
+//#if __STDC_VERSION__ >= 201112L
+//_Static_assert(sizeof(XtArgVal) >= sizeof(XtPointer), "XtArgVal too small");
+//_Static_assert(sizeof(XtArgVal) >= sizeof(long), "XtArgVal too small");
+//#endif
 
 
 /* The type Opaque is NOT part of the Xt standard, do NOT use it. */
@@ -512,7 +512,7 @@ typedef void (*XtExtensionSelectProc)(
  *
  ****************************************************************/
 
-_XFUNCPROTOBEGIN
+//_XFUNCPROTOBEGIN
 
 extern Boolean XtConvertAndStore(
     Widget 		/* widget */,
@@ -643,8 +643,8 @@ extern void XtDisplayStringConversionWarning(
     _Xconst _XtString	/* to_type */
 );
 
-externalref XtConvertArgRec const colorConvertArgs[];
-externalref XtConvertArgRec const screenConvertArg[];
+extern XtConvertArgRec const colorConvertArgs[];
+extern XtConvertArgRec const screenConvertArg[];
 
 extern void XtAppAddConverter( /* obsolete */
     XtAppContext	/* app_context */,
@@ -1171,8 +1171,8 @@ extern XtPointer XtGetClassExtension(
  ****************************************************************/
 
 
-#define XtSetArg(arg, n, d) \
-    ((void)( (arg).name = (n), (arg).value = (XtArgVal)(d) ))
+//#define XtSetArg(arg, n, d) \
+//    ((void)( (arg).name = (n), (arg).value = (XtArgVal)(d) ))
 
 extern ArgList XtMergeArgLists(
     ArgList 		/* args1 */,
@@ -1192,7 +1192,7 @@ extern ArgList XtMergeArgLists(
 
 extern XtVarArgsList XtVaCreateArgsList(
     XtPointer		/*unused*/, ...
-) _X_SENTINEL(0);
+) ;
 
 /*************************************************************
  *
@@ -1336,7 +1336,7 @@ extern Widget XtVaCreatePopupShell(
     WidgetClass		/* widgetClass */,
     Widget		/* parent */,
     ...
-) _X_SENTINEL(0);
+) ;
 
 extern void XtPopup(
     Widget 		/* popup_shell */,
@@ -1403,14 +1403,14 @@ extern Widget XtVaCreateWidget(
     WidgetClass		/* widget */,
     Widget		/* parent */,
     ...
-) _X_SENTINEL(0);
+) ;
 
 extern Widget XtVaCreateManagedWidget(
     _Xconst _XtString	/* name */,
     WidgetClass		/* widget_class */,
     Widget		/* parent */,
     ...
-) _X_SENTINEL(0);
+) ;
 
 extern Widget XtCreateApplicationShell( /* obsolete */
     _Xconst _XtString 	/* name */,
@@ -1434,7 +1434,7 @@ extern Widget XtVaAppCreateShell(
     WidgetClass		/* widget_class */,
     Display*		/* display */,
     ...
-) _X_SENTINEL(0);
+) ;
 
 /****************************************************************
  *
@@ -1486,7 +1486,7 @@ extern Widget XtVaOpenApplication(
     String*		/* fallback_resources */,
     WidgetClass		/* widget_class */,
     ...
-) _X_SENTINEL(0);
+) ;
 
 extern Widget XtAppInitialize( /* obsolete */
     XtAppContext*	/* app_context_return */,
@@ -1509,7 +1509,7 @@ extern Widget XtVaAppInitialize( /* obsolete */
     _XtString*		/* argv_in_out */,
     String*		/* fallback_resources */,
     ...
-) _X_SENTINEL(0);
+) ;
 
 extern Widget XtInitialize( /* obsolete */
     _Xconst _XtString 	/* shell_name */,
@@ -1583,7 +1583,7 @@ extern void XtVaGetApplicationResources(
     XtResourceList	/* resources */,
     Cardinal		/* num_resources */,
     ...
-) _X_SENTINEL(0);
+) ;
 
 extern void XtGetSubresources(
     Widget 		/* widget */,
@@ -1604,7 +1604,7 @@ extern void XtVaGetSubresources(
     XtResourceList	/* resources */,
     Cardinal		/* num_resources */,
     ...
-) _X_SENTINEL(0);
+) ;
 
 extern void XtSetValues(
     Widget 		/* widget */,
@@ -1615,7 +1615,7 @@ extern void XtSetValues(
 extern void XtVaSetValues(
     Widget		/* widget */,
     ...
-) _X_SENTINEL(0);
+) ;
 
 extern void XtGetValues(
     Widget 		/* widget */,
@@ -1626,7 +1626,7 @@ extern void XtGetValues(
 extern void XtVaGetValues(
     Widget		/* widget */,
     ...
-) _X_SENTINEL(0);
+) ;
 
 extern void XtSetSubvalues(
     XtPointer 		/* base */,
@@ -1641,7 +1641,7 @@ extern void XtVaSetSubvalues(
     XtResourceList	/* resources */,
     Cardinal		/* num_resources */,
     ...
-) _X_SENTINEL(0);
+) ;
 
 extern void XtGetSubvalues(
     XtPointer 		/* base */,
@@ -1656,7 +1656,7 @@ extern void XtVaGetSubvalues(
     XtResourceList	/* resources */,
     Cardinal		/* num_resources */,
     ...
-) _X_SENTINEL(0);
+) ;
 
 extern void XtGetResourceList(
     WidgetClass 	/* widget_class */,
@@ -1683,11 +1683,11 @@ extern void XtGetConstraintResourceList(
 #define XtOffset(p_type,field) \
 	((Cardinal) (((char *) (&(((p_type)NULL)->field))) - ((char *) NULL)))
 
-#ifdef offsetof
+//#ifdef offsetof
 #define XtOffsetOf(s_type,field) offsetof(s_type,field)
-#else
-#define XtOffsetOf(s_type,field) XtOffset(s_type*,field)
-#endif
+//#else
+//#define XtOffsetOf(s_type,field) XtOffset(s_type*,field)
+//#endif
 
 /*************************************************************
  *
@@ -1750,7 +1750,7 @@ extern void XtAppErrorMsg(
     _Xconst _XtString	/* default */,
     String*		/* params */,
     Cardinal*		/* num_params */
-) _X_NORETURN;
+) ;
 
 extern void XtErrorMsg( /* obsolete */
     _Xconst _XtString 	/* name */,
@@ -1759,7 +1759,7 @@ extern void XtErrorMsg( /* obsolete */
     _Xconst _XtString	/* default */,
     String*		/* params */,
     Cardinal*		/* num_params */
-) _X_NORETURN;
+) ;
 
 extern void XtAppWarningMsg(
     XtAppContext 	/* app_context */,
@@ -1801,11 +1801,11 @@ extern void XtSetWarningHandler( /* obsolete */
 extern void XtAppError(
     XtAppContext 	/* app_context */,
     _Xconst _XtString	/* message */
-) _X_NORETURN;
+) ;
 
 extern void XtError( /* obsolete */
     _Xconst _XtString	/* message */
-) _X_NORETURN;
+) ;
 
 extern void XtAppWarning(
     XtAppContext 	/* app_context */,
@@ -1873,9 +1873,9 @@ extern void XtFree(
 #endif
 extern Cardinal XtAsprintf(
     _XtString *new_string,
-    _Xconst char * _X_RESTRICT_KYWD format,
+    const char *  format,
     ...
-) _X_ATTRIBUTE_PRINTF(2,3);
+) ;
 
 #ifdef XTTRACEMEMORY
 
@@ -2608,7 +2608,7 @@ extern Boolean XtCvtColorToPixel(
 #define XtCvtPixelToColor XtCvtIntToColor
 
 
-_XFUNCPROTOEND
+//_XFUNCPROTOEND
 
 #endif /*_XtIntrinsic_h*/
 /* DON'T ADD STUFF AFTER THIS #endif */
