@@ -116,7 +116,7 @@ extern WidgetClass simpleMenuWidgetClass;
  * Public Functions
  */
 
-_XFUNCPROTOBEGIN
+//_XFUNCPROTOBEGIN
 
 /*
  * Function:
@@ -166,6 +166,6 @@ void XawSimpleMenuClearActiveEntry
  Widget			w
 );
 
-_XFUNCPROTOEND
+//_XFUNCPROTOEND
 
 #endif /* _SimpleMenu_h */

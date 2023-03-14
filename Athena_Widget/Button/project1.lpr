@@ -28,11 +28,13 @@ uses
   XawLabel,
   XawCommand,
 
+  XawMenuButton,
+
   XmuWidgetNode,
   awScrollBar,
   awList,
   awDialog,
-  awDrawScreBox, awUTF8Label, MyDialog, AwToggle;
+  awDrawScreBox, awUTF8Label, MyDialog, AwToggle, awMenu;
 
 // h2pas -p -T -d -c -e Intrinsic.h
 
@@ -130,6 +132,8 @@ end;
 
 //    CreateUTF8Label(box);
 
+CreateRadioBox(box, 'Meine Radio Box');
+
     CreateScrollBar(box);
 
     command := XtCreateManagedWidget('Neuer' + LineEnding + 'Dialog !', commandWidgetClass, box, nil, 0);
@@ -142,6 +146,8 @@ end;
     command := XtCreateManagedWidget('Ein Knopf', commandWidgetClass, box, nil, 0);
     XtVaSetValues(command,XtNtip,'Ich bin ein einfacher Knopf !',nil);
     XawTipEnable(command);
+
+    CreateMenu(box);
 
 
     XtRealizeWidget(toplevel);
