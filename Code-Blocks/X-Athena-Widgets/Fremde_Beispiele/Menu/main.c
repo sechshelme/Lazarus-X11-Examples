@@ -53,8 +53,6 @@
        int n;
        Arg wargs[10];
 
-
-
        toplevel = XtInitialize(argv[0],"menu",NULL,0,
 		 &argc,argv);
 

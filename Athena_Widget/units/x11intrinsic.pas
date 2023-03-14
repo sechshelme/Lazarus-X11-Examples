@@ -10,127 +10,6 @@ uses
 const
   libXt = 'libXt.so';
 
-
-{
-  Automatically converted by H2Pas 1.0.0 from Intrinsic.h
-  The following command line parameters were used:
-    -p
-    -T
-    -S
-    -d
-    -c
-    Intrinsic.h
-}
-
-//{ Pointers to basic pascal types, inserted by h2pas conversion program.}
-//Type
-//  PPtrUint  = ^PtrUint;
-//  PSmallInt = ^SmallInt;
-//  PByte     = ^Byte;
-//  PWord     = ^Word;
-//  PDWord    = ^DWord;
-//  PDouble   = ^Double;
-//
-//Type
-//PArg  = ^Arg;
-//PArgList  = ^ArgList;
-//PAtom  = ^Atom;
-//PBoolean  = ^Boolean;
-//PCardinal  = ^Cardinal;
-//Pchar  = ^char;
-//PCompositeRec  = ^CompositeRec;
-//PCompositeWidget  = ^CompositeWidget;
-//PDimension  = ^Dimension;
-//PDisplay  = ^Display;
-//Pdword  = ^dword;
-//PEventMask  = ^EventMask;
-//PKeyCode  = ^KeyCode;
-//PKeySym  = ^KeySym;
-//PPtrUint  = ^PtrUint;
-//PModifiers  = ^Modifiers;
-//POpaque  = ^Opaque;
-//PPixel  = ^Pixel;
-//PPosition  = ^Position;
-//PScreen  = ^Screen;
-//PString  = ^String;
-//PSubstitution  = ^Substitution;
-//PSubstitutionRec  = ^SubstitutionRec;
-//PTime  = ^Time;
-//PTranslationData  = ^TranslationData;
-//Ptype  = ^Ttype;
-//PWidget  = ^Widget;
-//PWidgetClass  = ^WidgetClass;
-//PWidgetClassRec  = ^WidgetClassRec;
-//PWidgetList  = ^WidgetList;
-//PWidgetRec  = ^WidgetRec;
-//PXEvent  = ^XEvent;
-//PXGCValues  = ^XGCValues;
-//PXrmDatabase  = ^XrmDatabase;
-//PXrmOptionDescRec  = ^XrmOptionDescRec;
-//PXrmValue  = ^XrmValue;
-//PXSelectionRequestEvent  = ^XSelectionRequestEvent;
-//PXtAccelerators  = ^XtAccelerators;
-//PXtActionHookId  = ^XtActionHookId;
-//PXtActionList  = ^XtActionList;
-//PXtActionProc  = ^XtActionProc;
-//PXtActionsRec  = ^XtActionsRec;
-//PXtAddressMode  = ^XtAddressMode;
-//PXtAppContext  = ^XtAppContext;
-//PXtAppStruct  = ^XtAppStruct;
-//PXtArgVal  = ^XtArgVal;
-//PXtBlockHookId  = ^XtBlockHookId;
-//PXtBoundActions  = ^XtBoundActions;
-//PXtCacheRef  = ^XtCacheRef;
-//PXtCacheType  = ^XtCacheType;
-//PXtCallbackList  = ^XtCallbackList;
-//PXtCallbackRec  = ^XtCallbackRec;
-//PXtCallbackStatus  = ^XtCallbackStatus;
-//PXtChangeHookData  = ^XtChangeHookData;
-//PXtChangeHookDataRec  = ^XtChangeHookDataRec;
-//PXtChangeHookSetValuesData  = ^XtChangeHookSetValuesData;
-//PXtChangeHookSetValuesDataRec  = ^XtChangeHookSetValuesDataRec;
-//PXtCheckpointToken  = ^XtCheckpointToken;
-//PXtCheckpointTokenRec  = ^XtCheckpointTokenRec;
-//PXtConfigureHookData  = ^XtConfigureHookData;
-//PXtConfigureHookDataRec  = ^XtConfigureHookDataRec;
-//PXtConvertArgList  = ^XtConvertArgList;
-//PXtConvertArgRec  = ^XtConvertArgRec;
-//PXtCreateHookData  = ^XtCreateHookData;
-//PXtCreateHookDataRec  = ^XtCreateHookDataRec;
-//PXtDestroyHookData  = ^XtDestroyHookData;
-//PXtDestroyHookDataRec  = ^XtDestroyHookDataRec;
-//PXtEnum  = ^XtEnum;
-//PXtEventRec  = ^XtEventRec;
-//PXtEventTable  = ^XtEventTable;
-//PXtGCMask  = ^XtGCMask;
-//PXtGeometryHookData  = ^XtGeometryHookData;
-//PXtGeometryHookDataRec  = ^XtGeometryHookDataRec;
-//PXtGeometryMask  = ^XtGeometryMask;
-//PXtGeometryResult  = ^XtGeometryResult;
-//PXtGrabKind  = ^XtGrabKind;
-//PXtInputId  = ^XtInputId;
-//PXtInputMask  = ^XtInputMask;
-//PXtIntervalId  = ^XtIntervalId;
-//PXtListPosition  = ^XtListPosition;
-//PXtPointer  = ^XtPointer;
-//PXtPopdownID  = ^XtPopdownID;
-//PXtPopdownIDRec  = ^XtPopdownIDRec;
-//PXtRequestId  = ^XtRequestId;
-//PXtResource  = ^XtResource;
-//PXtResourceList  = ^XtResourceList;
-//PXtSignalId  = ^XtSignalId;
-//PXtString  = ^XtString;
-//PXtTranslations  = ^XtTranslations;
-//PXtValueMask  = ^XtValueMask;
-//PXtVarArgsList  = ^XtVarArgsList;
-//PXtWidgetGeometry  = ^XtWidgetGeometry;
-//PXtWorkProcId  = ^XtWorkProcId;
-//{$IFDEF FPC}
-//{$PACKRECORDS C}
-//{$ENDIF}
-
-//
-//
 //
 //{$include  <X11/Xlib.h>}
 //{$include  <X11/Xutil.h>}
@@ -144,6 +23,15 @@ type
   PString = ^TString;
   TString = PChar;
 
+//type
+//  _XtBoolean = Boolean;
+//  _XtDimension = Dimension;
+//  _XtKeyCode = KeyCode;
+//  _XtPosition = Position;
+//  _XtXtEnum = XtEnum;
+
+type
+
   PXtString = ^TXtString;
   TXtString = PChar;
 
@@ -151,7 +39,6 @@ type
   TXtXtEnum = uint8;
 
   PPKeyCode = PPByte;
-  //  TXconst=PChar;
   TXtBoolean = boolean;
 
   PPDisplay = ^PDisplay;
@@ -184,8 +71,6 @@ type
   TXtUIntPtr = PtrUInt;
 
 type
-
-
   PWidget = ^TWidget;
   TWidget = Pointer; //PWidgetRec;
 //  TWidget = PWidgetRec;
@@ -241,6 +126,28 @@ const
   XtCacheByDisplay = $003;
   XtCacheRefCount = $100;
 
+{***************************************************************
+ *
+ * System Dependent Definitions; see spec for specific range
+ * requirements.  Do not assume every implementation uses the
+ * same base types!
+ *
+ *
+ * XtArgVal ought to be a union of XtPointer, char *, long, int *, and proc *
+ * but casting to union types is not really supported.
+ *
+ * So the typedef for XtArgVal should be chosen such that
+ *
+ *	sizeof (XtArgVal) >=	sizeof(XtPointer)
+ *				sizeof(char *)
+ *				sizeof(long)
+ *				sizeof(int *)
+ *				sizeof(proc *)
+ *
+ * ArgLists rely heavily on the above typedef.
+ *
+ *************************************************************** }
+
 type
   PBoolean = ^TBoolean;
   TBoolean = boolean;
@@ -257,18 +164,22 @@ type
   PDimension = ^TDimension;
   TDimension = word;
 
-
   PPosition = ^TPosition;
   TPosition = smallint;
-
 
   PXtPointer = ^TXtPointer;
   TXtPointer = pointer;
 
-
+  {#if __STDC_VERSION__ >= 201112L }
+  {_Static_assert(sizeof(XtArgVal) >= sizeof(XtPointer), "XtArgVal too small"); }
+  {_Static_assert(sizeof(XtArgVal) >= sizeof(long), "XtArgVal too small"); }
+  {#endif }
+  { The type Opaque is NOT part of the Xt standard, do NOT use it.  }
+  { (It remains here only for backward compatibility.)  }
 
   POpaque = ^TOpaque;
   TOpaque = TXtPointer;
+
 //{$include <X11/Core.h>}
 //{$include <X11/Composite.h>}
 //{$include <X11/Constraint.h>}
@@ -294,11 +205,20 @@ type
   end; //PXtActionProc;
 
   PXtActionsRec = ^TXtActionsRec;
-
   TXtActionsRec = record
     _string: TString;
     proc: TXtActionProc;
   end;
+
+  { address mode		parameter representation     }
+  { ------------		------------------------     }
+  { address		     }
+  { offset		     }
+  { constant		     }
+  { resource name string	     }
+  { resource name quark	     }
+  { offset from ancestor	     }
+  { procedure to invoke	     }
 
   PXtAddressMode = ^TXtAddressMode;
   TXtAddressMode = (XtAddress, XtBaseOffset, XtImmediate, XtResourceString,
@@ -314,13 +234,14 @@ type
   end;
   TXtConvertArgList = PXtConvertArgRec;
   PXtConvertArgList = ^TXtConvertArgList;
+  { widget  }{ size  }{ value  }
 
 
   TXtConvertArgProc = procedure(para1: TWidget; para2: PCardinal; para3: PXrmValue); cdecl;
 
+  { Above, Below, TopIf, BottomIf, Opposite, DontChange  }
 
   PXtWidgetGeometry = ^TXtWidgetGeometry;
-
   TXtWidgetGeometry = record
     request_mode: TXtGeometryMask;
     x: TPosition;
@@ -331,22 +252,24 @@ type
     sibling: TWidget;
     stack_mode: PtrUint;
   end;
+  { Additions to Xlib geometry requests: ask what would happen, don't do it  }
 
 
 const
   XtCWQueryOnly = 1 shl 7;
-
+  { Additions to Xlib stack modes: don't change stack order  }
   XtSMDontChange = 5;
-
-
 type
-
+  { obsolete  }
+  { args  }{ num_args  }{ from  }{ to  }
   TXtConverter = procedure(para1: PXrmValue; para2: PCardinal; para3: PXrmValue; para4: PXrmValue); cdecl;
 
 
+  { dpy  }{ args  }{ num_args  }{ from  }{ to  }{ converter_data  }
   TXtTypeConverter = function(para1: PDisplay; para2: PXrmValue; para3: PCardinal; para4: PXrmValue; para5: PXrmValue; para6: PXtPointer): TBoolean; cdecl;
 
 
+  { app  }{ to  }{ converter_data  }{ args  }{ num_args  }
   TXtDestructor = procedure(para1: TXtAppContext; para2: PXrmValue; para3: TXtPointer; para4: PXrmValue; para5: PCardinal); cdecl;
 
   PXtCacheRef = ^TXtCacheRef;
@@ -355,22 +278,24 @@ type
   PXtActionHookId = ^TXtActionHookId;
   TXtActionHookId = TOpaque;
 
-
+  { w  }{ client_data  }{ action_name  }{ event  }{ params  }{ num_params  }
   TXtActionHookProc = procedure(para1: TWidget; para2: TXtPointer; para3: TString; para4: PXEvent; para5: PString; para6: PCardinal); cdecl;
 
   PXtBlockHookId = ^TXtBlockHookId;
   TXtBlockHookId = dword;
 
-
+  { client_data  }
   TXtBlockHookProc = procedure(para1: TXtPointer); cdecl;
 
 
+  { dpy  }{ keycode  }{ modifiers  }{ modifiers_return  }{ keysym_return  }
   TXtKeyProc = procedure(para1: PDisplay; para2: TXtKeyCode; para3: TModifiers; para4: PModifiers; para5: PKeySym); cdecl;
 
-
+    { display  }{ keysym  }{ lower_return  }{ upper_return  }
   TXtCaseProc = procedure(para1: PDisplay; para2: TKeySym; para3: PKeySym; para4: PKeySym); cdecl;
 
 
+  { widget  }{ closure  }{ event  }{ continue_to_dispatch  }
   //  TXtEventHandler = procedure(para1: TWidget; para2: TXtPointer; para3: PXEvent; para4: PBoolean); cdecl;
   TXtEventHandler = Pointer;
 
@@ -380,6 +305,11 @@ type
   PXtListPosition = ^TXtListPosition;
   TXtListPosition = (XtListHead, XtListTail);
 
+//Const
+//  XtListHead = 0;
+//  XtListTail = 1;
+
+type
   PXtInputMask = ^TXtInputMask;
   TXtInputMask = dword;
 
@@ -390,13 +320,13 @@ const
   XtInputExceptMask = 1 shl 2;
 
 type
-
+  { closure  }{ id  }
   TXtTimerCallbackProc = procedure(para1: TXtPointer; para2: PXtIntervalId); cdecl;
 
-
+  { closure  }{ source  }{ id  }
   TXtInputCallbackProc = procedure(para1: TXtPointer; para2: PPtrUint; para3: PXtInputId); cdecl;
 
-
+  { closure  }{ id  }
   TXtSignalCallbackProc = procedure(para1: TXtPointer; para2: PXtSignalId); cdecl;
 
   PArg = ^TArg;
@@ -410,9 +340,13 @@ type
   TArgList = ^TArg;
   PArgList = ^TArgList;
 
+  function XtNumber(arr: array of TArg): cardinal;
+
+type
   PXtVarArgsList = ^TXtVarArgsList;
   TXtVarArgsList = TXtPointer;
 
+  { widget  }{ closure  }{ data the application registered  } { call_data  }{ callback specific data  }
 //  TXtCallbackProc = procedure(para1: TWidget; para2: TXtPointer; para3: TXtPointer); cdecl;
   TXtCallbackProc = Pointer;
 
@@ -422,21 +356,42 @@ type
     callback: TXtCallbackProc;
     closure: TXtPointer;
   end;
+
   TXtCallbackList = PXtCallbackRec;
   PXtCallbackList = ^TXtCallbackList;
 
   PXtCallbackStatus = ^TXtCallbackStatus;
-  TXtCallbackStatus = (XtCallbackNoList, XtCallbackHasNone,
-    XtCallbackHasSome);
+  TXtCallbackStatus = (XtCallbackNoList, XtCallbackHasNone,  XtCallbackHasSome);
 
+//Const
+//  XtCallbackNoList = 0;
+//  XtCallbackHasNone = 1;
+//  XtCallbackHasSome = 2;
+  { Request accepted.  }
+  { Request denied.  }
+  { Request denied, but willing to take replyBox.  }
+  { Request accepted and done.  }
+
+type
   PXtGeometryResult = ^TXtGeometryResult;
-  TXtGeometryResult = (XtGeometryYes, XtGeometryNo, XtGeometryAlmost,
-    XtGeometryDone);
+  TXtGeometryResult = (XtGeometryYes, XtGeometryNo, XtGeometryAlmost, XtGeometryDone);
 
+//Const
+//  XtGeometryYes = 0;
+//  XtGeometryNo = 1;
+//  XtGeometryAlmost = 2;
+//  XtGeometryDone = 3;
+
+type
   PXtGrabKind = ^TXtGrabKind;
-  TXtGrabKind = (XtGrabNone, XtGrabNonexclusive, XtGrabExclusive
-    );
+  TXtGrabKind = (XtGrabNone, XtGrabNonexclusive, XtGrabExclusive);
 
+//Const
+//  XtGrabNone = 0;
+//  XtGrabNonexclusive = 1;
+//  XtGrabExclusive = 2;
+
+type
   PXtPopdownIDRec = ^TXtPopdownIDRec;
 
   TXtPopdownIDRec = record
@@ -446,8 +401,15 @@ type
   TXtPopdownID = PXtPopdownIDRec;
   PXtPopdownID = ^TXtPopdownID;
 
-  PXtResource = ^TXtResource;
+  { Resource name			     }
+  { Resource class			     }
+  { Representation type desired		     }
+  { Size in bytes of representation	     }
+  { Offset from base to put resource value    }
+  { representation type of specified default  }
+  { Address of default resource		     }
 
+  PXtResource = ^TXtResource;
   TXtResource = record
     resource_name: TString;
     resource_class: TString;
@@ -460,21 +422,23 @@ type
   TXtResourceList = PXtResource;
   PXtResourceList = ^TXtResourceList;
 
+  { widget  }{ offset  }{ value  }
   TXtResourceDefaultProc = procedure(para1: TWidget; para2: PtrUint; para3: PXrmValue); cdecl;
 
-
+  { dpy  }{ xnl  }{ client_data  }
   TXtLanguageProc = function(para1: PDisplay; para2: TString; para3: TXtPointer): TString; cdecl;
 
 
+  { name  }{ type  }{ class  }{ default  }{ params  }{ num_params  }
   TXtErrorMsgHandler = procedure(para1: TString; para2: TString; para3: TString; para4: TString; para5: PString; para6: PCardinal); cdecl;
 
-
+  { msg  }
   TXtErrorHandler = procedure(para1: TString); cdecl;
 
-
+  { shell  }
   TXtCreatePopupChildProc = procedure(para1: TWidget); cdecl;
 
-
+  { closure  }{ data the application registered  }
   TXtWorkProc = function(para1: TXtPointer): TBoolean; cdecl;
 
   PSubstitutionRec = ^TSubstitutionRec;
@@ -486,7 +450,7 @@ type
   TSubstitution = PSubstitutionRec;
   PSubstitution = ^TSubstitution;
 
-
+  { filename  }
   TXtFilePredicate = function(para1: TString): TBoolean; cdecl;
 
   PXtRequestId = ^TXtRequestId;
@@ -522,10 +486,11 @@ type
 
   TXtExtensionSelectProc = procedure(para1: TWidget; para2: PPtrUint; para3: PXtPointer; para4: PtrUint; para5: TXtPointer); cdecl;
 
-  function XtNumber(arr: array of TArg): cardinal;
-
-
-
+{**************************************************************
+ *
+ * Exported Interfaces
+ *
+ *************************************************************** }
 
 
 function XtCallConverter(para1: PDisplay; para2: TXtTypeConverter; para3: TXrmValuePtr; para4: TCardinal; para5: TXrmValuePtr; para6: PXrmValue; para7: PXtCacheRef): TBoolean; cdecl; external libXt;
@@ -587,6 +552,11 @@ procedure XtConvert(para1: TWidget; _XtString: TXtString; para3: PXrmValue; __Xt
 
 procedure XtDirectConvert(para1: TXtConverter; para2: TXrmValuePtr; para3: TCardinal; para4: TXrmValuePtr; para5: PXrmValue); cdecl; external libXt;
 
+{***************************************************************
+ *
+ * Translation Management
+ *
+ *************************************************************** }
 
 function XtParseTranslationTable(_XtString: TXtString): TXtTranslations; cdecl; external libXt;
 
@@ -623,6 +593,11 @@ function XtGetMultiClickTime(para1: PDisplay): PtrUint; cdecl; external libXt;
 
 function XtGetActionKeysym(para1: PXEvent; para2: PModifiers): TKeySym; cdecl; external libXt;
 
+{**************************************************************
+ *
+ * Keycode and Keysym procedures for translation management
+ *
+ *************************************************************** }
 
 procedure XtTranslateKeycode(para1: PDisplay; para2: TXtKeyCode; para3: TModifiers; para4: PModifiers; para5: PKeySym); cdecl; external libXt;
 
@@ -635,6 +610,15 @@ procedure XtRegisterCaseConverter(para1: PDisplay; para2: TXtCaseProc; para3: TK
 procedure XtConvertCase(para1: PDisplay; para2: TKeySym; para3: PKeySym; para4: PKeySym); cdecl; external libXt;
 
 
+{***************************************************************
+ *
+ * Event Management
+ *
+ *************************************************************** }
+{ XtAllEvents is valid only for XtRemoveEventHandler and
+ * XtRemoveRawEventHandler; don't use it to select events!
+  }
+{ was #define dname def_expr }
 function XtAllEvents: TEventMask;
 
 
@@ -685,7 +669,11 @@ function XtLastEventProcessed(para1: PDisplay): PXEvent; cdecl; external libXt;
 
 function XtLastTimestampProcessed(para1: PDisplay): TTime; cdecl; external libXt;
 
-
+{***************************************************************
+ *
+ * Event Gathering Routines
+ *
+ *************************************************************** }
 
 function XtAddTimeOut(para1: dword; para2: TXtTimerCallbackProc; para3: TXtPointer): TXtIntervalId; cdecl; external libXt;
 
@@ -727,6 +715,12 @@ function XtAppPending(para1: TXtAppContext): TXtInputMask; cdecl; external libXt
 function XtAppAddBlockHook(para1: TXtAppContext; para2: TXtBlockHookProc; para3: TXtPointer): TXtBlockHookId; cdecl; external libXt;
 
 procedure XtRemoveBlockHook(para1: TXtBlockHookId); cdecl; external libXt;
+{***************************************************************
+ *
+ * Random utility routines
+ *
+ *************************************************************** }
+{ was #define dname(params) para_def_expr }
 
 function XtIsRectObj(widget: TWidget): boolean;
 
@@ -739,24 +733,19 @@ function XtIsConstraint(widget: TWidget): boolean;
 function XtIsShell(widget: TWidget): boolean;
 
 function XtIsOverrideShell(para1: TWidget): TBoolean; cdecl; external libXt;
-//    function XtIsOverrideShell(widget : PtrUint) : PtrUint;    
 
-//    function XtIsWMShell(widget : PtrUint) : PtrUint;    
+    function XtIsWMShell(widget : TWidget) : TBoolean;
 
 function XtIsVendorShell(para1: TWidget): TBoolean; cdecl; external libXt;
-//    function XtIsVendorShell(widget : PtrUint) : PtrUint;    
 
 function XtIsTransientShell(para1: TWidget): TBoolean; cdecl; external libXt;
-//    function XtIsTransientShell(widget : PtrUint) : PtrUint;    
 
-//  function XtIsTopLevelShell(widget : PtrUint) : PtrUint;
+
+  function XtIsTopLevelShell(widget : TWidget) : TBoolean;
 
 function XtIsApplicationShell(para1: TWidget): TBoolean; cdecl; external libXt;
-//    function XtIsApplicationShell(widget : PtrUint) : PtrUint;    
 
 function XtIsSessionShell(para1: TWidget): TBoolean; cdecl; external libXt;
-//    function XtIsSessionShell(widget : PtrUint) : PtrUint;    
-
 
 procedure XtRealizeWidget(para1: TWidget); cdecl; external libXt;
 
@@ -774,15 +763,33 @@ function XtWindowToWidget(para1: PDisplay; para2: TWindow): TWidget; cdecl; exte
 
 function XtGetClassExtension(para1: TWidgetClass; para2: TCardinal; para3: TXrmQuark; para4: PtrUint; para5: TCardinal): TXtPointer; cdecl; external libXt;
 
+{**************************************************************
+ *
+ * Arg lists
+ *
+ *************************************************************** }
 
 procedure XtSetArg(var arg: TArg; n: TXtString; d: PChar);
 procedure XtSetArg(var arg: TArg; n: TXtString; d: PtrInt);
 
 function XtMergeArgLists(para1: TArgList; para2: TCardinal; para3: TArgList; para4: TCardinal): TArgList; cdecl; external libXt;
-
+{**************************************************************
+ *
+ * Vararg lists
+ *
+ *************************************************************** }
 const
   XtVaNestedList = 'XtVaNestedList';
   XtVaTypedArg = 'XtVaTypedArg';
+
+  function XtVaCreateArgsList(para1:TXtPointer; args:array of const):TXtVarArgsList;cdecl;external libXt;
+  function XtVaCreateArgsList(para1:TXtPointer):TXtVarArgsList;cdecl;external libXt;
+  {************************************************************
+   *
+   * Information routines
+   *
+   *********************************************************** }
+
 
 function XtDisplay(para1: TWidget): PDisplay; cdecl; external libXt;
 
@@ -805,11 +812,8 @@ function XtClass(para1: TWidget): TWidgetClass; cdecl; external libXt;
 function XtParent(para1: TWidget): TWidget; cdecl; external libXt;
 
 procedure XtMapWidget(para1: TWidget); cdecl; external libXt;
-//    function XtMapWidget(widget : PtrUint) : PtrUint;    
 
 procedure XtUnmapWidget(para1: TWidget); cdecl; external libXt;
-//    function XtUnmapWidget(widget : PtrUint) : PtrUint;    
-
 
 procedure XtAddCallback(para1: TWidget; _XtString: TXtString; para3: TXtCallbackProc; para4: TXtPointer); cdecl; external libXt;
 
@@ -827,6 +831,11 @@ procedure XtCallCallbackList(para1: TWidget; para2: TXtCallbackList; para3: TXtP
 
 function XtHasCallbacks(para1: TWidget; _XtString: TXtString): TXtCallbackStatus; cdecl; external libXt;
 
+{***************************************************************
+ *
+ * Geometry Management
+ *
+ *************************************************************** }
 
 function XtMakeGeometryRequest(para1: TWidget; para2: PXtWidgetGeometry; para3: PXtWidgetGeometry): TXtGeometryResult; cdecl; external libXt;
 
@@ -866,6 +875,11 @@ function XtAppCreateShell(_XtString: TXtString; __XtString: TXtString; para3: TW
 
 function XtVaAppCreateShell(_XtString: TXtString; __XtString: TXtString; para3: TWidgetClass; para4: PDisplay): TWidget; cdecl; varargs; external libXt;
 
+{***************************************************************
+ *
+ * Toolkit initialization
+ *
+ *************************************************************** }
 procedure XtToolkitInitialize; cdecl; external libXt;
 
 function XtSetLanguageProc(para1: TXtAppContext; para2: TXtLanguageProc; para3: TXtPointer): TXtLanguageProc; cdecl; external libXt;
@@ -949,10 +963,10 @@ const
 //        ((Cardinal) (((char *) (&(((p_type)NULL)->field))) - ((char *) NULL)))
 
 
-//    function XtOffset(p_type,field : PtrUint) : TCardinal;    
+//    function XtOffset(p_type,field : PtrUint) : TCardinal;
 
 //{$ifdef offsetof}
-//    function XtOffsetOf(s_type,field : PtrUint) : PtrUint;    
+//    function XtOffsetOf(s_type,field : PtrUint) : PtrUint;
 //
 //{$else}
 //(* error 
@@ -962,6 +976,11 @@ const
 //
 //
 
+ {************************************************************
+ *
+ * Session Management
+ *
+ *********************************************************** }
 
 
 
@@ -989,6 +1008,11 @@ type
 function XtSessionGetToken(para1: TWidget): TXtCheckpointToken; cdecl; external libXt;
 
 procedure XtSessionReturnToken(para1: TXtCheckpointToken); cdecl; external libXt;
+{************************************************************
+ *
+ * Error Handling
+ *
+ *********************************************************** }
 
 function XtAppSetErrorMsgHandler(para1: TXtAppContext; _X_NORETURN: TXtErrorMsgHandler): TXtErrorMsgHandler; cdecl; external libXt;
 
@@ -1026,6 +1050,11 @@ procedure XtAppGetErrorDatabaseText(para1: TXtAppContext; _XtString: TXtString; 
 procedure XtGetErrorDatabaseText(_XtString: TXtString; __XtString: TXtString; ___XtString: TXtString; ____XtString: TXtString; para5: TXtString; para6: PtrUint); cdecl; external libXt;
 
 
+{***************************************************************
+ *
+ * Memory Management
+ *
+ *************************************************************** }
 function XtMalloc(para1: TCardinal): PChar; cdecl; external libXt;
 
 function XtCalloc(para1: TCardinal; para2: TCardinal): PChar; cdecl; external libXt;
@@ -1033,58 +1062,34 @@ function XtCalloc(para1: TCardinal; para2: TCardinal): PChar; cdecl; external li
 function XtRealloc(para1: PChar; para2: TCardinal): PChar; cdecl; external libXt;
 
 procedure XtFree(para1: PChar); cdecl; external libXt;
-//{$ifndef _X_RESTRICT_KYWD}
-//{$define _X_RESTRICT_KYWD}    
-//{$endif}
-//(* error 
-//    _Xconst char * _X_RESTRICT_KYWD format,
-//(* error 
-//    ...
-//(* error 
-//) _X_ATTRIBUTE_PRINTF(2,3);
-// in declarator_list *)
-// in declarator_list *)
-// in declarator_list *)
-//{$ifdef XTTRACEMEMORY}
 //
 
+function XtAsprintf(new_string:PXtString; format:Pchar):TCardinal;cdecl; varargs external libXt;
+//function XtAsprintf(new_string:PXtString; format:Pchar):TCardinal;cdecl;external libXt;
 
-function _XtMalloc(para1: TCardinal; para2: PChar; para3: PtrUint): PChar; cdecl; external libXt;
+//function _XtMalloc(para1: TCardinal; para2: PChar; para3: PtrUint): PChar; cdecl; external libXt;
+//function _XtRealloc(para1: PChar; para2: TCardinal; para3: PChar; para4: PtrUint): PChar; cdecl; external libXt;
+//function _XtCalloc(para1: TCardinal; para2: TCardinal; para3: PChar; para4: PtrUint): PChar; cdecl; external libXt;
+//procedure _XtFree(para1: PChar); cdecl; external libXt;
+//function _XtIsValidPointer(para1: PChar): TBoolean; cdecl; external libXt;
+//procedure _XtPrintMemory(para1: PChar); cdecl; external libXt;
 
-
-function _XtRealloc(para1: PChar; para2: TCardinal; para3: PChar; para4: PtrUint): PChar; cdecl; external libXt;
-
-
-function _XtCalloc(para1: TCardinal; para2: TCardinal; para3: PChar; para4: PtrUint): PChar; cdecl; external libXt;
-
-
-procedure _XtFree(para1: PChar); cdecl; external libXt;
-
-function _XtIsValidPointer(para1: PChar): TBoolean; cdecl; external libXt;
-
-procedure _XtPrintMemory(para1: PChar); cdecl; external libXt;
-//    function XtMalloc(size : PtrUint) : PtrUint;
-
-//    function XtRealloc(ptr,size : PtrUint) : PtrUint;    
-
-//    function XtCalloc(num,size : PtrUint) : PtrUint;    
-
-//    function XtFree(ptr : PtrUint) : PtrUint;    
-
-
-//    function XtNew(_type : Pointer) : Cardinal;
-
-{$undef XtNewString}
 function XtNewString(para1: TString): TString; cdecl; external libXt;
-//    function XtNewString(str : PtrUint) : PtrUint;
-
+{************************************************************
+ *
+ *  Work procs
+ *
+ ************************************************************* }
 
 function XtAddWorkProc(para1: TXtWorkProc; para2: TXtPointer): TXtWorkProcId; cdecl; external libXt;
 
 function XtAppAddWorkProc(para1: TXtAppContext; para2: TXtWorkProc; para3: TXtPointer): TXtWorkProcId; cdecl; external libXt;
 
 procedure XtRemoveWorkProc(para1: TXtWorkProcId); cdecl; external libXt;
-
+{***************************************************************
+ *
+ * Graphic Context Management
+ **************************************************************** }
 
 function XtGetGC(para1: TWidget; para2: TXtGCMask; para3: PXGCValues): TGC; cdecl; external libXt;
 
@@ -1109,6 +1114,11 @@ procedure XtSetWMColormapWindows(para1: TWidget; para2: PWidget; para3: TCardina
 function XtFindFile(_XtString: TXtString; para2: TSubstitution; para3: TCardinal; para4: TXtFilePredicate): TXtString; cdecl; external libXt;
 
 function XtResolvePathname(para1: PDisplay; _XtString: TXtString; __XtString: TXtString; ___XtString: TXtString; ____XtString: TXtString; para6: TSubstitution; para7: TCardinal; para8: TXtFilePredicate): TXtString; cdecl; external libXt;
+{***************************************************************
+ *
+ * Selections
+ *
+ **************************************************************** }
 
 function XT_CONVERT_FAIL: TAtom;
 
@@ -1250,8 +1260,9 @@ procedure XtAppLock(para1: TXtAppContext); cdecl; external libXt;
 
 procedure XtAppUnlock(para1: TXtAppContext); cdecl; external libXt;
 
-
-
+{
+ *	Predefined Resource Converters
+  }
 
 function XtCvtStringToAcceleratorTable(para1: PDisplay; para2: TXrmValuePtr; para3: PCardinal; para4: TXrmValuePtr; para5: TXrmValuePtr; para6: PXtPointer): TBoolean; cdecl; external libXt;
 
@@ -1304,10 +1315,10 @@ function XtCvtStringToInt(para1: PDisplay; para2: TXrmValuePtr; para3: PCardinal
 
 
 function XtCvtStringToPixel(para1: PDisplay; para2: TXrmValuePtr; para3: PCardinal; para4: TXrmValuePtr; para5: TXrmValuePtr; para6: PXtPointer): TBoolean; cdecl; external libXt;
-//    const
-//      XtCvtStringToPosition = XtCvtStringToShort;      
 
 
+//const
+//      XtCvtStringToPosition = XtCvtStringToShort;
 
 function XtCvtStringToRestartStyle(para1: PDisplay; para2: TXrmValuePtr; para3: PCardinal; para4: TXrmValuePtr; para5: TXrmValuePtr; para6: PXtPointer): TBoolean; cdecl; external libXt;
 
@@ -1415,50 +1426,15 @@ begin
   arg.valueI := d;
 end;
 
-//function XtIsOverrideShell(widget : PtrUint) : PtrUint;
-//begin
-//  XtIsOverrideShell:=_XtIsSubclassOf(widget,TWidgetClass(overrideShellWidgetClass),TWidgetClass(shellWidgetClass),TXtEnum($20));
-//end;
-//
-//function XtIsWMShell(widget : PtrUint) : PtrUint;
-//begin
-//  XtIsWMShell:=_XtCheckSubclassFlag(widget,TXtEnum($40));
-//end;
-//
-//function XtIsVendorShell(widget : PtrUint) : PtrUint;
-//begin
-//  XtIsVendorShell:=_XtIsSubclassOf(widget,TWidgetClass(vendorShellWidgetClass),TWidgetClass(wmShellWidgetClass),TXtEnum($40));
-//end;
-//
-//function XtIsTransientShell(widget : PtrUint) : PtrUint;
-//begin
-//  XtIsTransientShell:=_XtIsSubclassOf(widget,TWidgetClass(transientShellWidgetClass),TWidgetClass(wmShellWidgetClass),TXtEnum($40));
-//end;
-//
-//function XtIsTopLevelShell(widget : PtrUint) : PtrUint;
-//begin
-//  XtIsTopLevelShell:=_XtCheckSubclassFlag(widget,TXtEnum($80));
-//end;
-//
-//function XtIsApplicationShell(widget : PtrUint) : PtrUint;
-//begin
-//  XtIsApplicationShell:=_XtIsSubclassOf(widget,TWidgetClass(applicationShellWidgetClass),TWidgetClass(topLevelShellWidgetClass),TXtEnum($80));
-//end;
-//
-//function XtIsSessionShell(widget : PtrUint) : PtrUint;
-//begin
-//  XtIsSessionShell:=_XtIsSubclassOf(widget,TWidgetClass(sessionShellWidgetClass),TWidgetClass(topLevelShellWidgetClass),TXtEnum($80));
-//end;
-//
-//function XtMapWidget(widget : PtrUint) : PtrUint;
-//begin
-//  XtMapWidget:=XMapWindow(XtDisplay(widget),XtWindow(widget));
-//end;
-//
-//function XtUnmapWidget(widget : PtrUint) : PtrUint;
-//begin
-//  XtUnmapWidget:=XUnmapWindow(XtDisplay(widget),XtWindow(widget));
-//end;
+function XtIsWMShell(widget: TWidget): TBoolean;
+begin
+  XtIsWMShell:=_XtCheckSubclassFlag(widget,TXtEnum($40));
+end;
+
+function XtIsTopLevelShell(widget : TWidget) : TBoolean;
+begin
+  XtIsTopLevelShell:=_XtCheckSubclassFlag(widget,TXtEnum($80));
+end;
 
 function XtUnspecifiedPixmap: TPixmap;
 begin
@@ -1483,43 +1459,6 @@ end;
 //function XtOffsetOf(s_type,field : PtrUint) : PtrUint;
 //begin
 //  XtOffsetOf:=offsetof(s_type,field);
-//end;
-//
-//    function XtMalloc(para1: TCardinal): Pchar; cdecl;
-//begin
-//  XtMalloc:=_XtMalloc(size,__FILE__,__LINE__);
-//end;
-//
-//    function XtRealloc(para1: Pchar; para2: TCardinal): Pchar; cdecl;
-//begin
-//  XtRealloc:=_XtRealloc(ptr,size,__FILE__,__LINE__);
-//end;
-//
-//    function XtCalloc(para1: TCardinal; para2: TCardinal): Pchar; cdecl;
-//begin
-//  XtCalloc:=_XtCalloc(num,size,__FILE__,__LINE__);
-//end;
-//
-//    procedure XtFree(para1: Pchar); cdecl;
-//begin
-//  XtFree:=_XtFree(ptr);
-//end;
-//
-//    function XtNew(_type: Pointer): Cardinal;
-//begin
-//  XtNew:=Ptype(XtMalloc(dword(sizeof(_type))));
-//end;
-//
-//function XtNewString(str : PtrUint) : PtrUint;
-//var
-//   if_local1 : PtrUint;
-//(* result types are not known *)
-//begin
-//  if NULL then
-//    if_local1:=strcpy(XtMalloc((dword(strlen(str)))+1),str)
-//  else
-//    if_local1:=NULL;
-//  XtNewString:=str<>(if_local1);
 //end;
 //
 function XT_CONVERT_FAIL: TAtom;
