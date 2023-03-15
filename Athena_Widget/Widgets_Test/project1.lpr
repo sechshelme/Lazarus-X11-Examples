@@ -160,7 +160,7 @@ uses
     XawTipEnable(command);
 
     command := XtCreateManagedWidget('Ein Knopf', commandWidgetClass, box, nil, 0);
-    XtVaSetValues(command, XtNtip, 'Ich bin ein einfacher Knopf !', nil);
+    XtVaSetValues(command, XtNtip, 'Ich bin ein einfacher Knopf !!!', nil);
     XawTipEnable(command);
 
     CreateViewport(box);

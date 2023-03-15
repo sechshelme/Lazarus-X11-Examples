@@ -31,6 +31,9 @@
             <TargetProcessor Value="ARMV6"/>
             <TargetCPU Value="arm"/>
             <TargetOS Value="linux"/>
+            <Optimizations>
+              <OptimizationLevel Value="4"/>
+            </Optimizations>
           </CodeGeneration>
           <Linking>
             <Debugging>
