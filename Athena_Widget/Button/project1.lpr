@@ -76,7 +76,7 @@ uses
 
   procedure main;
   var
-    list, toplevel, box, command, Rptr, label1, grip, tip, viewPort,
+    toplevel, box, command, Rptr, label1, grip, tip, viewPort,
       form, template, tex: TWidget;
     wargs: array[0..3] of TArg;
 

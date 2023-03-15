@@ -23,6 +23,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
+            <Libraries Value="../../../../../../../../Raspi_libs"/>
             <OtherUnitFiles Value="../units;../units/Xaw;../units/Xmu"/>
             <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
