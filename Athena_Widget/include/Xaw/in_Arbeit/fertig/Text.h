@@ -238,7 +238,7 @@ extern WidgetClass textWidgetClass;
 typedef struct _TextClassRec *TextWidgetClass;
 typedef struct _TextRec      *TextWidget;
 
-_XFUNCPROTOBEGIN
+//_XFUNCPROTOBEGIN
 
 XrmQuark _XawTextFormat
 (
@@ -352,14 +352,14 @@ XawTextPosition XawTextSearch
 void XawTextDisplayCaret
 (
  Widget			w,
-#if NeedWidePrototypes
- int			visible
-#else
+//#if NeedWidePrototypes
+// int			visible
+//#else
  Boolean		visible
-#endif
+//#endif
  );
 
-_XFUNCPROTOEND
+//_XFUNCPROTOEND
 
 /*
  * For R3 compatibility only

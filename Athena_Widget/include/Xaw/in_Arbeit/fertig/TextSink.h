@@ -88,7 +88,7 @@ typedef enum {XawisOn, XawisOff} XawTextInsertState;
 /*
  * Public Functions
  */
-_XFUNCPROTOBEGIN
+//_XFUNCPROTOBEGIN
 
 /*
  * Function:
@@ -112,20 +112,20 @@ _XFUNCPROTOBEGIN
 void XawTextSinkDisplayText
 (
  Widget			w,
-#if NeedWidePrototypes
- int			x,
- int			y,
-#else
+//#if NeedWidePrototypes
+// int			x,
+// int			y,
+//#else
  Position		x,
  Position		y,
-#endif
+//#endif
  XawTextPosition	pos1,
  XawTextPosition	pos2,
-#if NeedWidePrototypes
- int			highlight
-#else
+//#if NeedWidePrototypes
+// int			highlight
+//#else
  Boolean		highlight
-#endif
+//#endif
  );
 
 /*
@@ -148,15 +148,15 @@ void XawTextSinkDisplayText
 void XawTextSinkInsertCursor
 (
  Widget			w,
-#if NeedWidePrototypes
- int			x,
- int			y,
- int			state
-#else
+//#if NeedWidePrototypes
+// int			x,
+// int			y,
+// int			state
+//#else
  Position		x,
  Position		y,
  XawTextInsertState	state
-#endif
+//#endif
  );
 
 /*
@@ -180,17 +180,17 @@ void XawTextSinkInsertCursor
 void XawTextSinkClearToBackground
 (
  Widget			w,
-#if NeedWidePrototypes
- int			x,
- int			y,
- unsigned int		width,
- unsigned int		height
-#else
+////#if NeedWidePrototypes
+// int			x,
+// int			y,
+// unsigned int		width,
+// unsigned int		height
+//#else
  Position		x,
  Position		y,
  Dimension		width,
  Dimension		height
-#endif
+//#endif
  );
 
 /*
@@ -216,11 +216,11 @@ void XawTextSinkFindPosition
  XawTextPosition	fromPos,
  int			fromX,
  int			width,
-#if NeedWidePrototypes
- int			stopAtWordBreak,
-#else
+//#if NeedWidePrototypes
+// int			stopAtWordBreak,
+//#else
  Boolean		stopAtWordBreak,
-#endif
+//#endif
  XawTextPosition*	pos_return,
  int			*width_return,
  int			*height_return
@@ -293,11 +293,11 @@ void XawTextSinkResolve
 int XawTextSinkMaxLines
 (
  Widget			w,
-#if NeedWidePrototypes
- unsigned int		height
-#else
+//#if NeedWidePrototypes
+// unsigned int		height
+//#else
  Dimension		height
-#endif
+//#endif
  );
 
 /*
@@ -354,6 +354,6 @@ void XawTextSinkGetCursorBounds
  XRectangle		*rect_return
 );
 
-_XFUNCPROTOEND
+//_XFUNCPROTOEND
 
 #endif /* _XawTextSink_h */

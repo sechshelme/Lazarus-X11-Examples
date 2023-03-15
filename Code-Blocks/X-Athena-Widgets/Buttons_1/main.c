@@ -4,6 +4,8 @@
 #include  <X11/Intrinsic.h>
 #include  <X11/Xaw/Box.h>
 #include  <X11/Xaw/Command.h>
+#include  <X11/Xaw/Template.h>
+#include  <X11/Xaw/TextSink.h>
 #include  <X11/Xmu/Converters.h>
 #include  <stdio.h>
 
@@ -22,6 +24,10 @@ void quit(Widget w, XtPointer *client, XtPointer call) {
 
 int main(int argc, char **argv) {
 
+printf("size: %i\n",sizeof( NULLQUARK));
+printf("size: %i\n",sizeof( long));
+printf("size: %i\n",sizeof( int));
+
     Widget toplevel, box, command;
 
     toplevel = XtInitialize("Mein Fenster", "simple", NULL, 0, &argc, argv);
@@ -33,6 +39,8 @@ int main(int argc, char **argv) {
 
     command = XtCreateManagedWidget("Programm beenden", commandWidgetClass, box, NULL, 0);
     XtAddCallback(command, XtNcallback, quit, NULL);
+
+    //command = XtCreateManagedWidget("Programm beenden", templateWidgetClass, box, NULL, 0);
 
     XtRealizeWidget(toplevel);
 

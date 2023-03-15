@@ -5,8 +5,10 @@ uses
   x ;
 
 const
-  libXaw = 'libXaw.so';
-  libXt = 'libXt.so';
+//  libXaw = 'libXaw.so';
+//  libXt = 'libXt.so';
+  libXaw = 'libXaw';
+  libXt = 'libXt';
 
 type
   TWidget = Pointer;

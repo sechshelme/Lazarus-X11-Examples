@@ -32,6 +32,13 @@ uses
   XawViewport,
   XawXawInit,
   XawMenuButton,
+
+//  XawTemplate,
+  XawTextSink,
+  TextSrc,
+  XawText,
+
+
   XmuWidgetNode,
   awScrollBar,
   awList,
@@ -70,7 +77,7 @@ uses
   procedure main;
   var
     list, toplevel, box, command, Rptr, label1, grip, tip, viewPort,
-      form: TWidget;
+      form, template, tex: TWidget;
     wargs: array[0..3] of TArg;
 
     colargs: array of TArg = ((Name: XtNbackground;
@@ -157,6 +164,11 @@ uses
     XawTipEnable(command);
 
     CreateViewport(box);
+
+    //  template:=  XtVaCreateManagedWidget('template', templateWidgetClass, box, XtNheight, 30, XtNwidth, 30, XtNbackground, $88FF88, nil);
+
+//      tex:=  XtVaCreateManagedWidget('text', textSinkObjectClass, box, XtNheight, 30, XtNwidth, 30, XtNbackground, $88FF88, nil);
+
 
     XtRealizeWidget(toplevel);
 

@@ -108,7 +108,7 @@ typedef enum {
 /*
  * Public Functions
  */
-_XFUNCPROTOBEGIN
+// _XFUNCPROTOBEGIN
 
 /*
  * Function:
@@ -181,17 +181,17 @@ XawTextPosition XawTextSourceScan
 (
  Widget			w,
  XawTextPosition	position,
-#if NeedWidePrototypes
- int			type,
- int			dir,
- int			count,
- int			include
-#else
+//#if NeedWidePrototypes
+// int			type,
+// int			dir,
+// int			count,
+// int			include
+//#else
  XawTextScanType	type,
  XawTextScanDirection	dir,
  int			count,
  Boolean		include
-#endif
+//#endif
  );
 
 /*
@@ -270,6 +270,6 @@ void XawTextSourceSetSelection
  Atom			selection
  );
 
-_XFUNCPROTOEND
+//_XFUNCPROTOEND
 
 #endif /* _XawTextSrc_h */
