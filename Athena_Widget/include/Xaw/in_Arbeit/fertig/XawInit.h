@@ -39,7 +39,7 @@ typedef struct _XawDL XawDisplayList;
 #include <X11/Intrinsic.h>
 #include <X11/Xfuncproto.h>
 
-_XFUNCPROTOBEGIN
+//_XFUNCPROTOBEGIN
 
 void XawInitializeWidgetSet(void);
 #ifndef OLDXAW
@@ -57,6 +57,6 @@ extern Widget XawOpenApplication(
     _XtString    *argv
 );
 
-_XFUNCPROTOEND
+//_XFUNCPROTOEND
 
 #endif /* _XawInit_h */

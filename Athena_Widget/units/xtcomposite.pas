@@ -1,13 +1,10 @@
-unit X11Composite;
+unit XTComposite;
 
 interface
 
 uses
   x, xlib,
   X11Intrinsic;
-
-//const
-//  libXaw = 'libXaw.so';
 
 {$IFDEF FPC}
 {$PACKRECORDS C}

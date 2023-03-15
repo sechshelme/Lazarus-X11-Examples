@@ -4,7 +4,13 @@
 #include  <X11/Intrinsic.h>
 #include  <X11/Xaw/Box.h>
 #include  <X11/Xaw/Command.h>
+#include  <X11/Xmu/Converters.h>
 #include  <stdio.h>
+
+
+#define X2tEcenter "center"
+#define X2tEcenter "cednter"
+
 
 void hello(Widget w, XtPointer *client, XtPointer call) {
     printf("Hello World\n");

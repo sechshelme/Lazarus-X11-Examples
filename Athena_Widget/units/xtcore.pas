@@ -7,6 +7,10 @@ uses
   x, xlib,
   X11Intrinsic;
 
+const
+  libXt = 'libXt.so';
+
+
 //type
 //  PCoreWidgetClass = ^TCoreWidgetClass;
 //  TCoreWidgetClass = PWidgetClassRec;
@@ -15,8 +19,8 @@ uses
 //  TCoreWidget = PWidgetRec;
 
 var
-  coreWidgetClass : TWidgetClass;cvar;external libX11;
-  widgetClass : TWidgetClass;cvar;external libX11;
+  coreWidgetClass : TWidgetClass;cvar;external libXt;
+  widgetClass : TWidgetClass;cvar;external libXt;
 
 implementation
 

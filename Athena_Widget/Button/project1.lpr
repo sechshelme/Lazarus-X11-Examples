@@ -9,6 +9,7 @@ uses
   XTCore,
   XawList,
   X11Intrinsic,
+  X11Composite,
   XawToggle,
   XawCardinals,
   XawForm,
@@ -27,6 +28,8 @@ uses
   XawAllWidgets,
   XawLabel,
   XawCommand,
+
+  XawXawInit,
 
   XawMenuButton,
 

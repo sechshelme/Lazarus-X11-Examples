@@ -38,7 +38,7 @@ begin
     entry:=XtVaCreateManagedWidget('Speichern unter...', smeBSBObjectClass,menu1, nil);
     entry:=XtVaCreateManagedWidget('Submenu -->', smeBSBObjectClass,menu1, nil);
 
-    //button := XtVaCreateManagedWidget('Datei', menuButtonWidgetClass, entry,XtNmenuName,'submenu1', nil);
+    //button := XtViaCreateManagedWidget('submenu', menuButtonWidgetClass, entry,XtNmenuName,'submenu1', nil);
     //menu2:=XtCreatePopupShell('submenu1', simpleMenuWidgetClass, button,nil,0);
     //
     //entry:=XtVaCreateManagedWidget('Neu', smeBSBObjectClass,menu2, nil);

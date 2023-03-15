@@ -48,6 +48,11 @@ bitmap
 xwininfo -tree
 ```
 
+## XTootls Fenster-Info
+```
+editres
+```
+
 ## Mehr Infos:
 
 - [X11 und die Schrift](http://x11.gweb.info/x11_0650_fonts.html)

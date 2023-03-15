@@ -10,6 +10,10 @@ uses
 const
   libXt = 'libXt.so';
 
+  {$IFDEF FPC}
+  {$PACKRECORDS C}
+  {$ENDIF}
+
 //
 //{$include  <X11/Xlib.h>}
 //{$include  <X11/Xutil.h>}

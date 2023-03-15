@@ -3,7 +3,7 @@ unit XawAllWidgets;
 interface
 
 uses
-XmuWidgetNode;
+  XmuWidgetNode;
 
 const
   libXmu = 'libXmu.so';

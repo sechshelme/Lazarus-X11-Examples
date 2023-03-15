@@ -8,9 +8,12 @@ uses
   Xresource,
   X11Intrinsic;
 
-
 const
   libXmu = 'libXmu.so';
+
+  {$IFDEF FPC}
+  {$PACKRECORDS C}
+  {$ENDIF}
 
 //{$include <X11/Intrinsic.h>}
 //{$include <X11/Xfuncproto.h>}
@@ -67,13 +70,10 @@ function XmuCvtGravityToString(dpy: PDisplay; args: PXrmValue; num_args: PCardin
 { justify text to right side of button   }
 type
   PXtJustify = ^TXtJustify;
-  TXtJustify = (XtJustifyLeft, XtJustifyCenter, XtJustifyRight
-    );
-{$ifndef XtRJustify}
+  TXtJustify = (XtJustifyLeft, XtJustifyCenter, XtJustifyRight    );
 
 const
   XtRJustify = 'Justify';
-{$endif}
 
 const
   XtEleft = 'left';

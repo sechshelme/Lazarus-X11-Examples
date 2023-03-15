@@ -56,18 +56,18 @@ type
 { argument types are unknown }
 { return type might be wrong }   
 
-//function XmuWnClass(wn : longint) : longint;
+function XmuWnClass(wn : PXmuWidgetNode) : TWidgetClass;
 
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }   
-//function XmuWnClassname(wn : longint) : longint;
-
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }   
-//function XmuWnSuperclass(wn : longint) : longint;
-
+//{ was #define dname(params) para_def_expr }
+//{ argument types are unknown }
+//{ return type might be wrong }   
+//function XmuWnClassname(wn : PXmuWidgetNode) : PChar;
+//
+//{ was #define dname(params) para_def_expr }
+//{ argument types are unknown }
+//{ return type might be wrong }   
+//function XmuWnSuperclass(wn : PXmuWidgetNode) : PChar;
+//
 { external interfaces  }
 {_XFUNCPROTOBEGIN }
 procedure XmuWnInitializeNodes(nodearray:PXmuWidgetNode; nnodes:longint);cdecl;external libXmu;
@@ -79,27 +79,28 @@ function XmuWnNameToNode(nodelist:PXmuWidgetNode; nnodes:longint; name:Pchar):PX
 { _XmuWidgetNode_h  }
 
 implementation
-//
-//{ was #define dname(params) para_def_expr }
-//{ argument types are unknown }
-//{ return type might be wrong }   
-//function XmuWnClass(wn : longint) : longint;
-//begin
+
+{ was #define dname(params) para_def_expr }
+{ argument types are unknown }
+{ return type might be wrong }
+function XmuWnClass(wn: PXmuWidgetNode): TWidgetClass;
+begin
 //  XmuWnClass:=wn^.(widget_class_ptr[0]);
-//end;
-//
+  XmuWnClass:=wn^.widget_class_ptr[0];
+end;
+
 //{ was #define dname(params) para_def_expr }
 //{ argument types are unknown }
-//{ return type might be wrong }   
-//function XmuWnClassname(wn : longint) : longint;
+//{ return type might be wrong }
+//function XmuWnClassname(wn: PXmuWidgetNode): PChar;
 //begin
 //  XmuWnClassname:=(XmuWnClass(wn))^.(core_class.class_name);
 //end;
 //
 //{ was #define dname(params) para_def_expr }
 //{ argument types are unknown }
-//{ return type might be wrong }   
-//function XmuWnSuperclass(wn : longint) : longint;
+//{ return type might be wrong }
+//function XmuWnSuperclass(wn: PXmuWidgetNode): PChar;
 //begin
 //  XmuWnSuperclass:=(XmuWnClass(wn))^.(core_class.superclass);
 //end;
