@@ -49,9 +49,18 @@ begin
 
 
     BearbeitenMenu := XtVaCreateManagedWidget('Bearbeiten', menuButtonWidgetClass,form,XtNmenuName,'menu2',XtNfromHoriz,DateiMenu, nil);
+    menu1:=XtCreatePopupShell('menu2', simpleMenuWidgetClass, BearbeitenMenu,nil,0);
+
+    entry:=XtVaCreateManagedWidget('Ausschneiden', smeBSBObjectClass,menu1, nil);
+    entry:=XtVaCreateManagedWidget('Kopieren', smeBSBObjectClass,menu1, nil);
+    entry:=XtVaCreateManagedWidget('einfuegen', smeBSBObjectClass,menu1, nil);
 
 
     HilfeMenu := XtVaCreateManagedWidget('Hilfe', menuButtonWidgetClass,form,XtNmenuName,'menu3',XtNfromHoriz,BearbeitenMenu, nil);
+    menu1:=XtCreatePopupShell('menu3', simpleMenuWidgetClass, HilfeMenu,nil,0);
+
+    entry:=XtVaCreateManagedWidget('Hilfe', smeBSBObjectClass,menu1, nil);
+    entry:=XtVaCreateManagedWidget('About...', smeBSBObjectClass,menu1, nil);
 
 
 

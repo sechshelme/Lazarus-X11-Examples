@@ -87,32 +87,32 @@ extern WidgetClass viewportWidgetClass;
 typedef struct _ViewportClassRec *ViewportWidgetClass;
 typedef struct _ViewportRec  *ViewportWidget;
 
-_XFUNCPROTOBEGIN
+//_XFUNCPROTOBEGIN
 
 void XawViewportSetLocation
 (
  Widget			gw,
-#if NeedWidePrototypes
- double			xoff,
- double			yoff
-#else
+//#if NeedWidePrototypes
+// double			xoff,
+// double			yoff
+//#else
  float			xoff,
  float			yoff
-#endif
+//#endif
  );
 
 void XawViewportSetCoordinates
 (
  Widget			gw,
-#if NeedWidePrototypes
- int			x,
- int			y
+//#if NeedWidePrototypes
+// int			x,
+// int			y
 #else
  Position		x,
  Position		y
 #endif
  );
 
-_XFUNCPROTOEND
+//_XFUNCPROTOEND
 
 #endif /* _XawViewport_h */

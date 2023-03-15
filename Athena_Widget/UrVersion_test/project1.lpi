@@ -40,6 +40,11 @@
       <OtherUnitFiles Value="../units;../units/Xaw;../units/Xmu"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
+    <CodeGeneration>
+      <TargetProcessor Value="ARMV6"/>
+      <TargetCPU Value="arm"/>
+      <TargetOS Value="linux"/>
+    </CodeGeneration>
     <Linking>
       <Debugging>
         <DebugInfoType Value="dsDwarf2Set"/>

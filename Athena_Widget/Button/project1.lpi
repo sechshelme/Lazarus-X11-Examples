@@ -68,6 +68,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="awMenu"/>
       </Unit>
+      <Unit>
+        <Filename Value="awviewport.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="awViewport"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

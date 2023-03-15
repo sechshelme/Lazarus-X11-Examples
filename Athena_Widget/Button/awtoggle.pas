@@ -7,7 +7,7 @@ uses
   x,
   X11StringDefs,
   X11Intrinsic,
-  X11Composite,
+  XTComposite,
   XawToggle,
   XawLabel,
   XawCommand,
@@ -40,7 +40,7 @@ begin
 
   variable^ := toggleTag;
 
-  WriteLn('Button: ', toggleTag, ' Status: ', state);
+  //  WriteLn('Button: ', toggleTag, ' Status: ', state);
 end;
 
 
@@ -53,8 +53,7 @@ begin
   SetLength(togs, Length(names));
   box := XtVaCreateManagedWidget('box', boxWidgetClass, Parent, nil);
   for i := 0 to Length(names) - 1 do begin
-    WriteLn(names[i],'   '   ,i);
-    togs[i] := XtVaCreateWidget(PChar(names[i]), toggleWidgetClass, box, XtNradioData, i + 1,XtNheight,10, nil);
+    togs[i] := XtVaCreateWidget(PChar(names[i]), toggleWidgetClass, box, XtNradioData, i + 1, nil);
     if i = 0 then begin
       group := togs[0];
     end;
@@ -83,15 +82,15 @@ procedure CreateRadioBox(Parent: TWidget; const Titel: string);
 const
   RadioCount = 8;
 var
-  box,  cmd, Buttons, label1: TWidget;
-  names: array of string;
+  box, cmd, Buttons, label1: TWidget;
+  names: array of string = nil;
   i: integer;
   s: string;
 begin
   SetLength(names, RadioCount);
   for i := 0 to Length(names) - 1 do begin
-    str(i,s);
-    names[i] := 'RadioButton'+s;
+    str(i, s);
+    names[i] := 'RadioButton' + s;
   end;
 
   box := XtVaCreateManagedWidget('box', boxWidgetClass, Parent, XtNforeground, $88FF88, XtNbackground, $FF88FF, nil);

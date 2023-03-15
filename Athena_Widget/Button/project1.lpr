@@ -9,7 +9,7 @@ uses
   XTCore,
   XawList,
   X11Intrinsic,
-  X11Composite,
+  XTComposite,
   XawToggle,
   XawCardinals,
   XawForm,
@@ -28,45 +28,49 @@ uses
   XawAllWidgets,
   XawLabel,
   XawCommand,
-
+  XawReports,
+  XawViewport,
   XawXawInit,
-
   XawMenuButton,
-
   XmuWidgetNode,
   awScrollBar,
   awList,
   awDialog,
-  awDrawScreBox, awUTF8Label, MyDialog, AwToggle, awMenu;
+  awDrawScreBox,
+  awUTF8Label,
+  MyDialog,
+  AwToggle,
+  awMenu, awViewport;
 
 // h2pas -p -T -d -c -e Intrinsic.h
 
 //https://www.tutorialspoint.com/cprogramming/c_pointer_to_pointer.htm
 // define pointer of pointer
 
-procedure press_Hello(w: TWidget; p: Pointer; p2: Pointer); cdecl;
-begin
-  WriteLn('Hello World');
-  if p <> nil then begin
-    WriteLn(PChar(p));
+  procedure press_Hello(w: TWidget; p: Pointer; p2: Pointer); cdecl;
+  begin
+    WriteLn('Hello World');
+    if p <> nil then begin
+      WriteLn(PChar(p));
+    end;
   end;
-end;
 
-procedure press_new_Dialog(w: TWidget; p: Pointer; p2: Pointer); cdecl;
-begin
-  CreateMyDialog(XtParent(w));
-end;
+  procedure press_new_Dialog(w: TWidget; p: Pointer; p2: Pointer); cdecl;
+  begin
+    CreateMyDialog(XtParent(w));
+  end;
 
   procedure quit(w: TWidget; p: Pointer; p2: Pointer); cdecl;
   begin
-//    XtDestroyWidget(XtParent(XtParent(w)));
-//    XtCloseDisplay(XtDisplay(w));
+    //    XtDestroyWidget(XtParent(XtParent(w)));
+    //    XtCloseDisplay(XtDisplay(w));
     Halt;
   end;
 
   procedure main;
   var
-    list, toplevel, box, command, Rptr, label1, form, grip, tip: TWidget;
+    list, toplevel, box, command, Rptr, label1, grip, tip, viewPort,
+      form: TWidget;
     wargs: array[0..3] of TArg;
 
     colargs: array of TArg = ((Name: XtNbackground;
@@ -76,6 +80,8 @@ end;
     toplevel := XtInitialize('Mein Fenster', 'noname', nil, 0, @argc, argv);
 
     box := XtCreateManagedWidget('hallo', boxWidgetClass, toplevel, nil, 0);
+
+    CreateMenu(box);
 
     label1 := XtVaCreateManagedWidget('Label für ein Titel', labelWidgetClass, box, XtNborderWidth, 0, nil);
 
@@ -133,25 +139,24 @@ end;
 
     // scrollbar;
 
-//    CreateUTF8Label(box);
+    //    CreateUTF8Label(box);
 
-CreateRadioBox(box, 'Meine Radio Box');
+    CreateRadioBox(box, 'Meine Radio Box');
 
     CreateScrollBar(box);
 
     command := XtCreateManagedWidget('Neuer' + LineEnding + 'Dialog !', commandWidgetClass, box, nil, 0);
     XtAddCallback(command, XtNcallback, @press_new_Dialog, nil);
 
-//    tip := XtCreateManagedWidget('Neuer' + LineEnding + 'Dialog !', tipWidgetClass, command, nil, 0);
-    XtVaSetValues(command,XtNtip,'Hier klicken fuer einen neuen Dialog !',nil);
+    //    tip := XtCreateManagedWidget('Neuer' + LineEnding + 'Dialog !', tipWidgetClass, command, nil, 0);
+    XtVaSetValues(command, XtNtip, 'Hier klicken fuer einen neuen Dialog !', nil);
     XawTipEnable(command);
 
     command := XtCreateManagedWidget('Ein Knopf', commandWidgetClass, box, nil, 0);
-    XtVaSetValues(command,XtNtip,'Ich bin ein einfacher Knopf !',nil);
+    XtVaSetValues(command, XtNtip, 'Ich bin ein einfacher Knopf !', nil);
     XawTipEnable(command);
 
-    CreateMenu(box);
-
+    CreateViewport(box);
 
     XtRealizeWidget(toplevel);
 

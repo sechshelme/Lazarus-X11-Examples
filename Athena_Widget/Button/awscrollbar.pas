@@ -27,7 +27,7 @@ procedure CreateScrollBar(Parent: TWidget);
 var
   scrollbar: TWidget;
 begin
-  scrollbar := XtVaCreateManagedWidget('grip', scrollbarWidgetClass, Parent, XtNlabel, 'grip',XtNlength,50, XtNheight, 500, XtNwidth, 15, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
+  scrollbar := XtVaCreateManagedWidget('grip', scrollbarWidgetClass, Parent, XtNlabel, 'grip',XtNlength,50, XtNheight, 200, XtNwidth, 15, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
   XtAddCallback(scrollbar, XtNjumpProc, @OnJumped, nil);
   XtAddCallback(scrollbar, XtNscrollProc, @OnScrolled, nil);
 end;
