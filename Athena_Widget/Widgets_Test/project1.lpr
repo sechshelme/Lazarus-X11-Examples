@@ -33,6 +33,10 @@ uses
   XawXawInit,
   XawMenuButton,
 
+  XawPaned,
+
+  XawPanner,
+
 //  XawTemplate,
   XawTextSink,
   XawTextSrc,
@@ -86,7 +90,7 @@ uses
   procedure main;
   var
     toplevel, box, command, Rptr, label1, grip, tip, viewPort,
-      form, template, tex, tree: TWidget;
+      form, template, tex, tree, paned, panner: TWidget;
     wargs: array[0..3] of TArg;
 
     colargs: array of TArg = ((Name: XtNbackground;
@@ -97,7 +101,7 @@ uses
 
     toplevel := XtInitialize('Mein Fenster', 'noname', nil, 0, @argc, argv);
 
-    box := XtCreateManagedWidget('BasisBox', boxWidgetClass, toplevel, nil, 0);
+    box := XtVaCreateManagedWidget('BasisBox', boxWidgetClass, toplevel,XtNwidth,1600, nil);
 
     CreateMenu(box);
 
@@ -182,7 +186,16 @@ uses
 
    CreateAsciiText(box);
 
-   tree := XtVaCreateManagedWidget('grip', treeWidgetClass, box, XtNlabel, 'grip', XtNheight, 300, XtNwidth, 30, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
+   tree := XtVaCreateManagedWidget('tree', treeWidgetClass, box, XtNlabel, 'tree', XtNheight, 200, XtNwidth, 30, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
+
+   paned := XtVaCreateManagedWidget('paned', panedWidgetClass, box, XtNlabel, 'paned', XtNheight, 250, XtNwidth, 130, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
+
+   command := XtCreateManagedWidget('Knopf 1', commandWidgetClass, paned, nil, 0);
+   command := XtCreateManagedWidget('Knopf 2', commandWidgetClass, paned, nil, 0);
+   command := XtCreateManagedWidget('Knopf 3', commandWidgetClass, paned, nil, 0);
+
+   panner:=XtVaCreateManagedWidget('paned', pannerWidgetClass, box, XtNlabel, 'paned', XtNheight, 250, XtNwidth, 130,   XtNvSpace,50,
+   XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
 
 
     XtRealizeWidget(toplevel);

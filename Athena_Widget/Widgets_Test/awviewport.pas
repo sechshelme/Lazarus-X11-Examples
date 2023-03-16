@@ -31,8 +31,8 @@ begin
   XtNinternalWidth, 300, XtNallowHoriz, True, XtNallowVert, True, XtNforceBars, True,XtNvertDistance,20, nil);
 
 
-  command := XtVaCreateManagedWidget('Ein Knopf', commandWidgetClass, viewPort, XtNwidth, 150, nil);
-  command := XtVaCreateManagedWidget('Ein Knopf', commandWidgetClass, viewPort, XtNwidth, 270, XtNheight, 50, nil);
+  command := XtVaCreateManagedWidget('ViewPort Knopf 1', commandWidgetClass, viewPort, XtNwidth, 150, nil);
+  command := XtVaCreateManagedWidget('ViewPort Knopf 2 ', commandWidgetClass, viewPort, XtNwidth, 270, XtNheight, 50, nil);
 end;
 
 end.

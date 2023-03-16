@@ -155,7 +155,7 @@ typedef struct _PanedRec	*PanedWidget;
  *  Public Procedures
  */
 
-_XFUNCPROTOBEGIN
+// _XFUNCPROTOBEGIN
 
 /*
  * Function:
@@ -210,11 +210,11 @@ void XawPanedGetMinMax
 void XawPanedSetRefigureMode
 (
  Widget			w,
-#if NeedWidePrototypes
- int			mode
-#else
+//#if NeedWidePrototypes
+// int			mode
+//#else
  Boolean		mode
-#endif
+//#endif
  );
 
 /*
@@ -246,13 +246,13 @@ int XawPanedGetNumSub
 void XawPanedAllowResize
 (
  Widget			w,
-#if NeedWidePrototypes
- int			allow_resize
-#else
+//#if NeedWidePrototypes
+// int			allow_resize
+//#else
  Boolean		allow_resize
-#endif
+//#endif
  );
 
-_XFUNCPROTOEND
+//_XFUNCPROTOEND
 
 #endif /* _XawPaned_h */
