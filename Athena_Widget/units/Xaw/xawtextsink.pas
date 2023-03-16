@@ -57,7 +57,6 @@ const
   {
  * Public Functions
   }
-{_XFUNCPROTOBEGIN }
 {
  * Function:
  *	XawTextSinkDisplayText

@@ -35,8 +35,17 @@ uses
 
 //  XawTemplate,
   XawTextSink,
-  TextSrc,
+  XawTextSrc,
   XawText,
+
+  xawMultiSink,
+  XawMultiSrc,
+
+  XawTree,
+
+  XawAsciiSink,
+  XawAsciiSrc,
+  XawAsciiText,
 
 
   XmuWidgetNode,
@@ -47,7 +56,7 @@ uses
   awUTF8Label,
   MyDialog,
   AwToggle,
-  awMenu, awViewport;
+  awMenu, awViewport, awAscii, awPrintWidgets;
 
 // h2pas -p -T -d -c -e Intrinsic.h
 
@@ -77,16 +86,18 @@ uses
   procedure main;
   var
     toplevel, box, command, Rptr, label1, grip, tip, viewPort,
-      form, template, tex: TWidget;
+      form, template, tex, tree: TWidget;
     wargs: array[0..3] of TArg;
 
     colargs: array of TArg = ((Name: XtNbackground;
       valueI: $FF00), (Name: XtNforeground; valueI: $FFFF00), (Name: XtNlabel; valueP: '$FFFF00'));
 
   begin
+    PrintWidgets;
+
     toplevel := XtInitialize('Mein Fenster', 'noname', nil, 0, @argc, argv);
 
-    box := XtCreateManagedWidget('hallo', boxWidgetClass, toplevel, nil, 0);
+    box := XtCreateManagedWidget('BasisBox', boxWidgetClass, toplevel, nil, 0);
 
     CreateMenu(box);
 
@@ -168,6 +179,10 @@ uses
     //  template:=  XtVaCreateManagedWidget('template', templateWidgetClass, box, XtNheight, 30, XtNwidth, 30, XtNbackground, $88FF88, nil);
 
 //      tex:=  XtVaCreateManagedWidget('text', textSinkObjectClass, box, XtNheight, 30, XtNwidth, 30, XtNbackground, $88FF88, nil);
+
+   CreateAsciiText(box);
+
+   tree := XtVaCreateManagedWidget('grip', treeWidgetClass, box, XtNlabel, 'grip', XtNheight, 300, XtNwidth, 30, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
 
 
     XtRealizeWidget(toplevel);

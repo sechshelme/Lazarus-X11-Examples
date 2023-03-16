@@ -124,7 +124,7 @@ type
       _string : TString;
       list_index : longint;
     end;
-{_XFUNCPROTOBEGIN }
+
 {
  * Function:
  *	XawListChange
@@ -143,7 +143,6 @@ type
  *	If nitems of longest are <= 0 then they will be calculated
  *	If nitems is <= 0 then the list needs to be NULL terminated
   }
-(* Const before type ignored *)
 
 procedure XawListChange(w:TWidget; list:PPchar; nitems:longint; longest:longint; resize:TBoolean);cdecl;external libXaw;
 {
@@ -190,8 +189,6 @@ function XawListShowCurrent(w:TWidget):PXawListReturnStruct;cdecl;external libXa
 //
 //  PListWidget = ^TListWidget;
 //  TListWidget = PListRec;
-{ list return structure  }
-
 
 implementation
 

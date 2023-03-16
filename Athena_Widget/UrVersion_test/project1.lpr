@@ -32,7 +32,7 @@ var
   procedure XtRealizeWidget(w:TWidget);cdecl;external libX11;
   procedure XtMainLoop;cdecl; external libX11;
 
-  procedure quit(w:WideChar;p:Pointer;p2:Pointer);
+  procedure press_hello(w:WideChar;p:Pointer;p2:Pointer);
   begin
     WriteLn('Hello World');
   end;
@@ -48,9 +48,9 @@ var
     box:=XtCreateManagedWidget('hallo', boxWidgetClass, toplevel,nil,0);
 
     command:=XtCreateManagedWidget('Hello Button', commandWidgetClass, box,nil,0);
+    XtAddCallback(command,  @XtStrings[136],@press_hello,nil);
 
     command:=XtCreateManagedWidget('Quit Button', commandWidgetClass, box,nil,0);
-//    XtAddCallback(command,  @XtStrings[136],@quit,nil);
 
     XtRealizeWidget(toplevel);
 

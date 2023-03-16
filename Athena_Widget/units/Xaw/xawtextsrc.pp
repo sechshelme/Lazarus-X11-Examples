@@ -1,12 +1,11 @@
-unit TextSrc;
+unit XawTextSrc;
 
 interface
-
 
 uses
   x, xlib,
   X11Intrinsic,
-  XawText  ;
+  XawText;
 
 const
   libXaw = 'libXaw.so';

@@ -93,7 +93,7 @@ typedef enum {
  * Public routines
  */
 
-_XFUNCPROTOBEGIN
+//_XFUNCPROTOBEGIN
 
 /*
  * Function:
@@ -146,7 +146,7 @@ Bool XawAsciiSave
 Bool XawAsciiSaveAsFile
 (
  Widget		w,
- _Xconst char	*name
+const char	*name
  );
 
 /*
@@ -167,6 +167,6 @@ Bool XawAsciiSourceChanged
  Widget		w
  );
 
-_XFUNCPROTOEND
+//_XFUNCPROTOEND
 
 #endif /* _XawAsciiSrc_h */

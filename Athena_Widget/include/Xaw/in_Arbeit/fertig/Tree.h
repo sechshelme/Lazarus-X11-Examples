@@ -123,13 +123,13 @@ extern WidgetClass treeWidgetClass;
 typedef struct _TreeClassRec *TreeWidgetClass;
 typedef struct _TreeRec      *TreeWidget;
 
-_XFUNCPROTOBEGIN
+//_XFUNCPROTOBEGIN
 
 void XawTreeForceLayout
 (
  Widget		tree
  );
 
-_XFUNCPROTOEND
+//_XFUNCPROTOEND
 
 #endif /* _XawTree_h */

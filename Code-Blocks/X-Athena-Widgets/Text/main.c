@@ -154,6 +154,7 @@ main(int argc, char **argv)
     XtSetArg(wargs[n], XtNdataCompression, FALSE); n++;
     XtSetValues(source, wargs, n);
     XtAddCallback(source, XtNcallback, text_call, NULL);
+
     XtRealizeWidget(toplevel);
     XtMainLoop();
 }

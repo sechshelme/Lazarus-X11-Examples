@@ -85,7 +85,6 @@ const
 {
  * Public Functions
   }
-{_XFUNCPROTOBEGIN }
 {
  * Function:
  *	XawToggleChangeRadioGroup

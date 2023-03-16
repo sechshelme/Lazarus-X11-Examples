@@ -6,6 +6,7 @@
 #include  <X11/Xaw/Command.h>
 #include  <X11/Xaw/Template.h>
 #include  <X11/Xaw/TextSink.h>
+#include  <X11/Xaw/AsciiTextP.h>
 #include  <X11/Xmu/Converters.h>
 #include  <stdio.h>
 

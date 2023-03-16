@@ -107,7 +107,7 @@ typedef struct _MultiSrcRec      *MultiSrcObject;
  *
  ************************************************************/
 
-_XFUNCPROTOBEGIN
+//_XFUNCPROTOBEGIN
 
 void XawMultiSourceFreeString
 (
@@ -122,9 +122,9 @@ Bool _XawMultiSave
 Bool _XawMultiSaveAsFile
 (
  Widget			w,
- _Xconst char		*name
+ const char		*name
  );
 
-_XFUNCPROTOEND
+//_XFUNCPROTOEND
 
 #endif /* _XawMultiSrc_h  */

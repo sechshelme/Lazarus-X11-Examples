@@ -101,6 +101,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="awViewport"/>
       </Unit>
+      <Unit>
+        <Filename Value="awascii.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="awAscii"/>
+      </Unit>
+      <Unit>
+        <Filename Value="awprintwidgets.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="awPrintWidgets"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
