@@ -1,26 +1,24 @@
-
 unit XTCore;
 
 interface
 
 uses
   x, xlib,
-  X11Intrinsic;
+  XTIntrinsic;
 
 const
   libXt = 'libXt.so';
 
-
-//type
-//  PCoreWidgetClass = ^TCoreWidgetClass;
-//  TCoreWidgetClass = PWidgetClassRec;
-//
-//  PCoreWidget = ^TCoreWidget;
-//  TCoreWidget = PWidgetRec;
-
 var
   coreWidgetClass : TWidgetClass;cvar;external libXt;
   widgetClass : TWidgetClass;cvar;external libXt;
+
+  //type
+  //  PCoreWidgetClass = ^TCoreWidgetClass;
+  //  TCoreWidgetClass = PWidgetClassRec;
+  //
+  //  PCoreWidget = ^TCoreWidget;
+  //  TCoreWidget = PWidgetRec;
 
 implementation
 

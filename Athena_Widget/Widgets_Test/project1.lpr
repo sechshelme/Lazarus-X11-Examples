@@ -5,10 +5,10 @@ uses
   xlib,
   x,
   Xresource,
-  X11StringDefs,
+  XTStringDefs,
   XTCore,
   XawList,
-  X11Intrinsic,
+  XTIntrinsic,
   XTComposite,
   XawToggle,
   XawCardinals,
@@ -32,26 +32,26 @@ uses
   XawViewport,
   XawXawInit,
   XawMenuButton,
-
   XawPaned,
-
   XawPanner,
 
-//  XawTemplate,
+  XTConstraint,
+  XTObject,
+  XTRectObj,
+  ShellI,
+
+  //  XawTemplate,
   XawTextSink,
   XawTextSrc,
   XawText,
-
   xawMultiSink,
   XawMultiSrc,
-
   XawTree,
-
   XawAsciiSink,
   XawAsciiSrc,
   XawAsciiText,
-
-
+  XawPorthole,
+  XawStripChart,
   XmuWidgetNode,
   awScrollBar,
   awList,
@@ -60,7 +60,10 @@ uses
   awUTF8Label,
   MyDialog,
   AwToggle,
-  awMenu, awViewport, awAscii, awPrintWidgets;
+  awMenu,
+  awViewport,
+  awAscii,
+  awPrintWidgets;
 
 // h2pas -p -T -d -c -e Intrinsic.h
 
@@ -89,8 +92,8 @@ uses
 
   procedure main;
   var
-    toplevel, box, command, Rptr, label1, grip, tip, viewPort,
-      form, template, tex, tree, paned, panner: TWidget;
+    toplevel, box, command, Rptr, label1, grip, tip, viewPort, form, template, tex, tree, paned, panner, porthole, stripChart,
+      constrant, composite: TWidget;
     wargs: array[0..3] of TArg;
 
     colargs: array of TArg = ((Name: XtNbackground;
@@ -101,7 +104,7 @@ uses
 
     toplevel := XtInitialize('Mein Fenster', 'noname', nil, 0, @argc, argv);
 
-    box := XtVaCreateManagedWidget('BasisBox', boxWidgetClass, toplevel,XtNwidth,1600, nil);
+    box := XtVaCreateManagedWidget('BasisBox', boxWidgetClass, toplevel, XtNwidth, 1600, nil);
 
     CreateMenu(box);
 
@@ -182,20 +185,35 @@ uses
 
     //  template:=  XtVaCreateManagedWidget('template', templateWidgetClass, box, XtNheight, 30, XtNwidth, 30, XtNbackground, $88FF88, nil);
 
-//      tex:=  XtVaCreateManagedWidget('text', textSinkObjectClass, box, XtNheight, 30, XtNwidth, 30, XtNbackground, $88FF88, nil);
+    //      tex:=  XtVaCreateManagedWidget('text', textSinkObjectClass, box, XtNheight, 30, XtNwidth, 30, XtNbackground, $88FF88, nil);
 
-   CreateAsciiText(box);
+    CreateAsciiText(box);
 
-   tree := XtVaCreateManagedWidget('tree', treeWidgetClass, box, XtNlabel, 'tree', XtNheight, 200, XtNwidth, 30, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
+    tree := XtVaCreateManagedWidget('tree', treeWidgetClass, box, XtNlabel, 'tree', XtNheight, 200, XtNwidth, 30, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
 
-   paned := XtVaCreateManagedWidget('paned', panedWidgetClass, box, XtNlabel, 'paned', XtNheight, 250, XtNwidth, 130, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
+    paned := XtVaCreateManagedWidget('paned', panedWidgetClass, box, XtNlabel, 'paned', XtNheight, 250, XtNwidth, 130, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
 
-   command := XtCreateManagedWidget('Knopf 1', commandWidgetClass, paned, nil, 0);
-   command := XtCreateManagedWidget('Knopf 2', commandWidgetClass, paned, nil, 0);
-   command := XtCreateManagedWidget('Knopf 3', commandWidgetClass, paned, nil, 0);
+    command := XtCreateManagedWidget('Knopf 1', commandWidgetClass, paned, nil, 0);
+    command := XtCreateManagedWidget('Knopf 2', commandWidgetClass, paned, nil, 0);
+    command := XtCreateManagedWidget('Knopf 3', commandWidgetClass, paned, nil, 0);
 
-   panner:=XtVaCreateManagedWidget('paned', pannerWidgetClass, box, XtNlabel, 'paned', XtNheight, 250, XtNwidth, 130,   XtNvSpace,50,
-   XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
+    panner := XtVaCreateManagedWidget('paned', pannerWidgetClass, box, XtNheight, 250, XtNwidth, 130, XtNvSpace, 50, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
+
+    //command := XtCreateManagedWidget('Knopf 1', commandWidgetClass, panner, nil, 0);
+    //command := XtCreateManagedWidget('Knopf 2', commandWidgetClass, panner, nil, 0);
+    //command := XtCreateManagedWidget('Knopf 3', commandWidgetClass, panner, nil, 0);
+
+    porthole := XtVaCreateManagedWidget('porthole', portholeWidgetClass, box, XtNheight, 200, XtNwidth, 130, XtNvSpace, 50, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
+
+    command := XtCreateManagedWidget('Knopf 1', commandWidgetClass, porthole, nil, 0);
+    command := XtCreateManagedWidget('Knopf 2', commandWidgetClass, porthole, nil, 0);
+    command := XtCreateManagedWidget('Knopf 3', commandWidgetClass, porthole, nil, 0);
+
+    composite := XtVaCreateManagedWidget('StripChart', compositeWidgetClass, box, XtNheight, 150, XtNwidth, 130, XtNvSpace, 50, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
+    stripChart := XtVaCreateManagedWidget('StripChart', stripChartWidgetClass, composite, XtNheight, 150, XtNwidth, 130, XtNvSpace, 50, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
+//    constrant := XtVaCreateManagedWidget('constrant', rectObjClass, stripChart, XtNheight, 150, XtNwidth, 130, XtNvSpace, 50, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
+
+constrant := XtVaCreateManagedWidget('sonstraint', constraintWidgetClass, box, XtNheight, 150, XtNwidth, 130, XtNvSpace, 50, XtNforeground, $FFFF88, XtNbackground, $8888FF, nil);
 
 
     XtRealizeWidget(toplevel);

@@ -45,19 +45,19 @@ SOFTWARE.
 
 ******************************************************************/
 
-#ifndef _XtObject_h
-#define _XtObject_h
+#ifndef _XtRect_h
+#define _XtRect_h
 
-_XFUNCPROTOBEGIN
+//_XFUNCPROTOBEGIN
 
-typedef struct _ObjectRec *Object;
-typedef struct _ObjectClassRec *ObjectClass;
+typedef struct _RectObjRec *RectObj;
+typedef struct _RectObjClassRec *RectObjClass;
 
-#ifndef VMS
-externalref WidgetClass objectClass;
-#endif
+//#ifndef VMS
+extern WidgetClass rectObjClass;
+//#endif
 
-_XFUNCPROTOEND
+//_XFUNCPROTOEND
 
-#endif /* _XtObject_h */
+//#endif /* _XtRect_h */
 /* DON'T ADD STUFF AFTER THIS #endif */

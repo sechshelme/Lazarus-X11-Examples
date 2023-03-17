@@ -4,7 +4,7 @@ interface
 
 uses
   xlib,x,
-  X11Intrinsic;
+  XTIntrinsic;
 
 const
   libXmu = 'libXmu.so';

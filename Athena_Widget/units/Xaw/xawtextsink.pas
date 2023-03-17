@@ -4,7 +4,7 @@ interface
 
 uses
   x, xlib,
-  X11Intrinsic,
+  XTIntrinsic,
   XawText  ;
 
 const

@@ -3,7 +3,7 @@ unit XawSimple;
 interface
 
 uses
-  X11Intrinsic;
+XTIntrinsic;
 
 const
   libXaw = 'libXaw.so';

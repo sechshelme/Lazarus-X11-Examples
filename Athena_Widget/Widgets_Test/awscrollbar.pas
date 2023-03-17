@@ -5,8 +5,8 @@ interface
 uses
   xlib,
   x,
-  X11StringDefs,
-  X11Intrinsic,
+  XTStringdefs,
+  XTIntrinsic,
   XawScrollbar;
 
 procedure CreateScrollBar(Parent:TWidget);

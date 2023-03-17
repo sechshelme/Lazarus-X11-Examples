@@ -48,15 +48,13 @@ SOFTWARE.
 #ifndef _XtConstraint_h
 #define _XtConstraint_h
 
-_XFUNCPROTOBEGIN
 
 typedef struct _ConstraintClassRec *ConstraintWidgetClass;
 
 #ifndef VMS
-externalref WidgetClass constraintWidgetClass;
+extern WidgetClass constraintWidgetClass;
 #endif
 
-_XFUNCPROTOEND
 
 #endif /* _XtConstraint_h */
 /* DON'T ADD STUFF AFTER THIS #endif */

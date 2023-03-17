@@ -3,7 +3,7 @@ unit XawList;
 interface
 
 uses
-  X11Intrinsic,
+  XTIntrinsic,
   XawSimple;
 
 const

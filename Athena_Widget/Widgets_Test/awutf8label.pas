@@ -7,8 +7,8 @@ interface
 uses
   xlib,
   x,
-  X11StringDefs,
-  X11Intrinsic,
+  XTStringdefs,
+  XTIntrinsic,
   XawBox,
   XawCommand,
   XawLabel,

@@ -4,9 +4,9 @@ interface
 
 uses
   x, xlib,
-  X11Intrinsic,
+  XTIntrinsic,
   xresource,
-  X11Stringdefs;
+  XTStringdefs;
 
 const
   libXaw = 'libXaw.so';

@@ -6,7 +6,7 @@ interface
 uses
   xlib,
   Xresource,
-  X11Intrinsic;
+  XTIntrinsic;
 
 const
   libXmu = 'libXmu.so';

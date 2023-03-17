@@ -3,7 +3,7 @@ unit XawCommand;
 interface
 
 uses
-  X11Intrinsic,
+  XTIntrinsic,
   XmuConverters,
   XawSimple,
   XawLabel;

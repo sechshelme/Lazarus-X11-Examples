@@ -3,7 +3,7 @@
 
 #include <X11/Xfuncproto.h>
 
-_XFUNCPROTOBEGIN
+//_XFUNCPROTOBEGIN
 
 extern void _XtShellGetCoordinates(Widget widget, Position *x, Position *y);
 

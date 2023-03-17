@@ -3,7 +3,7 @@ unit XawLabel;
 interface
 
 uses
-  X11Intrinsic,
+  XTIntrinsic,
   XawSimple;
 
 const

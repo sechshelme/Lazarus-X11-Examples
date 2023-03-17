@@ -5,7 +5,7 @@ interface
 
 uses
   x, xlib,
-  X11Intrinsic;
+  XTIntrinsic;
 
 const
   libXaw = 'libXaw.so';

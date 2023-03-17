@@ -1,5 +1,5 @@
 
-unit X11Intrinsic;
+unit XTIntrinsic;
 
 interface
 

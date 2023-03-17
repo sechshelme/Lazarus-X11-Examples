@@ -1,5 +1,5 @@
 
-unit X11Stringdefs;
+unit XTStringdefs;
 
 interface
 
