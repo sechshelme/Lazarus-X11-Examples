@@ -2,11 +2,12 @@
 
 #include  <X11/StringDefs.h>
 #include  <X11/Intrinsic.h>
+//#include  <X11/CoreP.h>
 #include  <X11/Xaw/Box.h>
 #include  <X11/Xaw/Command.h>
 #include  <X11/Xaw/Template.h>
 #include  <X11/Xaw/TextSink.h>
-#include  <X11/Xaw/AsciiTextP.h>
+//#include  <X11/Xaw/AsciiTextP.h>
 #include  <X11/Xmu/Converters.h>
 #include  <stdio.h>
 
@@ -36,12 +37,10 @@ printf("size: %i\n",sizeof( int));
     box = XtCreateManagedWidget("Button Gruppe", boxWidgetClass, toplevel, NULL, 0);
 
     command = XtCreateManagedWidget("Hello World !", commandWidgetClass, box, NULL, 0);
-    XtAddCallback(command, XtNcallback, hello, NULL);
+    XtAddCallback(command, XtNcallback, &hello, NULL);
 
     command = XtCreateManagedWidget("Programm beenden", commandWidgetClass, box, NULL, 0);
-    XtAddCallback(command, XtNcallback, quit, NULL);
-
-    //command = XtCreateManagedWidget("Programm beenden", templateWidgetClass, box, NULL, 0);
+    XtAddCallback(command, XtNcallback, &quit, NULL);
 
     XtRealizeWidget(toplevel);
 

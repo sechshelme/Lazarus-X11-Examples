@@ -350,7 +350,6 @@ type
   PXtVarArgsList = ^TXtVarArgsList;
   TXtVarArgsList = TXtPointer;
 
-  { widget  }{ closure  }{ data the application registered  } { call_data  }{ callback specific data  }
 //  TXtCallbackProc = procedure(para1: TWidget; para2: TXtPointer; para3: TXtPointer); cdecl;
   TXtCallbackProc = Pointer;
 
@@ -426,23 +425,16 @@ type
   TXtResourceList = PXtResource;
   PXtResourceList = ^TXtResourceList;
 
-  { widget  }{ offset  }{ value  }
   TXtResourceDefaultProc = procedure(para1: TWidget; para2: PtrUint; para3: PXrmValue); cdecl;
 
-  { dpy  }{ xnl  }{ client_data  }
   TXtLanguageProc = function(para1: PDisplay; para2: TString; para3: TXtPointer): TString; cdecl;
 
-
-  { name  }{ type  }{ class  }{ default  }{ params  }{ num_params  }
   TXtErrorMsgHandler = procedure(para1: TString; para2: TString; para3: TString; para4: TString; para5: PString; para6: PCardinal); cdecl;
 
-  { msg  }
   TXtErrorHandler = procedure(para1: TString); cdecl;
 
-  { shell  }
   TXtCreatePopupChildProc = procedure(para1: TWidget); cdecl;
 
-  { closure  }{ data the application registered  }
   TXtWorkProc = function(para1: TXtPointer): TBoolean; cdecl;
 
   PSubstitutionRec = ^TSubstitutionRec;

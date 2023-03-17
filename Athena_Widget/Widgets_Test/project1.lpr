@@ -38,7 +38,8 @@ uses
   XTConstraint,
   XTObject,
   XTRectObj,
-  ShellI,
+  XTShellI,
+
 
   //  XawTemplate,
   XawTextSink,

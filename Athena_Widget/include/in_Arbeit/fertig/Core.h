@@ -48,18 +48,18 @@ SOFTWARE.
 #ifndef _XtCore_h
 #define _XtCore_h
 
-_XFUNCPROTOBEGIN
+//_XFUNCPROTOBEGIN
 
 typedef struct _WidgetClassRec *CoreWidgetClass;
 typedef struct _WidgetRec *CoreWidget;
-externalref WidgetClass coreWidgetClass;
+extern WidgetClass coreWidgetClass;
 
 #ifndef VMS
-externalref WidgetClass widgetClass;
+extern WidgetClass widgetClass;
 
 #endif
 
-_XFUNCPROTOEND
+// _XFUNCPROTOEND
 
 #endif /* _XtCore_h */
 /* DON'T ADD STUFF AFTER THIS #endif */

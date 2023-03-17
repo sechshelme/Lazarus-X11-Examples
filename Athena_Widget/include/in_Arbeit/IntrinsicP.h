@@ -64,19 +64,19 @@ typedef struct {
     XtIntPtr	xrm_default_type; /* Default representation type quark	*/
     XtPointer	xrm_default_addr; /* Default resource address		*/
 } XrmResource, *XrmResourceList;
-#if __STDC_VERSION__ >= 201112L
-_Static_assert(XtOffsetOf(XrmResource, xrm_default_addr) ==
-                   XtOffsetOf(XtResource, default_addr),
-               "Field offset mismatch");
-#endif
+//#if __STDC_VERSION__ >= 201112L
+//_Static_assert(XtOffsetOf(XrmResource, xrm_default_addr) ==
+//                   XtOffsetOf(XtResource, default_addr),
+//               "Field offset mismatch");
+//#endif
 
 typedef unsigned long XtVersionType;
 
 #define XT_VERSION 11
-#ifndef XT_REVISION
+//#ifndef XT_REVISION
 #define XT_REVISION 6
-#endif
-#define XtVersion (XT_VERSION * 1000 + XT_REVISION)
+//#endif
+#define XtVersion (11 * 1000 + 6) //#define XtVersion (XT_VERSION * 1000 + XT_REVISION)
 #define XtVersionDontCheck 0
 
 typedef void (*XtProc)(
@@ -213,69 +213,69 @@ typedef struct _XtTMRec {
 #define XtIsRealized(object)	(XtWindowOfObject(object) != None)
 #define XtParent(widget)	((widget)->core.parent)
 
-#undef XtIsRectObj
+//#undef XtIsRectObj
 extern Boolean XtIsRectObj(Widget);
-#define XtIsRectObj(obj) \
-    (((Object)(obj))->object.widget_class->core_class.class_inited & 0x02)
+//#define XtIsRectObj(obj) \
+//    (((Object)(obj))->object.widget_class->core_class.class_inited & 0x02)
 
-#undef XtIsWidget
+//#undef XtIsWidget
 extern Boolean XtIsWidget(Widget);
-#define XtIsWidget(obj) \
-    (((Object)(obj))->object.widget_class->core_class.class_inited & 0x04)
+//#define XtIsWidget(obj) \
+//    (((Object)(obj))->object.widget_class->core_class.class_inited & 0x04)
 
-#undef XtIsComposite
+//#undef XtIsComposite
 extern Boolean XtIsComposite(Widget);
-#define XtIsComposite(obj) \
-    (((Object)(obj))->object.widget_class->core_class.class_inited & 0x08)
+//#define XtIsComposite(obj) \
+//    (((Object)(obj))->object.widget_class->core_class.class_inited & 0x08)
 
-#undef XtIsConstraint
+//#undef XtIsConstraint
 extern Boolean XtIsConstraint(Widget);
-#define XtIsConstraint(obj) \
-    (((Object)(obj))->object.widget_class->core_class.class_inited & 0x10)
+//#define XtIsConstraint(obj) \
+//    (((Object)(obj))->object.widget_class->core_class.class_inited & 0x10)
 
-#undef XtIsShell
+//#undef XtIsShell
 extern Boolean XtIsShell(Widget);
-#define XtIsShell(obj) \
-    (((Object)(obj))->object.widget_class->core_class.class_inited & 0x20)
+//#define XtIsShell(obj) \
+//    (((Object)(obj))->object.widget_class->core_class.class_inited & 0x20)
 
-#undef XtIsWMShell
+//#undef XtIsWMShell
 extern Boolean XtIsWMShell(Widget);
-#define XtIsWMShell(obj) \
-    (((Object)(obj))->object.widget_class->core_class.class_inited & 0x40)
+//#define XtIsWMShell(obj) \
+//    (((Object)(obj))->object.widget_class->core_class.class_inited & 0x40)
 
-#undef XtIsTopLevelShell
+//#undef XtIsTopLevelShell
 extern Boolean XtIsTopLevelShell(Widget);
-#define XtIsTopLevelShell(obj) \
-    (((Object)(obj))->object.widget_class->core_class.class_inited & 0x80)
+//#define XtIsTopLevelShell(obj) \
+    //(((Object)(obj))->object.widget_class->core_class.class_inited & 0x80)
 
-#ifdef DEBUG
-#define XtCheckSubclass(w, widget_class_ptr, message)	\
-	if (!XtIsSubclass(((Widget)(w)), (widget_class_ptr))) {	\
-	    String dbgArgV[3];				\
-	    Cardinal dbgArgC = 3;			\
-	    dbgArgV[0] = ((Widget)(w))->core.widget_class->core_class.class_name;\
-	    dbgArgV[1] = (widget_class_ptr)->core_class.class_name;	     \
-	    dbgArgV[2] = (message);					     \
-	    XtAppErrorMsg(XtWidgetToApplicationContext((Widget)(w)),	     \
-		    "subclassMismatch", "xtCheckSubclass", "XtToolkitError", \
-		    "Widget class %s found when subclass of %s expected: %s",\
-		    dbgArgV, &dbgArgC);			\
-	}
-#else
-#define XtCheckSubclass(w, widget_class, message)	/* nothing */
-#endif
+//#ifdef DEBUG
+//#define XtCheckSubclass(w, widget_class_ptr, message)	\
+//	if (!XtIsSubclass(((Widget)(w)), (widget_class_ptr))) {	\
+//	    String dbgArgV[3];				\
+//	    Cardinal dbgArgC = 3;			\
+//	    dbgArgV[0] = ((Widget)(w))->core.widget_class->core_class.class_name;\
+//	    dbgArgV[1] = (widget_class_ptr)->core_class.class_name;	     \
+//	    dbgArgV[2] = (message);					     \
+//	    XtAppErrorMsg(XtWidgetToApplicationContext((Widget)(w)),	     \
+//		    "subclassMismatch", "xtCheckSubclass", "XtToolkitError", \
+//		    "Widget class %s found when subclass of %s expected: %s",\
+//		    dbgArgV, &dbgArgC);			\
+//	}
+//#else
+#define XtCheckSubclass(w, widget_class, message) 0	/* nothing */
+//#endif
 
-_XFUNCPROTOBEGIN
+// _XFUNCPROTOBEGIN
 
 extern Widget _XtWindowedAncestor( /* internal; implementation-dependent */
     Widget 		/* object */
 );
 
-#if (defined(_WIN32) || defined(__CYGWIN__)) && !defined(LIBXT_COMPILATION)
-__declspec(dllimport)
-#else
+//#if (defined(_WIN32) || defined(__CYGWIN__)) && !defined(LIBXT_COMPILATION)
+//__declspec(dllimport)
+//#else
 extern
-#endif
+//#endif
 void _XtInherit(
     void
 );
@@ -328,7 +328,7 @@ extern void XtProcessUnlock(
     void
 );
 
-_XFUNCPROTOEND
+// _XFUNCPROTOEND
 
 #endif /* _XtIntrinsicP_h */
 /* DON'T ADD STUFF AFTER THIS #endif */
