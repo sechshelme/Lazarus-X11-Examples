@@ -40,29 +40,29 @@ Diese sind alle in C/C++
 <img src="image.png">
 
 ##Zusätliche XToolKit Widget
-https://sourceforge.net/projects/sf-xpaint/files/libxaw3dxft/
+(https://sourceforge.net/projects/sf-xpaint/files/libxaw3dxft/)
 
 ##Infos zu benötigten Paketen
-https://tronche.com/gui/x/xlib/introduction/header.html
+(https://tronche.com/gui/x/xlib/introduction/header.html)
 
 ##Sourcen Pakete Quellen von X11
 ###x11proto
-https://github.com/freedesktop/xorg-x11proto.git
-git://anongit.freedesktop.org/git/xorg/proto/xorgproto
+(https://github.com/freedesktop/xorg-x11proto.git)
+(git://anongit.freedesktop.org/git/xorg/proto/xorgproto)
 
 ###libx
-https://github.com/freedesktop/xorg-libX11
+(https://github.com/freedesktop/xorg-libX11)
 
 ###lixXt XToolkit Extension
-https://github.com/freedesktop/xorg-libXt
+(https://github.com/freedesktop/xorg-libXt)
 
 ###libXaw Athena Widget
-https://github.com/freedesktop/xorg-libXaw
+(https://github.com/freedesktop/xorg-libXaw)
 
 ###libXmu
-https://github.com/freedesktop/libXmu
-git://anongit.freedesktop.org/git/xorg/lib/libXmu
-http://cgit.freedesktop.org/xorg/lib/libXmu
+(https://github.com/freedesktop/libXmu)
+(git://anongit.freedesktop.org/git/xorg/lib/libXmu)
+(http://cgit.freedesktop.org/xorg/lib/libXmu)
 
 
 
