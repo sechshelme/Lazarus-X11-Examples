@@ -3,9 +3,8 @@ unit XawMultiSrc;
 interface
 
 uses
-  x, xlib,
-  XTIntrinsic,
-  XawText;
+  xlib,
+  XTIntrinsic;
 
 const
   libXaw = 'libXaw.so';
@@ -50,7 +49,8 @@ const
   XtNuseStringInPlace = 'useStringInPlace';  
   XtRMultiType = 'MultiType';  
   XtEstring = 'string';  
-  XtEfile = 'file';  
+  XtEfile = 'file';
+
 {***********************************************************
  *
  * THESE ROUTINES ARE NOT PUBLIC: Source should call

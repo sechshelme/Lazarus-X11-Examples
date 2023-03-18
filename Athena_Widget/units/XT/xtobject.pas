@@ -3,7 +3,6 @@ unit XTObject;
 interface
 
 uses
-  x, xlib,
   XTIntrinsic;
 
 const

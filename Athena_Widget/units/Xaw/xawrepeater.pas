@@ -3,10 +3,7 @@ unit XawRepeater;
 interface
 
 uses
-  XTIntrinsic,
-  XmuConverters,
-  XawSimple,
-  XawLabel;
+  XTIntrinsic;
 
 const
   libXaw = 'libXaw.so';

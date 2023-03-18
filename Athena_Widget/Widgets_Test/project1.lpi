@@ -120,7 +120,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="../units;../units/Xaw;../units/Xmu"/>
+      <OtherUnitFiles Value="../units/XT;../units/Xaw;../units/Xmu"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

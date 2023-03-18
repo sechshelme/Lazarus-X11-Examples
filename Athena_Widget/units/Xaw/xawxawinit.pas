@@ -3,9 +3,8 @@ unit XawXawInit; // Die Quell-Header heisst Xaw !!
 interface
 
 uses
-  xlib, x,
-  XTIntrinsic,
-  XawSimple;
+  xlib,
+  XTIntrinsic;
 
 const
   libXaw = 'libXaw.so';

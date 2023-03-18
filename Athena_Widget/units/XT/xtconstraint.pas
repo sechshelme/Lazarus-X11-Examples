@@ -3,7 +3,6 @@ unit XTConstraint;
 interface
 
 uses
-  x, xlib,
   XTIntrinsic;
 
 const

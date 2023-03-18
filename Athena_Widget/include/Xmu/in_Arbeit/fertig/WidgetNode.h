@@ -60,7 +60,7 @@ typedef struct _XmuWidgetNode {
 #define XmuWnSuperclass(wn) ((XmuWnClass(wn))->core_class.superclass)
 
 					/* external interfaces */
-//_XFUNCPROTOBEGIN
+// _XFUNCPROTOBEGIN
 
 void XmuWnInitializeNodes
 (
@@ -89,7 +89,7 @@ XmuWidgetNode *XmuWnNameToNode
  const char		*name
  );
 
-//_XFUNCPROTOEND
+// _XFUNCPROTOEND
 
 #endif /* _XmuWidgetNode_h */
 

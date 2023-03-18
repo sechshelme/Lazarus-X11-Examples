@@ -3,7 +3,6 @@ unit XTCore;
 interface
 
 uses
-  x, xlib,
   XTIntrinsic;
 
 const

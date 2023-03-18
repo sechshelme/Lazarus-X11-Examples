@@ -3,16 +3,13 @@ unit AwToggle;
 interface
 
 uses
-  xlib,
-  x,
   XTStringdefs,
   XTIntrinsic,
   XTComposite,
   XawToggle,
   XawLabel,
   XawCommand,
-  XawBox,
-  XawScrollbar;
+  XawBox;
 
 // https://ergodic.ugr.es/cphys_pedro/unix/athena3.html
 

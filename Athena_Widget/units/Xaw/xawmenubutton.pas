@@ -3,7 +3,6 @@ unit XawMenuButton;
 interface
 
 uses
-  x, xlib,
   XTIntrinsic;
 
 const

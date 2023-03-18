@@ -4,16 +4,11 @@ interface
 
 uses
   Classes,
-  xlib,
-  x,
   XTStringdefs,
   XTIntrinsic,
-  XawBox,
-  XawCommand,
   XawLabel,
   XawAsciiText,
-  XawText,
-  XawList;
+  XawText;
 
 procedure CreateAsciiText(Parent: TWidget);
 

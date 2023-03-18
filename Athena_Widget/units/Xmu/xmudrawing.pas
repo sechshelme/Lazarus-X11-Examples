@@ -10,8 +10,6 @@ uses
 const
   libXmu = 'libXmu.so';
 
-
-
 //{$include <X11/Xlib.h>}
 //{$include <X11/Xfuncproto.h>}
 //{$include <stdio.h>}

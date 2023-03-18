@@ -3,7 +3,7 @@ unit XmuWidgetNode;
 interface
 
 uses
-  xlib,x,
+  xlib,
   XTIntrinsic;
 
 const
@@ -54,18 +54,18 @@ type
     end;
 { was #define dname(params) para_def_expr }
 { argument types are unknown }
-{ return type might be wrong }   
+{ return type might be wrong }
 
 function XmuWnClass(wn : PXmuWidgetNode) : TWidgetClass;
 
 //{ was #define dname(params) para_def_expr }
 //{ argument types are unknown }
-//{ return type might be wrong }   
+//{ return type might be wrong }
 //function XmuWnClassname(wn : PXmuWidgetNode) : PChar;
 //
 //{ was #define dname(params) para_def_expr }
 //{ argument types are unknown }
-//{ return type might be wrong }   
+//{ return type might be wrong }
 //function XmuWnSuperclass(wn : PXmuWidgetNode) : PChar;
 //
 { external interfaces  }

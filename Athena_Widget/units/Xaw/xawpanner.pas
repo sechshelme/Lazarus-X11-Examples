@@ -3,9 +3,7 @@ unit XawPanner;
 interface
 
 uses
-  x, xlib,
-  XTIntrinsic,
-  XawText;
+  XTIntrinsic;
 
 const
   libXaw = 'libXaw.so';

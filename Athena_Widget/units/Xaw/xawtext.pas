@@ -3,7 +3,6 @@ unit XawText;
 interface
 
 uses
-  x, xlib,
   XTIntrinsic,
   xresource,
   XTStringdefs;

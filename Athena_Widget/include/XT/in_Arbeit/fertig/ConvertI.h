@@ -1,6 +1,6 @@
 /***********************************************************
 
-Copyright 1987, 1988, 1994, 1998  The Open Group
+Copyright 1987, 1988, 1998  The Open Group
 
 Permission to use, copy, modify, distribute, and sell this software and its
 documentation for any purpose is hereby granted without fee, provided that
@@ -45,56 +45,56 @@ SOFTWARE.
 
 ******************************************************************/
 
-/****************************************************************
- *
- * Resources
- *
- ****************************************************************/
+//_XFUNCPROTOBEGIN
 
-#ifndef _XtresourceI_h
-#define _XtresourceI_h
+/* Representation types */
 
-#define StringToQuark(string) XrmStringToQuark(string)
-#define StringToName(string) XrmStringToName(string)
-#define StringToClass(string) XrmStringToClass(string)
+extern	XrmQuark  _XtQString;
 
-_XFUNCPROTOBEGIN
+/*
+ * Resource conversions
+ */
 
-extern void _XtDependencies(
-    XtResourceList  * /* class_resp */,
-    Cardinal	    * /* class_num_resp */,
-    XrmResourceList * /* super_res */,
-    Cardinal	     /* super_num_res */,
-    Cardinal	     /* super_widget_size */);
+typedef struct _ConverterRec **ConverterTable;
 
-extern void _XtResourceDependencies(
-    WidgetClass  /* wc */
+extern void _XtAddDefaultConverters(
+    ConverterTable	/* table */
 );
 
-extern void _XtConstraintResDependencies(
-    ConstraintWidgetClass  /* wc */
+extern void _XtSetDefaultConverterTable(
+    ConverterTable* 		/* table */
 );
 
-extern XtCacheRef* _XtGetResources(
-    Widget	    /* w */,
-    ArgList	    /* args */,
-    Cardinal	    /* num_args */,
-    XtTypedArgList  /* typed_args */,
-    Cardinal*	    /* num_typed_args */
+extern void _XtFreeConverterTable(
+    ConverterTable 		/* table */
 );
 
-extern void _XtCopyFromParent(
-    Widget		/* widget */,
-    int			/* offset */,
-    XrmValue*		/* value */
+extern void _XtTableAddConverter(
+    ConverterTable		/* table */,
+    XrmRepresentation    	/* from_type */,
+    XrmRepresentation    	/* to_type */,
+    XtTypeConverter      	/* converter */,
+    XtConvertArgRec const *     /* convert_args */,
+    Cardinal             	/* num_args */,
+    _XtBoolean              	/* new_style */,
+    XtCacheType	    		/* cache_type */,
+    XtDestructor         	/* destructor */,
+    _XtBoolean			/* global */
 );
 
-extern void _XtCopyToArg(char *src, XtArgVal *dst, unsigned int size);
-extern void _XtCopyFromArg(XtArgVal src, char *dst, unsigned int size);
-extern XrmResourceList* _XtCreateIndirectionTable(XtResourceList resources,
-						  Cardinal num_resources);
-extern void _XtResourceListInitialize(void);
+extern Boolean _XtConvert(
+    Widget			/* widget */,
+    XrmRepresentation    	/* from_type */,
+    XrmValuePtr			/* from */,
+    XrmRepresentation		/* to_type */,
+    XrmValuePtr			/* to */,
+    XtCacheRef*			/* cache_ref_return */
+);
 
-_XFUNCPROTOEND
+void _XtConvertInitialize(void);
 
-#endif /* _XtresourceI_h */
+#ifdef DEBUG
+void _XtConverterCacheStats(void);
+#endif
+
+// _XFUNCPROTOEND

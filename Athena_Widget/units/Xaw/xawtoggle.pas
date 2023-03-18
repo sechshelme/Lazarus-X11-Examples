@@ -3,7 +3,6 @@ unit XawToggle;
 interface
 
 uses
-  x, xlib,
   XTIntrinsic;
 
 const

@@ -35,7 +35,7 @@ in this Software without prior written authorization from The Open Group.
 #include <X11/Intrinsic.h>
 #include <X11/Xfuncproto.h>
 
-//_XFUNCPROTOBEGIN
+_XFUNCPROTOBEGIN
 
 void XmuCvtFunctionToCallback
 (
@@ -272,6 +272,6 @@ Boolean XmuCvtWidgetToString
  XtPointer		*converter_data
  );
 
-//_XFUNCPROTOEND
+_XFUNCPROTOEND
 
 #endif /* _XMU_STRCONVERT_H_ */

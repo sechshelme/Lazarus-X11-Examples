@@ -3,7 +3,6 @@ unit XTComposite;
 interface
 
 uses
-  x, xlib,
   XTIntrinsic;
 
 {$IFDEF FPC}

@@ -3,7 +3,6 @@ unit XawReports;
 interface
 
 uses
-  x, xlib,
   XTIntrinsic;
 
 const

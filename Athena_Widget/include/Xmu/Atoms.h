@@ -86,7 +86,7 @@ extern AtomPtr
 #define XA_USER(d)		XmuInternAtom(d, _XA_USER)
 #define XA_UTF8_STRING(d)	XmuInternAtom(d, _XA_UTF8_STRING)
 
-_XFUNCPROTOBEGIN
+//_XFUNCPROTOBEGIN
 
 char *XmuGetAtomName
 (
@@ -110,7 +110,7 @@ void XmuInternStrings
 
 AtomPtr XmuMakeAtom
 (
- _Xconst char	*name
+const char	*name
  );
 
 char *XmuNameOfAtom
@@ -118,6 +118,6 @@ char *XmuNameOfAtom
  AtomPtr	atom_ptr
  );
 
-_XFUNCPROTOEND
+//_XFUNCPROTOEND
 
 #endif /* _XMU_ATOMS_H_ */

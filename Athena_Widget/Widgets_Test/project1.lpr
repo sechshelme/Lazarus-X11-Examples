@@ -22,8 +22,6 @@ uses
   XawScrollbar,
   XawDialog,
   XawRepeater,
-  XmuConverters,
-  XmuDrawing,
   XawBox,
   XawAllWidgets,
   XawLabel,
@@ -38,7 +36,6 @@ uses
   XTConstraint,
   XTObject,
   XTRectObj,
-  XTShellI,
 
 
   //  XawTemplate,

@@ -3,7 +3,7 @@ unit XawTextSink;
 interface
 
 uses
-  x, xlib,
+  xlib,
   XTIntrinsic,
   XawText  ;
 

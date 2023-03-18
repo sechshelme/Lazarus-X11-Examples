@@ -3,9 +3,7 @@ unit XawScrollbar;
 interface
 
 uses
-  xlib,x,
-  XTIntrinsic,
-  XawSimple;
+  XTIntrinsic;
 
 const
   libXaw = 'libXaw.so';

@@ -4,7 +4,6 @@ unit XawTip;
 interface
 
 uses
-  x, xlib,
   XTIntrinsic;
 
 const

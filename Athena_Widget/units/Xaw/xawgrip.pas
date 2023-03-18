@@ -3,9 +3,8 @@ unit XawGrip;
 interface
 
 uses
-  xlib,x,
-  XTIntrinsic,
-  XawSimple;
+  xlib,
+  XTIntrinsic;
 
 const
   libXaw = 'libXaw.so';

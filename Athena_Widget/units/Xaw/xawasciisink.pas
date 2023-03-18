@@ -3,9 +3,7 @@ unit XawAsciiSink;
 interface
 
 uses
-  x, xlib,
-  XTIntrinsic,
-  xresource;
+  XTIntrinsic;
 
 const
   libXaw = 'libXaw.so';

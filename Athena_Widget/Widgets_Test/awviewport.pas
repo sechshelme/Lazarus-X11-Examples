@@ -3,16 +3,12 @@ unit awViewport;
 interface
 
 uses
-  xlib,
-  x,
   XTStringdefs,
   XTIntrinsic,
   XawLabel,
   XawForm,
   XawCommand,
-  XawViewport,
-  XawBox,
-  XawScrollbar;
+  XawViewport;
 
 procedure CreateViewport(parent: TWidget);
 

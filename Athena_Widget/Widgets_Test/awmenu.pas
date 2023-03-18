@@ -3,8 +3,6 @@ unit awMenu;
 interface
 
 uses
-  xlib,
-  x,
   XTStringdefs,
   XTIntrinsic,
   XawMenuButton,

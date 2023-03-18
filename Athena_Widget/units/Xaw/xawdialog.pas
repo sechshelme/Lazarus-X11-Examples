@@ -3,7 +3,6 @@ unit XawDialog;
 interface
 
 uses
-  x, xlib,
   XTIntrinsic;
 
 const

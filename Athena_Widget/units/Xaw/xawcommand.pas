@@ -4,9 +4,7 @@ interface
 
 uses
   XTIntrinsic,
-  XmuConverters,
-  XawSimple,
-  XawLabel;
+  XmuConverters;
 
 const
   libXaw = 'libXaw.so';

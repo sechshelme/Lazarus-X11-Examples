@@ -3,13 +3,10 @@ unit MyDialog;
 interface
 
 uses
-  xlib,
-  x,
   XTStringdefs,
   XTIntrinsic,
   XawCommand,
-  XawBox,
-  XawDialog;
+  XawBox;
 
 procedure CreateMyDialog(Parent:TWidget);
 

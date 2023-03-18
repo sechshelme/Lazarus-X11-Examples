@@ -3,7 +3,6 @@ unit XawViewport;
 interface
 
 uses
-  x, xlib,
   XTIntrinsic;
 
 const

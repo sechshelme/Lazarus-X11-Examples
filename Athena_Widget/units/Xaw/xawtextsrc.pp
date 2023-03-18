@@ -3,7 +3,7 @@ unit XawTextSrc;
 interface
 
 uses
-  x, xlib,
+  x,
   XTIntrinsic,
   XawText;
 

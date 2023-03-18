@@ -29,6 +29,7 @@ Diese sind alle in C/C++
 
 | Datum | Änderungen 
 | :---: | ---
+| 10.03.2023 | Erste Gehversuche mit **Athena Widgets**
 | 21.11.2022 | Infos zu Schriften hinzugefügt: [Fonts](font.md) 
 | 14.11.2022 | Beispiel wie man Komponenten erstellt
 | 25.10.2022 | Tutorial - Grafikprimitive
@@ -40,6 +41,34 @@ Diese sind alle in C/C++
 
 ##Zusätliche XToolKit Widget
 https://sourceforge.net/projects/sf-xpaint/files/libxaw3dxft/
+
+##Infos zu benötigten Paketen
+https://tronche.com/gui/x/xlib/introduction/header.html
+
+##Sourcen Pakete Quellen von X11
+###x11proto
+https://github.com/freedesktop/xorg-x11proto.git
+git://anongit.freedesktop.org/git/xorg/proto/xorgproto
+
+###libx
+https://github.com/freedesktop/xorg-libX11
+
+###lixXt XToolkit Extension
+https://github.com/freedesktop/xorg-libXt
+
+###libXaw Athena Widget
+https://github.com/freedesktop/xorg-libXaw
+
+###libXmu
+https://github.com/freedesktop/libXmu
+git://anongit.freedesktop.org/git/xorg/lib/libXmu
+http://cgit.freedesktop.org/xorg/lib/libXmu
+
+
+
+
+
+
 
 
 

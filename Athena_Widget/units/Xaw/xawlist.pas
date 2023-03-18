@@ -3,8 +3,7 @@ unit XawList;
 interface
 
 uses
-  XTIntrinsic,
-  XawSimple;
+  XTIntrinsic;
 
 const
   libXaw = 'libXaw.so';

@@ -3,7 +3,7 @@ unit XawForm;
 interface
 
 uses
-  x, xlib,
+  xlib,
   XTIntrinsic;
 
 const
