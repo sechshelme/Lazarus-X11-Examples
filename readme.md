@@ -52,12 +52,15 @@ Diese sind alle in C/C++
 
 ### libx
 - (https://github.com/freedesktop/xorg-libX11)
+- (https://cgit.freedesktop.org/xorg/lib/libx)
 
 ### lixXt XToolkit Extension
 - (https://github.com/freedesktop/xorg-libXt)
+- (https://cgit.freedesktop.org/xorg/lib/libXt)
 
 ### libXaw Athena Widget
 - (https://github.com/freedesktop/xorg-libXaw)
+- (https://cgit.freedesktop.org/xorg/lib/libXaw)
 
 ### libXmu
 - (https://github.com/freedesktop/libXmu)
