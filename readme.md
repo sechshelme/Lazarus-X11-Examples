@@ -62,6 +62,10 @@ Diese sind alle in C/C++
 - (https://github.com/freedesktop/xorg-libXaw)
 - (https://cgit.freedesktop.org/xorg/lib/libXaw)
 
+### libXaw Athena Widget 3D
+- (https://github.com/freedesktop/xorg-libXaw3d)
+- (https://cgit.freedesktop.org/xorg/lib/libXaw3d)
+
 ### libXmu
 - (https://github.com/freedesktop/libXmu)
 - (http://cgit.freedesktop.org/xorg/lib/libXmu)
