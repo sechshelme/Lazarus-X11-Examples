@@ -48,7 +48,7 @@ Diese sind alle in C/C++
 ## Sourcen Pakete Quellen von X11
 ### x11proto
 - (https://github.com/freedesktop/xorg-x11proto.git)
-- (git://anongit.freedesktop.org/git/xorg/proto/xorgproto)
+- (https://cgit.freedesktop.org/xorg/proto/xorgproto)
 
 ### libx
 - (https://github.com/freedesktop/xorg-libX11)
@@ -61,7 +61,6 @@ Diese sind alle in C/C++
 
 ### libXmu
 - (https://github.com/freedesktop/libXmu)
-- (git://anongit.freedesktop.org/git/xorg/lib/libXmu)
 - (http://cgit.freedesktop.org/xorg/lib/libXmu)
 
 
