@@ -5,10 +5,7 @@ interface
 uses
   xlib,
   XTIntrinsic,
-  XawText  ;
-
-const
-  libXaw = 'libXaw.so';
+  XawText;
 
 {$IFDEF FPC}
 {$PACKRECORDS C}

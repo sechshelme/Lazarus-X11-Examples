@@ -3,10 +3,7 @@ unit XawSimple;
 interface
 
 uses
-XTIntrinsic;
-
-const
-  libXaw = 'libXaw.so';
+  XTIntrinsic;
 
 // {$include <X11/Xmu/Converters.h>}
 { Resources:

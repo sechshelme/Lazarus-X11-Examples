@@ -5,9 +5,6 @@ interface
 uses
   XmuWidgetNode;
 
-const
-  libXmu = 'libXmu.so';
-
 {$IFDEF FPC}
 {$PACKRECORDS C}
 {$ENDIF}

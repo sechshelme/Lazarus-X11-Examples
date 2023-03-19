@@ -66,9 +66,15 @@ Diese sind alle in C/C++
 - (https://github.com/freedesktop/xorg-libXaw3d)
 - (https://cgit.freedesktop.org/xorg/lib/libXaw3d)
 
+## Motif
+- (https://sourceforge.net/projects/motif/files/)
+
 ### libXmu
 - (https://github.com/freedesktop/libXmu)
 - (http://cgit.freedesktop.org/xorg/lib/libXmu)
+
+# Schlagwörter
+Lazarus fpc pascal XToolkit Toolkit libx x11 xserver linux Athena Widget Modif
 
 
 

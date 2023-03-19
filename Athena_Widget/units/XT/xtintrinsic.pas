@@ -9,6 +9,8 @@ uses
 
 const
   libXt = 'libXt.so';
+  libXaw = 'libXaw.so';
+//  libXaw = 'libXaw3d.so';
 
   {$IFDEF FPC}
   {$PACKRECORDS C}

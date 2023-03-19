@@ -5,9 +5,6 @@ interface
 uses
   XTIntrinsic;
 
-const
-  libXaw = 'libXaw.so';
-
 //{$include <X11/Xmu/Converters.h>}
 //{$include <X11/Xaw/Sme.h>}
 { BSB Menu Entry Resources:

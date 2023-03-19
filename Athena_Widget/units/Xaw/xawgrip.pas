@@ -6,10 +6,6 @@ uses
   xlib,
   XTIntrinsic;
 
-const
-  libXaw = 'libXaw.so';
-
-
 // {$include <X11/Xaw/Simple.h>}
 { Resources:
 

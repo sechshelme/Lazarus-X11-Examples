@@ -7,9 +7,6 @@ uses
   xresource,
   XTStringdefs;
 
-const
-  libXaw = 'libXaw.so';
-
 {$IFDEF FPC}
 {$PACKRECORDS C}
 {$ENDIF}

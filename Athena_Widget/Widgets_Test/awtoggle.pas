@@ -29,15 +29,17 @@ type
 
 procedure rgback(w: TWidget; variable: PInteger; rs2: Pradio_struct);
 var
-  toggleTag: PtrUInt;
+  toggleTag: PtrInt;
   state: boolean;
+  pc,name: PChar;
 begin
   toggleTag := PtrUInt(XawToggleGetCurrent(w)) - 1;
-  XtVaGetValues(w, XtNstate, @state, nil);
+  XtVaGetValues(w, XtNstate, @state, XtNlabel, @pc,XtNname,@name, nil);
 
   variable^ := toggleTag;
 
-  //  WriteLn('Button: ', toggleTag, ' Status: ', state);
+  WriteLn('RadioButton Label: ', pc);
+  WriteLn('Button: ', toggleTag, ' Status: ', state);
 end;
 
 

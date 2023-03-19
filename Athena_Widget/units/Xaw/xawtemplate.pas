@@ -6,10 +6,7 @@ uses
   x, xlib,
   XTIntrinsic;
 
-const
-  libXaw = 'libXaw.so';
-
-  {$IFDEF FPC}
+{$IFDEF FPC}
 {$PACKRECORDS C}
 {$ENDIF}
 

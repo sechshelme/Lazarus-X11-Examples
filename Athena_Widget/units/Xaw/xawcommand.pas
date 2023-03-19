@@ -6,9 +6,6 @@ uses
   XTIntrinsic,
   XmuConverters;
 
-const
-  libXaw = 'libXaw.so';
-
 // {$include <X11/Xaw/Label.h>}
 { Command widget resources:
 

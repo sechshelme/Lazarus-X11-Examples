@@ -5,9 +5,6 @@ interface
 uses
   XTIntrinsic;
 
-const
-  libXaw = 'libXaw.so';
-
 // {$include <X11/Xaw/Command.h>}
 {****************************************************************************
  *

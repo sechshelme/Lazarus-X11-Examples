@@ -5,9 +5,6 @@ interface
 uses
   XTIntrinsic;
 
-const
-  libXaw = 'libXaw.so';
-
 {  This is the List widget, it is useful to display a list, without the
  *  overhead of having a widget for each item in the list.  It allows
  *  the user to select an item in a list and notifies the application through
