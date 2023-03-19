@@ -68,6 +68,9 @@ Diese sind alle in C/C++
 
 ## Motif
 - (https://sourceforge.net/projects/motif/files/)
+```
+sudo apt install libmotif-dev
+```
 
 ### libXmu
 - (https://github.com/freedesktop/libXmu)

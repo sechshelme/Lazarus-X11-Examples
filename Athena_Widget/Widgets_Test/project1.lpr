@@ -37,6 +37,8 @@ uses
   XTRectObj,
 
 
+  XtShell,
+
   //  XawTemplate,
   XawTextSink,
   XawTextSrc,
@@ -95,11 +97,14 @@ uses
 
     colargs: array of TArg = ((Name: XtNbackground;
       valueI: $FF00), (Name: XtNforeground; valueI: $FFFF00), (Name: XtNlabel; valueP: '$FFFF00'));
+    app: TXtAppContext;
 
   begin
     PrintWidgets;
 
     toplevel := XtInitialize('Mein Fenster', 'noname', nil, 0, @argc, argv);
+//  toplevel := XtVaOpenApplication(@app, argv[0],nil, 0, @argc, argv, nil,sessionShellWidgetClass,XtNwidth, 400, XtNheight, 300, nil);
+
 
     box := XtVaCreateManagedWidget('BasisBox', boxWidgetClass, toplevel, XtNwidth, 1600, nil);
 
