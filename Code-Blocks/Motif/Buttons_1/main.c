@@ -25,21 +25,24 @@ int main(int argc, char *argv[]) {
 	Widget        drawing_area; /* Empty Drawing Area Widget */
 
 	/* RESOURCE VALUE ARRAYS/COUNT */
-	Arg al[10];
+	Arg al[11];
 	int ac;
 
 	/* INITIALIZE TOP LEVEL WINDOW */
 //	XtSetLanguageProc(NULL, NULL, NULL);
 //	toplevel = XtVaOpenApplication(		&app, argv[0], NULL, 0, &argc, argv, NULL, sessionShellWidgetClass,		XmNwidth, 400, XmNheight, 300, NULL	);
 
-	toplevel=XtInitialize("Mein Fenster","noname",NULL,0,&argc,argv);
+	toplevel=XtVaAppInitialize(&app,"noname",NULL,0,&argc,argv,NULL, XtNwidth,320,XtNheight,200, NULL);
+
+	printf("toplevel%i\n", toplevel);
 
 	/* CREATE AND MANAGE DRAWING CANVAS WIDGET */
 	ac=0;
 //	drawing_area = XmCreateDrawingArea(toplevel, "name", al, ac);
-	//return 0;
-	drawing_area = XtVaCreateManagedWidget("BasisBox", xmButtonBoxWidgetClass, toplevel, XtNwidth, 1600, NULL);
-	drawing_area = XtVaCreateManagedWidget("Basis",xmButtonBoxWidgetClass, toplevel , NULL);
+	drawing_area = XtVaCreateManagedWidget("BasisBox", xmButtonBoxWidgetClass, toplevel, XtNwidth, 100, NULL);
+//	drawing_area = XtCreateManagedWidget("BasisBox", xmButtonBoxWidgetClass, toplevel, NULL, 0);
+	//printf("draw_area: %i\n", drawing_area);
+	//drawing_area = XtVaCreateManagedWidget("Basis",xmButtonBoxWidgetClass, toplevel , NULL);
 //XtManageChild(drawing_area);
 
 	/* REALIZE TOPLEVEL WINDOW AND LAUNCH APPLICATION LOOP */

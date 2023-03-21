@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <Name Value="Athena_Package"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="Xaw;Xmu;XT"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Files>
+      <Item>
+        <Filename Value="Xaw/xawallwidgets.pas"/>
+        <UnitName Value="XawAllWidgets"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawasciisink.pas"/>
+        <UnitName Value="XawAsciiSink"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawasciisrc.pas"/>
+        <UnitName Value="XawAsciiSrc"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawasciitext.pas"/>
+        <UnitName Value="XawAsciiText"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawbox.pas"/>
+        <UnitName Value="XawBox"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawcardinals.pas"/>
+        <UnitName Value="XawCardinals"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawcommand.pas"/>
+        <UnitName Value="XawCommand"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawdialog.pas"/>
+        <UnitName Value="XawDialog"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawform.pas"/>
+        <UnitName Value="XawForm"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawgrip.pas"/>
+        <UnitName Value="XawGrip"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawlabel.pas"/>
+        <UnitName Value="XawLabel"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawlist.pas"/>
+        <UnitName Value="XawList"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawmenubutton.pas"/>
+        <UnitName Value="XawMenuButton"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawmultisink.pas"/>
+        <UnitName Value="XawMultiSink"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawmultisrc.pas"/>
+        <UnitName Value="XawMultiSrc"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawpaned.pas"/>
+        <UnitName Value="XawPaned"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawpanner.pas"/>
+        <UnitName Value="XawPanner"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawporthole.pas"/>
+        <UnitName Value="XawPorthole"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawrepeater.pas"/>
+        <UnitName Value="XawRepeater"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawreports.pas"/>
+        <UnitName Value="XawReports"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawscrollbar.pas"/>
+        <UnitName Value="XawScrollbar"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawsimple.pas"/>
+        <UnitName Value="XawSimple"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawsimplemenu.pas"/>
+        <UnitName Value="XawSimpleMenu"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawsme.pas"/>
+        <UnitName Value="XawSme"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawsmebsb.pas"/>
+        <UnitName Value="XawSmeBSB"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawsmeline.pas"/>
+        <UnitName Value="XawSmeLine"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawstripchart.pas"/>
+        <UnitName Value="XawStripChart"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawtemplate.pas"/>
+        <UnitName Value="XawTemplate"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawtext.pas"/>
+        <UnitName Value="XawText"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawtextsink.pas"/>
+        <UnitName Value="XawTextSink"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawtextsrc.pas"/>
+        <UnitName Value="XawTextSrc"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawtip.pas"/>
+        <UnitName Value="XawTip"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawtoggle.pas"/>
+        <UnitName Value="XawToggle"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawtree.pas"/>
+        <UnitName Value="XawTree"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawviewport.pas"/>
+        <UnitName Value="XawViewport"/>
+      </Item>
+      <Item>
+        <Filename Value="Xaw/xawxawinit.pas"/>
+        <UnitName Value="XawXawInit"/>
+      </Item>
+      <Item>
+        <Filename Value="Xmu/xmuconverters.pas"/>
+        <UnitName Value="XmuConverters"/>
+      </Item>
+      <Item>
+        <Filename Value="Xmu/xmudrawing.pas"/>
+        <UnitName Value="XmuDrawing"/>
+      </Item>
+      <Item>
+        <Filename Value="Xmu/xmuwidgetnode.pas"/>
+        <UnitName Value="XmuWidgetNode"/>
+      </Item>
+      <Item>
+        <Filename Value="XT/xtcomposite.pas"/>
+        <UnitName Value="XTComposite"/>
+      </Item>
+      <Item>
+        <Filename Value="XT/xtconstraint.pas"/>
+        <UnitName Value="XTConstraint"/>
+      </Item>
+      <Item>
+        <Filename Value="XT/xtcore.pas"/>
+        <UnitName Value="XTCore"/>
+      </Item>
+      <Item>
+        <Filename Value="XT/xtintrinsic.pas"/>
+        <UnitName Value="XTIntrinsic"/>
+      </Item>
+      <Item>
+        <Filename Value="XT/xtobject.pas"/>
+        <UnitName Value="XTObject"/>
+      </Item>
+      <Item>
+        <Filename Value="XT/xtrectobj.pas"/>
+        <UnitName Value="XTRectObj"/>
+      </Item>
+      <Item>
+        <Filename Value="XT/xtshell.pas"/>
+        <UnitName Value="XtShell"/>
+      </Item>
+      <Item>
+        <Filename Value="XT/xtstringdefs.pas"/>
+        <UnitName Value="XTStringdefs"/>
+      </Item>
+      <Item>
+        <Filename Value="XT/xtvendor.pas"/>
+        <UnitName Value="XtVendor"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

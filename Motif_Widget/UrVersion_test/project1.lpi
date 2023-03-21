@@ -23,7 +23,6 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <Libraries Value="../../../../../../../../Raspi_libs"/>
             <OtherUnitFiles Value="../units;../units/Xaw;../units/Xmu"/>
             <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
@@ -31,13 +30,9 @@
             <TargetProcessor Value="ARMV6"/>
             <TargetCPU Value="arm"/>
             <TargetOS Value="linux"/>
-            <Optimizations>
-              <OptimizationLevel Value="4"/>
-            </Optimizations>
           </CodeGeneration>
           <Linking>
             <Debugging>
-              <GenerateDebugInfo Value="False"/>
               <DebugInfoType Value="dsDwarf2Set"/>
             </Debugging>
           </Linking>
@@ -61,61 +56,6 @@
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit>
-      <Unit>
-        <Filename Value="awscrollbar.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="awScrollBar"/>
-      </Unit>
-      <Unit>
-        <Filename Value="awlist.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="awList"/>
-      </Unit>
-      <Unit>
-        <Filename Value="awdialog.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="awDialog"/>
-      </Unit>
-      <Unit>
-        <Filename Value="awdrawscrebox.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="awDrawScreBox"/>
-      </Unit>
-      <Unit>
-        <Filename Value="awutf8label.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="awUTF8Label"/>
-      </Unit>
-      <Unit>
-        <Filename Value="mydialog.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="MyDialog"/>
-      </Unit>
-      <Unit>
-        <Filename Value="awtoggle.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="AwToggle"/>
-      </Unit>
-      <Unit>
-        <Filename Value="awmenu.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="awMenu"/>
-      </Unit>
-      <Unit>
-        <Filename Value="awviewport.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="awViewport"/>
-      </Unit>
-      <Unit>
-        <Filename Value="awascii.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="awAscii"/>
-      </Unit>
-      <Unit>
-        <Filename Value="awprintwidgets.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="awPrintWidgets"/>
-      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -125,11 +65,11 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="../../Athena_Widget/Package/Xm"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
       <Debugging>
-        <GenerateDebugInfo Value="False"/>
         <DebugInfoType Value="dsDwarf2Set"/>
       </Debugging>
     </Linking>
@@ -144,12 +84,6 @@
       </Item>
       <Item>
         <Name Value="EFOpenError"/>
-      </Item>
-      <Item>
-        <Name Value="RunError(216)"/>
-      </Item>
-      <Item>
-        <Name Value="EAccessViolation"/>
       </Item>
     </Exceptions>
   </Debugging>

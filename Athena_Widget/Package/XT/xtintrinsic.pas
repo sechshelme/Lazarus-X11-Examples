@@ -10,6 +10,7 @@ uses
 const
   libXt = 'libXt.so';
   libXaw = 'libXaw.so';
+  libXm = 'libXm';
 //  libXaw = 'libXaw3d.so';
 
   {$IFDEF FPC}
