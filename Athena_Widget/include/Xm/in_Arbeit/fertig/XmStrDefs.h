@@ -1371,8 +1371,9 @@ extern "C" {
 #define XmSPIXEL_SET_PROP "SDT Pixel Set"
 #define XmS50_foreground "50_foreground"
 #define XmSunspecified_pixmap "unspecified_pixmap"
-#else
+
 extern const char _XmStrings[];
+
 
 #ifdef __cplusplus
 }  /* Close scope of 'extern "C"' declaration */

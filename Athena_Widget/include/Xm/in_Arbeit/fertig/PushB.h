@@ -41,7 +41,7 @@ extern "C" {
 
 /* PushButton Widget */
 
-externalref WidgetClass xmPushButtonWidgetClass;
+extern WidgetClass xmPushButtonWidgetClass;
 
 typedef struct _XmPushButtonClassRec *XmPushButtonWidgetClass;
 typedef struct _XmPushButtonRec      *XmPushButtonWidget;

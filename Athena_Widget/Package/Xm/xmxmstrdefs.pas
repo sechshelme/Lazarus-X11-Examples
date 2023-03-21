@@ -1,7 +1,6 @@
-unit XmStrDefs;
+unit XmXmStrDefs;
 
 interface
-
 
 uses
   XTIntrinsic,
@@ -12,7 +11,7 @@ uses
 {$PACKRECORDS C}
 {$ENDIF}
 
-//{$include <X11/Intrinsic.h>}
+// {$include <X11/Intrinsic.h>}
 
 { C++ extern C conditionnal removed }
 { $TOG: makestrs.c /main/11 1998/02/06 11:24:15 kaleb $  }
@@ -1374,12 +1373,10 @@ const
   XmSPIXEL_SET_PROP = 'SDT Pixel Set';  
   XmS50_foreground = '50_foreground';  
   XmSunspecified_pixmap = 'unspecified_pixmap';  
-
-var
+(* Const before type ignored *)
+  var
     _XmStrings : Pchar;cvar;external libXm;
-
-// {$include <X11/StringDefs.h>}
-
+//{$include <X11/StringDefs.h>}
 { C++ extern C conditionnal removed }
 
 const
@@ -1395,1465 +1392,302 @@ const
   XmVaSEPARATOR = 'separator';  
   XmVaSINGLE_SEPARATOR = 'singleSeparator';  
   XmVaTOGGLEBUTTON = 'checkButton';  
-{$ifndef XmVaTITLE}
 
 const
   XmVaTITLE = XtNtitle;  
-{$endif}
-{$ifndef XtCKeyboardFocusPolicy}
 
 const
   XtCKeyboardFocusPolicy = XmCKeyboardFocusPolicy;  
-{$endif}
-{$ifndef XtCShellUnitType}
-
-const
-  XtCShellUnitType = XmCShellUnitType;  
-{$endif}
-{$ifndef XtNkeyboardFocusPolicy}
-
-const
-  XtNkeyboardFocusPolicy = XmNkeyboardFocusPolicy;  
-{$endif}
-{$ifndef XtNshellUnitType}
-
-const
-  XtNshellUnitType = XmNshellUnitType;  
-{$endif}
-{$ifndef XtRKeyboardFocusPolicy}
-
-const
-  XtRKeyboardFocusPolicy = XmRKeyboardFocusPolicy;  
-{$endif}
-{$ifndef XmRPrimBottomShadowPixmap}
-
-const
-  XmRPrimBottomShadowPixmap = XmRBottomShadowPixmap;  
-{$endif}
-{$ifndef XmRPrimHighlightPixmap}
-
-const
-  XmRPrimHighlightPixmap = XmRHighlightPixmap;  
-{$endif}
-{$ifndef XmRPrimTopShadowPixmap}
-
-const
-  XmRPrimTopShadowPixmap = XmRTopShadowPixmap;  
-{$endif}
-{$ifndef XmCAccelerators}
-
-const
-  XmCAccelerators = XtCAccelerators;  
-{$endif}
-{$ifndef XmCAllowShellResize}
-
-const
-  XmCAllowShellResize = XtCAllowShellResize;  
-{$endif}
-{$ifndef XmCArgc}
-
-const
-  XmCArgc = XtCArgc;  
-{$endif}
-{$ifndef XmCArgv}
-
-const
-  XmCArgv = XtCArgv;  
-{$endif}
-{$ifndef XmCBackground}
-
-const
-  XmCBackground = XtCBackground;  
-{$endif}
-{$ifndef XmCBaseHeight}
-
-const
-  XmCBaseHeight = XtCBaseHeight;  
-{$endif}
-{$ifndef XmCBaseHeight}
-
-const
-  XmCBaseHeight = XtCBaseHeight;  
-{$endif}
-{$ifndef XmCBaseWidth}
-
-const
-  XmCBaseWidth = XtCBaseWidth;  
-{$endif}
-{$ifndef XmCBaseWidth}
-
-const
-  XmCBaseWidth = XtCBaseWidth;  
-{$endif}
-{$ifndef XmCBitmap}
-
-const
-  XmCBitmap = XtCBitmap;  
-{$endif}
-{$ifndef XmCBoolean}
-
-const
-  XmCBoolean = XtCBoolean;  
-{$endif}
-{$ifndef XmCBorderColor}
-
-const
-  XmCBorderColor = XtCBorderColor;  
-{$endif}
-{$ifndef XmCBorderWidth}
-
-const
-  XmCBorderWidth = XtCBorderWidth;  
-{$endif}
-{$ifndef XmCCallback}
-
-const
-  XmCCallback = XtCCallback;  
-{$endif}
-{$ifndef XmCColor}
-
-const
-  XmCColor = XtCColor;  
-{$endif}
-{$ifndef XmCColormap}
-
-const
-  XmCColormap = XtCColormap;  
-{$endif}
-{$ifndef XmCCreatePopupChildProc}
-
-const
-  XmCCreatePopupChildProc = XtCCreatePopupChildProc;  
-{$endif}
-{$ifndef XmCCursor}
-
-const
-  XmCCursor = XtCCursor;  
-{$endif}
-{$ifndef XmCDepth}
-
-const
-  XmCDepth = XtCDepth;  
-{$endif}
-{$ifndef XmCDimension}
-
-const
-  XmCDimension = XtRDimension;  
-{$endif}
-{$ifndef XmCEditMode}
-
-const
-  XmCEditMode = XtREditMode;  
-{$endif}
-{$ifndef XmCEditType}
-
-const
-  XmCEditType = XtCEditType;  
-{$endif}
-{$ifndef XmCEventBindings}
-
-const
-  XmCEventBindings = XtCEventBindings;  
-{$endif}
-{$ifndef XmCFile}
-
-const
-  XmCFile = XtCFile;  
-{$endif}
-{$ifndef XmCFont}
-
-const
-  XmCFont = XtCFont;  
-{$endif}
-{$ifndef XmCFontSet}
-
-const
-  XmCFontSet = XtCFontSet;  
-{$endif}
-{$ifndef XmCForeground}
-
-const
-  XmCForeground = XtCForeground;  
-{$endif}
-{$ifndef XmCFraction}
-
-const
-  XmCFraction = XtCFraction;  
-{$endif}
-{$ifndef XmCFunction}
-
-const
-  XmCFunction = XtCFunction;  
-{$endif}
-{$ifndef XmCGeometry}
-
-const
-  XmCGeometry = XtCGeometry;  
-{$endif}
-{$ifndef XmCHSpace}
-
-const
-  XmCHSpace = XtCHSpace;  
-{$endif}
-{$ifndef XmCHeight}
-
-const
-  XmCHeight = XtCHeight;  
-{$endif}
-{$ifndef XmCHeightInc}
-
-const
-  XmCHeightInc = XtCHeightInc;  
-{$endif}
-{$ifndef XmCIconMask}
-
-const
-  XmCIconMask = XtCIconMask;  
-{$endif}
-{$ifndef XmCIconName}
-
-const
-  XmCIconName = XtCIconName;  
-{$endif}
-{$ifndef XmCIconNameEncoding}
-
-const
-  XmCIconNameEncoding = XtCIconNameEncoding;  
-{$endif}
-{$ifndef XmCIconPixmap}
-
-const
-  XmCIconPixmap = XtCIconPixmap;  
-{$endif}
-{$ifndef XmCIconWindow}
-
-const
-  XmCIconWindow = XtCIconWindow;  
-{$endif}
-{$ifndef XmCIconX}
-
-const
-  XmCIconX = XtCIconX;  
-{$endif}
-{$ifndef XmCIconY}
-
-const
-  XmCIconY = XtCIconY;  
-{$endif}
-{$ifndef XmCIconic}
-
-const
-  XmCIconic = XtCIconic;  
-{$endif}
-{$ifndef XmCIndex}
-
-const
-  XmCIndex = XtCIndex;  
-{$endif}
-{$ifndef XmCInitialResourcesPersistent}
-
-const
-  XmCInitialResourcesPersistent = XtCInitialResourcesPersistent;  
-{$endif}
-{$ifndef XmCInitialState}
-
-const
-  XmCInitialState = XtCInitialState;  
-{$endif}
-{$ifndef XmCInput}
-
-const
-  XmCInput = XtCInput;  
-{$endif}
-{$ifndef XmCInsertPosition}
-
-const
-  XmCInsertPosition = XtCInsertPosition;  
-{$endif}
-{$ifndef XmCInterval}
-
-const
-  XmCInterval = XtCInterval;  
-{$endif}
-{$ifndef XmCJustify}
-
-const
-  XmCJustify = XtCJustify;  
-{$endif}
-{$ifndef XmCLabel}
-
-const
-  XmCLabel = XtCLabel;  
-{$endif}
-{$ifndef XmCLength}
-
-const
-  XmCLength = XtCLength;  
-{$endif}
-{$ifndef XmCMappedWhenManaged}
-
-const
-  XmCMappedWhenManaged = XtCMappedWhenManaged;  
-{$endif}
-{$ifndef XmCMargin}
-
-const
-  XmCMargin = XtCMargin;  
-{$endif}
-{$ifndef XmCMaxAspectX}
-
-const
-  XmCMaxAspectX = XtCMaxAspectX;  
-{$endif}
-{$ifndef XmCMaxAspectY}
-
-const
-  XmCMaxAspectY = XtCMaxAspectY;  
-{$endif}
-{$ifndef XmCMaxHeight}
-
-const
-  XmCMaxHeight = XtCMaxHeight;  
-{$endif}
-{$ifndef XmCMaxWidth}
-
-const
-  XmCMaxWidth = XtCMaxWidth;  
-{$endif}
-{$ifndef XmCMenuEntry}
-
-const
-  XmCMenuEntry = XtCMenuEntry;  
-{$endif}
-{$ifndef XmCMinAspectX}
-
-const
-  XmCMinAspectX = XtCMinAspectX;  
-{$endif}
-{$ifndef XmCMinAspectY}
-
-const
-  XmCMinAspectY = XtCMinAspectY;  
-{$endif}
-{$ifndef XmCMinHeight}
-
-const
-  XmCMinHeight = XtCMinHeight;  
-{$endif}
-{$ifndef XmCMinWidth}
-
-const
-  XmCMinWidth = XtCMinWidth;  
-{$endif}
-{$ifndef XmCNotify}
-
-const
-  XmCNotify = XtCNotify;  
-{$endif}
-{$ifndef XmCOrientation}
-
-const
-  XmCOrientation = XtCOrientation;  
-{$endif}
-{$ifndef XmCOverrideRedirect}
-
-const
-  XmCOverrideRedirect = XtCOverrideRedirect;  
-{$endif}
-{$ifndef XmCParameter}
-
-const
-  XmCParameter = XtCParameter;  
-{$endif}
-{$ifndef XmCPixmap}
-
-const
-  XmCPixmap = XtCPixmap;  
-{$endif}
-{$ifndef XmCPosition}
-
-const
-  XmCPosition = XtCPosition;  
-{$endif}
-{$ifndef XmCReadOnly}
-
-const
-  XmCReadOnly = XtCReadOnly;  
-{$endif}
-{$ifndef XmCResize}
-
-const
-  XmCResize = XtCResize;  
-{$endif}
-{$ifndef XmCReverseVideo}
-
-const
-  XmCReverseVideo = XtCReverseVideo;  
-{$endif}
-{$ifndef XmCSaveUnder}
-
-const
-  XmCSaveUnder = XtCSaveUnder;  
-{$endif}
-{$ifndef XmCScreen}
-
-const
-  XmCScreen = XtCScreen;  
-{$endif}
-{$ifndef XmCScrollDCursor}
-
-const
-  XmCScrollDCursor = XtCScrollDCursor;  
-{$endif}
-{$ifndef XmCScrollHCursor}
-
-const
-  XmCScrollHCursor = XtCScrollHCursor;  
-{$endif}
-{$ifndef XmCScrollLCursor}
-
-const
-  XmCScrollLCursor = XtCScrollLCursor;  
-{$endif}
-{$ifndef XmCScrollProc}
-
-const
-  XmCScrollProc = XtCScrollProc;  
-{$endif}
-{$ifndef XmCScrollRCursor}
-
-const
-  XmCScrollRCursor = XtCScrollRCursor;  
-{$endif}
-{$ifndef XmCScrollUCursor}
-
-const
-  XmCScrollUCursor = XtCScrollUCursor;  
-{$endif}
-{$ifndef XmCScrollVCursor}
-
-const
-  XmCScrollVCursor = XtCScrollVCursor;  
-{$endif}
-{$ifndef XmCSelection}
-
-const
-  XmCSelection = XtCSelection;  
-{$endif}
-{$ifndef XmCSelectionArray}
-
-const
-  XmCSelectionArray = XtCSelectionArray;  
-{$endif}
-{$ifndef XmCSensitive}
-
-const
-  XmCSensitive = XtCSensitive;  
-{$endif}
-{$ifndef XmCSpace}
-
-const
-  XmCSpace = XtCSpace;  
-{$endif}
-{$ifndef XmCString}
-
-const
-  XmCString = XtCString;  
-{$endif}
-{$ifndef XmCTextOptions}
-
-const
-  XmCTextOptions = XtCTextOptions;  
-{$endif}
-{$ifndef XmCTextPosition}
-
-const
-  XmCTextPosition = XtCTextPosition;  
-{$endif}
-{$ifndef XmCTextSink}
-
-const
-  XmCTextSink = XtCTextSink;  
-{$endif}
-{$ifndef XmCTextSource}
-
-const
-  XmCTextSource = XtCTextSource;  
-{$endif}
-{$ifndef XmCThickness}
-
-const
-  XmCThickness = XtCThickness;  
-{$endif}
-{$ifndef XmCThumb}
-
-const
-  XmCThumb = XtCThumb;  
-{$endif}
-{$ifndef XmCTitle}
-
-const
-  XmCTitle = XtCTitle;  
-{$endif}
-{$ifndef XmCTitleEncoding}
-
-const
-  XmCTitleEncoding = XtCTitleEncoding;  
-{$endif}
-{$ifndef XmCTransient}
-
-const
-  XmCTransient = XtCTransient;  
-{$endif}
-{$ifndef XmCTransientFor}
-
-const
-  XmCTransientFor = XtCTransientFor;  
-{$endif}
-{$ifndef XmCTranslations}
-
-const
-  XmCTranslations = XtCTranslations;  
-{$endif}
-{$ifndef XmCVSpace}
-
-const
-  XmCVSpace = XtCVSpace;  
-{$endif}
-{$ifndef XmCValue}
-
-const
-  XmCValue = XtCValue;  
-{$endif}
-{$ifndef XmCVisual}
-
-const
-  XmCVisual = XtCVisual;  
-{$endif}
-{$ifndef XmCWaitForWm}
-
-const
-  XmCWaitForWm = XtCWaitForWm;  
-{$endif}
-{$ifndef XmCWidget}
-
-const
-  XmCWidget = XtRWidget;  
-{$endif}
-{$ifndef XmCWidth}
-
-const
-  XmCWidth = XtCWidth;  
-{$endif}
-{$ifndef XmCWidthInc}
-
-const
-  XmCWidthInc = XtCWidthInc;  
-{$endif}
-{$ifndef XmCWinGravity}
-
-const
-  XmCWinGravity = XtCWinGravity;  
-{$endif}
-{$ifndef XmCWindow}
-
-const
-  XmCWindow = XtCWindow;  
-{$endif}
-{$ifndef XmCWindowGroup}
-
-const
-  XmCWindowGroup = XtCWindowGroup;  
-{$endif}
-{$ifndef XmCWmTimeout}
-
-const
-  XmCWmTimeout = XtCWmTimeout;  
-{$endif}
-{$ifndef XmCX}
-
-const
-  XmCX = XtCX;  
-{$endif}
-{$ifndef XmCY}
-
-const
-  XmCY = XtCY;  
-{$endif}
-{$ifndef XmNaccelerators}
-
-const
-  XmNaccelerators = XtNaccelerators;  
-{$endif}
-{$ifndef XmNallowShellResize}
-
-const
-  XmNallowShellResize = XtNallowShellResize;  
-{$endif}
-{$ifndef XmNancestorSensitive}
-
-const
-  XmNancestorSensitive = XtNancestorSensitive;  
-{$endif}
-{$ifndef XmNargc}
-
-const
-  XmNargc = XtNargc;  
-{$endif}
-{$ifndef XmNargv}
-
-const
-  XmNargv = XtNargv;  
-{$endif}
-{$ifndef XmNbackground}
-
-const
-  XmNbackground = XtNbackground;  
-{$endif}
-{$ifndef XmNbackgroundPixmap}
-
-const
-  XmNbackgroundPixmap = XtNbackgroundPixmap;  
-{$endif}
-{$ifndef XmNbaseHeight}
-
-const
-  XmNbaseHeight = XtNbaseHeight;  
-{$endif}
-{$ifndef XmNbaseHeight}
-
-const
-  XmNbaseHeight = XtNbaseHeight;  
-{$endif}
-{$ifndef XmNbaseWidth}
-
-const
-  XmNbaseWidth = XtNbaseWidth;  
-{$endif}
-{$ifndef XmNbaseWidth}
-
-const
-  XmNbaseWidth = XtNbaseWidth;  
-{$endif}
-{$ifndef XmNbitmap}
-
-const
-  XmNbitmap = XtNbitmap;  
-{$endif}
-{$ifndef XmNborder}
-
-const
-  XmNborder = XtNborder;  
-{$endif}
-{$ifndef XmNborderColor}
-
-const
-  XmNborderColor = XtNborderColor;  
-{$endif}
-{$ifndef XmNborderPixmap}
-
-const
-  XmNborderPixmap = XtNborderPixmap;  
-{$endif}
-{$ifndef XmNborderWidth}
-
-const
-  XmNborderWidth = XtNborderWidth;  
-{$endif}
-{$ifndef XmNcallback}
-
-const
-  XmNcallback = XtNcallback;  
-{$endif}
-{$ifndef XmNchildren}
-
-const
-  XmNchildren = XtNchildren;  
-{$endif}
-{$ifndef XmNcolormap}
-
-const
-  XmNcolormap = XtNcolormap;  
-{$endif}
-{$ifndef XmNcreatePopupChildProc}
-
-const
-  XmNcreatePopupChildProc = XtNcreatePopupChildProc;  
-{$endif}
-{$ifndef XmNdepth}
-
-const
-  XmNdepth = XtNdepth;  
-{$endif}
-{$ifndef XmNdestroyCallback}
-
-const
-  XmNdestroyCallback = XtNdestroyCallback;  
-{$endif}
-{$ifndef XmNeditType}
-
-const
-  XmNeditType = XtNeditType;  
-{$endif}
-{$ifndef XmNfile}
-
-const
-  XmNfile = XtNfile;  
-{$endif}
-{$ifndef XmNfont}
-
-const
-  XmNfont = XtNfont;  
-{$endif}
-{$ifndef XmNfontSet}
-
-const
-  XmNfontSet = XtNfontSet;  
-{$endif}
-{$ifndef XmNforceBars}
-
-const
-  XmNforceBars = XtNforceBars;  
-{$endif}
-{$ifndef XmNforeground}
-
-const
-  XmNforeground = XtNforeground;  
-{$endif}
-{$ifndef XmNfunction}
-
-const
-  XmNfunction = XtNfunction;  
-{$endif}
-{$ifndef XmNgeometry}
-
-const
-  XmNgeometry = XtNgeometry;  
-{$endif}
-{$ifndef XmNheight}
-
-const
-  XmNheight = XtNheight;  
-{$endif}
-{$ifndef XmNheightInc}
-
-const
-  XmNheightInc = XtNheightInc;  
-{$endif}
-{$ifndef XmNhighlight}
-
-const
-  XmNhighlight = XtNhighlight;  
-{$endif}
-{$ifndef XmNiconMask}
-
-const
-  XmNiconMask = XtNiconMask;  
-{$endif}
-{$ifndef XmNiconName}
-
-const
-  XmNiconName = XtNiconName;  
-{$endif}
-{$ifndef XmNiconNameEncoding}
-
-const
-  XmNiconNameEncoding = XtNiconNameEncoding;  
-{$endif}
-{$ifndef XmNiconPixmap}
-
-const
-  XmNiconPixmap = XtNiconPixmap;  
-{$endif}
-{$ifndef XmNiconWindow}
-
-const
-  XmNiconWindow = XtNiconWindow;  
-{$endif}
-{$ifndef XmNiconX}
-
-const
-  XmNiconX = XtNiconX;  
-{$endif}
-{$ifndef XmNiconY}
-
-const
-  XmNiconY = XtNiconY;  
-{$endif}
-{$ifndef XmNiconic}
-
-const
-  XmNiconic = XtNiconic;  
-{$endif}
-{$ifndef XmNindex}
-
-const
-  XmNindex = XtNindex;  
-{$endif}
-{$ifndef XmNinitialResourcesPersistent}
-
-const
-  XmNinitialResourcesPersistent = XtNinitialResourcesPersistent;  
-{$endif}
-{$ifndef XmNinitialState}
-
-const
-  XmNinitialState = XtNinitialState;  
-{$endif}
-{$ifndef XmNinnerHeight}
-
-const
-  XmNinnerHeight = XtNinnerHeight;  
-{$endif}
-{$ifndef XmNinnerWidth}
-
-const
-  XmNinnerWidth = XtNinnerWidth;  
-{$endif}
-{$ifndef XmNinnerWindow}
-
-const
-  XmNinnerWindow = XtNinnerWindow;  
-{$endif}
-{$ifndef XmNinput}
-
-const
-  XmNinput = XtNinput;  
-{$endif}
-{$ifndef XmNinsertPosition}
-
-const
-  XmNinsertPosition = XtNinsertPosition;  
-{$endif}
-{$ifndef XmNinternalHeight}
-
-const
-  XmNinternalHeight = XtNinternalHeight;  
-{$endif}
-{$ifndef XmNinternalWidth}
-
-const
-  XmNinternalWidth = XtNinternalWidth;  
-{$endif}
-{$ifndef XmNjumpProc}
-
-const
-  XmNjumpProc = XtNjumpProc;  
-{$endif}
-{$ifndef XmNjustify}
-
-const
-  XmNjustify = XtNjustify;  
-{$endif}
-{$ifndef XmNlength}
-
-const
-  XmNlength = XtNlength;  
-{$endif}
-{$ifndef XmNlowerRight}
-
-const
-  XmNlowerRight = XtNlowerRight;  
-{$endif}
-{$ifndef XmNmappedWhenManaged}
-
-const
-  XmNmappedWhenManaged = XtNmappedWhenManaged;  
-{$endif}
-{$ifndef XmNmaxAspectX}
-
-const
-  XmNmaxAspectX = XtNmaxAspectX;  
-{$endif}
-{$ifndef XmNmaxAspectY}
-
-const
-  XmNmaxAspectY = XtNmaxAspectY;  
-{$endif}
-{$ifndef XmNmaxHeight}
-
-const
-  XmNmaxHeight = XtNmaxHeight;  
-{$endif}
-{$ifndef XmNmaxWidth}
-
-const
-  XmNmaxWidth = XtNmaxWidth;  
-{$endif}
-{$ifndef XmNmenuEntry}
-
-const
-  XmNmenuEntry = XtNmenuEntry;  
-{$endif}
-{$ifndef XmNminAspectX}
-
-const
-  XmNminAspectX = XtNminAspectX;  
-{$endif}
-{$ifndef XmNminAspectY}
-
-const
-  XmNminAspectY = XtNminAspectY;  
-{$endif}
-{$ifndef XmNminHeight}
-
-const
-  XmNminHeight = XtNminHeight;  
-{$endif}
-{$ifndef XmNminWidth}
-
-const
-  XmNminWidth = XtNminWidth;  
-{$endif}
-{$ifndef XmNname}
-
-const
-  XmNname = XtNname;  
-{$endif}
-{$ifndef XmNnotify}
-
-const
-  XmNnotify = XtNnotify;  
-{$endif}
-{$ifndef XmNnumChildren}
-
-const
-  XmNnumChildren = XtNnumChildren;  
-{$endif}
-{$ifndef XmNorientation}
-
-const
-  XmNorientation = XtNorientation;  
-{$endif}
-{$ifndef XmNoverrideRedirect}
-
-const
-  XmNoverrideRedirect = XtNoverrideRedirect;  
-{$endif}
-{$ifndef XmNparameter}
-
-const
-  XmNparameter = XtNparameter;  
-{$endif}
-{$ifndef XmNpixmap}
-
-const
-  XmNpixmap = XtNpixmap;  
-{$endif}
-{$ifndef XmNpopdownCallback}
-
-const
-  XmNpopdownCallback = XtNpopdownCallback;  
-{$endif}
-{$ifndef XmNpopupCallback}
-
-const
-  XmNpopupCallback = XtNpopupCallback;  
-{$endif}
-{$ifndef XmNresize}
-
-const
-  XmNresize = XtNresize;  
-{$endif}
-{$ifndef XmNreverseVideo}
-
-const
-  XmNreverseVideo = XtNreverseVideo;  
-{$endif}
-{$ifndef XmNsaveUnder}
-
-const
-  XmNsaveUnder = XtNsaveUnder;  
-{$endif}
-{$ifndef XmNscreen}
-
-const
-  XmNscreen = XtNscreen;  
-{$endif}
-{$ifndef XmNscrollDCursor}
-
-const
-  XmNscrollDCursor = XtNscrollDCursor;  
-{$endif}
-{$ifndef XmNscrollHCursor}
-
-const
-  XmNscrollHCursor = XtNscrollHCursor;  
-{$endif}
-{$ifndef XmNscrollLCursor}
-
-const
-  XmNscrollLCursor = XtNscrollLCursor;  
-{$endif}
-{$ifndef XmNscrollProc}
-
-const
-  XmNscrollProc = XtNscrollProc;  
-{$endif}
-{$ifndef XmNscrollRCursor}
-
-const
-  XmNscrollRCursor = XtNscrollRCursor;  
-{$endif}
-{$ifndef XmNscrollUCursor}
-
-const
-  XmNscrollUCursor = XtNscrollUCursor;  
-{$endif}
-{$ifndef XmNscrollVCursor}
-
-const
-  XmNscrollVCursor = XtNscrollVCursor;  
-{$endif}
-{$ifndef XmNselection}
-
-const
-  XmNselection = XtNselection;  
-{$endif}
-{$ifndef XmNselectionArray}
-
-const
-  XmNselectionArray = XtNselectionArray;  
-{$endif}
-{$ifndef XmNsensitive}
-
-const
-  XmNsensitive = XtNsensitive;  
-{$endif}
-{$ifndef XmNshown}
-
-const
-  XmNshown = XtNshown;  
-{$endif}
-{$ifndef XmNspace}
-
-const
-  XmNspace = XtNspace;  
-{$endif}
-{$ifndef XmNstring}
-
-const
-  XmNstring = XtNstring;  
-{$endif}
-{$ifndef XmNtextOptions}
-
-const
-  XmNtextOptions = XtNtextOptions;  
-{$endif}
-{$ifndef XmNtextSink}
-
-const
-  XmNtextSink = XtNtextSink;  
-{$endif}
-{$ifndef XmNtextSource}
-
-const
-  XmNtextSource = XtNtextSource;  
-{$endif}
-{$ifndef XmNthickness}
-
-const
-  XmNthickness = XtNthickness;  
-{$endif}
-{$ifndef XmNthumb}
-
-const
-  XmNthumb = XtNthumb;  
-{$endif}
-{$ifndef XmNthumbProc}
-
-const
-  XmNthumbProc = XtNthumbProc;  
-{$endif}
-{$ifndef XmNtitle}
-
-const
-  XmNtitle = XtNtitle;  
-{$endif}
-{$ifndef XmNtitleEncoding}
-
-const
-  XmNtitleEncoding = XtNtitleEncoding;  
-{$endif}
-{$ifndef XmNtop}
-
-const
-  XmNtop = XtNtop;  
-{$endif}
-{$ifndef XmNtransient}
-
-const
-  XmNtransient = XtNtransient;  
-{$endif}
-{$ifndef XmNtransientFor}
-
-const
-  XmNtransientFor = XtNtransientFor;  
-{$endif}
-{$ifndef XmNtransientFor}
-
-const
-  XmNtransientFor = XtNtransientFor;  
-{$endif}
-{$ifndef XmNtranslations}
-
-const
-  XmNtranslations = XtNtranslations;  
-{$endif}
-{$ifndef XmNupdate}
-
-const
-  XmNupdate = XtNupdate;  
-{$endif}
-{$ifndef XmNuseBottom}
-
-const
-  XmNuseBottom = XtNuseBottom;  
-{$endif}
-{$ifndef XmNuseRight}
-
-const
-  XmNuseRight = XtNuseRight;  
-{$endif}
-{$ifndef XmNvalue}
-
-const
-  XmNvalue = XtNvalue;  
-{$endif}
-{$ifndef XmNvisual}
-
-const
-  XmNvisual = XtNvisual;  
-{$endif}
-{$ifndef XmNwaitForWm}
-
-const
-  XmNwaitForWm = XtNwaitForWm;  
-{$endif}
-{$ifndef XmNwidth}
-
-const
-  XmNwidth = XtNwidth;  
-{$endif}
-{$ifndef XmNwidthInc}
-
-const
-  XmNwidthInc = XtNwidthInc;  
-{$endif}
-{$ifndef XmNwinGravity}
-
-const
-  XmNwinGravity = XtNwinGravity;  
-{$endif}
-{$ifndef XmNwindow}
-
-const
-  XmNwindow = XtNwindow;  
-{$endif}
-{$ifndef XmNwindowGroup}
-
-const
-  XmNwindowGroup = XtNwindowGroup;  
-{$endif}
-{$ifndef XmNwmTimeout}
-
-const
-  XmNwmTimeout = XtNwmTimeout;  
-{$endif}
-{$ifndef XmNx}
-
-const
-  XmNx = XtNx;  
-{$endif}
-{$ifndef XmNy}
-
-const
-  XmNy = XtNy;  
-{$endif}
-{$ifndef XmRAcceleratorTable}
-
-const
-  XmRAcceleratorTable = XtRAcceleratorTable;  
-{$endif}
-{$ifndef XmRAtom}
-
-const
-  XmRAtom = XtRAtom;  
-{$endif}
-{$ifndef XmRBitmap}
-
-const
-  XmRBitmap = XtRBitmap;  
-{$endif}
-{$ifndef XmRBool}
-
-const
-  XmRBool = XtRBool;  
-{$endif}
-{$ifndef XmRBoolean}
-
-const
-  XmRBoolean = XtRBoolean;  
-{$endif}
-{$ifndef XmRCallProc}
-
-const
-  XmRCallProc = XtRCallProc;  
-{$endif}
-{$ifndef XmRCallback}
-
-const
-  XmRCallback = XtRCallback;  
-{$endif}
-{$ifndef XmRCardinal}
-
-const
-  XmRCardinal = XtRCardinal;  
-{$endif}
-{$ifndef XmRColor}
-
-const
-  XmRColor = XtRColor;  
-{$endif}
-{$ifndef XmRColormap}
-
-const
-  XmRColormap = XtRColormap;  
-{$endif}
-{$ifndef XmRCursor}
-
-const
-  XmRCursor = XtRCursor;  
-{$endif}
-{$ifndef XmRDimension}
-
-const
-  XmRDimension = XtRDimension;  
-{$endif}
-{$ifndef XmRDisplay}
-
-const
-  XmRDisplay = XtRDisplay;  
-{$endif}
-{$ifndef XmREditMode}
-
-const
-  XmREditMode = XtREditMode;  
-{$endif}
-{$ifndef XmREnum}
-
-const
-  XmREnum = XtREnum;  
-{$endif}
-{$ifndef XmRFile}
-
-const
-  XmRFile = XtRFile;  
-{$endif}
-{$ifndef XmRFloat}
-
-const
-  XmRFloat = XtRFloat;  
-{$endif}
-{$ifndef XmRFont}
-
-const
-  XmRFont = XtRFont;  
-{$endif}
-{$ifndef XmRFontSet}
-
-const
-  XmRFontSet = XtRFontSet;  
-{$endif}
-{$ifndef XmRFontStruct}
-
-const
-  XmRFontStruct = XtRFontStruct;  
-{$endif}
-{$ifndef XmRFunction}
-
-const
-  XmRFunction = XtRFunction;  
-{$endif}
-{$ifndef XmRGeometry}
-
-const
-  XmRGeometry = XtRGeometry;  
-{$endif}
-{$ifndef XmRImmediate}
-
-const
-  XmRImmediate = XtRImmediate;  
-{$endif}
-{$ifndef XmRInitialState}
-
-const
-  XmRInitialState = XtRInitialState;  
-{$endif}
-{$ifndef XmRInt}
-
-const
-  XmRInt = XtRInt;  
-{$endif}
-{$ifndef XmRJustify}
-
-const
-  XmRJustify = XtRJustify;  
-{$endif}
-{$ifndef XmRLongBoolean}
-
-const
-  XmRLongBoolean = XtRLongBoolean;  
-{$endif}
-{$ifndef XmROrientation}
-
-const
-  XmROrientation = XtROrientation;  
-{$endif}
-{$ifndef XmRObject}
-
-const
-  XmRObject = XtRObject;  
-{$endif}
-{$ifndef XmRPixel}
-
-const
-  XmRPixel = XtRPixel;  
-{$endif}
-{$ifndef XmRPixmap}
-
-const
-  XmRPixmap = XtRPixmap;  
-{$endif}
-{$ifndef XmRPointer}
-
-const
-  XmRPointer = XtRPointer;  
-{$endif}
-{$ifndef XmRPosition}
-
-const
-  XmRPosition = XtRPosition;  
-{$endif}
-{$ifndef XmRScreen}
-
-const
-  XmRScreen = XtRScreen;  
-{$endif}
-{$ifndef XmRShort}
-
-const
-  XmRShort = XtRShort;  
-{$endif}
-{$ifndef XmRString}
-
-const
-  XmRString = XtRString;  
-{$endif}
-{$ifndef XmRStringArray}
-
-const
-  XmRStringArray = XtRStringArray;  
-{$endif}
-{$ifndef XmRStringTable}
-
-const
-  XmRStringTable = XtRStringTable;  
-{$endif}
-{$ifndef XmRTextPosition}
-
-const
-  XmRTextPosition = XtCTextPosition;  
-{$endif}
-{$ifndef XmRTranslationTable}
-
-const
-  XmRTranslationTable = XtRTranslationTable;  
-{$endif}
-{$ifndef XmRUnsignedChar}
-
-const
-  XmRUnsignedChar = XtRUnsignedChar;  
-{$endif}
-{$ifndef XmRVisual}
-
-const
-  XmRVisual = XtRVisual;  
-{$endif}
-{$ifndef XmRWidget}
-
-const
-  XmRWidget = XtRWidget;  
-{$endif}
-{$ifndef XmRWidgetClass}
-
-const
-  XmRWidgetClass = XtRWidgetClass;  
-{$endif}
-{$ifndef XmRWidgetList}
-
-const
-  XmRWidgetList = XtRWidgetList;  
-{$endif}
-{$ifndef XmRWindow}
-
-const
-  XmRWindow = XtRWindow;  
-{$endif}
-{$ifndef XmNtoolTipString}
-
-const
-  XmNtoolTipString = 'toolTipString';  
-{$endif}
-{$ifndef XmCToolTipString}
-
-const
-  XmCToolTipString = 'ToolTipString';  
-{$endif}
-{$ifndef XmNtoolTipPostDelay}
-
-const
-  XmNtoolTipPostDelay = 'toolTipPostDelay';  
-{$endif}
-{$ifndef XmCToolTipPostDelay}
-
-const
-  XmCToolTipPostDelay = 'ToolTipPostDelay';  
-{$endif}
-{$ifndef XmNtoolTipPostDuration}
-
-const
-  XmNtoolTipPostDuration = 'toolTipPostDuration';  
-{$endif}
-{$ifndef XmCToolTipPostDuration}
-
-const
-  XmCToolTipPostDuration = 'ToolTipPostDuration';  
-{$endif}
-{$ifndef XmNtoolTipEnable}
-
-const
-  XmNtoolTipEnable = 'toolTipEnable';  
-{$endif}
-{$ifndef XmCToolTipEnable}
-
-const
-  XmCToolTipEnable = 'ToolTipEnable';  
-{$endif}
-{$ifndef XmNanimate}
-
-const
-  XmNanimate = 'animate';  
-{$endif}
-{$ifndef XmCAnimate}
-
-const
-  XmCAnimate = 'Animate';  
-{$endif}
-{$endif}
-{ _XmStrDefs_h_  }
+  XtCShellUnitType = XmCShellUnitType;
+  XtNkeyboardFocusPolicy = XmNkeyboardFocusPolicy;
+  XtNshellUnitType = XmNshellUnitType;
+  XtRKeyboardFocusPolicy = XmRKeyboardFocusPolicy;
+  XmRPrimBottomShadowPixmap = XmRBottomShadowPixmap;
+  XmRPrimHighlightPixmap = XmRHighlightPixmap;
+  XmRPrimTopShadowPixmap = XmRTopShadowPixmap;
+  XmCAccelerators = XtCAccelerators;
+  XmCAllowShellResize = XtCAllowShellResize;
+  XmCArgc = XtCArgc;
+  XmCArgv = XtCArgv;
+  XmCBackground = XtCBackground;
+  XmCBaseHeight = XtCBaseHeight;
+//  XmCBaseHeight = XtCBaseHeight;
+  XmCBaseWidth = XtCBaseWidth;
+//  XmCBaseWidth = XtCBaseWidth;
+  XmCBitmap = XtCBitmap;
+  XmCBoolean = XtCBoolean;
+  XmCBorderColor = XtCBorderColor;
+  XmCBorderWidth = XtCBorderWidth;
+  XmCCallback = XtCCallback;
+  XmCColor = XtCColor;
+  XmCColormap = XtCColormap;
+  XmCCreatePopupChildProc = XtCCreatePopupChildProc;
+  XmCCursor = XtCCursor;
+  XmCDepth = XtCDepth;
+  XmCDimension = XtRDimension;
+  XmCEditMode = XtREditMode;
+  XmCEditType = XtCEditType;
+  XmCEventBindings = XtCEventBindings;
+  XmCFile = XtCFile;
+  XmCFont = XtCFont;
+  XmCFontSet = XtCFontSet;
+  XmCForeground = XtCForeground;
+  XmCFraction = XtCFraction;
+  XmCFunction = XtCFunction;
+  XmCGeometry = XtCGeometry;
+  XmCHSpace = XtCHSpace;
+  XmCHeight = XtCHeight;
+  XmCHeightInc = XtCHeightInc;
+  XmCIconMask = XtCIconMask;
+  XmCIconName = XtCIconName;
+  XmCIconNameEncoding = XtCIconNameEncoding;
+  XmCIconPixmap = XtCIconPixmap;
+  XmCIconWindow = XtCIconWindow;
+  XmCIconX = XtCIconX;
+  XmCIconY = XtCIconY;
+  XmCIconic = XtCIconic;
+  XmCIndex = XtCIndex;
+  XmCInitialResourcesPersistent = XtCInitialResourcesPersistent;
+  XmCInitialState = XtCInitialState;
+  XmCInput = XtCInput;
+  XmCInsertPosition = XtCInsertPosition;
+  XmCInterval = XtCInterval;
+  XmCJustify = XtCJustify;
+  XmCLabel = XtCLabel;
+  XmCLength = XtCLength;
+  XmCMappedWhenManaged = XtCMappedWhenManaged;
+  XmCMargin = XtCMargin;
+  XmCMaxAspectX = XtCMaxAspectX;
+  XmCMaxAspectY = XtCMaxAspectY;
+  XmCMaxHeight = XtCMaxHeight;
+  XmCMaxWidth = XtCMaxWidth;
+  XmCMenuEntry = XtCMenuEntry;
+  XmCMinAspectX = XtCMinAspectX;
+  XmCMinAspectY = XtCMinAspectY;
+  XmCMinHeight = XtCMinHeight;
+  XmCMinWidth = XtCMinWidth;
+  XmCNotify = XtCNotify;
+  XmCOrientation = XtCOrientation;
+  XmCOverrideRedirect = XtCOverrideRedirect;
+  XmCParameter = XtCParameter;
+  XmCPixmap = XtCPixmap;
+  XmCPosition = XtCPosition;
+  XmCReadOnly = XtCReadOnly;
+  XmCResize = XtCResize;
+  XmCReverseVideo = XtCReverseVideo;
+  XmCSaveUnder = XtCSaveUnder;
+  XmCScreen = XtCScreen;
+  XmCScrollDCursor = XtCScrollDCursor;
+  XmCScrollHCursor = XtCScrollHCursor;
+  XmCScrollLCursor = XtCScrollLCursor;
+  XmCScrollProc = XtCScrollProc;
+  XmCScrollRCursor = XtCScrollRCursor;
+  XmCScrollUCursor = XtCScrollUCursor;
+  XmCScrollVCursor = XtCScrollVCursor;
+  XmCSelection = XtCSelection;
+  XmCSelectionArray = XtCSelectionArray;
+  XmCSensitive = XtCSensitive;
+  XmCSpace = XtCSpace;
+  XmCString = XtCString;
+  XmCTextOptions = XtCTextOptions;
+  XmCTextPosition = XtCTextPosition;
+  XmCTextSink = XtCTextSink;
+  XmCTextSource = XtCTextSource;
+  XmCThickness = XtCThickness;
+  XmCThumb = XtCThumb;
+  XmCTitle = XtCTitle;
+  XmCTitleEncoding = XtCTitleEncoding;
+  XmCTransient = XtCTransient;
+  XmCTransientFor = XtCTransientFor;
+  XmCTranslations = XtCTranslations;
+  XmCVSpace = XtCVSpace;
+  XmCValue = XtCValue;
+  XmCVisual = XtCVisual;
+  XmCWaitForWm = XtCWaitForWm;
+  XmCWidget = XtRWidget;
+  XmCWidth = XtCWidth;
+  XmCWidthInc = XtCWidthInc;
+  XmCWinGravity = XtCWinGravity;
+  XmCWindow = XtCWindow;
+  XmCWindowGroup = XtCWindowGroup;
+  XmCWmTimeout = XtCWmTimeout;
+  XmCX = XtCX;
+  XmCY = XtCY;
+  XmNaccelerators = XtNaccelerators;
+  XmNallowShellResize = XtNallowShellResize;
+  XmNancestorSensitive = XtNancestorSensitive;
+  XmNargc = XtNargc;
+  XmNargv = XtNargv;
+  XmNbackground = XtNbackground;
+  XmNbackgroundPixmap = XtNbackgroundPixmap;
+  XmNbaseHeight = XtNbaseHeight;
+//  XmNbaseHeight = XtNbaseHeight;
+  XmNbaseWidth = XtNbaseWidth;
+//  XmNbaseWidth = XtNbaseWidth;
+  XmNbitmap = XtNbitmap;
+  XmNborder = XtNborder;
+  XmNborderColor = XtNborderColor;
+  XmNborderPixmap = XtNborderPixmap;
+  XmNborderWidth = XtNborderWidth;
+  XmNcallback = XtNcallback;
+  XmNchildren = XtNchildren;
+  XmNcolormap = XtNcolormap;
+  XmNcreatePopupChildProc = XtNcreatePopupChildProc;
+  XmNdepth = XtNdepth;
+  XmNdestroyCallback = XtNdestroyCallback;
+  XmNeditType = XtNeditType;
+  XmNfile = XtNfile;
+  XmNfont = XtNfont;
+  XmNfontSet = XtNfontSet;
+  XmNforceBars = XtNforceBars;
+  XmNforeground = XtNforeground;
+  XmNfunction = XtNfunction;
+  XmNgeometry = XtNgeometry;
+  XmNheight = XtNheight;
+  XmNheightInc = XtNheightInc;
+  XmNhighlight = XtNhighlight;
+  XmNiconMask = XtNiconMask;
+  XmNiconName = XtNiconName;
+  XmNiconNameEncoding = XtNiconNameEncoding;
+  XmNiconPixmap = XtNiconPixmap;
+  XmNiconWindow = XtNiconWindow;
+  XmNiconX = XtNiconX;
+  XmNiconY = XtNiconY;
+  XmNiconic = XtNiconic;
+  XmNindex = XtNindex;
+  XmNinitialResourcesPersistent = XtNinitialResourcesPersistent;
+  XmNinitialState = XtNinitialState;
+  XmNinnerHeight = XtNinnerHeight;
+  XmNinnerWidth = XtNinnerWidth;
+  XmNinnerWindow = XtNinnerWindow;
+  XmNinput = XtNinput;
+  XmNinsertPosition = XtNinsertPosition;
+  XmNinternalHeight = XtNinternalHeight;
+  XmNinternalWidth = XtNinternalWidth;
+  XmNjumpProc = XtNjumpProc;
+  XmNjustify = XtNjustify;
+  XmNlength = XtNlength;
+  XmNlowerRight = XtNlowerRight;
+  XmNmappedWhenManaged = XtNmappedWhenManaged;
+  XmNmaxAspectX = XtNmaxAspectX;
+  XmNmaxAspectY = XtNmaxAspectY;
+  XmNmaxHeight = XtNmaxHeight;
+  XmNmaxWidth = XtNmaxWidth;
+  XmNmenuEntry = XtNmenuEntry;
+  XmNminAspectX = XtNminAspectX;
+  XmNminAspectY = XtNminAspectY;
+  XmNminHeight = XtNminHeight;
+  XmNminWidth = XtNminWidth;
+  XmNname = XtNname;
+  XmNnotify = XtNnotify;
+  XmNnumChildren = XtNnumChildren;
+  XmNorientation = XtNorientation;
+  XmNoverrideRedirect = XtNoverrideRedirect;
+  XmNparameter = XtNparameter;
+  XmNpixmap = XtNpixmap;
+  XmNpopdownCallback = XtNpopdownCallback;
+  XmNpopupCallback = XtNpopupCallback;
+  XmNresize = XtNresize;
+  XmNreverseVideo = XtNreverseVideo;
+  XmNsaveUnder = XtNsaveUnder;
+  XmNscreen = XtNscreen;
+  XmNscrollDCursor = XtNscrollDCursor;
+  XmNscrollHCursor = XtNscrollHCursor;
+  XmNscrollLCursor = XtNscrollLCursor;
+  XmNscrollProc = XtNscrollProc;
+  XmNscrollRCursor = XtNscrollRCursor;
+  XmNscrollUCursor = XtNscrollUCursor;
+  XmNscrollVCursor = XtNscrollVCursor;
+  XmNselection = XtNselection;
+  XmNselectionArray = XtNselectionArray;
+  XmNsensitive = XtNsensitive;
+  XmNshown = XtNshown;
+  XmNspace = XtNspace;
+  XmNstring = XtNstring;
+  XmNtextOptions = XtNtextOptions;
+  XmNtextSink = XtNtextSink;
+  XmNtextSource = XtNtextSource;
+  XmNthickness = XtNthickness;
+  XmNthumb = XtNthumb;
+  XmNthumbProc = XtNthumbProc;
+  XmNtitle = XtNtitle;
+  XmNtitleEncoding = XtNtitleEncoding;
+  XmNtop = XtNtop;
+  XmNtransient = XtNtransient;
+  XmNtransientFor = XtNtransientFor;
+//  XmNtransientFor = XtNtransientFor;
+  XmNtranslations = XtNtranslations;
+  XmNupdate = XtNupdate;
+  XmNuseBottom = XtNuseBottom;
+  XmNuseRight = XtNuseRight;
+  XmNvalue = XtNvalue;
+  XmNvisual = XtNvisual;
+  XmNwaitForWm = XtNwaitForWm;
+  XmNwidth = XtNwidth;
+  XmNwidthInc = XtNwidthInc;
+  XmNwinGravity = XtNwinGravity;
+  XmNwindow = XtNwindow;
+  XmNwindowGroup = XtNwindowGroup;
+  XmNwmTimeout = XtNwmTimeout;
+  XmNx = XtNx;
+  XmNy = XtNy;
+  XmRAcceleratorTable = XtRAcceleratorTable;
+  XmRAtom = XtRAtom;
+  XmRBitmap = XtRBitmap;
+  XmRBool = XtRBool;
+  XmRBoolean = XtRBoolean;
+  XmRCallProc = XtRCallProc;
+  XmRCallback = XtRCallback;
+  XmRCardinal = XtRCardinal;
+  XmRColor = XtRColor;
+  XmRColormap = XtRColormap;
+  XmRCursor = XtRCursor;
+  XmRDimension = XtRDimension;
+  XmRDisplay = XtRDisplay;
+  XmREditMode = XtREditMode;
+  XmREnum = XtREnum;
+  XmRFile = XtRFile;
+  XmRFloat = XtRFloat;
+  XmRFont = XtRFont;
+  XmRFontSet = XtRFontSet;
+  XmRFontStruct = XtRFontStruct;
+  XmRFunction = XtRFunction;
+  XmRGeometry = XtRGeometry;
+  XmRImmediate = XtRImmediate;
+  XmRInitialState = XtRInitialState;
+  XmRInt = XtRInt;
+  XmRJustify = XtRJustify;
+  XmRLongBoolean = XtRLongBoolean;
+  XmROrientation = XtROrientation;
+  XmRObject = XtRObject;
+  XmRPixel = XtRPixel;
+  XmRPixmap = XtRPixmap;
+  XmRPointer = XtRPointer;
+  XmRPosition = XtRPosition;
+  XmRScreen = XtRScreen;
+  XmRShort = XtRShort;
+  XmRString = XtRString;
+  XmRStringArray = XtRStringArray;
+  XmRStringTable = XtRStringTable;
+  XmRTextPosition = XtCTextPosition;
+  XmRTranslationTable = XtRTranslationTable;
+  XmRUnsignedChar = XtRUnsignedChar;
+  XmRVisual = XtRVisual;
+  XmRWidget = XtRWidget;
+  XmRWidgetClass = XtRWidgetClass;
+  XmRWidgetList = XtRWidgetList;
+  XmRWindow = XtRWindow;
+  XmNtoolTipString = 'toolTipString';
+  XmCToolTipString = 'ToolTipString';
+  XmNtoolTipPostDelay = 'toolTipPostDelay';
+  XmCToolTipPostDelay = 'ToolTipPostDelay';
+  XmNtoolTipPostDuration = 'toolTipPostDuration';
+  XmCToolTipPostDuration = 'ToolTipPostDuration';
+  XmNtoolTipEnable = 'toolTipEnable';
+  XmCToolTipEnable = 'ToolTipEnable';
+  XmNanimate = 'animate';
+  XmCAnimate = 'Animate';
 
 implementation
-
 
 end.
