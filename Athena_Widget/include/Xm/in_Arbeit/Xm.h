@@ -50,11 +50,11 @@
 #define USE_XFT 1
 #endif
  
-//#if    !defined(__STDC__) \
-//    && !defined(__cplusplus) && !defined(c_plusplus) \
-//    && !defined(FUNCPROTO) && !defined(XTFUNCPROTO) && !defined(XMFUNCPROTO)
-//#define _NO_PROTO
-//#endif /* __STDC__ */
+#if    !defined(__STDC__) \
+    && !defined(__cplusplus) && !defined(c_plusplus) \
+    && !defined(FUNCPROTO) && !defined(XTFUNCPROTO) && !defined(XMFUNCPROTO)
+#define _NO_PROTO
+#endif /* __STDC__ */
 
 #include <X11/Intrinsic.h>
 #include <X11/Shell.h>
@@ -78,11 +78,10 @@ extern "C" {
 #define XmVERSION	2
 #define XmREVISION	3
 #define XmUPDATE_LEVEL	8
-#define XmVersion	(2 * 1000 + 3)
-//#define XmVersion	(XmVERSION * 1000 + XmREVISION)
+#define XmVersion	(XmVERSION * 1000 + XmREVISION)
 #define XmVERSION_STRING "@(#)Motif Version 2.3.8"
 
-extern int xmUseVersion;
+externalref int xmUseVersion;
 
 
 /* define used to denote an unspecified pixmap  */
@@ -111,8 +110,8 @@ extern int xmUseVersion;
 #define XmDEFAULT_LIGHT_THRESHOLD       93
 #define XmDEFAULT_FOREGROUND_THRESHOLD  70
 
-extern  char    _XmSDEFAULT_FONT[];            /* In Xmos.c */
-extern  char    _XmSDEFAULT_BACKGROUND[];      /* In Xmos.c */
+externalref  char    _XmSDEFAULT_FONT[];            /* In Xmos.c */
+externalref  char    _XmSDEFAULT_BACKGROUND[];      /* In Xmos.c */
 
 typedef unsigned char	XmDirection;
 
@@ -128,7 +127,7 @@ typedef unsigned char	XmDirection;
 #define XmPRECEDENCE_VERT_MASK         0x80
 #define XmPRECEDENCE_MASK              0xc0
 
-typedef enum {
+enum {
   XmRIGHT_TO_LEFT_TOP_TO_BOTTOM = 
       XmRIGHT_TO_LEFT_MASK | XmTOP_TO_BOTTOM_MASK | XmPRECEDENCE_HORIZ_MASK,
   XmLEFT_TO_RIGHT_TOP_TO_BOTTOM = 
@@ -153,7 +152,7 @@ typedef enum {
       XmRIGHT_TO_LEFT_MASK | XmVERTICAL_MASK | XmPRECEDENCE_MASK,
   XmLEFT_TO_RIGHT = 
       XmLEFT_TO_RIGHT_MASK | XmVERTICAL_MASK | XmPRECEDENCE_MASK,
-//  XmDEFAULT_DIRECTION = 0xff
+  XmDEFAULT_DIRECTION = 0xff
   };
 
 
