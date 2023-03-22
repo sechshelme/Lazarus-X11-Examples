@@ -353,8 +353,8 @@ type
   PXtVarArgsList = ^TXtVarArgsList;
   TXtVarArgsList = TXtPointer;
 
-//  TXtCallbackProc = procedure(para1: TWidget; para2: TXtPointer; para3: TXtPointer); cdecl;
-  TXtCallbackProc = Pointer;
+  TXtCallbackProc = procedure(para1: TWidget; para2: TXtPointer; para3: TXtPointer); cdecl;
+//  TXtCallbackProc = Pointer;
 
   PXtCallbackRec = ^TXtCallbackRec;
 
