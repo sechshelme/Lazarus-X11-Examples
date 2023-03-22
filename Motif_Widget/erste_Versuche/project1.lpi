@@ -56,6 +56,11 @@
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit>
+      <Unit>
+        <Filename Value="mybuttons.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MyButtons"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -84,6 +89,9 @@
       </Item>
       <Item>
         <Name Value="EFOpenError"/>
+      </Item>
+      <Item>
+        <Name Value="RunError(216)"/>
       </Item>
     </Exceptions>
   </Debugging>

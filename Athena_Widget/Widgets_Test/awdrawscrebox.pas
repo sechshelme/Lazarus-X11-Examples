@@ -14,7 +14,7 @@ procedure CreateCoreBoxDraw(Parent: TWidget);
 
 implementation
 
-procedure EventTest(w: TWidget; p: Pointer; ev: PXEvent; b: Pointer); cdecl;
+procedure EventTest(w: TWidget; p: TXtPointer; ev: PXEvent; b: PBoolean); cdecl;
 var
   dis: PDisplay;
   win: TWindow;
@@ -44,16 +44,18 @@ begin
   end;
 end;
 
-procedure draw_event(w: TWidget; p: Pointer; p2: PXExposeEvent; b: PXEvent); cdecl;
+procedure draw_event(w: TWidget; p: TXtPointer; Pev: PXEvent; b: PBoolean); cdecl;
 var
   dis: PDisplay;
   win: TWindow;
   gc: TGC;
+  exposeEv:TXExposeEvent;
 begin
-  WriteLn(p2^.x);
-  WriteLn(p2^.y);
-  WriteLn(p2^.Width);
-  WriteLn(p2^.Height);
+  exposeEv:=Pev^.xexpose;
+  WriteLn(exposeEv.x);
+  WriteLn(exposeEv.y);
+  WriteLn(exposeEv.Width);
+  WriteLn(exposeEv.Height);
 
   dis := XtDisplay(w);
   win := XtWindow(w);
@@ -69,7 +71,6 @@ var
 begin
   drawing := XtVaCreateManagedWidget('drawing', coreWidgetClass, Parent, XtNheight, 300, XtNwidth, 300, XtNbackground, $FF8888, nil);
   XtAddEventHandler(drawing, ExposureMask, False, @draw_event, nil);
-//  XtAddEventHandler(drawing, ButtonPressMask or KeyPressMask, False, @press_Hello, nil);
   XtAddEventHandler(Parent, ExposureMask or ButtonPressMask or KeyPressMask or ButtonReleaseMask, False, @EventTest, nil);
 end;
 

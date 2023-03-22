@@ -6,8 +6,8 @@
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
-        <OtherUnitFiles Value="Xaw;Xmu;XT"/>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <OtherUnitFiles Value="Xaw;Xmu;XT;Xm"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
     <Files>
@@ -202,6 +202,14 @@
       <Item>
         <Filename Value="XT/xtvendor.pas"/>
         <UnitName Value="XtVendor"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmpushb.pas"/>
+        <UnitName Value="XmPushB"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmxmstrdefs.pas"/>
+        <UnitName Value="XmXmStrDefs"/>
       </Item>
     </Files>
     <RequiredPkgs>

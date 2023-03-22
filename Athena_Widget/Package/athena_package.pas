@@ -15,8 +15,8 @@ uses
   XawSmeBSB, XawSmeLine, XawStripChart, XawTemplate, XawText, XawTextSink, 
   XawTextSrc, XawTip, XawToggle, XawTree, XawViewport, XawXawInit, 
   XmuConverters, XmuDrawing, XmuWidgetNode, XTComposite, XTConstraint, XTCore, 
-  XTIntrinsic, XTObject, XTRectObj, XtShell, XTStringdefs, XtVendor, 
-  LazarusPackageIntf;
+  XTIntrinsic, XTObject, XTRectObj, XtShell, XTStringdefs, XtVendor, XmPushB, 
+  XmXmStrDefs, LazarusPackageIntf;
 
 implementation
 

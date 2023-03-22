@@ -33,10 +33,10 @@ function XmCreatePushButton(parent:TWidget; name:Pchar; arglist:TArgList; argcou
 {
  * Variable argument list functions
   }
-function XmVaCreatePushButton(parent:TWidget; name:Pchar; args:array of const):TWidget;cdecl;external libXm;
-function XmVaCreatePushButton(parent:TWidget; name:Pchar):TWidget;cdecl;external libXm;
-function XmVaCreateManagedPushButton(parent:TWidget; name:Pchar; args:array of const):TWidget;cdecl;external libXm;
-function XmVaCreateManagedPushButton(parent:TWidget; name:Pchar):TWidget;cdecl;external libXm;
+//  function XmVaCreatePushButton(parent:TWidget; name:Pchar; args:array of const):TWidget;cdecl;external libXm;
+  function XmVaCreatePushButton(parent:TWidget; name:Pchar):TWidget;cdecl;varargs external libXm;
+//  function XmVaCreateManagedPushButton(parent:TWidget; name:Pchar; args:array of const):TWidget;cdecl;external libXm;
+  function XmVaCreateManagedPushButton(parent:TWidget; name:Pchar):TWidget;cdecl;varargs external libXm;
 {*******    End Public Function Declarations    ******* }
 
 implementation

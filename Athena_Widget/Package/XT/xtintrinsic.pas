@@ -303,8 +303,8 @@ type
 
 
   { widget  }{ closure  }{ event  }{ continue_to_dispatch  }
-  //  TXtEventHandler = procedure(para1: TWidget; para2: TXtPointer; para3: PXEvent; para4: PBoolean); cdecl;
-  TXtEventHandler = Pointer;
+    TXtEventHandler = procedure(para1: TWidget; para2: TXtPointer; para3: PXEvent; para4: PBoolean); cdecl;
+//  TXtEventHandler = Pointer;
 
   PEventMask = ^TEventMask;
   TEventMask = dword;

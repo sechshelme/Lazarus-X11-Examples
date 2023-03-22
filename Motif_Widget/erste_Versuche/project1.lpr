@@ -7,8 +7,8 @@ uses
   XawCommand,
   XTIntrinsic,
   XTStringdefs,
-  XmStrDefs,
-  XawBox;
+  XmXmStrDefs,
+  XawBox, MyButtons;
 
 const
   libXaw = 'libXaw';
@@ -24,12 +24,6 @@ const
   //xmPushButtonWidgetClass:Pointer;cvar; external libXm;
 
 
-  procedure press_hello(w:WideChar;p:Pointer;p2:Pointer);
-  begin
-    WriteLn('Hello World');
-  end;
-
-
   procedure main;
   var
     i: integer = 0;
@@ -39,14 +33,7 @@ const
     toplevel := XtInitialize('Mein Fenster', 'noname', nil, 0, @i, nil);
     box:=XtCreateManagedWidget('hallo', boxWidgetClass, toplevel,nil,0);
 
-    command:=XtCreateManagedWidget('Hello Button', commandWidgetClass, box,nil,0);
-    XtAddCallback(command,  XtNcallback,@press_hello,nil);
-
-    command:=XtCreateManagedWidget('Quit Button', commandWidgetClass, box,nil,0);
-
-    command:=XtCreateManagedWidget('Ich bin ein ganz grosser'#10'Button', xmPushButtonWidgetClass, box,nil,0);
-    command:=XtCreateManagedWidget('Ich bin ein ganz grosser'#10'zweiter Button', xmPushButtonWidgetClass, box,nil,0);
-    XtAddCallback(command,  XmNactivateCallback,@press_hello,nil);
+    CreateButtons(box);
 
     XtRealizeWidget(toplevel);
 

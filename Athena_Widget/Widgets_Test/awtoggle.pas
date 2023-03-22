@@ -27,7 +27,8 @@ type
     Value: integer;
   end;
 
-procedure rgback(w: TWidget; variable: PInteger; rs2: Pradio_struct);
+//procedure rgback(w: TWidget; variable: txPInteger; rs2: Pradio_struct);
+procedure rgback(w: TWidget; variable: TXtPointer; rs2: TXtPointer); cdecl;
 var
   toggleTag: PtrInt;
   state: boolean;
@@ -36,7 +37,7 @@ begin
   toggleTag := PtrUInt(XawToggleGetCurrent(w)) - 1;
   XtVaGetValues(w, XtNstate, @state, XtNlabel, @pc,XtNname,@name, nil);
 
-  variable^ := toggleTag;
+  PInteger(variable)^ := toggleTag;
 
   WriteLn('RadioButton Label: ', pc);
   WriteLn('Button: ', toggleTag, ' Status: ', state);
@@ -71,7 +72,7 @@ end;
 var
   val: integer = 2;
 
-procedure var_Print(w: TWidget; p: PInteger; p2: Pointer); cdecl;
+procedure var_Print(w: TWidget; p: TXtPointer; p2: TXtPointer); cdecl;
 begin
   Write('Es wurde gewählt: ');
   WriteLn(val);

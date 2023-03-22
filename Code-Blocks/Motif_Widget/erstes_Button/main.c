@@ -9,6 +9,20 @@ char *argv[];
     void          button_pushed();
     XmString 	  label;
 
+    printf("enum: %i\n", XmPER_SHELL);
+printf("enum: %i\n", XmPER_WIDGET);
+printf("enum: %i\n\n", XmINHERIT_POLICY);
+
+printf("enum: %i\n", XmPAGE);
+printf("enum: %i\n", XmMAJOR_TAB);
+printf("enum: %i\n\n", XmMINOR_TAB);
+
+printf("enum: %i\n", XmSOLID);
+printf("enum: %i\n", XmSPIRAL);
+printf("enum: %i\n\n", XmPIXMAP_OVERLAP_ONLY);
+
+
+
     XtSetLanguageProc (NULL, NULL, NULL);
 
     toplevel = XtVaAppInitialize (&app, "Hello", NULL, 0,
