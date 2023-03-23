@@ -1,4 +1,5 @@
 #include <Xm/PushB.h>
+#include <Xm/Xm.h>
 
 int main(argc, argv)
 int argc;

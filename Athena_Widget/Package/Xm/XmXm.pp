@@ -49,7 +49,7 @@ const
 //  XmVersion = (2*1000)+3;  { #define XmVersion	(XmVERSION * 1000 + XmREVISION) }
   XmVERSION_STRING = '@(#)Motif Version 2.3.8';  
   var
-    xmUseVersion : PtrInt;cvar;external libXm;
+    xmUseVersion : LongInt;cvar;external libXm;
 { define used to denote an unspecified pixmap   }
 
 const
@@ -125,7 +125,7 @@ function XmDirectionMatchPartial(d1:TXmDirection; d2:TXmDirection; dmask:TXmDire
  *************** }
 type
   PXmFontType = ^TXmFontType;
-  TXmFontType =  PtrInt;
+  TXmFontType =  LongInt;
   Const
     XmFONT_IS_FONT = 0;
     XmFONT_IS_FONTSET = 1;
@@ -221,7 +221,7 @@ function XmSTRING_COMPONENT_USER_END : TXmStringComponentType;
 
 type
   PXmTextType = ^TXmTextType;
-  TXmTextType =  PtrInt;
+  TXmTextType =  LongInt;
   Const
     XmCHARSET_TEXT = 0;
     XmMULTIBYTE_TEXT = 1;
@@ -230,7 +230,7 @@ type
 
 type
   PXmParseModel = ^TXmParseModel;
-  TXmParseModel =  PtrInt;
+  TXmParseModel =  LongInt;
   Const
     XmOUTPUT_ALL = 0;
     XmOUTPUT_BETWEEN = 1;
@@ -253,7 +253,7 @@ type
    add constants to their list without overlapping with ours.  }
 type
   PXmICCEncodingStyle = ^TXmICCEncodingStyle;
-  TXmICCEncodingStyle =  PtrInt;
+  TXmICCEncodingStyle =  LongInt;
   Const
     XmSTYLE_STRING = XStringStyle;
     XmSTYLE_COMPOUND_TEXT = XCompoundTextStyle;
@@ -284,7 +284,7 @@ type
   TXmParseMapping=Pointer;
 
   TXmParseProc = function (in_out:PXtPointer; text_end:TXtPointer; _type:TXmTextType; locale_tag:TXmStringTag; entry:TXmParseMapping; 
-               pattern_length:PtrInt; str_include:PXmString; call_data:TXtPointer):TXmIncludeStatus;cdecl;
+               pattern_length:LongInt; str_include:PXmString; call_data:TXtPointer):TXmIncludeStatus;cdecl;
 {***************
  *
  * XmTabList structure defines. These must be here (at the start of the file) 
@@ -293,7 +293,7 @@ type
  *************** }
 
   PXmOffsetModel = ^TXmOffsetModel;
-  TXmOffsetModel =  PtrInt;
+  TXmOffsetModel =  LongInt;
   Const
     XmABSOLUTE = 0;
     XmRELATIVE = 1;
@@ -328,7 +328,7 @@ type
 { For XmFontListAdd and XmFontListAppendEntry.  }
 
   PXmMergeMode = ^TXmMergeMode;
-  TXmMergeMode =  PtrInt;
+  TXmMergeMode =  LongInt;
   Const
     XmSKIP = 0;
     XmMERGE_REPLACE = 1;
@@ -463,7 +463,7 @@ type
  *********************************************************************** }
 type
   PXmColorMode = ^TXmColorMode;
-  TXmColorMode =  PtrInt;
+  TXmColorMode =  LongInt;
   Const
     XmListMode = 0;
     XmScaleMode = 1;
@@ -503,7 +503,7 @@ type
  *********************************************************************** }
 type
   PXmIconPlacement = ^TXmIconPlacement;
-  TXmIconPlacement =  PtrInt;
+  TXmIconPlacement =  LongInt;
   Const
     XmIconTop = 0;
     XmIconLeft = 1;
@@ -514,7 +514,7 @@ type
 
 type
   PXmFillOption = ^TXmFillOption;
-  TXmFillOption =  PtrInt;
+  TXmFillOption =  LongInt;
   Const
     XmFillNone = 0;
     XmFillMajor = 1;
@@ -526,7 +526,7 @@ type
  *********************************************************************** }
 type
   PXmHierarchyNodeState = ^TXmHierarchyNodeState;
-  TXmHierarchyNodeState =  PtrInt;
+  TXmHierarchyNodeState =  LongInt;
   Const
     XmAlwaysOpen = 0;
     XmOpen = 1;
@@ -536,14 +536,14 @@ type
 
 type
   PXmTreeConnectStyle = ^TXmTreeConnectStyle;
-  TXmTreeConnectStyle =  PtrInt;
+  TXmTreeConnectStyle =  LongInt;
   Const
     XmTreeLadder = 0;
     XmTreeDirect = 1;
 
 type
   PXmTreeCompressStyle = ^TXmTreeCompressStyle;
-  TXmTreeCompressStyle =  PtrInt;
+  TXmTreeCompressStyle =  LongInt;
   Const
     XmTreeCompressNone = 0;
     XmTreeCompressLeaves = 1;
@@ -608,7 +608,7 @@ type
  *********************************************************************** }
 type
   PXmTabStyle = ^TXmTabStyle;
-  TXmTabStyle =  PtrInt;
+  TXmTabStyle =  LongInt;
   Const
     XmTABS_SQUARED = 0;
     XmTABS_ROUNDED = 1;
@@ -616,7 +616,7 @@ type
 
 type
   PXmTabMode = ^TXmTabMode;
-  TXmTabMode =  PtrInt;
+  TXmTabMode =  LongInt;
   Const
     XmTABS_BASIC = 0;
     XmTABS_STACKED = 1;
@@ -626,7 +626,7 @@ type
 
 type
   PXmTabOrientation = ^TXmTabOrientation;
-  TXmTabOrientation =  PtrInt;
+  TXmTabOrientation =  LongInt;
   Const
     XmTAB_ORIENTATION_DYNAMIC = 0;
     XmTABS_RIGHT_TO_LEFT = 1;
@@ -636,14 +636,14 @@ type
 
 type
   PXmTabEdge = ^TXmTabEdge;
-  TXmTabEdge =  PtrInt;
+  TXmTabEdge =  LongInt;
   Const
     XmTAB_EDGE_TOP_LEFT = 0;
     XmTAB_EDGE_BOTTOM_RIGHT = 1;
 
 type
   PXmTabArrowPlacement = ^TXmTabArrowPlacement;
-  TXmTabArrowPlacement =  PtrInt;
+  TXmTabArrowPlacement =  LongInt;
   Const
     XmTAB_ARROWS_ON_RIGHT = 0;
     XmTAB_ARROWS_ON_LEFT = 1;
@@ -655,7 +655,7 @@ type
 
 type
   PXmTabSide = ^TXmTabSide;
-  TXmTabSide =  PtrInt;
+  TXmTabSide =  LongInt;
   Const
     XmTABS_ON_TOP = 0;
     XmTABS_ON_BOTTOM = 1;
@@ -664,7 +664,7 @@ type
 
 type
   PXmPixmapPlacement = ^TXmPixmapPlacement;
-  TXmPixmapPlacement =  PtrInt;
+  TXmPixmapPlacement =  LongInt;
   Const
     XmPIXMAP_TOP = 0;
     XmPIXMAP_BOTTOM = 1;
@@ -675,14 +675,14 @@ type
 
 type
   PXmTabValueMode = ^TXmTabValueMode;
-  TXmTabValueMode =  PtrInt;
+  TXmTabValueMode =  LongInt;
   Const
     XmTAB_VALUE_COPY = 0;
     XmTAB_VALUE_SHARE = 1;
 
 type
   PXmTabResult = ^TXmTabResult;
-  TXmTabResult =  PtrInt;
+  TXmTabResult =  LongInt;
   Const
     XmTAB_CMP_VISUAL = 0;
     XmTAB_CMP_SIZE = 1;
@@ -691,17 +691,17 @@ type
 type
   PXmTabStackCallbackStruct = ^TXmTabStackCallbackStruct;
   TXmTabStackCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       selected_child : TWidget;
     end;
 
   PXmTabBoxCallbackStruct = ^TXmTabBoxCallbackStruct;
   TXmTabBoxCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
-      tab_index : PtrInt;
-      old_index : PtrInt;
+      tab_index : LongInt;
+      old_index : LongInt;
     end;
 {***************************************************************************
  *  Callback reasons 
@@ -891,20 +891,20 @@ Const
 type
   PXmAnyCallbackStruct = ^TXmAnyCallbackStruct;
   TXmAnyCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
     end;
 
   PXmArrowButtonCallbackStruct = ^TXmArrowButtonCallbackStruct;
   TXmArrowButtonCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
-      click_count : PtrInt;
+      click_count : LongInt;
     end;
 
   PXmDragStartCallbackStruct = ^TXmDragStartCallbackStruct;
   TXmDragStartCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       widget : TWidget;
       doit : TBoolean;
@@ -914,37 +914,37 @@ type
 
   PXmComboBoxCallbackStruct = ^TXmComboBoxCallbackStruct;
   TXmComboBoxCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       item_or_text : TXmString;
-      item_position : PtrInt;
+      item_position : LongInt;
     end;
 
   PXmDrawingAreaCallbackStruct = ^TXmDrawingAreaCallbackStruct;
   TXmDrawingAreaCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       window : TWindow;
     end;
 
   PXmDrawnButtonCallbackStruct = ^TXmDrawnButtonCallbackStruct;
   TXmDrawnButtonCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       window : TWindow;
-      click_count : PtrInt;
+      click_count : LongInt;
     end;
 
   PXmPushButtonCallbackStruct = ^TXmPushButtonCallbackStruct;
   TXmPushButtonCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
-      click_count : PtrInt;
+      click_count : LongInt;
     end;
 
   PXmRowColumnCallbackStruct = ^TXmRowColumnCallbackStruct;
   TXmRowColumnCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       widget : TWidget;
       data : Pchar;
@@ -953,73 +953,73 @@ type
 
   PXmScrollBarCallbackStruct = ^TXmScrollBarCallbackStruct;
   TXmScrollBarCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
-      value : PtrInt;
-      pixel : PtrInt;
+      value : LongInt;
+      pixel : LongInt;
     end;
 
   PXmToggleButtonCallbackStruct = ^TXmToggleButtonCallbackStruct;
   TXmToggleButtonCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
-      set_ : PtrInt;
+      set_ : LongInt;
     end;
 
   PXmListCallbackStruct = ^TXmListCallbackStruct;
   TXmListCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       item : TXmString;
-      item_length : PtrInt;
-      item_position : PtrInt;
+      item_length : LongInt;
+      item_position : LongInt;
       selected_items : PXmString;
-      selected_item_count : PtrInt;
-      selected_item_positions : PPtrInt;
+      selected_item_count : LongInt;
+      selected_item_positions : PLongint;
       selection_type : char;
       auto_selection_type : char;
     end;
 
   PXmSelectionBoxCallbackStruct = ^TXmSelectionBoxCallbackStruct;
   TXmSelectionBoxCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       value : TXmString;
-      length : PtrInt;
+      length : LongInt;
     end;
 
   PXmCommandCallbackStruct = ^TXmCommandCallbackStruct;
   TXmCommandCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       value : TXmString;
-      length : PtrInt;
+      length : LongInt;
     end;
 
   PXmFileSelectionBoxCallbackStruct = ^TXmFileSelectionBoxCallbackStruct;
   TXmFileSelectionBoxCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       value : TXmString;
-      length : PtrInt;
+      length : LongInt;
       mask : TXmString;
-      mask_length : PtrInt;
+      mask_length : LongInt;
       dir : TXmString;
-      dir_length : PtrInt;
+      dir_length : LongInt;
       pattern : TXmString;
-      pattern_length : PtrInt;
+      pattern_length : LongInt;
     end;
 
   PXmScaleCallbackStruct = ^TXmScaleCallbackStruct;
   TXmScaleCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
-      value : PtrInt;
+      value : LongInt;
     end;
 
   PXmPopupHandlerCallbackStruct = ^TXmPopupHandlerCallbackStruct;
   TXmPopupHandlerCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       menuToPost : TWidget;
       postIt : TBoolean;
@@ -1028,7 +1028,7 @@ type
 
   PXmContainerOutlineCallbackStruct = ^TXmContainerOutlineCallbackStruct;
   TXmContainerOutlineCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       item : TWidget;
       new_outline_state : byte;
@@ -1036,45 +1036,43 @@ type
 
   PXmContainerSelectCallbackStruct = ^TXmContainerSelectCallbackStruct;
   TXmContainerSelectCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       selected_items : TWidgetList;
-      selected_item_count : PtrInt;
+      selected_item_count : LongInt;
       auto_selection_type : byte;
     end;
 
   PXmNotebookCallbackStruct = ^TXmNotebookCallbackStruct;
   TXmNotebookCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
-      page_number : PtrInt;
+      page_number : LongInt;
       page_widget : TWidget;
-      prev_page_number : PtrInt;
+      prev_page_number : LongInt;
       prev_page_widget : TWidget;
     end;
 
   PXmDisplayCallbackStruct = ^TXmDisplayCallbackStruct;
   TXmDisplayCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       rendition : TXmRendition;
       font_name : Pchar;
       render_table : TXmRenderTable;
       tag : TXmStringTag;
     end;
-{$ifdef PRINTING_SUPPORTED}
-{ XmCR_START_JOB, XmCR_END_JOB, XmCR_PAGE_SETUP  }
-{ in_out  }
 
+  {$ifdef PRINTING_SUPPORTED}
   PXmPrintShellCallbackStruct = ^TXmPrintShellCallbackStruct;
   TXmPrintShellCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       context : TXPContext;
       last_page : TBoolean;
       detail : TXtPointer;
     end;
-{$endif}
+  {$endif}
 { PRINTING_SUPPORTED  }
 {***********************************************************************
  *  PushButton defines
@@ -1332,11 +1330,11 @@ Const
 type
   PXmSpinBoxCallbackStruct = ^TXmSpinBoxCallbackStruct;
   TXmSpinBoxCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       widget : TWidget;
       doit : TBoolean;
-      position : PtrInt;
+      position : LongInt;
       value : TXmString;
       crossed_boundary : TBoolean;
     end;
@@ -1388,14 +1386,14 @@ type
 
 type
   PXmTextDirection = ^TXmTextDirection;
-  TXmTextDirection =  PtrInt;
+  TXmTextDirection =  LongInt;
   Const
     XmTEXT_FORWARD = 0;
     XmTEXT_BACKWARD = 1;
 
 type
   PXmTextPosition = ^TXmTextPosition;
-  TXmTextPosition = PtrInt;
+  TXmTextPosition = LongInt;
 
   PXmTextFormat = ^TXmTextFormat;
   TXmTextFormat = TAtom;
@@ -1417,7 +1415,7 @@ const
   FMT16BIT = XmFMT_16_BIT;  
 type
   PXmTextScanType = ^TXmTextScanType;
-  TXmTextScanType =  PtrInt;
+  TXmTextScanType =  LongInt;
   Const
     XmSELECT_POSITION = 0;
     XmSELECT_WHITESPACE = 1;
@@ -1429,7 +1427,7 @@ type
 
 type
   PXmHighlightMode = ^TXmHighlightMode;
-  TXmHighlightMode =  PtrInt;
+  TXmHighlightMode =  LongInt;
   Const
     XmHIGHLIGHT_NORMAL = 0;
     XmHIGHLIGHT_SELECTED = 1;
@@ -1444,7 +1442,7 @@ type
   PXmTextBlockRec = ^TXmTextBlockRec;
   TXmTextBlockRec = record
       ptr : Pchar;
-      length : PtrInt;
+      length : LongInt;
       format : TXmTextFormat;
     end;
   TXmTextBlock = PXmTextBlockRec;
@@ -1452,13 +1450,13 @@ type
 
   PXmTextVerifyCallbackStruct = ^TXmTextVerifyCallbackStruct;
   TXmTextVerifyCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       doit : TBoolean;
-      currInsert : PtrInt;
-      newInsert : PtrInt;
-      startPos : PtrInt;
-      endPos : PtrInt;
+      currInsert : LongInt;
+      newInsert : LongInt;
+      startPos : LongInt;
+      endPos : LongInt;
       text : TXmTextBlock;
     end;
   TXmTextVerifyPtr = PXmTextVerifyCallbackStruct;
@@ -1472,20 +1470,20 @@ type
   TXmTextBlockRecWcs = record
 //      wcsptr : Pwchar_t;
       wcsptr : PWideChar;
-      length : PtrInt;
+      length : LongInt;
     end;
   TXmTextBlockWcs = PXmTextBlockRecWcs;
   PXmTextBlockWcs = ^TXmTextBlockWcs;
 
   PXmTextVerifyCallbackStructWcs = ^TXmTextVerifyCallbackStructWcs;
   TXmTextVerifyCallbackStructWcs = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       doit : TBoolean;
-      currInsert : PtrInt;
-      newInsert : PtrInt;
-      startPos : PtrInt;
-      endPos : PtrInt;
+      currInsert : LongInt;
+      newInsert : LongInt;
+      startPos : LongInt;
+      endPos : LongInt;
       text : TXmTextBlockWcs;
     end;
   TXmTextVerifyPtrWcs = PXmTextVerifyCallbackStructWcs;
@@ -1585,7 +1583,7 @@ Const
 {  Traversal types   }
 type
   PXmVisibility = ^TXmVisibility;
-  TXmVisibility =  PtrInt;
+  TXmVisibility =  LongInt;
   Const
     XmVISIBILITY_UNOBSCURED = 0;
     XmVISIBILITY_PARTIALLY_OBSCURED = 1;
@@ -1593,7 +1591,7 @@ type
 
 type
   PXmTraversalDirection = ^TXmTraversalDirection;
-  TXmTraversalDirection =  PtrInt;
+  TXmTraversalDirection =  LongInt;
   Const
     XmTRAVERSE_CURRENT = 0;
     XmTRAVERSE_NEXT = 1;
@@ -1611,7 +1609,7 @@ type
 type
   PXmTraverseObscuredCallbackStruct = ^TXmTraverseObscuredCallbackStruct;
   TXmTraverseObscuredCallbackStruct = record
-      reason : PtrInt;
+      reason : LongInt;
       event : PXEvent;
       traversal_destination : TWidget;
       direction : TXmTraversalDirection;
@@ -1706,7 +1704,7 @@ function XmGetSecondaryResourceData(w_class:TWidgetClass; secondaryDataRtn:PPXmS
 function XmInstallImage(image:PXImage; image_name:Pchar):TBoolean;cdecl;external libXm;
 function XmUninstallImage(image:PXImage):TBoolean;cdecl;external libXm;
 function XmGetPixmap(screen:PScreen; image_name:Pchar; foreground:TPixel; background:TPixel):TPixmap;cdecl;external libXm;
-function XmGetPixmapByDepth(screen:PScreen; image_name:Pchar; foreground:TPixel; background:TPixel; depth:PtrInt):TPixmap;cdecl;external libXm;
+function XmGetPixmapByDepth(screen:PScreen; image_name:Pchar; foreground:TPixel; background:TPixel; depth:LongInt):TPixmap;cdecl;external libXm;
 function XmDestroyPixmap(screen:PScreen; pixmap:TPixmap):TBoolean;cdecl;external libXm;
 {*******    End Public Function Declarations    ******* }
 {*******    Public Function Declarations for Resolve.c    ******* }
@@ -1715,7 +1713,7 @@ function XmDestroyPixmap(screen:PScreen; pixmap:TPixmap):TBoolean;cdecl;external
      them here ---  }
 type
   PXmOffset = ^TXmOffset;
-  TXmOffset = PtrInt;
+  TXmOffset = LongInt;
 
   PXmOffsetPtr = ^TXmOffsetPtr;
   TXmOffsetPtr = PXmOffset;
@@ -1726,7 +1724,7 @@ procedure XmResolvePartOffsets(w_class:TWidgetClass; offset:PXmOffsetPtr);cdecl;
 {*******    Public Function Declarations for Xm.c    ******* }
 procedure XmUpdateDisplay(w:TWidget);cdecl;external libXm;
 function XmObjectAtPoint(wid:TWidget; x:TPosition; y:TPosition):TWidget;cdecl;external libXm;
-function XmWidgetGetBaselines(wid:TWidget; baselines:PPDimension; line_count:PPtrInt):TBoolean;cdecl;external libXm;
+function XmWidgetGetBaselines(wid:TWidget; baselines:PPDimension; line_count:PLongInt):TBoolean;cdecl;external libXm;
 function XmWidgetGetDisplayRect(wid:TWidget; displayrect:PXRectangle):TBoolean;cdecl;external libXm;
 {*******    End Public Function Declarations    ******* }
 {*******    Primitive.c    ******* }
@@ -1748,14 +1746,14 @@ function XmCvtXmStringToUTF8String(_string:TXmString):Pchar;cdecl;external libXm
 {*******    End Public Function Declarations    ******* }
 {*******    Public Function Declarations for ResInd.c    ******* }
 
-function XmConvertStringToUnits(screen:PScreen; spec:TString; orientation:PtrInt; to_type:PtrInt; parse_error:PXtEnum):PtrInt;cdecl;external libXm;
-function XmConvertUnits(widget:TWidget; dimension:PtrInt; from_type:PtrInt; from_val:PtrInt; to_type:PtrInt):PtrInt;cdecl;external libXm;
-function XmCvtToHorizontalPixels(screen:PScreen; from_val:PtrInt; from_type:PtrInt):PtrInt;cdecl;external libXm;
-function XmCvtToVerticalPixels(screen:PScreen; from_val:PtrInt; from_type:PtrInt):PtrInt;cdecl;external libXm;
-function XmCvtFromHorizontalPixels(screen:PScreen; from_val:PtrInt; to_type:PtrInt):PtrInt;cdecl;external libXm;
-function XmCvtFromVerticalPixels(screen:PScreen; from_val:PtrInt; to_type:PtrInt):PtrInt;cdecl;external libXm;
-procedure XmSetFontUnits(display:PDisplay; h_value:PtrInt; v_value:PtrInt);cdecl;external libXm;
-procedure XmSetFontUnit(display:PDisplay; value:PtrInt);cdecl;external libXm;
+function XmConvertStringToUnits(screen:PScreen; spec:TString; orientation:LongInt; to_type:LongInt; parse_error:PXtEnum):LongInt;cdecl;external libXm;
+function XmConvertUnits(widget:TWidget; dimension:LongInt; from_type:LongInt; from_val:LongInt; to_type:LongInt):LongInt;cdecl;external libXm;
+function XmCvtToHorizontalPixels(screen:PScreen; from_val:LongInt; from_type:LongInt):LongInt;cdecl;external libXm;
+function XmCvtToVerticalPixels(screen:PScreen; from_val:LongInt; from_type:LongInt):LongInt;cdecl;external libXm;
+function XmCvtFromHorizontalPixels(screen:PScreen; from_val:LongInt; to_type:LongInt):LongInt;cdecl;external libXm;
+function XmCvtFromVerticalPixels(screen:PScreen; from_val:LongInt; to_type:LongInt):LongInt;cdecl;external libXm;
+procedure XmSetFontUnits(display:PDisplay; h_value:LongInt; v_value:LongInt);cdecl;external libXm;
+procedure XmSetFontUnit(display:PDisplay; value:LongInt);cdecl;external libXm;
 {*******    End Public Function Declarations    ******* }
 {*******    Public Function Declarations for MenuUtil.c    ******* }
 procedure XmSetMenuCursor(display:PDisplay; cursorId:TCursor);cdecl;external libXm;
@@ -1774,14 +1772,14 @@ function XmVaCreateSimpleMenuBar(parent:TWidget; name:TString; args:array of con
 function XmVaCreateSimpleMenuBar(parent:TWidget; name:TString):TWidget;cdecl;external libXm;
 function XmVaCreateSimplePopupMenu(parent:TWidget; name:TString; callback:TXtCallbackProc; args:array of const):TWidget;cdecl;external libXm;
 function XmVaCreateSimplePopupMenu(parent:TWidget; name:TString; callback:TXtCallbackProc):TWidget;cdecl;external libXm;
-function XmVaCreateSimplePulldownMenu(parent:TWidget; name:TString; post_from_button:PtrInt; callback:TXtCallbackProc; args:array of const):TWidget;cdecl;external libXm;
-function XmVaCreateSimplePulldownMenu(parent:TWidget; name:TString; post_from_button:PtrInt; callback:TXtCallbackProc):TWidget;cdecl;external libXm;
-function XmVaCreateSimpleOptionMenu(parent:TWidget; name:TString; option_label:TXmString; option_mnemonic:TKeySym; button_set:PtrInt; 
+function XmVaCreateSimplePulldownMenu(parent:TWidget; name:TString; post_from_button:LongInt; callback:TXtCallbackProc; args:array of const):TWidget;cdecl;external libXm;
+function XmVaCreateSimplePulldownMenu(parent:TWidget; name:TString; post_from_button:LongInt; callback:TXtCallbackProc):TWidget;cdecl;external libXm;
+function XmVaCreateSimpleOptionMenu(parent:TWidget; name:TString; option_label:TXmString; option_mnemonic:TKeySym; button_set:LongInt; 
            callback:TXtCallbackProc; args:array of const):TWidget;cdecl;external libXm;
-function XmVaCreateSimpleOptionMenu(parent:TWidget; name:TString; option_label:TXmString; option_mnemonic:TKeySym; button_set:PtrInt; 
+function XmVaCreateSimpleOptionMenu(parent:TWidget; name:TString; option_label:TXmString; option_mnemonic:TKeySym; button_set:LongInt; 
            callback:TXtCallbackProc):TWidget;cdecl;external libXm;
-function XmVaCreateSimpleRadioBox(parent:TWidget; name:TString; button_set:PtrInt; callback:TXtCallbackProc; args:array of const):TWidget;cdecl;external libXm;
-function XmVaCreateSimpleRadioBox(parent:TWidget; name:TString; button_set:PtrInt; callback:TXtCallbackProc):TWidget;cdecl;external libXm;
+function XmVaCreateSimpleRadioBox(parent:TWidget; name:TString; button_set:LongInt; callback:TXtCallbackProc; args:array of const):TWidget;cdecl;external libXm;
+function XmVaCreateSimpleRadioBox(parent:TWidget; name:TString; button_set:LongInt; callback:TXtCallbackProc):TWidget;cdecl;external libXm;
 function XmVaCreateSimpleCheckBox(parent:TWidget; name:TString; callback:TXtCallbackProc; args:array of const):TWidget;cdecl;external libXm;
 function XmVaCreateSimpleCheckBox(parent:TWidget; name:TString; callback:TXtCallbackProc):TWidget;cdecl;external libXm;
 {*******    End Public Function Declarations    ******* }
@@ -1791,7 +1789,7 @@ function XmVaCreateSimpleCheckBox(parent:TWidget; name:TString; callback:TXtCall
 {$endif}
 { NeedWidePrototypes  }
 
-function XmTrackingEvent(widget:TWidget; cursor:TCursor; confineTo:PtrInt; confineTo:TBoolean; pev:PXEvent):TWidget;cdecl;external libXm;
+function XmTrackingEvent(widget:TWidget; cursor:TCursor; confineTo:LongInt; confineTo:TBoolean; pev:PXEvent):TWidget;cdecl;external libXm;
 {#if NeedWidePrototypes }
 {                        int confineTo) ; }
 {#else }
@@ -1856,12 +1854,12 @@ function XmFontListGetNextFont(context:TXmFontContext; charset:PXmStringCharSet;
 procedure XmFontListFreeFontContext(context:TXmFontContext);cdecl;external libXm;
 function XmStringConcat(a:TXmString; b:TXmString):TXmString;cdecl;external libXm;
 function XmStringConcatAndFree(a:TXmString; b:TXmString):TXmString;cdecl;external libXm;
-function XmStringNConcat(first:TXmString; second:TXmString; n:PtrInt):TXmString;cdecl;external libXm;
+function XmStringNConcat(first:TXmString; second:TXmString; n:LongInt):TXmString;cdecl;external libXm;
 function XmStringCopy(_string:TXmString):TXmString;cdecl;external libXm;
-function XmStringNCopy(str:TXmString; n:PtrInt):TXmString;cdecl;external libXm;
+function XmStringNCopy(str:TXmString; n:LongInt):TXmString;cdecl;external libXm;
 function XmStringByteCompare(a1:TXmString; b1:TXmString):TBoolean;cdecl;external libXm;
 function XmStringCompare(a:TXmString; b:TXmString):TBoolean;cdecl;external libXm;
-function XmStringLength(_string:TXmString):PtrInt;cdecl;external libXm;
+function XmStringLength(_string:TXmString):LongInt;cdecl;external libXm;
 function XmStringEmpty(_string:TXmString):TBoolean;cdecl;external libXm;
 function XmStringIsVoid(_string:TXmString):TBoolean;cdecl;external libXm;
 function XmStringHasSubstring(_string:TXmString; substring:TXmString):TBoolean;cdecl;external libXm;
@@ -1870,14 +1868,14 @@ function XmStringBaseline(fontlist:TXmFontList; _string:TXmString):TDimension;cd
 function XmStringWidth(fontlist:TXmFontList; _string:TXmString):TDimension;cdecl;external libXm;
 function XmStringHeight(fontlist:TXmFontList; _string:TXmString):TDimension;cdecl;external libXm;
 procedure XmStringExtent(fontlist:TXmFontList; _string:TXmString; width:PDimension; height:PDimension);cdecl;external libXm;
-function XmStringLineCount(_string:TXmString):PtrInt;cdecl;external libXm;
+function XmStringLineCount(_string:TXmString):LongInt;cdecl;external libXm;
 {$if NeedWidePrototypes}
 {$else}
 {$endif}
 { NeedWidePrototypes  }
 
 procedure XmStringDraw(d:PDisplay; w:TWindow; fontlist:TXmFontList; _string:TXmString; gc:TGC; 
-            x:PtrInt; y:PtrInt; width:PtrInt; align:dword; lay_dir:dword; 
+            x:LongInt; y:LongInt; width:LongInt; align:dword; lay_dir:dword; 
             x:TPosition; y:TPosition; width:TDimension; align:byte; lay_dir:byte; 
             clip:PXRectangle);cdecl;external libXm;
 {$if NeedWidePrototypes}
@@ -1886,7 +1884,7 @@ procedure XmStringDraw(d:PDisplay; w:TWindow; fontlist:TXmFontList; _string:TXmS
 { NeedWidePrototypes  }
 
 procedure XmStringDrawImage(d:PDisplay; w:TWindow; fontlist:TXmFontList; _string:TXmString; gc:TGC; 
-            x:PtrInt; y:PtrInt; width:PtrInt; align:dword; lay_dir:dword; 
+            x:LongInt; y:LongInt; width:LongInt; align:dword; lay_dir:dword; 
             x:TPosition; y:TPosition; width:TDimension; align:byte; lay_dir:byte; 
             clip:PXRectangle);cdecl;external libXm;
 {$if NeedWidePrototypes}
@@ -1895,7 +1893,7 @@ procedure XmStringDrawImage(d:PDisplay; w:TWindow; fontlist:TXmFontList; _string
 { NeedWidePrototypes  }
 
 procedure XmStringDrawUnderline(d:PDisplay; w:TWindow; fntlst:TXmFontList; str:TXmString; gc:TGC; 
-            x:PtrInt; y:PtrInt; width:PtrInt; align:dword; lay_dir:dword; 
+            x:LongInt; y:LongInt; width:LongInt; align:dword; lay_dir:dword; 
             x:TPosition; y:TPosition; width:TDimension; align:byte; lay_dir:byte; 
             clip:PXRectangle; under:TXmString);cdecl;external libXm;
 function XmCvtXmStringToByteStream(_string:TXmString; prop_return:PPbyte):dword;cdecl;external libXm;
@@ -1934,9 +1932,9 @@ function XmTabListRemoveTabs(oldlist:TXmTabList; position_list:PCardinal; positi
 function XmTabListReplacePositions(oldlist:TXmTabList; position_list:PCardinal; tabs:PXmTab; tab_count:TCardinal):TXmTabList;cdecl;external libXm;
 function XmTabListGetTab(tablist:TXmTabList; position:TCardinal):TXmTab;cdecl;external libXm;
 function XmTabListTabCount(tablist:TXmTabList):TCardinal;cdecl;external libXm;
-function XmTabListCopy(tablist:TXmTabList; offset:PtrInt; count:TCardinal):TXmTabList;cdecl;external libXm;
+function XmTabListCopy(tablist:TXmTabList; offset:LongInt; count:TCardinal):TXmTabList;cdecl;external libXm;
 procedure XmTabListFree(tablist:TXmTabList);cdecl;external libXm;
-function XmTabListInsertTabs(oldlist:TXmTabList; tabs:PXmTab; tab_count:TCardinal; position:PtrInt):TXmTabList;cdecl;external libXm;
+function XmTabListInsertTabs(oldlist:TXmTabList; tabs:PXmTab; tab_count:TCardinal; position:LongInt):TXmTabList;cdecl;external libXm;
 {*******    End Public Function Declarations    ******* }
 {*******    Public Function Declarations for XmRenderTable.c    ******* }
 function XmRenderTableCvtFromProp(para1:TWidget; prop:Pchar; len:dword):TXmRenderTable;cdecl;external libXm;
@@ -1947,10 +1945,10 @@ procedure XmRenditionFree(rendition:TXmRendition);cdecl;external libXm;
 function XmRenditionCreate(widget:TWidget; tag:TXmStringTag; arglist:TArgList; argcount:TCardinal):TXmRendition;cdecl;external libXm;
 function XmRenderTableGetRenditions(table:TXmRenderTable; tags:PXmStringTag; tag_count:TCardinal):PXmRendition;cdecl;external libXm;
 function XmRenderTableGetRendition(table:TXmRenderTable; tag:TXmStringTag):TXmRendition;cdecl;external libXm;
-function XmRenderTableGetTags(table:TXmRenderTable; tag_list:PPXmStringTag):PtrInt;cdecl;external libXm;
+function XmRenderTableGetTags(table:TXmRenderTable; tag_list:PPXmStringTag):LongInt;cdecl;external libXm;
 procedure XmRenderTableFree(table:TXmRenderTable);cdecl;external libXm;
-function XmRenderTableCopy(table:TXmRenderTable; tags:PXmStringTag; tag_count:PtrInt):TXmRenderTable;cdecl;external libXm;
-function XmRenderTableRemoveRenditions(oldtable:TXmRenderTable; tags:PXmStringTag; tag_count:PtrInt):TXmRenderTable;cdecl;external libXm;
+function XmRenderTableCopy(table:TXmRenderTable; tags:PXmStringTag; tag_count:LongInt):TXmRenderTable;cdecl;external libXm;
+function XmRenderTableRemoveRenditions(oldtable:TXmRenderTable; tags:PXmStringTag; tag_count:LongInt):TXmRenderTable;cdecl;external libXm;
 function XmRenderTableAddRenditions(oldtable:TXmRenderTable; renditions:PXmRendition; rendition_count:TCardinal; merge_mode:TXmMergeMode):TXmRenderTable;cdecl;external libXm;
 {*******    End Public Function Declarations    ******* }
 {*******    Public Function Declarations for Dest.c    ******* }
@@ -2005,7 +2003,7 @@ type
 { Shared text enum.  }
 
   PXmTextStatus = ^TXmTextStatus;
-  TXmTextStatus =  PtrInt;
+  TXmTextStatus =  LongInt;
   Const
     EditDone = 0;
     EditError = 1;
