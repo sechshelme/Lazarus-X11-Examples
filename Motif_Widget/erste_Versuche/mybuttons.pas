@@ -6,11 +6,9 @@ uses
   xlib,
   x,
   XmPushB,
-  XawCommand,
-  XTIntrinsic,
+   XTIntrinsic,
   XTStringdefs,
-  XmXmStrDefs,
-  XawBox;
+  XmXmStrDefs;
 
 procedure CreateButtons(Parent:TWidget);
 
@@ -46,7 +44,7 @@ begin
   XtAddCallback(command,  XmNactivateCallback,@press_hello,nil);
 
   command:=XmVaCreateManagedPushButton(Parent, 'Hello World !',XtNwidth,100,XtNheight,100,nil);
-  XtVaSetValues(command,XtNwidth,300,XmNlabelString,'ha ha', nil);
+//  XtVaSetValues(command,XtNwidth,300,XmNlabelString,'ha ha', nil);
 
   command:=XtCreateManagedWidget('Ich bin ein ganz grosser'#10'zweiter Button', xmPushButtonWidgetClass, Parent,nil,0);
 

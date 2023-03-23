@@ -211,6 +211,10 @@
         <Filename Value="Xm/xmxmstrdefs.pas"/>
         <UnitName Value="XmXmStrDefs"/>
       </Item>
+      <Item>
+        <Filename Value="Xm/XmXm.pp"/>
+        <UnitName Value="XmXm"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

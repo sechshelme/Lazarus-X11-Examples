@@ -81,7 +81,7 @@ extern "C" {
 #define XmVersion	(2 * 1000 + 3)  // #define XmVersion	(XmVERSION * 1000 + XmREVISION)
 #define XmVERSION_STRING "@(#)Motif Version 2.3.8"
 
-externalref int xmUseVersion;
+extern int xmUseVersion;
 
 
 /* define used to denote an unspecified pixmap  */
@@ -110,8 +110,8 @@ externalref int xmUseVersion;
 #define XmDEFAULT_LIGHT_THRESHOLD       93
 #define XmDEFAULT_FOREGROUND_THRESHOLD  70
 
-externalref  char    _XmSDEFAULT_FONT[];            /* In Xmos.c */
-externalref  char    _XmSDEFAULT_BACKGROUND[];      /* In Xmos.c */
+extern  char    _XmSDEFAULT_FONT[];            /* In Xmos.c */
+extern  char    _XmSDEFAULT_BACKGROUND[];      /* In Xmos.c */
 
 typedef unsigned char	XmDirection;
 
@@ -127,7 +127,7 @@ typedef unsigned char	XmDirection;
 #define XmPRECEDENCE_VERT_MASK         0x80
 #define XmPRECEDENCE_MASK              0xc0
 
-enum {
+typedef enum {
   XmRIGHT_TO_LEFT_TOP_TO_BOTTOM = 
       XmRIGHT_TO_LEFT_MASK | XmTOP_TO_BOTTOM_MASK | XmPRECEDENCE_HORIZ_MASK,
   XmLEFT_TO_RIGHT_TOP_TO_BOTTOM = 
@@ -153,7 +153,7 @@ enum {
   XmLEFT_TO_RIGHT = 
       XmLEFT_TO_RIGHT_MASK | XmVERTICAL_MASK | XmPRECEDENCE_MASK,
   XmDEFAULT_DIRECTION = 0xff
-  };
+  }blabla;
 
 
 extern Boolean XmDirectionMatch(XmDirection d1, 
@@ -171,11 +171,11 @@ extern Boolean XmDirectionMatchPartial(XmDirection d1,
 typedef enum{ XmFONT_IS_FONT, XmFONT_IS_FONTSET, XmFONT_IS_XFT
 	      } XmFontType;
 
-enum { XmSTRING_DIRECTION_L_TO_R,
+typedef enum { XmSTRING_DIRECTION_L_TO_R,
        XmSTRING_DIRECTION_R_TO_L,
        XmSTRING_DIRECTION_UNSET = 3,
        XmSTRING_DIRECTION_DEFAULT = XmDEFAULT_DIRECTION
-       };
+       }blabla;
 
 typedef unsigned char 	XmStringDirection;
 typedef union __XmStringRec	*XmString;		/* opaque to outside */
@@ -192,7 +192,7 @@ typedef struct __XmStringContextRec *_XmStringContext; /* opaque to outside */
 typedef union __XmStringRec        *_XmString;        /* opaque to outside */
 typedef struct __XmStringContextRec *XmStringContext;  /* opaque to outside */
 
-enum{	XmSTRING_COMPONENT_UNKNOWN,	  XmSTRING_COMPONENT_CHARSET,
+typedef enum{	XmSTRING_COMPONENT_UNKNOWN,	  XmSTRING_COMPONENT_CHARSET,
 	XmSTRING_COMPONENT_TEXT,	  XmSTRING_COMPONENT_DIRECTION,
         XmSTRING_COMPONENT_SEPARATOR,     XmSTRING_COMPONENT_LOCALE_TEXT,
 	XmSTRING_COMPONENT_LOCALE,        XmSTRING_COMPONENT_WIDECHAR_TEXT,
@@ -200,7 +200,7 @@ enum{	XmSTRING_COMPONENT_UNKNOWN,	  XmSTRING_COMPONENT_CHARSET,
 	XmSTRING_COMPONENT_RENDITION_BEGIN, XmSTRING_COMPONENT_RENDITION_END,
 	XmSTRING_COMPONENT_TAB
 	/* 13-125 reserved */
-	} ;
+	}blabla ;
 
 #define XmSTRING_COMPONENT_FONTLIST_ELEMENT_TAG	XmSTRING_COMPONENT_CHARSET
 
@@ -224,9 +224,9 @@ typedef enum {
     } XmParseModel;
 
 typedef unsigned char XmIncludeStatus;
-enum {
+typedef enum {
   XmINSERT,	XmTERMINATE,	XmINVOKE
-  };
+  }blabla;
 
 /* We are making an attempt (perhaps unnecessaryily) to keep our style
    constants the same as the equivalent Xlib style constants. The first
@@ -303,7 +303,7 @@ typedef enum {
 #define XmREVERSED_GROUND_COLORS (XmDEFAULT_SELECT_COLOR - 1)	
 #define XmHIGHLIGHT_COLOR        (XmREVERSED_GROUND_COLORS - 1)	
 
-enum { XmUNSPECIFIED_LOAD_MODEL, XmLOAD_DEFERRED, XmLOAD_IMMEDIATE }; 
+typedef enum { XmUNSPECIFIED_LOAD_MODEL, XmLOAD_DEFERRED, XmLOAD_IMMEDIATE }blabla; 
 
 
 
@@ -313,33 +313,33 @@ enum { XmUNSPECIFIED_LOAD_MODEL, XmLOAD_DEFERRED, XmLOAD_IMMEDIATE };
 
 /* size policy values  */
 
-enum{	XmCHANGE_ALL,			XmCHANGE_NONE,
+typedef enum{	XmCHANGE_ALL,			XmCHANGE_NONE,
 	XmCHANGE_WIDTH,			XmCHANGE_HEIGHT
-	} ;
+	}blabla ;
 
 /*  unit type values  */
 
-enum{	XmPIXELS,			Xm100TH_MILLIMETERS,
+typedef enum{	XmPIXELS,			Xm100TH_MILLIMETERS,
 	Xm1000TH_INCHES,		Xm100TH_POINTS,
 	Xm100TH_FONT_UNITS,		XmINCHES,
         XmCENTIMETERS,                  XmMILLIMETERS,
         XmPOINTS,                       XmFONT_UNITS
-	} ;
+	}blabla ;
 
 /* DeleteResponse values */
 
-enum{	XmDESTROY,			XmUNMAP,
+typedef enum{	XmDESTROY,			XmUNMAP,
 	XmDO_NOTHING
-	} ;
-enum{	XmEXPLICIT,			XmPOINTER
-	} ;
+	}blabla ;
+typedef enum{	XmEXPLICIT,			XmPOINTER
+	}blabla ;
 /************************************************************************
  *  Navigation defines 
  ************************************************************************/
 
-enum{	XmNONE,				XmTAB_GROUP,
+typedef enum{	XmNONE,				XmTAB_GROUP,
 	XmSTICKY_TAB_GROUP,		XmEXCLUSIVE_TAB_GROUP
-	} ;
+	}blabla ;
 
 #define	XmDYNAMIC_DEFAULT_TAB_GROUP	(255)
 
@@ -347,17 +347,17 @@ enum{	XmNONE,				XmTAB_GROUP,
  * Audible warning
  ************************************************************************/
 
-enum{	/* XmNONE */			XmBELL = 1
-	} ;
+typedef enum{	/* XmNONE */			XmBELL = 1
+	}blabla ;
 
 /************************************************************************
  * Input Manager defines
  ************************************************************************/
 
-enum {
+typedef enum {
         XmPER_SHELL,			XmPER_WIDGET,
         XmINHERIT_POLICY = 255
-	} ;
+	}blabla ;
 
 typedef unsigned char XmInputPolicy;
 
@@ -365,28 +365,28 @@ typedef unsigned char XmInputPolicy;
  *  Menu defines
  ************************************************************************/
 
-enum{	XmNO_ORIENTATION,		XmVERTICAL,
+typedef enum{	XmNO_ORIENTATION,		XmVERTICAL,
 	XmHORIZONTAL
-	} ;
-enum{	XmWORK_AREA,			XmMENU_BAR,
+	}blabla ;
+typedef enum{	XmWORK_AREA,			XmMENU_BAR,
 	XmMENU_PULLDOWN,		XmMENU_POPUP,
 	XmMENU_OPTION
-	} ;
-enum{	XmNO_PACKING,			XmPACK_TIGHT,
+	}blabla ;
+typedef enum{	XmNO_PACKING,			XmPACK_TIGHT,
 	XmPACK_COLUMN,			XmPACK_NONE
-	} ;
-enum{/* XmALIGNMENT_BASELINE_TOP,	XmALIGNMENT_CENTER,
+	}blabla ;
+typedef enum{/* XmALIGNMENT_BASELINE_TOP,	XmALIGNMENT_CENTER,
 	XmALIGNMENT_BASELINE_BOTTOM, */	XmALIGNMENT_CONTENTS_TOP = 3,
 	XmALIGNMENT_CONTENTS_BOTTOM
-	} ;
-enum{	XmTEAR_OFF_ENABLED,		XmTEAR_OFF_DISABLED
-	} ;
-enum{	XmUNPOST,		 	XmUNPOST_AND_REPLAY
-	} ;
-enum{   XmLAST_POSITION = -1,           XmFIRST_POSITION
-	} ;
-enum{	XmPOPUP_DISABLED = 0,	XmPOPUP_KEYBOARD = 1,
-	XmPOPUP_AUTOMATIC,	XmPOPUP_AUTOMATIC_RECURSIVE };
+	}blabla ;
+typedef enum{	XmTEAR_OFF_ENABLED,		XmTEAR_OFF_DISABLED
+	}blabla ;
+typedef enum{	XmUNPOST,		 	XmUNPOST_AND_REPLAY
+	}blabla ;
+typedef enum{   XmLAST_POSITION = -1,           XmFIRST_POSITION
+	}blabla ;
+typedef enum{	XmPOPUP_DISABLED = 0,	XmPOPUP_KEYBOARD = 1,
+	XmPOPUP_AUTOMATIC,	XmPOPUP_AUTOMATIC_RECURSIVE }blabla;
 
 /************************************************************************
  *  Color Selector defines
@@ -398,23 +398,23 @@ typedef enum { XmListMode = 0, XmScaleMode = 1 } XmColorMode;
  *  Column defines
  ************************************************************************/
 
-enum { XmFILL_UNSPECIFIED, XmFILL_FLUSH, XmFILL_RAGGED };
+typedef enum { XmFILL_UNSPECIFIED, XmFILL_FLUSH, XmFILL_RAGGED }blabla;
 
-enum { XmDISTRIBUTE_TIGHT, XmDISTRIBUTE_SPREAD };
+typedef enum { XmDISTRIBUTE_TIGHT, XmDISTRIBUTE_SPREAD }blabla;
 
 /************************************************************************
  *  ComboBox defines
  ************************************************************************/
 
-enum{	XmCOMBO_BOX=0,		XmDROP_DOWN_COMBO_BOX,
+typedef enum{	XmCOMBO_BOX=0,		XmDROP_DOWN_COMBO_BOX,
 	XmDROP_DOWN_LIST
-	} ;
+	}blabla ;
 
-enum{	/* XmNONE */ XmQUICK_NAVIGATE = 1, XmINVALID_MATCH_BEHAVIOR
-	} ;
+typedef enum{	/* XmNONE */ XmQUICK_NAVIGATE = 1, XmINVALID_MATCH_BEHAVIOR
+	}blabla ;
 
-enum{   XmZERO_BASED,		XmONE_BASED
-        } ;
+typedef enum{   XmZERO_BASED,		XmONE_BASED
+        }blabla ;
 
 #define XmINVALID_POSITION -1
 
@@ -450,13 +450,13 @@ typedef enum { XmTreeCompressNone=0, XmTreeCompressLeaves=1,
  *  Label/Frame defines
  ************************************************************************/
 
-enum{	XmALIGNMENT_BEGINNING,		XmALIGNMENT_CENTER,
+typedef enum{	XmALIGNMENT_BEGINNING,		XmALIGNMENT_CENTER,
 	XmALIGNMENT_END, XmALIGNMENT_UNSPECIFIED
-	} ;
-enum{   XmALIGNMENT_BASELINE_TOP,    /* XmALIGNMENT_CENTER, */
+	}blabla ;
+typedef enum{   XmALIGNMENT_BASELINE_TOP,    /* XmALIGNMENT_CENTER, */
 	XmALIGNMENT_BASELINE_BOTTOM = 2, XmALIGNMENT_WIDGET_TOP,
 	XmALIGNMENT_WIDGET_BOTTOM
-   	} ;
+   	}blabla ;
 /* new enum introduced in 2.0 to clear up the confusion in
    widget top/bottom attachment */
 #define XmALIGNMENT_CHILD_TOP XmALIGNMENT_WIDGET_BOTTOM
@@ -466,28 +466,28 @@ enum{   XmALIGNMENT_BASELINE_TOP,    /* XmALIGNMENT_CENTER, */
  *  Frame defines
  ************************************************************************/
 
-enum{	XmFRAME_GENERIC_CHILD,          XmFRAME_WORKAREA_CHILD,
+typedef enum{	XmFRAME_GENERIC_CHILD,          XmFRAME_WORKAREA_CHILD,
         XmFRAME_TITLE_CHILD
-	} ;
+	}blabla ;
 /************************************************************************
  *  ToggleButton  defines
  ************************************************************************/
 
-enum{	XmN_OF_MANY = 1,		XmONE_OF_MANY,
+typedef enum{	XmN_OF_MANY = 1,		XmONE_OF_MANY,
 	XmONE_OF_MANY_ROUND,		XmONE_OF_MANY_DIAMOND
-	} ;
+	}blabla ;
 /************************************************************************
  *  Form defines
  ************************************************************************/
 
-enum{	XmATTACH_NONE,			XmATTACH_FORM,
+typedef enum{	XmATTACH_NONE,			XmATTACH_FORM,
 	XmATTACH_OPPOSITE_FORM,		XmATTACH_WIDGET,
 	XmATTACH_OPPOSITE_WIDGET,	XmATTACH_POSITION,
 	XmATTACH_SELF
-	} ;
-enum{	XmRESIZE_NONE,			XmRESIZE_GROW,
+	}blabla ;
+typedef enum{	XmRESIZE_NONE,			XmRESIZE_GROW,
 	XmRESIZE_ANY
-	} ;
+	}blabla ;
 
 /************************************************************************
  *  TabBox/TabStack defines
@@ -506,7 +506,7 @@ typedef enum {XmTAB_EDGE_TOP_LEFT, XmTAB_EDGE_BOTTOM_RIGHT} XmTabEdge;
 typedef enum {XmTAB_ARROWS_ON_RIGHT, XmTAB_ARROWS_ON_LEFT,
               XmTAB_ARROWS_SPLIT} XmTabArrowPlacement;
 
-enum {XmCR_TAB_SELECTED, XmCR_TAB_UNSELECTED};
+typedef enum {XmCR_TAB_SELECTED, XmCR_TAB_UNSELECTED}blabla;
 
 typedef enum {XmTABS_ON_TOP, XmTABS_ON_BOTTOM, XmTABS_ON_RIGHT,
               XmTABS_ON_LEFT} XmTabSide;
@@ -535,7 +535,7 @@ typedef struct _XmTabBoxCallbackStruct {
  *  Callback reasons 
  ****************************************************************************/
 
-enum{	XmCR_NONE,			XmCR_HELP,
+typedef enum{	XmCR_NONE,			XmCR_HELP,
 	XmCR_VALUE_CHANGED,		XmCR_INCREMENT,
 	XmCR_DECREMENT,			XmCR_PAGE_INCREMENT,
 	XmCR_PAGE_DECREMENT,		XmCR_TO_TOP,
@@ -575,47 +575,47 @@ enum{	XmCR_NONE,			XmCR_HELP,
         XmCR_VERIFY_TEXT,               XmCR_VERIFY_TEXT_FAILED,
         XmCR_ENTER_CHILD,               XmCR_LEAVE_CHILD,
 	XmCR_PROTOCOLS = 6666 /* required for BC. See CR 9158 */
-	} ;
+	}blabla ;
 
 /************************************************************************
  *  new ScrollBar showArrows  define
  ************************************************************************/
 
-enum{	/* XmNONE */		XmEACH_SIDE = 1,
+typedef enum{	/* XmNONE */		XmEACH_SIDE = 1,
 	XmMAX_SIDE,             XmMIN_SIDE
-	} ;
+	}blabla ;
 
 
 /************************************************************************
  *  Sliding mode
  ************************************************************************/
 
-enum{	XmSLIDER,		XmTHERMOMETER} ;
+typedef enum{	XmSLIDER,		XmTHERMOMETER}blabla ;
 
 
 /************************************************************************
  *  Slider Visual
  ************************************************************************/
 
-enum{	XmBACKGROUND_COLOR,     XmFOREGROUND_COLOR, 
-        XmTROUGH_COLOR,         XmSHADOWED_BACKGROUND} ;
+typedef enum{	XmBACKGROUND_COLOR,     XmFOREGROUND_COLOR, 
+        XmTROUGH_COLOR,         XmSHADOWED_BACKGROUND}blabla ;
 
 
 /************************************************************************
  *  Slider Mark
  ************************************************************************/
 
-enum{	/* XmNONE, */           XmETCHED_LINE = 1, 
-        XmTHUMB_MARK,     XmROUND_MARK } ;
+typedef enum{	/* XmNONE, */           XmETCHED_LINE = 1, 
+        XmTHUMB_MARK,     XmROUND_MARK }blabla ;
 
 
 /************************************************************************
  *  new Scale showValue 
  ************************************************************************/
 
-enum{	/* XmNONE */		XmNEAR_SLIDER = 1,
+typedef enum{	/* XmNONE */		XmNEAR_SLIDER = 1,
 	XmNEAR_BORDER
-	} ;
+	}blabla ;
 
 
 /************************************************************************
@@ -623,7 +623,7 @@ enum{	/* XmNONE */		XmNEAR_SLIDER = 1,
  ************************************************************************/
 
 /* XmWORK_AREA, XmMENU_BAR and XmSEPARATOR have to match the existing ones */
-enum{	/* XmWORK_AREA = 0, XmMENU_BAR = 1, */ 
+typedef enum{	/* XmWORK_AREA = 0, XmMENU_BAR = 1, */ 
         XmHOR_SCROLLBAR = 2, 
 	XmVERT_SCROLLBAR,
 	XmCOMMAND_WINDOW, 
@@ -631,37 +631,37 @@ enum{	/* XmWORK_AREA = 0, XmMENU_BAR = 1, */
         XmMESSAGE_WINDOW = 6,
         XmSCROLL_HOR, XmSCROLL_VERT, XmNO_SCROLL,
 	XmCLIP_WINDOW, XmGENERIC_CHILD
-	} ;
+	}blabla ;
 
 /************************************************************************
  *  new ScrolledWindow auto drag enum
  ************************************************************************/
 
-enum{	XmAUTO_DRAG_ENABLED,		XmAUTO_DRAG_DISABLED
-	} ;
+typedef enum{	XmAUTO_DRAG_ENABLED,		XmAUTO_DRAG_DISABLED
+	}blabla ;
 
 /************************************************************************
  *  new Display enable warp enum
  ************************************************************************/
 
-enum{	XmENABLE_WARP_ON,		XmENABLE_WARP_OFF
-	} ;
+typedef enum{	XmENABLE_WARP_ON,		XmENABLE_WARP_OFF
+	}blabla ;
 
 /************************************************************************
  *  new Display enable btn1 transfer enum
  ************************************************************************/
 
-enum{   XmOFF,				XmBUTTON2_ADJUST,
-	XmBUTTON2_TRANSFER };
+typedef enum{   XmOFF,				XmBUTTON2_ADJUST,
+	XmBUTTON2_TRANSFER }blabla;
 
 /************************************************************************
  * auto_selection_type
  ************************************************************************/
 
-enum{   XmAUTO_UNSET,                   XmAUTO_BEGIN,
+typedef enum{   XmAUTO_UNSET,                   XmAUTO_BEGIN,
         XmAUTO_MOTION,                  XmAUTO_CANCEL,
         XmAUTO_NO_CHANGE,               XmAUTO_CHANGE
-        };
+        }blabla;
 
 /************************************************************************
  *  Callback structures 
@@ -854,65 +854,65 @@ typedef struct
  *  PushButton defines
  ************************************************************************/
 
-enum{	XmMULTICLICK_DISCARD,		XmMULTICLICK_KEEP
-	} ;
+typedef enum{	XmMULTICLICK_DISCARD,		XmMULTICLICK_KEEP
+	}blabla ;
 /************************************************************************
  *  DrawnButton defines
  ************************************************************************/
 
-enum{	XmSHADOW_IN = 7,		XmSHADOW_OUT
-	} ;
+typedef enum{	XmSHADOW_IN = 7,		XmSHADOW_OUT
+	}blabla ;
 /************************************************************************
  *  Arrow defines
  ************************************************************************/
 
-enum{	XmARROW_UP,			XmARROW_DOWN,
+typedef enum{	XmARROW_UP,			XmARROW_DOWN,
 	XmARROW_LEFT,			XmARROW_RIGHT
-	} ;
+	}blabla ;
 /************************************************************************
  *  Separator defines
  *  Note: XmINVALID_SEPARATOR_TYPE marks the last+1 separator type
  ************************************************************************/
 
-enum{	XmNO_LINE,			XmSINGLE_LINE,
+typedef enum{	XmNO_LINE,			XmSINGLE_LINE,
 	XmDOUBLE_LINE,			XmSINGLE_DASHED_LINE,
 	XmDOUBLE_DASHED_LINE,		XmSHADOW_ETCHED_IN,
 	XmSHADOW_ETCHED_OUT,		XmSHADOW_ETCHED_IN_DASH,
 	XmSHADOW_ETCHED_OUT_DASH,	XmINVALID_SEPARATOR_TYPE
-	} ;
+	}blabla ;
 
-enum{	XmPIXMAP = 1,			XmSTRING,
+typedef enum{	XmPIXMAP = 1,			XmSTRING,
 	XmPIXMAP_AND_STRING
-	} ;
+	}blabla ;
 
 /************************************************************************
  *  Drag and Drop defines
  ************************************************************************/
 
-enum{	XmWINDOW,		     /* XmPIXMAP, */
+typedef enum{	XmWINDOW,		     /* XmPIXMAP, */
 	XmCURSOR = 2,		     XmDRAG_WINDOW = 3
-	} ;
+	}blabla ;
 
 /************************************************************************
  *  ScrollBar defines
  ************************************************************************/
 
-enum{	XmMAX_ON_TOP,			XmMAX_ON_BOTTOM,
+typedef enum{	XmMAX_ON_TOP,			XmMAX_ON_BOTTOM,
 	XmMAX_ON_LEFT,			XmMAX_ON_RIGHT
-	} ;
+	}blabla ;
 /************************************************************************
  *									*
  * List Widget defines							*
  *									*
  ************************************************************************/
 
-enum{	XmSINGLE_SELECT,		XmMULTIPLE_SELECT,
+typedef enum{	XmSINGLE_SELECT,		XmMULTIPLE_SELECT,
 	XmEXTENDED_SELECT,		XmBROWSE_SELECT
-	} ;
-enum{	XmSTATIC,			XmDYNAMIC
-	} ;
-enum{ XmNORMAL_MODE,			XmADD_MODE
-        } ;
+	}blabla ;
+typedef enum{	XmSTATIC,			XmDYNAMIC
+	}blabla ;
+typedef enum{ XmNORMAL_MODE,			XmADD_MODE
+        }blabla ;
 /************************************************************************
  *                                                                      *
  * Container Widget defines                                             *
@@ -920,75 +920,75 @@ enum{ XmNORMAL_MODE,			XmADD_MODE
  ************************************************************************/
 
         /* XmRAutomaticSelection */
-enum {  XmNO_AUTO_SELECT,
+typedef enum {  XmNO_AUTO_SELECT,
         XmAUTO_SELECT
-        };
+        }blabla;
 
         /* XmRLineStyle */
-enum {  /* XmNO_LINE */
+typedef enum {  /* XmNO_LINE */
         XmSINGLE = 1
-        };
+        }blabla;
 
         /* XmREntryViewType */
-enum {  /* XmLARGE_ICON */
+typedef enum {  /* XmLARGE_ICON */
         /* XmSMALL_ICON */
         XmANY_ICON = 2
-        };
+        }blabla;
 
         /* XmRSpatialIncludeModel */
-enum {  XmAPPEND,
+typedef enum {  XmAPPEND,
         XmCLOSEST,
         XmFIRST_FIT
-        };
+        }blabla;
 
         /* XmRLayoutType */
-enum {  XmOUTLINE,
+typedef enum {  XmOUTLINE,
         XmSPATIAL,
 	XmDETAIL
-        };
+        }blabla;
 
 	/* XmNoutlineButtonPolicy */
-enum {	XmOUTLINE_BUTTON_PRESENT,
+typedef enum {	XmOUTLINE_BUTTON_PRESENT,
 	XmOUTLINE_BUTTON_ABSENT
-	};
+	}blabla;
 
         /* XmRSpatialPlaceStyle */
-enum {  /* XmNONE */
+typedef enum {  /* XmNONE */
 	XmGRID = 1,
 	XmCELLS
-        };
+        }blabla;
 
 	/* XmRPrimaryOwnership */
-enum {	XmOWN_NEVER,
+typedef enum {	XmOWN_NEVER,
 	XmOWN_ALWAYS,
 	XmOWN_MULTIPLE,
 	XmOWN_POSSIBLE_MULTIPLE
-	};
+	}blabla;
 
         /* XmRSpatialResizeModel */
-enum {  XmGROW_MINOR,
+typedef enum {  XmGROW_MINOR,
 	XmGROW_MAJOR,
         XmGROW_BALANCED
-        };
+        }blabla;
 
         /* XmRSelectionTechnique */
-enum {  XmMARQUEE,
+typedef enum {  XmMARQUEE,
         XmMARQUEE_EXTEND_START,
         XmMARQUEE_EXTEND_BOTH,
         XmTOUCH_ONLY,
         XmTOUCH_OVER
-        };
+        }blabla;
 
         /* XmRSpatialSnapModel */
-enum {  /* XmNONE */
+typedef enum {  /* XmNONE */
         XmSNAP_TO_GRID = 1,
         XmCENTER
-        };
+        }blabla;
 
         /* XmROutlineState */
-enum {  XmCOLLAPSED,
+typedef enum {  XmCOLLAPSED,
         XmEXPANDED
-        };
+        }blabla;
 
 /************************************************************************
  *                                                                      *
@@ -997,14 +997,14 @@ enum {  XmCOLLAPSED,
  ************************************************************************/
 
         /* XmRViewType */
-enum {  XmLARGE_ICON,
+typedef enum {  XmLARGE_ICON,
         XmSMALL_ICON
-        };
+        }blabla;
 
         /* XmRVisualEmphasis */
-enum {  XmSELECTED,
+typedef enum {  XmSELECTED,
         XmNOT_SELECTED
-        };
+        }blabla;
 
 /************************************************************************
  *                                                                      *
@@ -1015,21 +1015,21 @@ enum {  XmSELECTED,
 #define XmUNSPECIFIED_PAGE_NUMBER       (-32768)
 
         /* XmRBindingType */
-enum {  /* XmNONE */
+typedef enum {  /* XmNONE */
         /* XmPIXMAP */
         XmSOLID = 2,
         XmSPIRAL,
         XmPIXMAP_OVERLAP_ONLY
-        };
+        }blabla;
 
         /* XmRNBChildType */
-enum {  /* XmNONE */
+typedef enum {  /* XmNONE */
         XmPAGE = 1,
         XmMAJOR_TAB,
         XmMINOR_TAB,
         XmSTATUS_AREA,
         XmPAGE_SCROLLER
-        };
+        }blabla;
 
 /************************************************************************
  *									*
@@ -1038,58 +1038,58 @@ enum {  /* XmNONE */
  ************************************************************************/
 
 /* XmNarrowOrientation */
-enum
+typedef enum
 {
     XmARROWS_VERTICAL,
     XmARROWS_HORIZONTAL
-};
+}blabla;
 
 /* XmNarrowLayout */
-enum
+typedef enum
 {
     XmARROWS_END,
     XmARROWS_BEGINNING,
     XmARROWS_SPLIT,
     XmARROWS_FLAT_END,
     XmARROWS_FLAT_BEGINNING
-};
+}blabla;
 
 /* XmNarrowSensitivity and XmNdefaultArrowSensitivity */
 /* Please note that these arrows form the proper values 
    for a bit mask. */
-enum
+typedef enum
 {
     XmARROWS_INSENSITIVE,
     XmARROWS_INCREMENT_SENSITIVE,
     XmARROWS_DECREMENT_SENSITIVE,
     XmARROWS_SENSITIVE,
     XmARROWS_DEFAULT_SENSITIVITY
-};
+}blabla;
 
 /* XmNpositionType */
-enum
+typedef enum
 {
     XmPOSITION_INDEX,
     XmPOSITION_VALUE
-};
+}blabla;
 
 /* XmNspinButtonChildType */
-enum
+typedef enum
 {
     /* XmPIXMAP = 1 */
     /* XmSTRING */
     XmNUMERIC = 3
-};
+}blabla;
 
 /* Return values for Xm[Simple]SpinBoxValidatePosition */
-enum
+typedef enum
 {
     XmVALID_VALUE,
     XmCURRENT_VALUE,
     XmMAXIMUM_VALUE,
     XmMINIMUM_VALUE,
     XmINCREMENT_VALUE
-};
+}blabla;
 
 typedef struct
 {
@@ -1109,13 +1109,13 @@ typedef struct
  *									*
  ************************************************************************/
 
-enum{	XmVARIABLE,			XmCONSTANT,
+typedef enum{	XmVARIABLE,			XmCONSTANT,
 	XmRESIZE_IF_POSSIBLE
-	} ;
-enum{	XmAUTOMATIC,			XmAPPLICATION_DEFINED
-	} ;
-enum{	/* XmSTATIC */			XmAS_NEEDED = 1
-	} ;
+	}blabla ;
+typedef enum{	XmAUTOMATIC,			XmAPPLICATION_DEFINED
+	}blabla ;
+typedef enum{	/* XmSTATIC */			XmAS_NEEDED = 1
+	}blabla ;
 
 #define SW_TOP		1
 #define SW_BOTTOM	0
@@ -1133,16 +1133,16 @@ enum{	/* XmSTATIC */			XmAS_NEEDED = 1
  *									*
  ************************************************************************/
 
-enum{	XmCOMMAND_ABOVE_WORKSPACE,	XmCOMMAND_BELOW_WORKSPACE
-	} ;
+typedef enum{	XmCOMMAND_ABOVE_WORKSPACE,	XmCOMMAND_BELOW_WORKSPACE
+	}blabla ;
 /************************************************************************
  *									*
  * Text Widget defines							*
  *									*
  ************************************************************************/
 
-enum{	XmMULTI_LINE_EDIT,		XmSINGLE_LINE_EDIT
-	} ;
+typedef enum{	XmMULTI_LINE_EDIT,		XmSINGLE_LINE_EDIT
+	}blabla ;
 
 typedef enum{
 	XmTEXT_FORWARD,
@@ -1223,7 +1223,7 @@ typedef struct
 
 /* child type defines for Xm...GetChild() */
 
-enum{	XmDIALOG_NONE,			XmDIALOG_APPLY_BUTTON,
+typedef enum{	XmDIALOG_NONE,			XmDIALOG_APPLY_BUTTON,
 	XmDIALOG_CANCEL_BUTTON,		XmDIALOG_DEFAULT_BUTTON,
 	XmDIALOG_OK_BUTTON,		XmDIALOG_FILTER_LABEL,
 	XmDIALOG_FILTER_TEXT,		XmDIALOG_HELP_BUTTON,
@@ -1232,7 +1232,7 @@ enum{	XmDIALOG_NONE,			XmDIALOG_APPLY_BUTTON,
 	XmDIALOG_SYMBOL_LABEL,		XmDIALOG_TEXT,
 	XmDIALOG_SEPARATOR,		XmDIALOG_DIR_LIST,
 	XmDIALOG_DIR_LIST_LABEL
-	} ;
+	}blabla ;
 
 #define XmDIALOG_HISTORY_LIST     	XmDIALOG_LIST
 #define XmDIALOG_PROMPT_LABEL     	XmDIALOG_SELECTION_LABEL
@@ -1243,9 +1243,9 @@ enum{	XmDIALOG_NONE,			XmDIALOG_APPLY_BUTTON,
 
 /*  dialog style defines  */
 
-enum{	XmDIALOG_MODELESS,		XmDIALOG_PRIMARY_APPLICATION_MODAL,
+typedef enum{	XmDIALOG_MODELESS,		XmDIALOG_PRIMARY_APPLICATION_MODAL,
 	XmDIALOG_FULL_APPLICATION_MODAL,XmDIALOG_SYSTEM_MODAL
-	} ;
+	}blabla ;
 
 /* The following is for compatibility only. Its use is deprecated.
  */
@@ -1257,9 +1257,9 @@ enum{	XmDIALOG_MODELESS,		XmDIALOG_PRIMARY_APPLICATION_MODAL,
 
 /* Defines for Selection child placement
 */
-enum{	XmPLACE_TOP,			XmPLACE_ABOVE_SELECTION,
+typedef enum{	XmPLACE_TOP,			XmPLACE_ABOVE_SELECTION,
 	XmPLACE_BELOW_SELECTION
-	} ;
+	}blabla ;
 
 /* Defines for file type mask:
 */
@@ -1269,10 +1269,10 @@ enum{	XmPLACE_TOP,			XmPLACE_ABOVE_SELECTION,
 
 /* Defines for selection dialog type:
 */
-enum{	XmDIALOG_WORK_AREA,		XmDIALOG_PROMPT,
+typedef enum{	XmDIALOG_WORK_AREA,		XmDIALOG_PROMPT,
 	XmDIALOG_SELECTION,		XmDIALOG_COMMAND,
 	XmDIALOG_FILE_SELECTION
-	} ;
+	}blabla ;
 
 /************************************************************************
  *  XmMessageBox           stuff not common to other dialogs            *
@@ -1280,11 +1280,11 @@ enum{	XmDIALOG_WORK_AREA,		XmDIALOG_PROMPT,
 
 /* defines for dialog type */
 
-enum{	XmDIALOG_TEMPLATE,		XmDIALOG_ERROR,
+typedef enum{	XmDIALOG_TEMPLATE,		XmDIALOG_ERROR,
 	XmDIALOG_INFORMATION,		XmDIALOG_MESSAGE,
 	XmDIALOG_QUESTION,		XmDIALOG_WARNING,
 	XmDIALOG_WORKING
-	} ;
+	}blabla ;
 
 /*  Traversal types  */
 
@@ -1324,11 +1324,11 @@ typedef XmButtonType * XmButtonTypeTable;
 typedef KeySym * XmKeySymTable;
 typedef XmStringCharSet * XmStringCharSetTable;
 
-enum{	XmPUSHBUTTON = 1,		XmTOGGLEBUTTON,
+typedef enum{	XmPUSHBUTTON = 1,		XmTOGGLEBUTTON,
 	XmRADIOBUTTON,			XmCASCADEBUTTON,
 	XmSEPARATOR,			XmDOUBLE_SEPARATOR,
 	XmTITLE
-	} ;
+	}blabla ;
 #define XmCHECKBUTTON			XmTOGGLEBUTTON
 
 
@@ -1338,31 +1338,31 @@ enum{	XmPUSHBUTTON = 1,		XmTOGGLEBUTTON,
  *
  ***********************************************************************/
 
-enum{	XmMATCH_DEPTH, XmDYNAMIC_DEPTH } ;
+typedef enum{	XmMATCH_DEPTH, XmDYNAMIC_DEPTH }blabla ;
 
 
 /************************************************************************
  *  PrintShell defines
  ************************************************************************/
 
-enum { XmPDM_NOTIFY_FAIL, XmPDM_NOTIFY_SUCCESS } ;
+typedef enum { XmPDM_NOTIFY_FAIL, XmPDM_NOTIFY_SUCCESS }blabla ;
 
 /************************************************************************
  *  MultiList defines
  ************************************************************************/
 
-enum { XmMULTILIST_FOUND, XmMULTILIST_NOT_FOUND };
+typedef enum { XmMULTILIST_FOUND, XmMULTILIST_NOT_FOUND }blabla;
 
 /************************************************************************
  *  DropDown defines
  ************************************************************************/
 
-enum {
+typedef enum {
     XmDROPDOWN_LABEL,
     XmDROPDOWN_TEXT,
     XmDROPDOWN_ARROW_BUTTON,
     XmDROPDOWN_LIST
-};
+}blabla;
 
 
 /* This one cannot be put at the beginning because it needs 
@@ -1511,25 +1511,25 @@ extern int XmConvertStringToUnits(
 extern int XmConvertUnits( 
                         Widget widget,
                         int dimension,
-                        register int from_type,
-                        register int from_val,
-                        register int to_type) ;
+                        int from_type,
+                        int from_val,
+                        int to_type) ;
 extern int XmCvtToHorizontalPixels( 
                         Screen *screen,
-                        register int from_val,
-                        register int from_type) ;
+                        int from_val,
+                        int from_type) ;
 extern int XmCvtToVerticalPixels( 
                         Screen *screen,
-                        register int from_val,
-                        register int from_type) ;
+                        int from_val,
+                        int from_type) ;
 extern int XmCvtFromHorizontalPixels( 
                         Screen *screen,
-                        register int from_val,
-                        register int to_type) ;
+                        int from_val,
+                        int to_type) ;
 extern int XmCvtFromVerticalPixels( 
                         Screen *screen,
-                        register int from_val,
-                        register int to_type) ;
+                        int from_val,
+                        int to_type) ;
 extern void XmSetFontUnits( 
                         Display *display,
                         int h_value,
@@ -2087,7 +2087,7 @@ extern void XmRemoveTabGroup(
 #define XmINDICATOR_CHECK_GLYPH		0x10
 #define XmINDICATOR_CROSS_GLYPH		0x20
 
-enum {
+typedef enum {
   XmINDICATOR_NONE      = 0, 
   XmINDICATOR_FILL      = 1,	/* Treated as _BOX or _CHECK_BOX */
   XmINDICATOR_BOX	= 255,	/* Treated as XmINDICATOR_3D_BOX */
@@ -2095,23 +2095,23 @@ enum {
   XmINDICATOR_CHECK_BOX = XmINDICATOR_CHECK_GLYPH + XmINDICATOR_3D_BOX,
   XmINDICATOR_CROSS     = XmINDICATOR_CROSS_GLYPH,
   XmINDICATOR_CROSS_BOX = XmINDICATOR_CROSS_GLYPH + XmINDICATOR_3D_BOX
-};
+}blabla;
 
-enum { XmUNSET, XmSET, XmINDETERMINATE };
-enum { XmTOGGLE_BOOLEAN, XmTOGGLE_INDETERMINATE };
+typedef enum { XmUNSET, XmSET, XmINDETERMINATE }blabla;
+typedef enum { XmTOGGLE_BOOLEAN, XmTOGGLE_INDETERMINATE }blabla;
 typedef unsigned char XmToggleButtonState;
 
 /* Shared text enum. */
 typedef enum { EditDone, EditError, EditReject } XmTextStatus;
 
 /* XmDisplay.XmNdefaultButtonEmphasis enum */
-enum { XmEXTERNAL_HIGHLIGHT, XmINTERNAL_HIGHLIGHT };
+typedef enum { XmEXTERNAL_HIGHLIGHT, XmINTERNAL_HIGHLIGHT }blabla;
 
 /* new for XmString */
 #define _MOTIF_DEFAULT_LOCALE "_MOTIF_DEFAULT_LOCALE"
 
-enum { XmPATH_MODE_FULL, XmPATH_MODE_RELATIVE };
-enum { XmFILTER_NONE, XmFILTER_HIDDEN_FILES} ;
+typedef enum { XmPATH_MODE_FULL, XmPATH_MODE_RELATIVE }blabla;
+typedef enum { XmFILTER_NONE, XmFILTER_HIDDEN_FILES}blabla ;
   
 #endif /* _Xm_h */
  /* DON'T ADD STUFF AFTER THIS #endif */

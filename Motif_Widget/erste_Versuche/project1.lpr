@@ -8,6 +8,7 @@ uses
   XTIntrinsic,
   XTStringdefs,
   XmXmStrDefs,
+  XmXm,
   XawBox, MyButtons;
 
 const
