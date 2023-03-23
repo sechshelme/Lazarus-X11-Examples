@@ -30,6 +30,10 @@ const
     i: integer = 0;
     toplevel, box, command: TWidget;
 
+//     XmDEFAULT_FONT :PChar absolute _XmSDEFAULT_FONT;
+//    XmDEFAULT_BACKGROUND :PChar absolute _XmSDEFAULT_BACKGROUND;
+
+
   begin
     toplevel := XtInitialize('Mein Fenster', 'noname', nil, 0, @i, nil);
     box:=XtCreateManagedWidget('hallo', boxWidgetClass, toplevel,nil,0);

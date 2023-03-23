@@ -60,8 +60,8 @@ in define line 82 *)
 
 type
 //  TXtBoolean = PtrUint;
-  TXtDimension = dword;
-//  TXtKeyCode = dword;
+  TXtDimension = PtrUint;
+//  TXtKeyCode = PtrUint;
   TXtPosition = PtrUint;
 //  TXtXtEnum = PtrUInt;
 
@@ -101,28 +101,28 @@ type
   TXtAppContext = Pointer; //PXtAppStruct;
 
   PXtValueMask = ^TXtValueMask;
-  TXtValueMask = dword;
+  TXtValueMask = PtrUint;
 
   PXtIntervalId = ^TXtIntervalId;
-  TXtIntervalId = dword;
+  TXtIntervalId = PtrUint;
 
   PXtInputId = ^TXtInputId;
-  TXtInputId = dword;
+  TXtInputId = PtrUint;
 
   PXtWorkProcId = ^TXtWorkProcId;
-  TXtWorkProcId = dword;
+  TXtWorkProcId = PtrUint;
 
   PXtSignalId = ^TXtSignalId;
-  TXtSignalId = dword;
+  TXtSignalId = PtrUint;
 
   PXtGeometryMask = ^TXtGeometryMask;
-  TXtGeometryMask = dword;
+  TXtGeometryMask = PtrUint;
 
   PXtGCMask = ^TXtGCMask;
-  TXtGCMask = dword;
+  TXtGCMask = PtrUint;
 
   PPixel = ^TPixel;
-  TPixel = dword;
+  TPixel = PtrUint;
 
   PXtCacheType = ^TXtCacheType;
   TXtCacheType = PtrUint;
@@ -166,7 +166,7 @@ type
   TXtEnum = byte;
 
   PCardinal = ^TCardinal;
-  TCardinal = dword;
+  TCardinal = PtrUint;
 
   PDimension = ^TDimension;
   TDimension = word;
@@ -202,7 +202,7 @@ type
   end; //PTranslationData;
 
   PModifiers = ^TModifiers;
-  TModifiers = dword;
+  TModifiers = PtrUint;
 
 
   TXtActionProc = procedure(para1: TWidget; para2: PXEvent; para3: PString; para4: PCardinal); cdecl;
@@ -289,7 +289,7 @@ type
   TXtActionHookProc = procedure(para1: TWidget; para2: TXtPointer; para3: TString; para4: PXEvent; para5: PString; para6: PCardinal); cdecl;
 
   PXtBlockHookId = ^TXtBlockHookId;
-  TXtBlockHookId = dword;
+  TXtBlockHookId = PtrUint;
 
   { client_data  }
   TXtBlockHookProc = procedure(para1: TXtPointer); cdecl;
@@ -307,7 +307,7 @@ type
 //  TXtEventHandler = Pointer;
 
   PEventMask = ^TEventMask;
-  TEventMask = dword;
+  TEventMask = PtrUint;
 
   PXtListPosition = ^TXtListPosition;
   TXtListPosition = (XtListHead, XtListTail);
@@ -318,7 +318,7 @@ type
 
 type
   PXtInputMask = ^TXtInputMask;
-  TXtInputMask = dword;
+  TXtInputMask = PtrUint;
 
 const
   XtInputNoneMask = 0;
@@ -456,7 +456,7 @@ type
   TXtRequestId = TXtPointer;
 
 
-  TXtConvertSelectionProc = function(para1: TWidget; para2: PAtom; para3: PAtom; para4: PAtom; para5: PXtPointer; para6: Pdword; para7: PPtrUint): TBoolean; cdecl;
+  TXtConvertSelectionProc = function(para1: TWidget; para2: PAtom; para3: PAtom; para4: PAtom; para5: PXtPointer; para6: PPtrUint; para7: PPtrUint): TBoolean; cdecl;
 
 
   TXtLoseSelectionProc = procedure(para1: TWidget; para2: PAtom); cdecl;
@@ -465,7 +465,7 @@ type
   TXtSelectionDoneProc = procedure(para1: TWidget; para2: PAtom; para3: PAtom); cdecl;
 
 
-  TXtSelectionCallbackProc = procedure(para1: TWidget; para2: TXtPointer; para3: PAtom; para4: PAtom; para5: TXtPointer; para6: Pdword; para7: PPtrUint); cdecl;
+  TXtSelectionCallbackProc = procedure(para1: TWidget; para2: TXtPointer; para3: PAtom; para4: PAtom; para5: TXtPointer; para6: PPtrUint; para7: PPtrUint); cdecl;
 
 
   TXtLoseSelectionIncrProc = procedure(para1: TWidget; para2: PAtom; para3: TXtPointer); cdecl;
@@ -474,7 +474,7 @@ type
   TXtSelectionDoneIncrProc = procedure(para1: TWidget; para2: PAtom; para3: PAtom; para4: PXtRequestId; para5: TXtPointer); cdecl;
 
 
-  TXtConvertSelectionIncrProc = function(para1: TWidget; para2: PAtom; para3: PAtom; para4: PAtom; para5: PXtPointer; para6: Pdword; para7: PPtrUint; para8: Pdword; para9: TXtPointer; para10: PXtRequestId): TBoolean; cdecl;
+  TXtConvertSelectionIncrProc = function(para1: TWidget; para2: PAtom; para3: PAtom; para4: PAtom; para5: PXtPointer; para6: PPtrUint; para7: PPtrUint; para8: PPtrUint; para9: TXtPointer; para10: PXtRequestId): TBoolean; cdecl;
 
 
   TXtCancelConvertSelectionProc = procedure(para1: TWidget; para2: PAtom; para3: PAtom; para4: PXtRequestId; para5: TXtPointer); cdecl;
@@ -584,7 +584,7 @@ procedure XtGetActionList(para1: TWidgetClass; para2: PXtActionList; para3: PCar
 
 procedure XtCallActionProc(para1: TWidget; _XtString: TXtString; para3: PXEvent; para4: PString; para5: TCardinal); cdecl; external libXt;
 
-procedure XtRegisterGrabAction(para1: TXtActionProc; para2: TXtBoolean; para3: dword; para4: PtrUint; para5: PtrUint); cdecl; external libXt;
+procedure XtRegisterGrabAction(para1: TXtActionProc; para2: TXtBoolean; para3: PtrUint; para4: PtrUint; para5: PtrUint); cdecl; external libXt;
 
 procedure XtSetMultiClickTime(para1: PDisplay; para2: PtrUint); cdecl; external libXt;
 
@@ -674,9 +674,9 @@ function XtLastTimestampProcessed(para1: PDisplay): TTime; cdecl; external libXt
  *
  *************************************************************** }
 
-function XtAddTimeOut(para1: dword; para2: TXtTimerCallbackProc; para3: TXtPointer): TXtIntervalId; cdecl; external libXt;
+function XtAddTimeOut(para1: PtrUint; para2: TXtTimerCallbackProc; para3: TXtPointer): TXtIntervalId; cdecl; external libXt;
 
-function XtAppAddTimeOut(para1: TXtAppContext; para2: dword; para3: TXtTimerCallbackProc; para4: TXtPointer): TXtIntervalId; cdecl; external libXt;
+function XtAppAddTimeOut(para1: TXtAppContext; para2: PtrUint; para3: TXtTimerCallbackProc; para4: TXtPointer): TXtIntervalId; cdecl; external libXt;
 
 procedure XtRemoveTimeOut(para1: TXtIntervalId); cdecl; external libXt;
 
@@ -1128,14 +1128,14 @@ procedure XtGetSelectionValue(para1: TWidget; para2: TAtom; para3: TAtom; para4:
 
 procedure XtGetSelectionValues(para1: TWidget; para2: TAtom; para3: PAtom; para4: PtrUint; para5: TXtSelectionCallbackProc; para6: PXtPointer; para7: TTime); cdecl; external libXt;
 
-procedure XtAppSetSelectionTimeout(para1: TXtAppContext; para2: dword); cdecl; external libXt;
+procedure XtAppSetSelectionTimeout(para1: TXtAppContext; para2: PtrUint); cdecl; external libXt;
 
 
-procedure XtSetSelectionTimeout(para1: dword); cdecl; external libXt;
+procedure XtSetSelectionTimeout(para1: PtrUint); cdecl; external libXt;
 
-function XtAppGetSelectionTimeout(para1: TXtAppContext): dword; cdecl; external libXt;
+function XtAppGetSelectionTimeout(para1: TXtAppContext): PtrUint; cdecl; external libXt;
 
-function XtGetSelectionTimeout: dword; cdecl; external libXt;
+function XtGetSelectionTimeout: PtrUint; cdecl; external libXt;
 
 function XtGetSelectionRequest(para1: TWidget; para2: TAtom; para3: TXtRequestId): PXSelectionRequestEvent; cdecl; external libXt;
 
@@ -1143,9 +1143,9 @@ procedure XtGetSelectionValueIncremental(para1: TWidget; para2: TAtom; para3: TA
 
 procedure XtGetSelectionValuesIncremental(para1: TWidget; para2: TAtom; para3: PAtom; para4: PtrUint; para5: TXtSelectionCallbackProc; para6: PXtPointer; para7: TTime); cdecl; external libXt;
 
-procedure XtSetSelectionParameters(para1: TWidget; para2: TAtom; para3: TAtom; para4: TXtPointer; para5: dword; para6: PtrUint); cdecl; external libXt;
+procedure XtSetSelectionParameters(para1: TWidget; para2: TAtom; para3: TAtom; para4: TXtPointer; para5: PtrUint; para6: PtrUint); cdecl; external libXt;
 
-procedure XtGetSelectionParameters(para1: TWidget; para2: TAtom; para3: TXtRequestId; para4: PAtom; para5: PXtPointer; para6: Pdword; para7: PPtrUint); cdecl; external libXt;
+procedure XtGetSelectionParameters(para1: TWidget; para2: TAtom; para3: TXtRequestId; para4: PAtom; para5: PXtPointer; para6: PPtrUint; para7: PPtrUint); cdecl; external libXt;
 
 procedure XtCreateSelectionRequest(para1: TWidget; para2: TAtom); cdecl; external libXt;
 
@@ -1165,11 +1165,11 @@ function XtGrabKeyboard(para1: TWidget; para2: TXtBoolean; para3: PtrUint; para4
 
 procedure XtUngrabKeyboard(para1: TWidget; para2: TTime); cdecl; external libXt;
 
-procedure XtGrabButton(para1: TWidget; para2: PtrUint; para3: TModifiers; para4: TXtBoolean; para5: dword; para6: PtrUint; para7: PtrUint; para8: TWindow; para9: TCursor); cdecl; external libXt;
+procedure XtGrabButton(para1: TWidget; para2: PtrUint; para3: TModifiers; para4: TXtBoolean; para5: PtrUint; para6: PtrUint; para7: PtrUint; para8: TWindow; para9: TCursor); cdecl; external libXt;
 
-procedure XtUngrabButton(para1: TWidget; para2: dword; para3: TModifiers); cdecl; external libXt;
+procedure XtUngrabButton(para1: TWidget; para2: PtrUint; para3: TModifiers); cdecl; external libXt;
 
-function XtGrabPointer(para1: TWidget; para2: TXtBoolean; para3: dword; para4: PtrUint; para5: PtrUint; para6: TWindow; para7: TCursor; para8: TTime): PtrUint; cdecl; external libXt;
+function XtGrabPointer(para1: TWidget; para2: TXtBoolean; para3: PtrUint; para4: PtrUint; para5: PtrUint; para6: TWindow; para7: TCursor; para8: TTime): PtrUint; cdecl; external libXt;
 
 procedure XtUngrabPointer(para1: TWidget; para2: TTime); cdecl; external libXt;
 
