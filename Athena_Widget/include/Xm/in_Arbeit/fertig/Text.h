@@ -40,7 +40,7 @@ typedef struct _XmTextRec *XmTextWidget;
 /* -------------- *
  * extern class   *
  * -------------- */
-externalref WidgetClass       xmTextWidgetClass;
+extern WidgetClass       xmTextWidgetClass;
 
 
 /* --------------------------------------- *
@@ -125,22 +125,22 @@ extern void XmTextInsertWcs(
                         wchar_t *wc_value);
 extern void XmTextSetAddMode( 
                         Widget widget,
-#if NeedWidePrototypes
-                        int state);
-#else
+//#if NeedWidePrototypes
+//                        int state);
+//#else
                         Boolean state);
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 extern Boolean XmTextGetAddMode( 
                         Widget widget);
 extern Boolean XmTextGetEditable( 
                         Widget widget);
 extern void XmTextSetEditable( 
                         Widget widget,
-#if NeedWidePrototypes
-                        int editable);
-#else
+//#if NeedWidePrototypes
+//                        int editable);
+//#else
                         Boolean editable);
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 extern int XmTextGetMaxLength( 
                         Widget widget);
 extern void XmTextSetMaxLength( 
@@ -194,13 +194,13 @@ extern Boolean XmTextGetSelectionPosition(
                         XmTextPosition *right);
 extern XmTextPosition XmTextXYToPos( 
                         Widget widget,
-#if NeedWidePrototypes
-                        int x,
-                        int y);
-#else
+//#if NeedWidePrototypes
+//                        int x,
+//                        int y);
+//#else
                         Position x,
                         Position y);
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 extern Boolean XmTextPosToXY( 
                         Widget widget,
                         XmTextPosition position,

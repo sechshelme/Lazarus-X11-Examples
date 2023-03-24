@@ -168,6 +168,7 @@ type
   PCardinal = ^TCardinal;
   TCardinal = PtrUint;
 
+  PPDimension = ^PDimension;
   PDimension = ^TDimension;
   TDimension = word;
 

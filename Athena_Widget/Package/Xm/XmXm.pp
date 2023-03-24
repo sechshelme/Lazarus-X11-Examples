@@ -5,7 +5,9 @@ interface
 uses
   xlib, x,
   xutil,
+  xresource,
   XTIntrinsic,
+  XmText,
   XmXmStrDefs;
 
 {$IFDEF FPC}
@@ -154,6 +156,7 @@ type
   TXmStringCharSet = Pchar;
 { Null term string  }
 
+  PPXmStringTag = ^PXmStringTag;
   PXmStringTag = ^TXmStringTag;
   TXmStringTag = Pchar;
 { Null term string  }
@@ -1468,8 +1471,7 @@ type
 
   PXmTextBlockRecWcs = ^TXmTextBlockRecWcs;
   TXmTextBlockRecWcs = record
-//      wcsptr : Pwchar_t;
-      wcsptr : PWideChar;
+      wcsptr : Pwchar_t;
       length : LongInt;
     end;
   TXmTextBlockWcs = PXmTextBlockRecWcs;
@@ -1491,9 +1493,10 @@ type
 { functions renamed after 1.0 release due to resource name overlap  }
 
 const
-  XmTextGetTopPosition = XmTextGetTopCharacter;  
-  XmTextSetTopPosition = XmTextSetTopCharacter;  
-  XmCOPY_FAILED = 0;  
+//  XmTextGetTopPosition = XmTextGetTopCharacter;  
+//  XmTextSetTopPosition = XmTextSetTopCharacter;  
+//  XmTextGetTopPosition :procedure= XmTextGetTopCharacter;
+  XmCOPY_FAILED = 0;
   XmCOPY_SUCCEEDED = 1;  
   XmCOPY_TRUNCATED = 2;  
 {***********************************************************************
@@ -1679,7 +1682,7 @@ type
 
 { This one cannot be put at the beginning because it needs 
    XmStringTable  }
-{$include <Xm/TxtPropCv.h>}
+// {$include <Xm/TxtPropCv.h>}
 {*******    BaseClass.c    ******* }
 type
 
@@ -1695,7 +1698,9 @@ type
       num_resources : TCardinal;
     end;
   TXmSecondaryResourceData = PXmSecondaryResourceDataRec;
+
   PXmSecondaryResourceData = ^TXmSecondaryResourceData;
+  PPXmSecondaryResourceData = ^PXmSecondaryResourceData;
 {*******    Public Function Declarations for BaseClass.c    ******* }
 
 function XmGetSecondaryResourceData(w_class:TWidgetClass; secondaryDataRtn:PPXmSecondaryResourceData):TCardinal;cdecl;external libXm;
@@ -1784,12 +1789,9 @@ function XmVaCreateSimpleCheckBox(parent:TWidget; name:TString; callback:TXtCall
 function XmVaCreateSimpleCheckBox(parent:TWidget; name:TString; callback:TXtCallbackProc):TWidget;cdecl;external libXm;
 {*******    End Public Function Declarations    ******* }
 {*******    Public Function Declarations for TrackLoc.c    ******* }
-{$if NeedWidePrototypes}
-{$else}
-{$endif}
 { NeedWidePrototypes  }
 
-function XmTrackingEvent(widget:TWidget; cursor:TCursor; confineTo:LongInt; confineTo:TBoolean; pev:PXEvent):TWidget;cdecl;external libXm;
+function XmTrackingEvent(widget:TWidget; cursor:TCursor; confineTo:LongInt; confineTo2:TBoolean; pev:PXEvent):TWidget;cdecl;external libXm;
 {#if NeedWidePrototypes }
 {                        int confineTo) ; }
 {#else }
@@ -1869,32 +1871,23 @@ function XmStringWidth(fontlist:TXmFontList; _string:TXmString):TDimension;cdecl
 function XmStringHeight(fontlist:TXmFontList; _string:TXmString):TDimension;cdecl;external libXm;
 procedure XmStringExtent(fontlist:TXmFontList; _string:TXmString; width:PDimension; height:PDimension);cdecl;external libXm;
 function XmStringLineCount(_string:TXmString):LongInt;cdecl;external libXm;
-{$if NeedWidePrototypes}
-{$else}
-{$endif}
 { NeedWidePrototypes  }
 
 procedure XmStringDraw(d:PDisplay; w:TWindow; fontlist:TXmFontList; _string:TXmString; gc:TGC; 
             x:LongInt; y:LongInt; width:LongInt; align:dword; lay_dir:dword; 
-            x:TPosition; y:TPosition; width:TDimension; align:byte; lay_dir:byte; 
+            x2:TPosition; y2:TPosition; width2:TDimension; align2:byte; lay_dir2:byte; 
             clip:PXRectangle);cdecl;external libXm;
-{$if NeedWidePrototypes}
-{$else}
-{$endif}
 { NeedWidePrototypes  }
 
 procedure XmStringDrawImage(d:PDisplay; w:TWindow; fontlist:TXmFontList; _string:TXmString; gc:TGC; 
             x:LongInt; y:LongInt; width:LongInt; align:dword; lay_dir:dword; 
-            x:TPosition; y:TPosition; width:TDimension; align:byte; lay_dir:byte; 
+            x2:TPosition; y2:TPosition; width2:TDimension; align2:byte; lay_dir2:byte; 
             clip:PXRectangle);cdecl;external libXm;
-{$if NeedWidePrototypes}
-{$else}
-{$endif}
 { NeedWidePrototypes  }
 
 procedure XmStringDrawUnderline(d:PDisplay; w:TWindow; fntlst:TXmFontList; str:TXmString; gc:TGC; 
             x:LongInt; y:LongInt; width:LongInt; align:dword; lay_dir:dword; 
-            x:TPosition; y:TPosition; width:TDimension; align:byte; lay_dir:byte; 
+            x2:TPosition; y2:TPosition; width2:TDimension; align2:byte; lay_dir2:byte; 
             clip:PXRectangle; under:TXmString);cdecl;external libXm;
 function XmCvtXmStringToByteStream(_string:TXmString; prop_return:PPbyte):dword;cdecl;external libXm;
 function XmCvtByteStreamToXmString(_property:Pbyte):TXmString;cdecl;external libXm;
@@ -1968,9 +1961,6 @@ procedure XmRemoveTabGroup(w:TWidget);cdecl;external libXm;
  * The following includes are for source compatibility.  They might be
  *    removed at some future time.
   }
-{$include <Xm/VendorS.h>}
-{$include <Xm/XmIm.h>}
-
 const
   XmINDICATOR_3D_BOX = $01;  
   XmINDICATOR_FLAT_BOX = $02;  
@@ -1996,7 +1986,7 @@ Const
   Const
     XmTOGGLE_BOOLEAN = 0;
     XmTOGGLE_INDETERMINATE = 1;
-;
+
 type
   PXmToggleButtonState = ^TXmToggleButtonState;
   TXmToggleButtonState = byte;
@@ -2008,23 +1998,21 @@ type
     EditDone = 0;
     EditError = 1;
     EditReject = 2;
-;
+
 { XmDisplay.XmNdefaultButtonEmphasis enum  }
   Const
     XmEXTERNAL_HIGHLIGHT = 0;
     XmINTERNAL_HIGHLIGHT = 1;
-;
+
 { new for XmString  }
   _MOTIF_DEFAULT_LOCALE = '_MOTIF_DEFAULT_LOCALE';  
   Const
     XmPATH_MODE_FULL = 0;
     XmPATH_MODE_RELATIVE = 1;
-;
+
   Const
     XmFILTER_NONE = 0;
     XmFILTER_HIDDEN_FILES = 1;
-;
-{$endif}
 { _Xm_h  }
 { DON'T ADD STUFF AFTER THIS #endif  }
 
@@ -2049,22 +2037,22 @@ function XmSTRING_COMPONENT_USER_END : TXmStringComponentType;
   end;
 
 { was #define dname def_expr }
-function XmUNSPECIFIED_PIXEL : TPixel;
-  begin
-    XmUNSPECIFIED_PIXEL:=TPixel( not (0));
-  end;
+//function XmUNSPECIFIED_PIXEL : TPixel;
+//  begin
+//    XmUNSPECIFIED_PIXEL:=TPixel( not (0));
+//  end;
 
 { was #define dname def_expr }
-function XmFMT_8_BIT : TXmTextFormat;
-  begin
-    XmFMT_8_BIT:=TXmTextFormat(XA_STRING);
-  end;
-
-{ was #define dname def_expr }
-function XmFMT_16_BIT : TXmTextFormat;
-  begin
-    XmFMT_16_BIT:=TXmTextFormat(2);
-  end;
+//function XmFMT_8_BIT : TXmTextFormat;
+//  begin
+//    XmFMT_8_BIT:=TXmTextFormat(XA_STRING);
+//  end;
+//
+//{ was #define dname def_expr }
+//function XmFMT_16_BIT : TXmTextFormat;
+//  begin
+//    XmFMT_16_BIT:=TXmTextFormat(2);
+//  end;
 
 
 end.
