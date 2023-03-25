@@ -8,7 +8,7 @@ char *argv[];
     Widget        toplevel, button;
     XtAppContext  app;
     void          button_pushed();
-    XmString 	  label;
+    XmString 	  label1;
 
     printf("enum: %i\n", XmPER_SHELL);
 printf("enum: %i\n", XmPER_WIDGET);
@@ -29,12 +29,13 @@ printf("enum: %i\n\n", XmPIXMAP_OVERLAP_ONLY);
     toplevel = XtVaAppInitialize (&app, "Hello", NULL, 0,
         &argc, argv, NULL, XtNwidth, 320, XtNheight, 200, NULL);
 
-    label = XmStringCreateLocalized ("Push here to say hello");
+    label1 = XmStringCreateLocalized ("Push here to say hello");
+
     button = XtVaCreateManagedWidget ("pushme",
         xmPushButtonWidgetClass, toplevel,
-        XmNlabelString, label,
+        XmNlabelString, label1,
         NULL);
-    XmStringFree (label);
+    XmStringFree (label1);
     XtAddCallback (button, XmNactivateCallback, button_pushed, NULL);
 
     XtRealizeWidget (toplevel);

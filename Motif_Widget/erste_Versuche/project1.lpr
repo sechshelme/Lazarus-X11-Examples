@@ -11,18 +11,9 @@ uses
   XmXm,
   XawBox, MyButtons;
 
-const
-  libXaw = 'libXaw';
-  libXt = 'libXt';
-  libXm = 'libXm';
-
   // h2pas -p -T -d -c -e Intrinsic.h
 
   // https://www.softintegration.com/chhtml/toolkit/demos/X11/motif/
-
-
-//var
-  //xmPushButtonWidgetClass:Pointer;cvar; external libXm;
 
 
   procedure main;

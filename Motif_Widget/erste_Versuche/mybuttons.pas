@@ -5,6 +5,7 @@ interface
 uses
   xlib,
   x,
+  XmXm,
   XmPushB,
    XTIntrinsic,
   XTStringdefs,
@@ -14,39 +15,36 @@ procedure CreateButtons(Parent:TWidget);
 
 implementation
 
-//procedure On_Click(w: TWidget; client: TXtPointer; call: TXtPointer); cdecl;
-//var
-//  Caption: PChar;
-//  s: string;
-//begin
-//  XtVaGetValues(w, XtNlabel, @Caption, nil);
-//  s := 'Es wurde der Button: "' + Caption + '" gedrueckt';
-//  WriteLn(s);
-//  XtVaSetValues(label1, XtNlabel, PChar(s));
-//end;
-//
+
 procedure press_hello(w:TWidget;p:TXtPointer;p2:TXtPointer); cdecl;
 var
-  Caption:PChar;
+  ls:TXmString;
+  pc: PChar;
 begin
-  XtVaGetValues(w, XmNlabelString, @Caption,nil);
-  WriteLn(Caption);
-  WriteLn('Hello World');
+  XtVaGetValues(w, XmNlabelString, @ls,nil);
+  XmStringGetLtoR(ls,XmFONTLIST_DEFAULT_TAG,@pc);
+  WriteLn('Button: "',pc,'" wurde gedrückt');
 end;
 
 procedure CreateButtons(Parent: TWidget);
 var
   command: TWidget;
+  label1: TXmString;
 begin
 
   command:=XtCreateManagedWidget('Ich bin ein ganz grosser'#10'Button', xmPushButtonWidgetClass, Parent,nil,0);
+  XtAddCallback(command,  XmNactivateCallback,@press_hello,nil);
   command:=XtCreateManagedWidget('Ich bin ein ganz grosser'#10'zweiter Button', xmPushButtonWidgetClass, Parent,nil,0);
   XtAddCallback(command,  XmNactivateCallback,@press_hello,nil);
 
+  label1:=XmStringCreateLocalized('Ha ha ha');
   command:=XmVaCreateManagedPushButton(Parent, 'Hello World !',XtNwidth,100,XtNheight,100,nil);
-//  XtVaSetValues(command,XtNwidth,300,XmNlabelString,'ha ha', nil);
+  XtAddCallback(command,  XmNactivateCallback,@press_hello,nil);
+  XtVaSetValues(command,XtNwidth,300,XmNlabelString,label1, nil);
+  XmStringFree(label1);
 
-  command:=XtCreateManagedWidget('Ich bin ein ganz grosser'#10'zweiter Button', xmPushButtonWidgetClass, Parent,nil,0);
+  command:=XtCreateManagedWidget('Ich bin ein 3. Button', xmPushButtonWidgetClass, Parent,nil,0);
+  XtAddCallback(command,  XmNactivateCallback,@press_hello,nil);
 
 end;
 
