@@ -14,7 +14,7 @@ uses
 
 //{$include <Xm/Xm.h>}
 //{$include <stdio.h>}
-{ C++ extern C conditionnal removed }
+
 { -------------- *
  *   type defines *
  * --------------  }
@@ -39,18 +39,13 @@ type
   PXmTextPosition =TXmTextPosition;
 
   Pwchar_t = PWideChar;
+// -----------------
 
-{ -------------- *
- * extern class   *
- * --------------  }
   var
     xmTextWidgetClass : TWidgetClass;cvar;external libXm;
 { --------------------------------------- *
  *  text widget fast subclassing fallback  *
  * ---------------------------------------  }
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }   
 
 function XmIsText(w : TWidget) : Boolean;
 

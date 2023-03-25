@@ -11,11 +11,6 @@ uses
 
 //{$include <Xm/Xm.h>}
 
-{ C++ extern C conditionnal removed }
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }   
-
 function XmIsMainWindow(w : TWidget) : TBoolean;
 
 { XmIsMainWindow  }
@@ -41,8 +36,6 @@ function XmVaCreateMainWindow(parent:TWidget; name:Pchar):TWidget;cdecl; varargs
 //function XmVaCreateManagedMainWindow(parent:TWidget; name:Pchar; args:array of const):TWidget;cdecl;external libXm;
 function XmVaCreateManagedMainWindow(parent:TWidget; name:Pchar):TWidget;cdecl; varargs external libXm;
 {*******    End Public Function Declarations    ******* }
-
-{ DON'T ADD ANYTHING AFTER THIS #endif  }
 
 implementation
 

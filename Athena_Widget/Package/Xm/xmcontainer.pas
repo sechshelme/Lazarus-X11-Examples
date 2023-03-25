@@ -15,8 +15,6 @@ uses
 //{$include <Xm/Xm.h>}
 //{$include <Xm/Manager.h>}
 
-{ C++ extern C conditionnal removed }
-{ Class record constants  }
   var
     xmContainerWidgetClass : TWidgetClass;cvar; external libXm;
 
@@ -26,11 +24,9 @@ uses
 //
 //  PXmContainerWidget = ^TXmContainerWidget;
 //  TXmContainerWidget = PXmContainerRec;
-{$ifndef XmIsContainer}
 
 function XmIsContainer(w : TWidget) : TBoolean;
 
-{$endif}
 { XmIsContainer  }
 {*******    Public Function Declarations    ******* }
 
@@ -48,8 +44,6 @@ function XmContainerPaste(wid:TWidget):TBoolean;cdecl;external libXm;
 function XmContainerCopyLink(wid:TWidget; timestamp:TTime):TBoolean;cdecl;external libXm;
 function XmContainerPasteLink(wid:TWidget):TBoolean;cdecl;external libXm;
 {*******    End Public Function Declarations    ******* }
-
-{ DON'T ADD ANYTHING AFTER THIS #endif  }
 
 implementation
 

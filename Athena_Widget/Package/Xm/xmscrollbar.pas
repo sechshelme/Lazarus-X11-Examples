@@ -23,11 +23,6 @@ uses
 //  PXmScrollBarWidget = ^TXmScrollBarWidget;
 //  TXmScrollBarWidget = PXmScrollBarRec;
 
-{ ifndef for Fast Subclassing   }
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }   
-
 function XmIsScrollBar(w : TWidget) : TBoolean;
 
 { XmIsScrollBar  }
@@ -54,13 +49,9 @@ function XmVaCreateManagedScrollBar(parent:TWidget; name:Pchar):TWidget;cdecl; v
 
 implementation
 
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }   
 function XmIsScrollBar(w: TWidget): TBoolean;
 begin
   XmIsScrollBar:=XtIsSubclass(w,xmScrollBarWidgetClass);
 end;
-
 
 end.

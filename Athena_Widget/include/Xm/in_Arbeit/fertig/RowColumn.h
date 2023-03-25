@@ -29,7 +29,7 @@
 extern "C" {
 #endif
 
-externalref WidgetClass xmRowColumnWidgetClass;
+extern WidgetClass xmRowColumnWidgetClass;
 
 typedef struct _XmRowColumnClassRec * XmRowColumnWidgetClass;
 typedef struct _XmRowColumnRec      * XmRowColumnWidget;

@@ -10,9 +10,8 @@ uses
 {$ENDIF}
 
 // {$include <Xm/Xm.h>}
-{ C++ extern C conditionnal removed }
-{ Class record constants  }
-  var
+
+var
     xmMessageBoxWidgetClass : TWidgetClass;cvar;external libXm;
 
 //type
@@ -21,8 +20,6 @@ uses
 //
 //  PXmMessageBoxWidget = ^TXmMessageBoxWidget;
 //  TXmMessageBoxWidget = PXmMessageBoxRec;
-{ fast XtIsSubclass define  }
-
 
 function XmIsMessageBox(w : TWidget) : TBoolean;
 

@@ -12,8 +12,6 @@ uses
 
 // {$include <Xm/Xm.h>}
 
-{ C++ extern C conditionnal removed }
-{ Class record constants  }
   var
     xmCommandWidgetClass : TWidgetClass;cvar;external libXm;
 
@@ -23,10 +21,6 @@ uses
 //
 //  PXmCommandWidget = ^TXmCommandWidget;
 //  TXmCommandWidget = PXmCommandRec;
-
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }   
 
 function XmIsCommand(w : TWidget) : TBoolean;
 

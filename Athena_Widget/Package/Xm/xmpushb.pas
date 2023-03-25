@@ -12,10 +12,6 @@ uses
 // {$include <Xm/Xm.h>}
 { C++ extern C conditionnal removed }
 
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }   
-
 function XmIsPushButton(w : TWidget) : TBoolean;
 
 var
@@ -27,6 +23,7 @@ var
 //
 //  PXmPushButtonWidget = ^TXmPushButtonWidget;
 //  TXmPushButtonWidget = PXmPushButtonRec;
+
 {*******    Public Function Declarations    ******* }
 
 function XmCreatePushButton(parent:TWidget; name:Pchar; arglist:TArgList; argcount:TCardinal):TWidget;cdecl;external libXm;
@@ -45,6 +42,5 @@ function XmIsPushButton(w: TWidget): TBoolean;
 begin
   XmIsPushButton := XtIsSubclass(w,xmPushButtonWidgetClass);
 end;
-
 
 end.

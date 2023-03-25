@@ -14,6 +14,7 @@ uses
   XmMessageB,
   XmCommand,
   XmContainer,
+  XmRowColumn,
   XmScrollBar,
 
 
@@ -58,6 +59,8 @@ uses
     CreateButtons(box);
 
     CreateMessageBox(box,toplevel);
+
+    XmVaCreateManagedRowColumn(toplevel, 'test', XtNwidth,5, XtNheight,50,nil);
 
     XtRealizeWidget(toplevel);
 
