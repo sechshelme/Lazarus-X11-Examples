@@ -31,7 +31,7 @@ extern "C" {
 
 /* Class record constants */
 
-externalref WidgetClass xmCommandWidgetClass;
+extern WidgetClass xmCommandWidgetClass;
 
 typedef struct _XmCommandClassRec * XmCommandWidgetClass;
 typedef struct _XmCommandRec      * XmCommandWidget;
@@ -60,11 +60,11 @@ extern Widget XmVaCreateManagedCommand(
                         ...);
 extern Widget XmCommandGetChild( 
                         Widget widget,
-#if NeedWidePrototypes
+//#if NeedWidePrototypes
                         unsigned int child) ;
-#else
-                        unsigned char child) ;
-#endif /* NeedWidePrototypes */
+//#else
+//                        unsigned char child) ;
+//#endif /* NeedWidePrototypes */
 extern void XmCommandSetValue( 
                         Widget widget,
                         XmString value) ;

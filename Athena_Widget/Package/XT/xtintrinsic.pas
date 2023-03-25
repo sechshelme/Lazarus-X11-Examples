@@ -59,11 +59,11 @@ in define line 82 *)
 //{$if NeedWidePrototypes}
 
 type
-//  TXtBoolean = PtrUint;
-  TXtDimension = PtrUint;
-//  TXtKeyCode = PtrUint;
-  TXtPosition = PtrUint;
-//  TXtXtEnum = PtrUInt;
+//  TXtBoolean = LongInt;
+  TXtDimension = LongInt;
+//  TXtKeyCode = LongInt;
+  TXtPosition = LongInt;
+//  TXtXtEnum = LongInt;
 
 //{$include <stddef.h>}
 //{$ifdef VMS}
@@ -75,7 +75,7 @@ type
 
   PXtUIntPtr = ^TXtUIntPtr;
 //  TXtUIntPtr = Tuintptr_t;
-  TXtUIntPtr = PtrUInt;
+  TXtUIntPtr = LongInt;
 
 type
   PWidget = ^TWidget;
@@ -101,31 +101,31 @@ type
   TXtAppContext = Pointer; //PXtAppStruct;
 
   PXtValueMask = ^TXtValueMask;
-  TXtValueMask = PtrUint;
+  TXtValueMask = LongInt;
 
   PXtIntervalId = ^TXtIntervalId;
-  TXtIntervalId = PtrUint;
+  TXtIntervalId = LongInt;
 
   PXtInputId = ^TXtInputId;
-  TXtInputId = PtrUint;
+  TXtInputId = LongInt;
 
   PXtWorkProcId = ^TXtWorkProcId;
-  TXtWorkProcId = PtrUint;
+  TXtWorkProcId = LongInt;
 
   PXtSignalId = ^TXtSignalId;
-  TXtSignalId = PtrUint;
+  TXtSignalId = LongInt;
 
   PXtGeometryMask = ^TXtGeometryMask;
-  TXtGeometryMask = PtrUint;
+  TXtGeometryMask = LongInt;
 
   PXtGCMask = ^TXtGCMask;
-  TXtGCMask = PtrUint;
+  TXtGCMask = LongInt;
 
   PPixel = ^TPixel;
-  TPixel = PtrUint;
+  TPixel = LongInt;
 
   PXtCacheType = ^TXtCacheType;
-  TXtCacheType = PtrUint;
+  TXtCacheType = LongInt;
 
 const
   XtCacheNone = $001;
@@ -166,7 +166,7 @@ type
   TXtEnum = byte;
 
   PCardinal = ^TCardinal;
-  TCardinal = PtrUint;
+  TCardinal = LongInt;
 
   PPDimension = ^PDimension;
   PDimension = ^TDimension;
@@ -203,7 +203,7 @@ type
   end; //PTranslationData;
 
   PModifiers = ^TModifiers;
-  TModifiers = PtrUint;
+  TModifiers = LongInt;
 
 
   TXtActionProc = procedure(para1: TWidget; para2: PXEvent; para3: PString; para4: PCardinal); cdecl;
@@ -258,7 +258,7 @@ type
     Height: TDimension;
     border_width: TDimension;
     sibling: TWidget;
-    stack_mode: PtrUint;
+    stack_mode: LongInt;
   end;
   { Additions to Xlib geometry requests: ask what would happen, don't do it  }
 
@@ -290,7 +290,7 @@ type
   TXtActionHookProc = procedure(para1: TWidget; para2: TXtPointer; para3: TString; para4: PXEvent; para5: PString; para6: PCardinal); cdecl;
 
   PXtBlockHookId = ^TXtBlockHookId;
-  TXtBlockHookId = PtrUint;
+  TXtBlockHookId = LongInt;
 
   { client_data  }
   TXtBlockHookProc = procedure(para1: TXtPointer); cdecl;
@@ -308,7 +308,7 @@ type
 //  TXtEventHandler = Pointer;
 
   PEventMask = ^TEventMask;
-  TEventMask = PtrUint;
+  TEventMask = LongInt;
 
   PXtListPosition = ^TXtListPosition;
   TXtListPosition = (XtListHead, XtListTail);
@@ -319,7 +319,7 @@ type
 
 type
   PXtInputMask = ^TXtInputMask;
-  TXtInputMask = PtrUint;
+  TXtInputMask = LongInt;
 
 const
   XtInputNoneMask = 0;
@@ -332,7 +332,7 @@ type
   TXtTimerCallbackProc = procedure(para1: TXtPointer; para2: PXtIntervalId); cdecl;
 
   { closure  }{ source  }{ id  }
-  TXtInputCallbackProc = procedure(para1: TXtPointer; para2: PPtrUint; para3: PXtInputId); cdecl;
+  TXtInputCallbackProc = procedure(para1: TXtPointer; para2: PLongInt; para3: PXtInputId); cdecl;
 
   { closure  }{ id  }
   TXtSignalCallbackProc = procedure(para1: TXtPointer; para2: PXtSignalId); cdecl;
@@ -343,7 +343,7 @@ type
     Name: TString;
     case byte of
       0: (valueP: PChar);
-      1: (valueI: PtrUInt);
+      1: (valueI: LongInt);
   end;
   TArgList = ^TArg;
   PArgList = ^TArgList;
@@ -429,7 +429,7 @@ type
   TXtResourceList = PXtResource;
   PXtResourceList = ^TXtResourceList;
 
-  TXtResourceDefaultProc = procedure(para1: TWidget; para2: PtrUint; para3: PXrmValue); cdecl;
+  TXtResourceDefaultProc = procedure(para1: TWidget; para2: LongInt; para3: PXrmValue); cdecl;
 
   TXtLanguageProc = function(para1: PDisplay; para2: TString; para3: TXtPointer): TString; cdecl;
 
@@ -457,7 +457,7 @@ type
   TXtRequestId = TXtPointer;
 
 
-  TXtConvertSelectionProc = function(para1: TWidget; para2: PAtom; para3: PAtom; para4: PAtom; para5: PXtPointer; para6: PPtrUint; para7: PPtrUint): TBoolean; cdecl;
+  TXtConvertSelectionProc = function(para1: TWidget; para2: PAtom; para3: PAtom; para4: PAtom; para5: PXtPointer; para6: PLongInt; para7: PLongInt): TBoolean; cdecl;
 
 
   TXtLoseSelectionProc = procedure(para1: TWidget; para2: PAtom); cdecl;
@@ -466,7 +466,7 @@ type
   TXtSelectionDoneProc = procedure(para1: TWidget; para2: PAtom; para3: PAtom); cdecl;
 
 
-  TXtSelectionCallbackProc = procedure(para1: TWidget; para2: TXtPointer; para3: PAtom; para4: PAtom; para5: TXtPointer; para6: PPtrUint; para7: PPtrUint); cdecl;
+  TXtSelectionCallbackProc = procedure(para1: TWidget; para2: TXtPointer; para3: PAtom; para4: PAtom; para5: TXtPointer; para6: PLongInt; para7: PLongInt); cdecl;
 
 
   TXtLoseSelectionIncrProc = procedure(para1: TWidget; para2: PAtom; para3: TXtPointer); cdecl;
@@ -475,7 +475,7 @@ type
   TXtSelectionDoneIncrProc = procedure(para1: TWidget; para2: PAtom; para3: PAtom; para4: PXtRequestId; para5: TXtPointer); cdecl;
 
 
-  TXtConvertSelectionIncrProc = function(para1: TWidget; para2: PAtom; para3: PAtom; para4: PAtom; para5: PXtPointer; para6: PPtrUint; para7: PPtrUint; para8: PPtrUint; para9: TXtPointer; para10: PXtRequestId): TBoolean; cdecl;
+  TXtConvertSelectionIncrProc = function(para1: TWidget; para2: PAtom; para3: PAtom; para4: PAtom; para5: PXtPointer; para6: PLongInt; para7: PLongInt; para8: PLongInt; para9: TXtPointer; para10: PXtRequestId): TBoolean; cdecl;
 
 
   TXtCancelConvertSelectionProc = procedure(para1: TWidget; para2: PAtom; para3: PAtom; para4: PXtRequestId; para5: TXtPointer); cdecl;
@@ -484,7 +484,7 @@ type
   TXtEventDispatchProc = function(para1: PXEvent): TBoolean; cdecl;
 
 
-  TXtExtensionSelectProc = procedure(para1: TWidget; para2: PPtrUint; para3: PXtPointer; para4: PtrUint; para5: TXtPointer); cdecl;
+  TXtExtensionSelectProc = procedure(para1: TWidget; para2: PLongInt; para3: PXtPointer; para4: LongInt; para5: TXtPointer); cdecl;
 
 {**************************************************************
  *
@@ -528,7 +528,7 @@ function XtMakeResizeRequest(para1: TWidget; para2: TXtDimension; para3: TXtDime
 
 procedure XtTranslateCoords(para1: TWidget; para2: TXtPosition; para3: TXtPosition; para4: PPosition; para5: PPosition); cdecl; external libXt;
 
-function XtGetKeysymTable(para1: PDisplay; para2: PKeyCode; para3: PPtrUint): PKeySym; cdecl; external libXt;
+function XtGetKeysymTable(para1: PDisplay; para2: PKeyCode; para3: PLongInt): PKeySym; cdecl; external libXt;
 
 procedure XtKeysymToKeycodeList(para1: PDisplay; para2: TKeySym; para3: PPKeyCode; para4: PCardinal); cdecl; external libXt;
 
@@ -585,11 +585,11 @@ procedure XtGetActionList(para1: TWidgetClass; para2: PXtActionList; para3: PCar
 
 procedure XtCallActionProc(para1: TWidget; _XtString: TXtString; para3: PXEvent; para4: PString; para5: TCardinal); cdecl; external libXt;
 
-procedure XtRegisterGrabAction(para1: TXtActionProc; para2: TXtBoolean; para3: PtrUint; para4: PtrUint; para5: PtrUint); cdecl; external libXt;
+procedure XtRegisterGrabAction(para1: TXtActionProc; para2: TXtBoolean; para3: LongInt; para4: LongInt; para5: LongInt); cdecl; external libXt;
 
-procedure XtSetMultiClickTime(para1: PDisplay; para2: PtrUint); cdecl; external libXt;
+procedure XtSetMultiClickTime(para1: PDisplay; para2: LongInt); cdecl; external libXt;
 
-function XtGetMultiClickTime(para1: PDisplay): PtrUint; cdecl; external libXt;
+function XtGetMultiClickTime(para1: PDisplay): LongInt; cdecl; external libXt;
 
 function XtGetActionKeysym(para1: PXEvent; para2: PModifiers): TKeySym; cdecl; external libXt;
 
@@ -634,17 +634,17 @@ procedure XtInsertEventHandler(para1: TWidget; para2: TEventMask; para3: TXtBool
 
 procedure XtInsertRawEventHandler(para1: TWidget; para2: TEventMask; para3: TXtBoolean; para4: TXtEventHandler; para5: TXtPointer; para6: TXtListPosition); cdecl; external libXt;
 
-function XtSetEventDispatcher(para1: PDisplay; para2: PtrUint; para3: TXtEventDispatchProc): TXtEventDispatchProc; cdecl; external libXt;
+function XtSetEventDispatcher(para1: PDisplay; para2: LongInt; para3: TXtEventDispatchProc): TXtEventDispatchProc; cdecl; external libXt;
 
 function XtDispatchEventToWidget(para1: TWidget; para2: PXEvent): TBoolean; cdecl; external libXt;
 
-procedure XtInsertEventTypeHandler(para1: TWidget; para2: PtrUint; para3: TXtPointer; para4: TXtEventHandler; para5: TXtPointer; para6: TXtListPosition); cdecl; external libXt;
+procedure XtInsertEventTypeHandler(para1: TWidget; para2: LongInt; para3: TXtPointer; para4: TXtEventHandler; para5: TXtPointer; para6: TXtListPosition); cdecl; external libXt;
 
-procedure XtRemoveEventTypeHandler(para1: TWidget; para2: PtrUint; para3: TXtPointer; para4: TXtEventHandler; para5: TXtPointer); cdecl; external libXt;
+procedure XtRemoveEventTypeHandler(para1: TWidget; para2: LongInt; para3: TXtPointer; para4: TXtEventHandler; para5: TXtPointer); cdecl; external libXt;
 
 function XtBuildEventMask(para1: TWidget): TEventMask; cdecl; external libXt;
 
-procedure XtRegisterExtensionSelector(para1: PDisplay; para2: PtrUint; para3: PtrUint; para4: TXtExtensionSelectProc; para5: TXtPointer); cdecl; external libXt;
+procedure XtRegisterExtensionSelector(para1: PDisplay; para2: LongInt; para3: LongInt; para4: TXtExtensionSelectProc; para5: TXtPointer); cdecl; external libXt;
 
 procedure XtAddGrab(para1: TWidget; para2: TXtBoolean; para3: TXtBoolean); cdecl; external libXt;
 
@@ -675,16 +675,16 @@ function XtLastTimestampProcessed(para1: PDisplay): TTime; cdecl; external libXt
  *
  *************************************************************** }
 
-function XtAddTimeOut(para1: PtrUint; para2: TXtTimerCallbackProc; para3: TXtPointer): TXtIntervalId; cdecl; external libXt;
+function XtAddTimeOut(para1: LongInt; para2: TXtTimerCallbackProc; para3: TXtPointer): TXtIntervalId; cdecl; external libXt;
 
-function XtAppAddTimeOut(para1: TXtAppContext; para2: PtrUint; para3: TXtTimerCallbackProc; para4: TXtPointer): TXtIntervalId; cdecl; external libXt;
+function XtAppAddTimeOut(para1: TXtAppContext; para2: LongInt; para3: TXtTimerCallbackProc; para4: TXtPointer): TXtIntervalId; cdecl; external libXt;
 
 procedure XtRemoveTimeOut(para1: TXtIntervalId); cdecl; external libXt;
 
 
-function XtAddInput(para1: PtrUint; para2: TXtPointer; para3: TXtInputCallbackProc; para4: TXtPointer): TXtInputId; cdecl; external libXt;
+function XtAddInput(para1: LongInt; para2: TXtPointer; para3: TXtInputCallbackProc; para4: TXtPointer): TXtInputId; cdecl; external libXt;
 
-function XtAppAddInput(para1: TXtAppContext; para2: PtrUint; para3: TXtPointer; para4: TXtInputCallbackProc; para5: TXtPointer): TXtInputId; cdecl; external libXt;
+function XtAppAddInput(para1: TXtAppContext; para2: LongInt; para3: TXtPointer; para4: TXtInputCallbackProc; para5: TXtPointer): TXtInputId; cdecl; external libXt;
 
 procedure XtRemoveInput(para1: TXtInputId); cdecl; external libXt;
 function XtAddSignal(para1: TXtSignalCallbackProc; para2: TXtPointer): TXtSignalId; cdecl; external libXt;
@@ -761,7 +761,7 @@ function XtNameToWidget(para1: TWidget; _XtString: TXtString): TWidget; cdecl; e
 
 function XtWindowToWidget(para1: PDisplay; para2: TWindow): TWidget; cdecl; external libXt;
 
-function XtGetClassExtension(para1: TWidgetClass; para2: TCardinal; para3: TXrmQuark; para4: PtrUint; para5: TCardinal): TXtPointer; cdecl; external libXt;
+function XtGetClassExtension(para1: TWidgetClass; para2: TCardinal; para3: TXrmQuark; para4: LongInt; para5: TCardinal): TXtPointer; cdecl; external libXt;
 
 {**************************************************************
  *
@@ -884,19 +884,19 @@ procedure XtToolkitInitialize; cdecl; external libXt;
 
 function XtSetLanguageProc(para1: TXtAppContext; para2: TXtLanguageProc; para3: TXtPointer): TXtLanguageProc; cdecl; external libXt;
 
-procedure XtDisplayInitialize(para1: TXtAppContext; para2: PDisplay; _XtString: TXtString; __XtString: TXtString; para5: PXrmOptionDescRec; para6: TCardinal; para7: PPtrUint; para8: PXtString); cdecl; external libXt;
+procedure XtDisplayInitialize(para1: TXtAppContext; para2: PDisplay; _XtString: TXtString; __XtString: TXtString; para5: PXrmOptionDescRec; para6: TCardinal; para7: PLongInt; para8: PXtString); cdecl; external libXt;
 
-function XtOpenApplication(para1: PXtAppContext; _XtString: TXtString; para3: TXrmOptionDescList; para4: TCardinal; para5: PPtrUint; para6: PXtString; para7: PString; para8: TWidgetClass; para9: TArgList; para10: TCardinal): TWidget; cdecl; external libXt;
+function XtOpenApplication(para1: PXtAppContext; _XtString: TXtString; para3: TXrmOptionDescList; para4: TCardinal; para5: PLongInt; para6: PXtString; para7: PString; para8: TWidgetClass; para9: TArgList; para10: TCardinal): TWidget; cdecl; external libXt;
 
-function XtVaOpenApplication(para1: PXtAppContext; _XtString: TXtString; para3: TXrmOptionDescList; para4: TCardinal; para5: PPtrUint; para6: PXtString; para7: PString; para8: TWidgetClass): TWidget; cdecl; varargs; external libXt;
+function XtVaOpenApplication(para1: PXtAppContext; _XtString: TXtString; para3: TXrmOptionDescList; para4: TCardinal; para5: PLongInt; para6: PXtString; para7: PString; para8: TWidgetClass): TWidget; cdecl; varargs; external libXt;
 
-function XtAppInitialize(para1: PXtAppContext; _XtString: TXtString; para3: TXrmOptionDescList; para4: TCardinal; para5: PPtrUint; para6: PXtString; para7: PString; para8: TArgList; para9: TCardinal): TWidget; cdecl; external libXt;
+function XtAppInitialize(para1: PXtAppContext; _XtString: TXtString; para3: TXrmOptionDescList; para4: TCardinal; para5: PLongInt; para6: PXtString; para7: PString; para8: TArgList; para9: TCardinal): TWidget; cdecl; external libXt;
 
-function XtVaAppInitialize(para1: PXtAppContext; _XtString: TXtString; para3: TXrmOptionDescList; para4: TCardinal; para5: PPtrUint; para6: PXtString; para7: PString): TWidget; cdecl; varargs; external libXt;
+function XtVaAppInitialize(para1: PXtAppContext; _XtString: TXtString; para3: TXrmOptionDescList; para4: TCardinal; para5: PLongInt; para6: PXtString; para7: PString): TWidget; cdecl; varargs; external libXt;
 
-function XtInitialize(_XtString: TXtString; __XtString: TXtString; para3: PXrmOptionDescRec; para4: TCardinal; para5: PPtrUint; para6: PXtString): TWidget; cdecl; external libXt;
+function XtInitialize(_XtString: TXtString; __XtString: TXtString; para3: PXrmOptionDescRec; para4: TCardinal; para5: PLongInt; para6: PXtString): TWidget; cdecl; external libXt;
 
-function XtOpenDisplay(para1: TXtAppContext; _XtString: TXtString; __XtString: TXtString; ___XtString: TXtString; para5: PXrmOptionDescRec; para6: TCardinal; para7: PPtrUint; para8: PXtString): PDisplay; cdecl; external libXt;
+function XtOpenDisplay(para1: TXtAppContext; _XtString: TXtString; __XtString: TXtString; ___XtString: TXtString; para5: PXrmOptionDescRec; para6: TCardinal; para7: PLongInt; para8: PXtString): PDisplay; cdecl; external libXt;
 function XtCreateApplicationContext: TXtAppContext; cdecl; external libXt;
 
 procedure XtAppSetFallbackResources(para1: TXtAppContext; para2: PString); cdecl; external libXt;
@@ -963,10 +963,10 @@ const
 //        ((Cardinal) (((char *) (&(((p_type)NULL)->field))) - ((char *) NULL)))
 
 
-//    function XtOffset(p_type,field : PtrUint) : TCardinal;
+//    function XtOffset(p_type,field : LongInt) : TCardinal;
 
 //{$ifdef offsetof}
-//    function XtOffsetOf(s_type,field : PtrUint) : PtrUint;
+//    function XtOffsetOf(s_type,field : LongInt) : LongInt;
 //
 //{$else}
 //(* error 
@@ -988,17 +988,17 @@ type
   PXtCheckpointTokenRec = ^TXtCheckpointTokenRec;
 
   TXtCheckpointTokenRec = record
-    save_type: PtrUint;
-    interact_style: PtrUint;
+    save_type: LongInt;
+    interact_style: LongInt;
     shutdown: TBoolean;
     fast: TBoolean;
     cancel_shutdown: TBoolean;
-    phase: PtrUint;
-    interact_dialog_type: PtrUint;
+    phase: LongInt;
+    interact_dialog_type: LongInt;
     request_cancel: TBoolean;
     request_next_phase: TBoolean;
     save_success: TBoolean;
-    _type: PtrUint;
+    _type: LongInt;
     widget: TWidget;
   end;
   TXtCheckpointToken = PXtCheckpointTokenRec;
@@ -1044,10 +1044,10 @@ function XtAppGetErrorDatabase(para1: TXtAppContext): PXrmDatabase; cdecl; exter
 
 function XtGetErrorDatabase: PXrmDatabase; cdecl; external libXt;
 
-procedure XtAppGetErrorDatabaseText(para1: TXtAppContext; _XtString: TXtString; __XtString: TXtString; ____XtString: TXtString; _____XtString: TXtString; para6: TXtString; para7: PtrUint; para8: TXrmDatabase); cdecl; external libXt;
+procedure XtAppGetErrorDatabaseText(para1: TXtAppContext; _XtString: TXtString; __XtString: TXtString; ____XtString: TXtString; _____XtString: TXtString; para6: TXtString; para7: LongInt; para8: TXrmDatabase); cdecl; external libXt;
 
 
-procedure XtGetErrorDatabaseText(_XtString: TXtString; __XtString: TXtString; ___XtString: TXtString; ____XtString: TXtString; para5: TXtString; para6: PtrUint); cdecl; external libXt;
+procedure XtGetErrorDatabaseText(_XtString: TXtString; __XtString: TXtString; ___XtString: TXtString; ____XtString: TXtString; para5: TXtString; para6: LongInt); cdecl; external libXt;
 
 
 {***************************************************************
@@ -1067,9 +1067,9 @@ procedure XtFree(para1: PChar); cdecl; external libXt;
 function XtAsprintf(new_string:PXtString; format:Pchar):TCardinal;cdecl; varargs external libXt;
 //function XtAsprintf(new_string:PXtString; format:Pchar):TCardinal;cdecl;external libXt;
 
-//function _XtMalloc(para1: TCardinal; para2: PChar; para3: PtrUint): PChar; cdecl; external libXt;
-//function _XtRealloc(para1: PChar; para2: TCardinal; para3: PChar; para4: PtrUint): PChar; cdecl; external libXt;
-//function _XtCalloc(para1: TCardinal; para2: TCardinal; para3: PChar; para4: PtrUint): PChar; cdecl; external libXt;
+//function _XtMalloc(para1: TCardinal; para2: PChar; para3: LongInt): PChar; cdecl; external libXt;
+//function _XtRealloc(para1: PChar; para2: TCardinal; para3: PChar; para4: LongInt): PChar; cdecl; external libXt;
+//function _XtCalloc(para1: TCardinal; para2: TCardinal; para3: PChar; para4: LongInt): PChar; cdecl; external libXt;
 //procedure _XtFree(para1: PChar); cdecl; external libXt;
 //function _XtIsValidPointer(para1: PChar): TBoolean; cdecl; external libXt;
 //procedure _XtPrintMemory(para1: PChar); cdecl; external libXt;
@@ -1127,26 +1127,26 @@ procedure XtDisownSelection(para1: TWidget; para2: TAtom; para3: TTime); cdecl; 
 
 procedure XtGetSelectionValue(para1: TWidget; para2: TAtom; para3: TAtom; para4: TXtSelectionCallbackProc; para5: TXtPointer; para6: TTime); cdecl; external libXt;
 
-procedure XtGetSelectionValues(para1: TWidget; para2: TAtom; para3: PAtom; para4: PtrUint; para5: TXtSelectionCallbackProc; para6: PXtPointer; para7: TTime); cdecl; external libXt;
+procedure XtGetSelectionValues(para1: TWidget; para2: TAtom; para3: PAtom; para4: LongInt; para5: TXtSelectionCallbackProc; para6: PXtPointer; para7: TTime); cdecl; external libXt;
 
-procedure XtAppSetSelectionTimeout(para1: TXtAppContext; para2: PtrUint); cdecl; external libXt;
+procedure XtAppSetSelectionTimeout(para1: TXtAppContext; para2: LongInt); cdecl; external libXt;
 
 
-procedure XtSetSelectionTimeout(para1: PtrUint); cdecl; external libXt;
+procedure XtSetSelectionTimeout(para1: LongInt); cdecl; external libXt;
 
-function XtAppGetSelectionTimeout(para1: TXtAppContext): PtrUint; cdecl; external libXt;
+function XtAppGetSelectionTimeout(para1: TXtAppContext): LongInt; cdecl; external libXt;
 
-function XtGetSelectionTimeout: PtrUint; cdecl; external libXt;
+function XtGetSelectionTimeout: LongInt; cdecl; external libXt;
 
 function XtGetSelectionRequest(para1: TWidget; para2: TAtom; para3: TXtRequestId): PXSelectionRequestEvent; cdecl; external libXt;
 
 procedure XtGetSelectionValueIncremental(para1: TWidget; para2: TAtom; para3: TAtom; para4: TXtSelectionCallbackProc; para5: TXtPointer; para6: TTime); cdecl; external libXt;
 
-procedure XtGetSelectionValuesIncremental(para1: TWidget; para2: TAtom; para3: PAtom; para4: PtrUint; para5: TXtSelectionCallbackProc; para6: PXtPointer; para7: TTime); cdecl; external libXt;
+procedure XtGetSelectionValuesIncremental(para1: TWidget; para2: TAtom; para3: PAtom; para4: LongInt; para5: TXtSelectionCallbackProc; para6: PXtPointer; para7: TTime); cdecl; external libXt;
 
-procedure XtSetSelectionParameters(para1: TWidget; para2: TAtom; para3: TAtom; para4: TXtPointer; para5: PtrUint; para6: PtrUint); cdecl; external libXt;
+procedure XtSetSelectionParameters(para1: TWidget; para2: TAtom; para3: TAtom; para4: TXtPointer; para5: LongInt; para6: LongInt); cdecl; external libXt;
 
-procedure XtGetSelectionParameters(para1: TWidget; para2: TAtom; para3: TXtRequestId; para4: PAtom; para5: PXtPointer; para6: PPtrUint; para7: PPtrUint); cdecl; external libXt;
+procedure XtGetSelectionParameters(para1: TWidget; para2: TAtom; para3: TXtRequestId; para4: PAtom; para5: PXtPointer; para6: PLongInt; para7: PLongInt); cdecl; external libXt;
 
 procedure XtCreateSelectionRequest(para1: TWidget; para2: TAtom); cdecl; external libXt;
 
@@ -1158,19 +1158,19 @@ function XtReservePropertyAtom(para1: TWidget): TAtom; cdecl; external libXt;
 
 procedure XtReleasePropertyAtom(para1: TWidget; para2: TAtom); cdecl; external libXt;
 
-procedure XtGrabKey(para1: TWidget; para2: TXtKeyCode; para3: TModifiers; para4: TXtBoolean; para5: PtrUint; para6: PtrUint); cdecl; external libXt;
+procedure XtGrabKey(para1: TWidget; para2: TXtKeyCode; para3: TModifiers; para4: TXtBoolean; para5: LongInt; para6: LongInt); cdecl; external libXt;
 
 procedure XtUngrabKey(para1: TWidget; para2: TXtKeyCode; para3: TModifiers); cdecl; external libXt;
 
-function XtGrabKeyboard(para1: TWidget; para2: TXtBoolean; para3: PtrUint; para4: PtrUint; para5: TTime): PtrUint; cdecl; external libXt;
+function XtGrabKeyboard(para1: TWidget; para2: TXtBoolean; para3: LongInt; para4: LongInt; para5: TTime): LongInt; cdecl; external libXt;
 
 procedure XtUngrabKeyboard(para1: TWidget; para2: TTime); cdecl; external libXt;
 
-procedure XtGrabButton(para1: TWidget; para2: PtrUint; para3: TModifiers; para4: TXtBoolean; para5: PtrUint; para6: PtrUint; para7: PtrUint; para8: TWindow; para9: TCursor); cdecl; external libXt;
+procedure XtGrabButton(para1: TWidget; para2: LongInt; para3: TModifiers; para4: TXtBoolean; para5: LongInt; para6: LongInt; para7: LongInt; para8: TWindow; para9: TCursor); cdecl; external libXt;
 
-procedure XtUngrabButton(para1: TWidget; para2: PtrUint; para3: TModifiers); cdecl; external libXt;
+procedure XtUngrabButton(para1: TWidget; para2: LongInt; para3: TModifiers); cdecl; external libXt;
 
-function XtGrabPointer(para1: TWidget; para2: TXtBoolean; para3: PtrUint; para4: PtrUint; para5: PtrUint; para6: TWindow; para7: TCursor; para8: TTime): PtrUint; cdecl; external libXt;
+function XtGrabPointer(para1: TWidget; para2: TXtBoolean; para3: LongInt; para4: LongInt; para5: LongInt; para6: TWindow; para7: TCursor; para8: TTime): LongInt; cdecl; external libXt;
 
 procedure XtUngrabPointer(para1: TWidget; para2: TTime); cdecl; external libXt;
 
@@ -1451,12 +1451,12 @@ begin
   XtUnspecifiedWindowGroup := TWindow(3);
 end;
 
-//function XtOffset(p_type,field : PtrUint) : TCardinal;
+//function XtOffset(p_type,field : LongInt) : TCardinal;
 //begin
 //  XtOffset:=TCardinal((Pchar(@((Tp_type(NULL))^.field)))-(Pchar(NULL)));
 //end;
 //
-//function XtOffsetOf(s_type,field : PtrUint) : PtrUint;
+//function XtOffsetOf(s_type,field : LongInt) : LongInt;
 //begin
 //  XtOffsetOf:=offsetof(s_type,field);
 //end;

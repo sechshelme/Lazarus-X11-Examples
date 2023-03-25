@@ -37,7 +37,7 @@ extern "C" {
 
 
 /* Class record constants */
-externalref	WidgetClass	xmContainerWidgetClass;
+extern	WidgetClass	xmContainerWidgetClass;
 
 typedef	struct	_XmContainerClassRec	*XmContainerWidgetClass;
 typedef struct  _XmContainerRec	*XmContainerWidget;

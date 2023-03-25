@@ -31,7 +31,7 @@ extern "C" {
 
 /* Class record constants */
 
-externalref WidgetClass xmMessageBoxWidgetClass;
+extern WidgetClass xmMessageBoxWidgetClass;
 
 typedef struct _XmMessageBoxClassRec * XmMessageBoxWidgetClass;
 typedef struct _XmMessageBoxRec      * XmMessageBoxWidget;
@@ -86,11 +86,11 @@ extern Widget XmCreateTemplateDialog(
                         Cardinal ac) ;
 extern Widget XmMessageBoxGetChild( 
                         Widget widget,
-#if NeedWidePrototypes
+//#if NeedWidePrototypes
                         unsigned int child) ;
-#else
-                        unsigned char child) ;
-#endif /* NeedWidePrototypes */
+//#else
+//                        unsigned char child) ;
+//#endif /* NeedWidePrototypes */
 
 /*
  * Variable argument list functions

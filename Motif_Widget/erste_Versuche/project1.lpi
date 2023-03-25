@@ -61,6 +61,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="MyButtons"/>
       </Unit>
+      <Unit>
+        <Filename Value="mymesssagedialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MyMesssageDialog"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -70,6 +75,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="../../Athena_Widget/Package/Xm"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

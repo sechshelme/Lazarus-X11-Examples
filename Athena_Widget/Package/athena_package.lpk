@@ -215,6 +215,10 @@
         <Filename Value="Xm/XmXm.pp"/>
         <UnitName Value="XmXm"/>
       </Item>
+      <Item>
+        <Filename Value="Xm/xmcontainer.pas"/>
+        <UnitName Value="XmContainer"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

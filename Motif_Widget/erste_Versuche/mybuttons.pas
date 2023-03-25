@@ -7,23 +7,25 @@ uses
   x,
   XmXm,
   XmPushB,
-   XTIntrinsic,
+  XTIntrinsic,
   XTStringdefs,
   XmXmStrDefs;
 
-procedure CreateButtons(Parent:TWidget);
+procedure CreateButtons(Parent: TWidget);
 
 implementation
 
 
-procedure press_hello(w:TWidget;p:TXtPointer;p2:TXtPointer); cdecl;
+// http://euklid.mi.uni-koeln.de/c/mirror/www.cs.curtin.edu.au/units/cg351-551/notes/lect1ha1.html
+procedure press_hello(w: TWidget; p: TXtPointer; p2: TXtPointer); cdecl;
 var
-  ls:TXmString;
+  ls: TXmString;
   pc: PChar;
 begin
-  XtVaGetValues(w, XmNlabelString, @ls,nil);
-  XmStringGetLtoR(ls,XmFONTLIST_DEFAULT_TAG,@pc);
-  WriteLn('Button: "',pc,'" wurde gedrückt');
+  XtVaGetValues(w, XmNlabelString, @ls, nil);
+//  XmStringGetLtoR(ls, XmFONTLIST_DEFAULT_TAG, @pc);
+  XmStringGetLtoR(ls, XmSTRING_DEFAULT_CHARSET, @pc);
+  WriteLn('Button: "', pc, '" wurde gedrückt');
 end;
 
 procedure CreateButtons(Parent: TWidget);
@@ -32,21 +34,20 @@ var
   label1: TXmString;
 begin
 
-  command:=XtCreateManagedWidget('Ich bin ein ganz grosser'#10'Button', xmPushButtonWidgetClass, Parent,nil,0);
-  XtAddCallback(command,  XmNactivateCallback,@press_hello,nil);
-  command:=XtCreateManagedWidget('Ich bin ein ganz grosser'#10'zweiter Button', xmPushButtonWidgetClass, Parent,nil,0);
-  XtAddCallback(command,  XmNactivateCallback,@press_hello,nil);
+  command := XtCreateManagedWidget('Ich bin ein ganz grosser'#10'Button', xmPushButtonWidgetClass, Parent, nil, 0);
+  XtAddCallback(command, XmNactivateCallback, @press_hello, nil);
+  command := XtCreateManagedWidget('Ich bin ein ganz grosser'#10'zweiter Button', xmPushButtonWidgetClass, Parent, nil, 0);
+  XtAddCallback(command, XmNactivateCallback, @press_hello, nil);
 
-  label1:=XmStringCreateLocalized('Ha ha ha');
-  command:=XmVaCreateManagedPushButton(Parent, 'Hello World !',XtNwidth,100,XtNheight,100,nil);
-  XtAddCallback(command,  XmNactivateCallback,@press_hello,nil);
-  XtVaSetValues(command,XtNwidth,300,XmNlabelString,label1, nil);
+  label1 := XmStringCreateLocalized('Ha ha ha');
+  command := XmVaCreateManagedPushButton(Parent, 'Hello World !', XtNwidth, 100, XtNheight, 100, nil);
+  XtAddCallback(command, XmNactivateCallback, @press_hello, nil);
+  XtVaSetValues(command, XtNwidth, 300, XmNlabelString, label1, nil);
   XmStringFree(label1);
 
-  command:=XtCreateManagedWidget('Ich bin ein 3. Button', xmPushButtonWidgetClass, Parent,nil,0);
-  XtAddCallback(command,  XmNactivateCallback,@press_hello,nil);
+  command := XtCreateManagedWidget('Ich bin ein 3. Button', xmPushButtonWidgetClass, Parent, nil, 0);
+  XtAddCallback(command, XmNactivateCallback, @press_hello, nil);
 
 end;
 
 end.
-

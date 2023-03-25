@@ -20,8 +20,9 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
 */ 
-#ifndef _XmMainWindow_h
-#define _XmMainWindow_h
+#ifndef _XmScrollBar_h
+#define _XmScrollBar_h
+
 
 #include <Xm/Xm.h>
 
@@ -29,45 +30,58 @@
 extern "C" {
 #endif
 
-#ifndef XmIsMainWindow
-#define XmIsMainWindow(w)	XtIsSubclass(w, xmMainWindowWidgetClass)
-#endif /* XmIsMainWindow */
 
-externalref WidgetClass xmMainWindowWidgetClass;
+/*  ScrollBar Widget  */
 
-typedef struct _XmMainWindowClassRec * XmMainWindowWidgetClass;
-typedef struct _XmMainWindowRec      * XmMainWindowWidget;
+extern WidgetClass xmScrollBarWidgetClass;
+
+typedef struct _XmScrollBarClassRec * XmScrollBarWidgetClass;
+typedef struct _XmScrollBarRec      * XmScrollBarWidget;
+
+/* ifndef for Fast Subclassing  */
+
+#ifndef XmIsScrollBar
+#define XmIsScrollBar(w)	XtIsSubclass(w, xmScrollBarWidgetClass)
+#endif  /* XmIsScrollBar */
 
 
 /********    Public Function Declarations    ********/
 
-extern void XmMainWindowSetAreas( 
+extern Widget XmCreateScrollBar( 
+                        Widget parent,
+                        char *name,
+                        ArgList arglist,
+                        Cardinal argcount) ;
+extern void XmScrollBarGetValues( 
                         Widget w,
-                        Widget menu,
-                        Widget command,
-                        Widget hscroll,
-                        Widget vscroll,
-                        Widget wregion) ;
-extern Widget XmMainWindowSep1( 
-                        Widget w) ;
-extern Widget XmMainWindowSep2( 
-                        Widget w) ;
-extern Widget XmMainWindowSep3( 
-                        Widget w) ;
-extern Widget XmCreateMainWindow( 
-                        Widget parent,
-                        char *name,
-                        ArgList args,
-                        Cardinal argCount) ;
-extern Widget XmVaCreateMainWindow(
-                        Widget parent,
-                        char *name,
-                        ...);
-extern Widget XmVaCreateManagedMainWindow(
-                        Widget parent,
-                        char *name,
-                        ...);
+                        int *value,
+                        int *slider_size,
+                        int *increment,
+                        int *page_increment) ;
+extern void XmScrollBarSetValues( 
+                        Widget w,
+                        int value,
+                        int slider_size,
+                        int increment,
+                        int page_increment,
+//#if NeedWidePrototypes
+//                        int notify) ;
+//#else
+                        Boolean notify) ;
+//#endif /* NeedWidePrototypes */
 
+/*
+ * Variable argument list functions
+ */
+
+extern Widget XmVaCreateScrollBar(
+                        Widget parent,
+                        char *name,
+                        ...);
+extern Widget XmVaCreateManagedScrollBar(
+                        Widget parent,
+                        char *name,
+                        ...);
 /********    End Public Function Declarations    ********/
 
 
@@ -75,5 +89,5 @@ extern Widget XmVaCreateManagedMainWindow(
 }  /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
-#endif /* _XmMainWindow_h */
+#endif /* _XmScrollBar_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

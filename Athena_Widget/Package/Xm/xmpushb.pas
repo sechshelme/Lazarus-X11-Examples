@@ -41,9 +41,6 @@ function XmCreatePushButton(parent:TWidget; name:Pchar; arglist:TArgList; argcou
 
 implementation
 
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }   
 function XmIsPushButton(w: TWidget): TBoolean;
 begin
   XmIsPushButton := XtIsSubclass(w,xmPushButtonWidgetClass);
