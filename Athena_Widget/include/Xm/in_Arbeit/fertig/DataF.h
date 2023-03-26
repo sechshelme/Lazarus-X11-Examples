@@ -28,9 +28,9 @@
 #include <Xm/TextF.h>
 #include <Xm/Ext.h>
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+//#if defined(__cplusplus)
+//extern "C" {
+//#endif
 
 typedef struct _XmDataFieldClassRec    *XmDataFieldWidgetClass;
 typedef struct _XmDataFieldRec         *XmDataFieldWidget;
@@ -184,8 +184,8 @@ typedef struct _XmDataFieldCallbackStruct {
     Boolean  accept;		/* Accept return value, for validation */
 } XmDataFieldCallbackStruct;
 
-#if defined(__cplusplus)
-} /* extern "C" */
-#endif
+//#if defined(__cplusplus)
+//} /* extern "C" */
+//#endif
 
 #endif /* _XmDataF_h */

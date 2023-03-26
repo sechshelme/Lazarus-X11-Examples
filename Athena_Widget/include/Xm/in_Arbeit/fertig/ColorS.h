@@ -31,9 +31,9 @@
 
 #include <Xm/Ext.h>
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+//#if defined(__cplusplus)
+//extern "C" {
+//#endif
 
 typedef struct _XmColorSelectorClassRec *XmColorSelectorWidgetClass;
 typedef struct _XmColorSelectorRec *XmColorSelectorWidget;
@@ -68,9 +68,9 @@ extern Widget XmVaCreateManagedColorSelector(
 
 extern WidgetClass       xmColorSelectorWidgetClass;
 
-#if defined(__cplusplus)
-}
-#endif
+//#if defined(__cplusplus)
+//}
+//#endif
 
 #if defined(VMS) || defined(__VMS)
 #include <X11/apienvrst.h>

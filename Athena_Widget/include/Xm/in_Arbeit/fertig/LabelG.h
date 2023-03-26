@@ -20,55 +20,51 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
 */ 
-
-#ifndef _XmDisplay_h
-#define _XmDisplay_h
+#ifndef _XmLabelG_h
+#define _XmLabelG_h
 
 #include <Xm/Xm.h>
-#include <X11/Shell.h>
-#include <Xm/DragC.h>
-#include <Xm/DropSMgr.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
 
-#ifndef XmIsDisplay
-#define XmIsDisplay(w) (XtIsSubclass(w, xmDisplayClass))
-#endif /* XmIsXmDisplay */
+/*  Widget class and record definitions  */
 
-enum {
-	XmDRAG_NONE,
-	XmDRAG_DROP_ONLY,
-	XmDRAG_PREFER_PREREGISTER,
-	XmDRAG_PREREGISTER,
-	XmDRAG_PREFER_DYNAMIC,
-	XmDRAG_DYNAMIC,
-	XmDRAG_PREFER_RECEIVER
-};
 
-/* Class record constants */
+extern WidgetClass xmLabelGadgetClass;
 
-typedef struct _XmDisplayRec *XmDisplay;
-typedef struct _XmDisplayClassRec *XmDisplayClass;
-externalref 	WidgetClass xmDisplayClass;
+typedef struct _XmLabelGadgetClassRec * XmLabelGadgetClass;
+typedef struct _XmLabelGadgetRec      * XmLabelGadget;
+typedef struct _XmLabelGCacheObjRec   * XmLabelGCacheObject;
 
-#define XmGetDisplay(w) XmGetXmDisplay(XtDisplayOfObject(w))
+/*fast subclass define */
+#ifndef XmIsLabelGadget
+#define XmIsLabelGadget(w)     XtIsSubclass(w, xmLabelGadgetClass)
+#endif /* XmIsLabelGadget */
+
 
 /********    Public Function Declarations    ********/
 
-extern Widget XmGetDragContext( 
-                        Widget w,
-                        Time time) ;
-extern Widget XmGetXmDisplay( 
-                        Display *display) ;
-
+extern Widget XmCreateLabelGadget( 
+                        Widget parent,
+                        char *name,
+                        Arg *arglist,
+                        Cardinal argCount) ;
+extern Widget XmVaCreateLabelGadget(
+        Widget parent,
+        char *name,
+        ...);
+extern Widget XmVaCreateManagedLabelGadget(
+        Widget parent,
+        char *name,
+        ...);
 /********    End Public Function Declarations    ********/
+
 
 #ifdef __cplusplus
 }  /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
-#endif /* _XmDisplay_h */
-
-
+#endif /* _XmLabelG_h */
+/* DON'T ADD ANYTHING AFTER THIS #endif */

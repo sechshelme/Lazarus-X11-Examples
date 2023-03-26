@@ -20,40 +20,55 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
 */ 
-#ifndef _XmDialogShell_h
-#define _XmDialogShell_h
+
+#ifndef _XmDisplay_h
+#define _XmDisplay_h
 
 #include <Xm/Xm.h>
+#include <X11/Shell.h>
+#include <Xm/DragC.h>
+#include <Xm/DropSMgr.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
 
+#ifndef XmIsDisplay
+#define XmIsDisplay(w) (XtIsSubclass(w, xmDisplayClass))
+#endif /* XmIsXmDisplay */
 
-#ifndef XmIsDialogShell
-#define XmIsDialogShell(w)	XtIsSubclass(w, xmDialogShellWidgetClass)
-#endif /* XmIsDialogShell */
+typedef enum {
+	XmDRAG_NONE,
+	XmDRAG_DROP_ONLY,
+	XmDRAG_PREFER_PREREGISTER,
+	XmDRAG_PREREGISTER,
+	XmDRAG_PREFER_DYNAMIC,
+	XmDRAG_DYNAMIC,
+	XmDRAG_PREFER_RECEIVER
+} bla;
 
-externalref WidgetClass xmDialogShellWidgetClass;
+/* Class record constants */
 
-typedef struct _XmDialogShellClassRec       * XmDialogShellWidgetClass;
-typedef struct _XmDialogShellRec            * XmDialogShellWidget;
+typedef struct _XmDisplayRec *XmDisplay;
+typedef struct _XmDisplayClassRec *XmDisplayClass;
+extern 	WidgetClass xmDisplayClass;
 
+#define XmGetDisplay(w) XmGetXmDisplay(XtDisplayOfObject(w))
 
 /********    Public Function Declarations    ********/
 
-extern Widget XmCreateDialogShell( 
-                        Widget p,
-                        char *name,
-                        ArgList al,
-                        Cardinal ac) ;
+extern Widget XmGetDragContext( 
+                        Widget w,
+                        Time time) ;
+extern Widget XmGetXmDisplay( 
+                        Display *display) ;
 
 /********    End Public Function Declarations    ********/
-
 
 #ifdef __cplusplus
 }  /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
-#endif /* _XmDialogShell_h */
-/* DON'T ADD STUFF AFTER THIS #endif */
+#endif /* _XmDisplay_h */
+
+

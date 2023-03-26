@@ -14,6 +14,7 @@
 #include  <Xm/Text.h>
 #include  <Xm/MainW.h>
 #include  <Xm/Command.h>
+#include  <Xm/CutPaste.h>
 #include  <stdio.h>         /* For popen() */
 
 void

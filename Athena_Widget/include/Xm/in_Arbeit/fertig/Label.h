@@ -31,7 +31,7 @@ extern "C" {
 
 /*  Widget class and record definitions  */
 
-externalref WidgetClass xmLabelWidgetClass;
+extern WidgetClass xmLabelWidgetClass;
 
 typedef struct _XmLabelClassRec     * XmLabelWidgetClass;
 typedef struct _XmLabelRec      * XmLabelWidget;

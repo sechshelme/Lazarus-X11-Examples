@@ -25,11 +25,11 @@
 
 #include <Xm/Xm.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+////#ifdef __cplusplus
+//extern "C" {
+//#endif
 
-externalref WidgetClass xmListWidgetClass;
+extern WidgetClass xmListWidgetClass;
 
 #define XmINITIAL 	0
 #define XmADDITION	1
@@ -110,19 +110,19 @@ extern void XmListReplacePositions(
 extern void XmListSelectItem( 
                         Widget w,
                         XmString item,
-#if NeedWidePrototypes
-                        int notify) ;
-#else
+//#if NeedWidePrototypes
+//                        int notify) ;
+//#else
                         Boolean notify) ;
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 extern void XmListSelectPos( 
                         Widget w,
                         int pos,
-#if NeedWidePrototypes
-                        int notify) ;
-#else
+//#if NeedWidePrototypes
+//                        int notify) ;
+//#else
                         Boolean notify) ;
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 extern void XmListDeselectItem( 
                         Widget w,
                         XmString item) ;
@@ -145,11 +145,11 @@ extern void XmListSetBottomItem(
                         XmString item) ;
 extern void XmListSetAddMode( 
                         Widget w,
-#if NeedWidePrototypes
-                        int add_mode) ;
-#else
+//#if NeedWidePrototypes
+//                        int add_mode) ;
+//#else
                         Boolean add_mode) ;
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 extern Boolean XmListItemExists( 
                         Widget w,
                         XmString item) ;

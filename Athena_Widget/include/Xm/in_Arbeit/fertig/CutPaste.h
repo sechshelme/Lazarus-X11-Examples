@@ -114,11 +114,11 @@ extern int XmClipboardLock(
 extern int XmClipboardUnlock( 
                         Display *display,
                         Window window,
-#if NeedWidePrototypes
-                        int all_levels) ;
-#else
+//#if NeedWidePrototypes
+//                        int all_levels) ;
+//#else
                         Boolean all_levels) ;
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 extern int XmClipboardStartRetrieve( 
                         Display *display,
                         Window window,

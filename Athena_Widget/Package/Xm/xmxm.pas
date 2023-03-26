@@ -1495,6 +1495,7 @@ type
 
 function XmTextGetTopPosition(widget:TWidget):TXmTextPosition;cdecl;external name 'XmTextGetTopCharacter';
 procedure XmTextSetTopPosition(widget:TWidget; top_character:TXmTextPosition);cdecl;external libXm name 'XmTextSetTopCharacter';
+
 const
 //  XmTextGetTopPosition = XmTextGetTopCharacter;  
 //  XmTextSetTopPosition = XmTextSetTopCharacter;

@@ -34,7 +34,7 @@ extern "C" {
 
 #include <Xm/Xm.h>
 
-externalref XrmQuark XmQTcontainer;
+extern XrmQuark XmQTcontainer;
 
 /* Trait structures and typedefs, place typedefs first */
 

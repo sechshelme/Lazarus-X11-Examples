@@ -71,6 +71,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="MyMenuBox"/>
       </Unit>
+      <Unit>
+        <Filename Value="mylist.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MyList"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

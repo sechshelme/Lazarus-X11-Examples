@@ -20,8 +20,8 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
 */ 
-#ifndef _XmLabelG_h
-#define _XmLabelG_h
+#ifndef _XmDialogShell_h
+#define _XmDialogShell_h
 
 #include <Xm/Xm.h>
 
@@ -29,36 +29,25 @@
 extern "C" {
 #endif
 
-/*  Widget class and record definitions  */
 
+#ifndef XmIsDialogShell
+#define XmIsDialogShell(w)	XtIsSubclass(w, xmDialogShellWidgetClass)
+#endif /* XmIsDialogShell */
 
-externalref WidgetClass xmLabelGadgetClass;
+extern WidgetClass xmDialogShellWidgetClass;
 
-typedef struct _XmLabelGadgetClassRec * XmLabelGadgetClass;
-typedef struct _XmLabelGadgetRec      * XmLabelGadget;
-typedef struct _XmLabelGCacheObjRec   * XmLabelGCacheObject;
-
-/*fast subclass define */
-#ifndef XmIsLabelGadget
-#define XmIsLabelGadget(w)     XtIsSubclass(w, xmLabelGadgetClass)
-#endif /* XmIsLabelGadget */
+typedef struct _XmDialogShellClassRec       * XmDialogShellWidgetClass;
+typedef struct _XmDialogShellRec            * XmDialogShellWidget;
 
 
 /********    Public Function Declarations    ********/
 
-extern Widget XmCreateLabelGadget( 
-                        Widget parent,
+extern Widget XmCreateDialogShell( 
+                        Widget p,
                         char *name,
-                        Arg *arglist,
-                        Cardinal argCount) ;
-extern Widget XmVaCreateLabelGadget(
-        Widget parent,
-        char *name,
-        ...);
-extern Widget XmVaCreateManagedLabelGadget(
-        Widget parent,
-        char *name,
-        ...);
+                        ArgList al,
+                        Cardinal ac) ;
+
 /********    End Public Function Declarations    ********/
 
 
@@ -66,5 +55,5 @@ extern Widget XmVaCreateManagedLabelGadget(
 }  /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
-#endif /* _XmLabelG_h */
-/* DON'T ADD ANYTHING AFTER THIS #endif */
+#endif /* _XmDialogShell_h */
+/* DON'T ADD STUFF AFTER THIS #endif */
