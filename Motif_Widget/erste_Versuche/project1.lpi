@@ -66,6 +66,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="MyMesssageDialog"/>
       </Unit>
+      <Unit>
+        <Filename Value="mymenubox.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MyMenuBox"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

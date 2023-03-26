@@ -54,6 +54,7 @@ begin
   dialog := XmCreateErrorDialog(toplevel, 'eb', @args, Length(args));
   XtManageChild(dialog);
   XtPopup(XtParent(dialog), XtGrabNone);
+  XmStringFree(msg);
 
 end;
 
