@@ -11,6 +11,7 @@
 /* cmd_area.c -- use a ScrolledText object to view the
  * output of commands input by the user in a Command window.
  */
+#include  <X11/Intrinsic.h>
 #include  <Xm/Text.h>
 #include  <Xm/MainW.h>
 #include  <Xm/Command.h>

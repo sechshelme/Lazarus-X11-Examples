@@ -1494,16 +1494,16 @@ type
 { functions renamed after 1.0 release due to resource name overlap  }
 
 
-//function XmTextGetTopPosition(widget:TWidget):TXmTextPosition;cdecl;external name 'XmTextGetTopCharacter';
-//procedure XmTextSetTopPosition(widget:TWidget; top_character:TXmTextPosition);cdecl;external libXm name 'XmTextSetTopCharacter';
+function XmTextGetTopPosition(widget:TWidget):TXmTextPosition;cdecl;external name 'XmTextGetTopCharacter';
+procedure XmTextSetTopPosition(widget:TWidget; top_character:TXmTextPosition);cdecl;external libXm name 'XmTextSetTopCharacter';
 
-{$macro on}
-
-{$define XmTextGetTopPosition := XmTextGetTopCharacter}
-{$define XmTextSetTopPosition := XmTextSetTopCharacter}
+//{$macro on}
+//
+//{$define XmTextGetTopPosition := XmTextGetTopCharacter}
+//{$define XmTextSetTopPosition := XmTextSetTopCharacter}
 
 const
-//  XmTextGetTopPosition = XmTextGetTopCharacter;  
+//  XmTextGetTopPosition = XmTextGetTopCharacter;
 //  XmTextSetTopPosition = XmTextSetTopCharacter;
 
   XmCOPY_FAILED = 0;

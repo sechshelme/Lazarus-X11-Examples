@@ -44,7 +44,6 @@ uses
 
 // https://www.softintegration.com/chhtml/toolkit/demos/X11/motif/
 
-
   procedure main;
   var
     i: integer = 0;
@@ -52,9 +51,6 @@ uses
     app: TXtAppContext;
 
   begin
-//    {$define XmTextGetTopPosition := XmTextGetTopCharacter}
-
-
 
     WriteLn(SizeOf(LongInt));
     //    toplevel := XtInitialize('Mein Fenster', 'noname', nil, 0, @i, nil);
@@ -71,6 +67,7 @@ uses
     sb := XmVaCreateManagedScrollBar(box2, 'sb', XtNwidth, 15, XtNheight, 250, XtNbackground, $FF, nil);
     sb := XmVaCreateManagedScrollBar(box2, 'sb', XtNwidth, 15, XtNheight, 250, XtNbackground, $FF00, nil);
     sb := XmVaCreateManagedScrollBar(box2, 'sb', XtNwidth, 15, XtNheight, 250, XtNbackground, $FF0000, nil);
+
 
 //    CreateButtons(box);
 
