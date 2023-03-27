@@ -3,6 +3,7 @@ unit xmCutPaste;
 interface
 
 uses
+  unixtype,
   x, xlib,
   XTIntrinsic,
   XmXm;
@@ -37,8 +38,8 @@ type
   PXmClipboardPendingRec = ^TXmClipboardPendingRec;
 
   TXmClipboardPendingRec = record
-    DataId: longint;
-    PrivateId: longint;
+    DataId: cslong;
+    PrivateId: cslong;
   end;
 
   TXmClipboardPendingList = PXmClipboardPendingRec;

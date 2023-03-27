@@ -3,6 +3,7 @@ unit XmXm;
 interface
 
 uses
+  unixtype,
   xlib, x,
   xutil,
   xresource,
@@ -1396,7 +1397,7 @@ type
 
 type
   PXmTextPosition = ^TXmTextPosition;
-  TXmTextPosition = LongInt;
+  TXmTextPosition = cslong;
 
   PXmTextFormat = ^TXmTextFormat;
   TXmTextFormat = TAtom;
@@ -1456,10 +1457,10 @@ type
       reason : LongInt;
       event : PXEvent;
       doit : TBoolean;
-      currInsert : LongInt;
-      newInsert : LongInt;
-      startPos : LongInt;
-      endPos : LongInt;
+      currInsert : cslong;
+      newInsert : cslong;
+      startPos : cslong;
+      endPos : cslong;
       text : TXmTextBlock;
     end;
   TXmTextVerifyPtr = PXmTextVerifyCallbackStruct;
@@ -1482,10 +1483,10 @@ type
       reason : LongInt;
       event : PXEvent;
       doit : TBoolean;
-      currInsert : LongInt;
-      newInsert : LongInt;
-      startPos : LongInt;
-      endPos : LongInt;
+      currInsert : cslong;
+      newInsert : cslong;
+      startPos : cslong;
+      endPos : cslong;
       text : TXmTextBlockWcs;
     end;
   TXmTextVerifyPtrWcs = PXmTextVerifyCallbackStructWcs;
@@ -1493,8 +1494,13 @@ type
 { functions renamed after 1.0 release due to resource name overlap  }
 
 
-function XmTextGetTopPosition(widget:TWidget):TXmTextPosition;cdecl;external name 'XmTextGetTopCharacter';
-procedure XmTextSetTopPosition(widget:TWidget; top_character:TXmTextPosition);cdecl;external libXm name 'XmTextSetTopCharacter';
+//function XmTextGetTopPosition(widget:TWidget):TXmTextPosition;cdecl;external name 'XmTextGetTopCharacter';
+//procedure XmTextSetTopPosition(widget:TWidget; top_character:TXmTextPosition);cdecl;external libXm name 'XmTextSetTopCharacter';
+
+{$macro on}
+
+{$define XmTextGetTopPosition := XmTextGetTopCharacter}
+{$define XmTextSetTopPosition := XmTextSetTopCharacter}
 
 const
 //  XmTextGetTopPosition = XmTextGetTopCharacter;  
@@ -1722,7 +1728,7 @@ function XmDestroyPixmap(screen:PScreen; pixmap:TPixmap):TBoolean;cdecl;external
      them here ---  }
 type
   PXmOffset = ^TXmOffset;
-  TXmOffset = LongInt;
+  TXmOffset = cslong;
 
   PXmOffsetPtr = ^TXmOffsetPtr;
   TXmOffsetPtr = PXmOffset;

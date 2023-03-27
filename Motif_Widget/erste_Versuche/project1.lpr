@@ -52,6 +52,11 @@ uses
     app: TXtAppContext;
 
   begin
+//    {$define XmTextGetTopPosition := XmTextGetTopCharacter}
+
+
+
+    WriteLn(SizeOf(LongInt));
     //    toplevel := XtInitialize('Mein Fenster', 'noname', nil, 0, @i, nil);
     toplevel := XtVaAppInitialize(@app, 'Mein Fenster', nil, 0, @argc, argv, nil, nil);
 
