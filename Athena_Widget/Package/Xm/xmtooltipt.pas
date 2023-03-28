@@ -1,4 +1,4 @@
-unit ToolTipT;
+unit XmToolTipT;
 
 interface
 

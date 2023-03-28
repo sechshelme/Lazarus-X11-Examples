@@ -7,13 +7,13 @@
 #ifndef _XmToolTipCT_H
 #define _XmToolTipCT_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
 
 #include <Xm/Xm.h>
 
-externalref XrmQuark XmQTtoolTipConfig;
+extern XrmQuark XmQTtoolTipConfig;
 
 /* Trait structures and typedefs, place typedefs first */
 
@@ -31,8 +31,8 @@ typedef struct _XmToolTipConfigTraitRec
 } XmToolTipConfigTraitRec, *XmToolTipConfigTrait;
 
 
-#ifdef __cplusplus
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
-#endif
+//#ifdef __cplusplus
+//}  /* Close scope of 'extern "C"' declaration which encloses file. */
+//#endif
 
 #endif /* _XmToolTipCT_H */

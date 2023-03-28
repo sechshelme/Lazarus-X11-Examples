@@ -30,7 +30,9 @@ uses
   xmCutPaste,
   XmDisplay,
   XmMultiList,
-  ToolTipT,
+  XmToolTipT,
+  XmToolTipCT,
+  XmStrDefs22,
 
 
   MyButtons,

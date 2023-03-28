@@ -16,7 +16,10 @@ uses
   XawTextSrc, XawTip, XawToggle, XawTree, XawViewport, XawXawInit, 
   XmuConverters, XmuDrawing, XmuWidgetNode, XTComposite, XTConstraint, XTCore, 
   XTIntrinsic, XTObject, XTRectObj, XtShell, XTStringdefs, XtVendor, XmPushB, 
-  XmXmStrDefs, XmXm, XmContainer, LazarusPackageIntf;
+  XmXmStrDefs, XmContainer, XmToolTipT, XmDialogS, XmColumn, XmLabel, 
+  XmDisplay, XmContainerT, XmColorS, XmLabelG, XmMainW, XmCommand, 
+  XmScrollBar, XmMessageB, XmRowColumn, XmButtonBox, XmDataF, xmCutPaste, 
+  XmList, XmMultiList, XmText, LazarusPackageIntf;
 
 implementation
 

@@ -3,6 +3,7 @@ unit XmContainer;
 interface
 
 uses
+  x,
   XTIntrinsic;
 
 {$IFDEF FPC}

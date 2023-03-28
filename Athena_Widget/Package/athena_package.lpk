@@ -212,12 +212,89 @@
         <UnitName Value="XmXmStrDefs"/>
       </Item>
       <Item>
-        <Filename Value="Xm/XmXm.pp"/>
-        <UnitName Value="XmXm"/>
-      </Item>
-      <Item>
         <Filename Value="Xm/xmcontainer.pas"/>
         <UnitName Value="XmContainer"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmtooltipt.pas"/>
+        <UnitName Value="xmtooltipt"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmdialogs.pas"/>
+        <UnitName Value="XmDialogS"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmcolumn.pas"/>
+        <UnitName Value="XmColumn"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmlabel.pas"/>
+        <UnitName Value="XmLabel"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmdisplay.pas"/>
+        <UnitName Value="XmDisplay"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmcontainert.pas"/>
+        <UnitName Value="XmContainerT"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmcolors.pas"/>
+        <UnitName Value="XmColorS"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmlabelg.pas"/>
+        <UnitName Value="XmLabelG"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmmainw.pas"/>
+        <UnitName Value="XmMainW"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmcommand.pas"/>
+        <UnitName Value="XmCommand"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmscrollbar.pas"/>
+        <UnitName Value="XmScrollBar"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmmessageb.pas"/>
+        <UnitName Value="XmMessageB"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmrowcolumn.pas"/>
+        <UnitName Value="XmRowColumn"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmbuttonbox.pas"/>
+        <UnitName Value="XmButtonBox"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmdataf.pas"/>
+        <UnitName Value="XmDataF"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmcutpaste.pas"/>
+        <UnitName Value="xmCutPaste"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmlist.pas"/>
+        <UnitName Value="XmList"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmmultilist.pas"/>
+        <UnitName Value="XmMultiList"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmtext.pas"/>
+        <UnitName Value="XmText"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmxm.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="XmXm"/>
       </Item>
     </Files>
     <RequiredPkgs>

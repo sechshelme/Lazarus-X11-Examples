@@ -3,7 +3,7 @@ unit XmDataF;
 interface
 
 uses
-  xlib,
+  x, xlib,
   XTIntrinsic,
   XmXm,
   XmText;
