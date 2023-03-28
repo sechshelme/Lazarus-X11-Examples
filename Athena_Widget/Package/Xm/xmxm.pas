@@ -1494,21 +1494,14 @@ type
 { functions renamed after 1.0 release due to resource name overlap  }
 
 
-function XmTextGetTopPosition(widget:TWidget):TXmTextPosition;cdecl;external name 'XmTextGetTopCharacter';
+function XmTextGetTopPosition(widget:TWidget):TXmTextPosition;cdecl;external libXm name 'XmTextGetTopCharacter';
 procedure XmTextSetTopPosition(widget:TWidget; top_character:TXmTextPosition);cdecl;external libXm name 'XmTextSetTopCharacter';
 
-//{$macro on}
-//
-//{$define XmTextGetTopPosition := XmTextGetTopCharacter}
-//{$define XmTextSetTopPosition := XmTextSetTopCharacter}
-
 const
-//  XmTextGetTopPosition = XmTextGetTopCharacter;
-//  XmTextSetTopPosition = XmTextSetTopCharacter;
-
   XmCOPY_FAILED = 0;
   XmCOPY_SUCCEEDED = 1;  
-  XmCOPY_TRUNCATED = 2;  
+  XmCOPY_TRUNCATED = 2;
+
 {***********************************************************************
  *									*
  *  DIALOG defines..  BulletinBoard and things common to its subclasses *
@@ -1517,39 +1510,37 @@ const
  *********************************************************************** }
 { child type defines for Xm...GetChild()  }
 
-Const
-    XmDIALOG_NONE = 0;
-    XmDIALOG_APPLY_BUTTON = 1;
-    XmDIALOG_CANCEL_BUTTON = 2;
-    XmDIALOG_DEFAULT_BUTTON = 3;
-    XmDIALOG_OK_BUTTON = 4;
-    XmDIALOG_FILTER_LABEL = 5;
-    XmDIALOG_FILTER_TEXT = 6;
-    XmDIALOG_HELP_BUTTON = 7;
-    XmDIALOG_LIST = 8;
-    XmDIALOG_LIST_LABEL = 9;
-    XmDIALOG_MESSAGE_LABEL = 10;
-    XmDIALOG_SELECTION_LABEL = 11;
-    XmDIALOG_SYMBOL_LABEL = 12;
-    XmDIALOG_TEXT = 13;
-    XmDIALOG_SEPARATOR = 14;
-    XmDIALOG_DIR_LIST = 15;
-    XmDIALOG_DIR_LIST_LABEL = 16;
+const
+  XmDIALOG_NONE = 0;
+  XmDIALOG_APPLY_BUTTON = 1;
+  XmDIALOG_CANCEL_BUTTON = 2;
+  XmDIALOG_DEFAULT_BUTTON = 3;
+  XmDIALOG_OK_BUTTON = 4;
+  XmDIALOG_FILTER_LABEL = 5;
+  XmDIALOG_FILTER_TEXT = 6;
+  XmDIALOG_HELP_BUTTON = 7;
+  XmDIALOG_LIST = 8;
+  XmDIALOG_LIST_LABEL = 9;
+  XmDIALOG_MESSAGE_LABEL = 10;
+  XmDIALOG_SELECTION_LABEL = 11;
+  XmDIALOG_SYMBOL_LABEL = 12;
+  XmDIALOG_TEXT = 13;
+  XmDIALOG_SEPARATOR = 14;
+  XmDIALOG_DIR_LIST = 15;
+  XmDIALOG_DIR_LIST_LABEL = 16;
 
-  XmDIALOG_HISTORY_LIST = XmDIALOG_LIST;  
-  XmDIALOG_PROMPT_LABEL = XmDIALOG_SELECTION_LABEL;  
-  XmDIALOG_VALUE_TEXT = XmDIALOG_TEXT;  
-  XmDIALOG_COMMAND_TEXT = XmDIALOG_TEXT;  
-  XmDIALOG_FILE_LIST = XmDIALOG_LIST;  
-  XmDIALOG_FILE_LIST_LABEL = XmDIALOG_LIST_LABEL;  
-{  dialog style defines   }
+  XmDIALOG_HISTORY_LIST = XmDIALOG_LIST;
+  XmDIALOG_PROMPT_LABEL = XmDIALOG_SELECTION_LABEL;
+  XmDIALOG_VALUE_TEXT = XmDIALOG_TEXT;
+  XmDIALOG_COMMAND_TEXT = XmDIALOG_TEXT;
+  XmDIALOG_FILE_LIST = XmDIALOG_LIST;
+  XmDIALOG_FILE_LIST_LABEL = XmDIALOG_LIST_LABEL;
 
-Const
-    XmDIALOG_MODELESS = 0;
-    XmDIALOG_PRIMARY_APPLICATION_MODAL = 1;
-    XmDIALOG_FULL_APPLICATION_MODAL = 2;
-    XmDIALOG_SYSTEM_MODAL = 3;
-
+const
+  XmDIALOG_MODELESS = 0;
+  XmDIALOG_PRIMARY_APPLICATION_MODAL = 1;
+  XmDIALOG_FULL_APPLICATION_MODAL = 2;
+  XmDIALOG_SYSTEM_MODAL = 3;
 { The following is for compatibility only. Its use is deprecated.
   }
   XmDIALOG_APPLICATION_MODAL = XmDIALOG_PRIMARY_APPLICATION_MODAL;  
@@ -1559,25 +1550,25 @@ Const
 { Defines for Selection child placement
  }
 
-Const
-    XmPLACE_TOP = 0;
-    XmPLACE_ABOVE_SELECTION = 1;
-    XmPLACE_BELOW_SELECTION = 2;
+const
+  XmPLACE_TOP = 0;
+  XmPLACE_ABOVE_SELECTION = 1;
+  XmPLACE_BELOW_SELECTION = 2;
 
 { Defines for file type mask:
  }
-  XmFILE_DIRECTORY = 1 shl 0;  
-  XmFILE_REGULAR = 1 shl 1;  
-  XmFILE_ANY_TYPE = XmFILE_DIRECTORY or XmFILE_REGULAR;  
+  XmFILE_DIRECTORY = 1 shl 0;
+  XmFILE_REGULAR = 1 shl 1;
+  XmFILE_ANY_TYPE = XmFILE_DIRECTORY or XmFILE_REGULAR;
 { Defines for selection dialog type:
  }
 
-Const
-    XmDIALOG_WORK_AREA = 0;
-    XmDIALOG_PROMPT = 1;
-    XmDIALOG_SELECTION = 2;
-    XmDIALOG_COMMAND = 3;
-    XmDIALOG_FILE_SELECTION = 4;
+const
+  XmDIALOG_WORK_AREA = 0;
+  XmDIALOG_PROMPT = 1;
+  XmDIALOG_SELECTION = 2;
+  XmDIALOG_COMMAND = 3;
+  XmDIALOG_FILE_SELECTION = 4;
 
 {***********************************************************************
  *  XmMessageBox           stuff not common to other dialogs            *

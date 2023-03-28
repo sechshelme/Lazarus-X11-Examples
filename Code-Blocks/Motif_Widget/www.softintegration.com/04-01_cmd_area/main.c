@@ -16,6 +16,8 @@
 #include  <Xm/MainW.h>
 #include  <Xm/Command.h>
 #include  <Xm/CutPaste.h>
+#include  <Xm/ContainerT.h>
+#include  <X11/Xaw/Reports.h>
 #include  <stdio.h>         /* For popen() */
 
 void

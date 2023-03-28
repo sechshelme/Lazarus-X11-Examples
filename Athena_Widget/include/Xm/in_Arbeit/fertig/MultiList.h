@@ -3,13 +3,13 @@
 
 #include <Xm/Ext.h>
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+//#if defined(__cplusplus)
+//extern "C" {
+//#e//ndif
 
 #define XmANY_COLUMN	-1
 
-externalref WidgetClass xmMultiListWidgetClass;
+extern WidgetClass xmMultiListWidgetClass;
 
 typedef struct _XmMultiListClassRec	*XmMultiListWidgetClass;
 typedef struct _XmMultiListRec		*XmMultiListWidget;
@@ -47,7 +47,7 @@ typedef struct _XmMultiListCallbackStruct {
     wchar_t *wc_string; /* The search wcs string used to do find */
 } XmMultiListCallbackStruct;
 
-typedef int (*Xm18SortFunction) \
+typedef int (*Xm18SortFunction)
             (short, const XmMultiListRowInfo *, const XmMultiListRowInfo *);
 
 /************************************************************
@@ -182,8 +182,8 @@ extern int *XmMultiListGetSelectedRowArray(Widget w, int *num_rows);
  */
 extern void XmMultiListMakeRowVisible(Widget w, int row);
 
-#if defined(__cplusplus)
-}
-#endif
+//#if defined(__cplusplus)
+//}
+//#endif
 
 #endif /* _XmMultiList_h_ */

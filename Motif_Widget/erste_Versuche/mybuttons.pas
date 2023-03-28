@@ -31,7 +31,7 @@ end;
 procedure CreateButtons(Parent: TWidget);
 var
   command: TWidget;
-  label1: TXmString;
+  label1, ToolTipLabel1: TXmString;
 begin
 
   command := XtCreateManagedWidget('Ich bin ein ganz grosser'#10'Button', xmPushButtonWidgetClass, Parent, nil, 0);
@@ -45,8 +45,10 @@ begin
   XtVaSetValues(command, XtNwidth, 300, XmNlabelString, label1, nil);
   XmStringFree(label1);
 
-  command := XtCreateManagedWidget('Ich bin ein 3. Button', xmPushButtonWidgetClass, Parent, nil, 0);
+  ToolTipLabel1 := XmStringCreateLocalized('Ha ha ha');
+  command := XtVaCreateManagedWidget('Ich bin ein 3. Button', xmPushButtonWidgetClass, Parent,XmNtoolTipString, ToolTipLabel1, nil);
   XtAddCallback(command, XmNactivateCallback, @press_hello, nil);
+  XmStringFree(ToolTipLabel1);
 
 end;
 

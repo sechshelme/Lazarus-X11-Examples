@@ -1,4 +1,4 @@
-unit Display;
+unit XmDisplay;
 
 interface
 
@@ -14,7 +14,6 @@ uses
 //{$include <X11/Shell.h>}
 //{$include <Xm/DragC.h>}
 //{$include <Xm/DropSMgr.h>}
-
 
 { XmIsXmDisplay  }
   Const

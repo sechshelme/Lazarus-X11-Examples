@@ -28,7 +28,9 @@ uses
   XmColumn,
 
   xmCutPaste,
-  Display,
+  XmDisplay,
+  XmMultiList,
+  ToolTipT,
 
 
   MyButtons,
@@ -47,7 +49,7 @@ uses
   procedure main;
   var
     i: integer = 0;
-    toplevel, box, sb, box2, bb, edit1, label1, column1: TWidget;
+    toplevel, box, sb, box2, bb, edit1, label1, column1, multiList1: TWidget;
     app: TXtAppContext;
 
   begin
@@ -92,6 +94,11 @@ label1:=    XmVaCreateManagedLabel(box, 'Ich bin ein Label', nil);
 
 //column1:=    XmVaCreateManagedColumn(box,'col',XtNwidth,50, XtNheight,50,XtNbackground,$FF00FF ,nil);
 //edit1:= XmVaCreateManagedDataField(column1, 'edit',XtNbackground,$FFFFFF, nil);
+
+
+// ToolTip: https://github.com/drbitboy/Motif_tooltip_example/blob/master/motif_tooltip.c
+
+multiList1:= XmVaCreateManagedMultiList(box,'col',XtNwidth,50, XtNheight,50,XtNbackground,$FF0000 ,nil);
 
 
     XtRealizeWidget(toplevel);

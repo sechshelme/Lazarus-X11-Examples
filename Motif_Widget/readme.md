@@ -9,3 +9,6 @@ libs und Devs:
 ```
 apt install libmotif-dev
 ```
+
+## make Fehler beheben
+- (https://lists.debian.org/debian-qa-packages/2013/02/msg00084.html)

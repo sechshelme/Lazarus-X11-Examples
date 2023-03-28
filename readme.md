@@ -68,6 +68,8 @@ Diese sind alle in C/C++
 
 ## Motif
 - (https://sourceforge.net/projects/motif/files/)
+- (https://sourceforge.net/p/motif/code/ci/master/tree/)
+
 ```
 sudo apt install libmotif-dev
 ```
