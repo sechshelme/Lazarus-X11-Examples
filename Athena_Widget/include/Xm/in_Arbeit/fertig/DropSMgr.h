@@ -52,17 +52,17 @@ extern "C" {
 
 /* end fix for CR 5754 */
 
-enum { XmDRAG_UNDER_NONE, XmDRAG_UNDER_PIXMAP,
+typedef enum { XmDRAG_UNDER_NONE, XmDRAG_UNDER_PIXMAP,
     XmDRAG_UNDER_SHADOW_IN, XmDRAG_UNDER_SHADOW_OUT,
-    XmDRAG_UNDER_HIGHLIGHT };
+    XmDRAG_UNDER_HIGHLIGHT }aaaaa;
 
-enum { XmDROP_SITE_SIMPLE, XmDROP_SITE_COMPOSITE,
+typedef enum { XmDROP_SITE_SIMPLE, XmDROP_SITE_COMPOSITE,
     XmDROP_SITE_SIMPLE_CLIP_ONLY = 128,
-    XmDROP_SITE_COMPOSITE_CLIP_ONLY };
+    XmDROP_SITE_COMPOSITE_CLIP_ONLY }aaaaa;
 
-enum { XmABOVE, XmBELOW };
+typedef enum { XmABOVE, XmBELOW }aaaaaa;
 
-enum { XmDROP_SITE_ACTIVE, XmDROP_SITE_INACTIVE, XmDROP_SITE_IGNORE };
+typedef enum { XmDROP_SITE_ACTIVE, XmDROP_SITE_INACTIVE, XmDROP_SITE_IGNORE }aaaaaaa;
 
 typedef struct _XmDragProcCallbackStruct {
     int				reason;
@@ -106,7 +106,7 @@ typedef struct _XmDropSiteVisualsRec {
 
 /* DropSite Widget */
 
-externalref WidgetClass xmDropSiteManagerObjectClass;
+extern WidgetClass xmDropSiteManagerObjectClass;
 
 typedef struct _XmDropSiteManagerClassRec *XmDropSiteManagerObjectClass;
 typedef struct _XmDropSiteManagerRec *XmDropSiteManagerObject;

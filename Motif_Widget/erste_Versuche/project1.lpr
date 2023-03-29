@@ -7,6 +7,7 @@ uses
   XawCommand,
   XTIntrinsic,
   XTStringdefs,
+  XTComposite,
   XmXmStrDefs,
   XmXm,
   XmText,
@@ -38,11 +39,24 @@ uses
   XmMwmUtil,
   XmExt,
   XmExt18List,
+  XmAccColorT,
+  XmxmList,
+  XmDropSMgr,
+  XmMenuT,
+  XmTabList,
+  XmProtocols,
+  XmComboBox,
+  XmComboBox2,
+
+  XmTransfer,
+  XmVirtKeys,
+  XmRepType,
+  XmXmfuncs,
 
 
   MyButtons,
   MyMesssageDialog,
-  MyMenuBox, MyList;
+  MyMenuBox, MyList, MyComboBox;
 
 {$IFDEF FPC}
 {$PACKRECORDS C}
@@ -57,7 +71,7 @@ uses
   var
     i: integer = 0;
     toplevel, box, sb, box2, bb, edit1, label1, column1, multiList1,
-      ext18: TWidget;
+      ext18, cb: TWidget;
     app: TXtAppContext;
 
   begin
@@ -73,10 +87,10 @@ uses
 //    CreateMessageBox(box, toplevel);
 
     // https://www.oreilly.com/openbook/motif/vol6a/Vol6a_html/ch09.html
-    box2 := XmVaCreateManagedContainer(box, 'box',XtNwidth,50,XtNbackground,$FFFF,  nil);
-    sb := XmVaCreateManagedScrollBar(box2, 'sb', XtNwidth, 15, XtNheight, 250, XtNbackground, $FF, nil);
-    sb := XmVaCreateManagedScrollBar(box2, 'sb', XtNwidth, 15, XtNheight, 250, XtNbackground, $FF00, nil);
-    sb := XmVaCreateManagedScrollBar(box2, 'sb', XtNwidth, 15, XtNheight, 250, XtNbackground, $FF0000, nil);
+    box2 := XmVaCreateManagedContainer(box, 'box',XtNwidth,50,XtNheight,200,XtNbackground,$FFFF,  nil);
+    sb := XmVaCreateManagedScrollBar(box2, 'sb', XtNwidth, 15, XtNheight, 150, XtNbackground, $FF, nil);
+    sb := XmVaCreateManagedScrollBar(box2, 'sb', XtNwidth, 15, XtNheight, 150, XtNbackground, $FF00, nil);
+    sb := XmVaCreateManagedScrollBar(box2, 'sb', XtNwidth, 15, XtNheight, 150, XtNbackground, $FF0000, nil);
 
 
 //    CreateButtons(box);
@@ -98,7 +112,7 @@ label1:=    XmVaCreateManagedLabel(box, 'Ich bin ein Label', nil);
 
     edit1:= XmVaCreateManagedDataField(box, 'bb',XtNbackground,$FFFFFF, nil);
 
-    CreateList(box);
+//    CreateList(box);
 
 //column1:=    XmVaCreateManagedColumn(box,'col',XtNwidth,50, XtNheight,50,XtNbackground,$FF00FF ,nil);
 //edit1:= XmVaCreateManagedDataField(column1, 'edit',XtNbackground,$FFFFFF, nil);
@@ -106,10 +120,11 @@ label1:=    XmVaCreateManagedLabel(box, 'Ich bin ein Label', nil);
 
 // ToolTip: https://github.com/drbitboy/Motif_tooltip_example/blob/master/motif_tooltip.c
 
-multiList1:= XmVaCreateManagedMultiList(box,'col',XtNwidth,50, XtNheight,50,XtNbackground,$FF0000 ,nil);
+multiList1:= XmVaCreateManagedMultiList(box,'col',XtNwidth,250, XtNheight,250,XtNbackground,$FF0000 ,nil);
 
 //ext18:=XmVaCreateManagedExt18List(box,'ext18',XtNwidth,50, XtNheight,50,XtNbackground,$FF0000 ,nil);
 
+CreateComboBox(box);
 
     XtRealizeWidget(toplevel);
 

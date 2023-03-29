@@ -36,7 +36,7 @@
 extern "C" {
 #endif
 
-externalref XrmQuark XmQTaccessColors;
+extern XrmQuark XmQTaccessColors;
 
 /* this one can be expanded in the future */
 typedef struct _XmAccessColorDataRec {

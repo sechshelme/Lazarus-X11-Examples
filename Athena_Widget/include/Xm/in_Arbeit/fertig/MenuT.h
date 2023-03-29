@@ -40,8 +40,8 @@ extern "C" {
 #endif
 
 /* Menu System Traits */
-externalref XrmQuark XmQTmenuSystem;
-externalref XrmQuark XmQTmenuSavvy;
+extern XrmQuark XmQTmenuSystem;
+extern XrmQuark XmQTmenuSavvy;
 
 /* Trait structures and typedefs, place typedefs first */
 

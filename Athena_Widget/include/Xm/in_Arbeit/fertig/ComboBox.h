@@ -35,7 +35,7 @@
 extern "C" {
 #endif
 
-externalref WidgetClass xmComboBoxWidgetClass;
+extern WidgetClass xmComboBoxWidgetClass;
 
 typedef struct _XmComboBoxClassRec	* XmComboBoxWidgetClass;
 typedef struct _XmComboBoxRec 		* XmComboBoxWidget;

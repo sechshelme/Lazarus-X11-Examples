@@ -3,10 +3,7 @@ unit XmExt;
 interface
 
 uses
-  x,
-  xresource,
-  XTIntrinsic,
-  XmXm;
+  XTIntrinsic;
 
 {$IFDEF FPC}
 {$PACKRECORDS C}
@@ -72,6 +69,7 @@ const
   XmNnodeParentIsSelfMsg = 'The node parent cannot be self referential.';  
   XmNstringGetFailed = 'stringGetFailed';  
   XmNstringGetFailedMsg = 'Unable to get MB string from XmString.';  
+
 {***********************************************************
 *	MACROS
 ************************************************************ }

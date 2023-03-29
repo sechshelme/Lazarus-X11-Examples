@@ -333,19 +333,16 @@ type
 
   PXmMergeMode = ^TXmMergeMode;
   TXmMergeMode =  LongInt;
-  Const
-    XmSKIP = 0;
-    XmMERGE_REPLACE = 1;
-    XmMERGE_OLD = 2;
-    XmMERGE_NEW = 3;
-    XmDUPLICATE = 4;
 
-  XmAS_IS = 255;  
-  XmFORCE_COLOR = 1;  
+const
+  XmSKIP = 0;
+  XmMERGE_REPLACE = 1;
+  XmMERGE_OLD = 2;
+  XmMERGE_NEW = 3;
+  XmDUPLICATE = 4;
 
-{ was #define dname def_expr }
-// #define XmUNSPECIFIED_PIXEL	 ((Pixel) (~0))
-
+  XmAS_IS = 255;
+  XmFORCE_COLOR = 1;
 const
   XmUNSPECIFIED_PIXEL = not 0 ;
   XmDEFAULT_SELECT_COLOR = XmUNSPECIFIED_PIXEL;
@@ -1403,13 +1400,8 @@ type
   TXmTextFormat = TAtom;
 { 8-bit text.  }
 
-{ was #define dname def_expr }
-//function XmFMT_8_BIT : TXmTextFormat;
 const XmFMT_8_BIT =31;
 
-{ 16-bit text.  }
-{ was #define dname def_expr }
-//function XmFMT_16_BIT : TXmTextFormat;
 const XmFMT_16_BIT = 2;
 
 { For backwards compatibility only. }
@@ -2018,41 +2010,19 @@ type
 
 implementation
 
-{ was #define dname def_expr }
-function XmSTRING_COMPONENT_END : TXmStringComponentType;
-  begin
-    XmSTRING_COMPONENT_END:=TXmStringComponentType(126);
-  end;
+function XmSTRING_COMPONENT_END: TXmStringComponentType;
+begin
+  XmSTRING_COMPONENT_END := TXmStringComponentType(126);
+end;
 
-{ was #define dname def_expr }
-function XmSTRING_COMPONENT_USER_BEGIN : TXmStringComponentType;
-  begin
-    XmSTRING_COMPONENT_USER_BEGIN:=TXmStringComponentType(128);
-  end;
+function XmSTRING_COMPONENT_USER_BEGIN: TXmStringComponentType;
+begin
+  XmSTRING_COMPONENT_USER_BEGIN := TXmStringComponentType(128);
+end;
 
-{ was #define dname def_expr }
-function XmSTRING_COMPONENT_USER_END : TXmStringComponentType;
-  begin
-    XmSTRING_COMPONENT_USER_END:=TXmStringComponentType(255);
-  end;
-
-{ was #define dname def_expr }
-//function XmUNSPECIFIED_PIXEL : TPixel;
-//  begin
-//    XmUNSPECIFIED_PIXEL:=TPixel( not (0));
-//  end;
-
-{ was #define dname def_expr }
-//function XmFMT_8_BIT : TXmTextFormat;
-//  begin
-//    XmFMT_8_BIT:=TXmTextFormat(XA_STRING);
-//  end;
-//
-//{ was #define dname def_expr }
-//function XmFMT_16_BIT : TXmTextFormat;
-//  begin
-//    XmFMT_16_BIT:=TXmTextFormat(2);
-//  end;
-
+function XmSTRING_COMPONENT_USER_END: TXmStringComponentType;
+begin
+  XmSTRING_COMPONENT_USER_END := TXmStringComponentType(255);
+end;
 
 end.

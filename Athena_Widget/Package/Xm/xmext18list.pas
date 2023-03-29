@@ -3,8 +3,6 @@ unit XmExt18List;
 interface
 
 uses
-  x,
-  xresource,
   XTIntrinsic,
   XmXm,
   XmMultiList;

@@ -76,6 +76,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="MyList"/>
       </Unit>
+      <Unit>
+        <Filename Value="mycombobox.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MyComboBox"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

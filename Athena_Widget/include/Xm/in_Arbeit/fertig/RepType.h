@@ -53,17 +53,17 @@ extern XmRepTypeId XmRepTypeRegister(
                         String rep_type,
                         String *value_names,
                         unsigned char *values,
-#if NeedWidePrototypes
-                        unsigned int num_values) ;
-#else
+//#if NeedWidePrototypes
+//                        unsigned int num_values) ;
+//#else
                         unsigned char num_values) ;
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 extern void XmRepTypeAddReverse( 
-#if NeedWidePrototypes
-                        int rep_type_id) ;
-#else
+//#if NeedWidePrototypes
+//                        int rep_type_id) ;
+//#else
                         XmRepTypeId rep_type_id) ;
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 extern Boolean XmRepTypeValidValue( 
 #if NeedWidePrototypes
                         int rep_type_id,
@@ -75,21 +75,21 @@ extern Boolean XmRepTypeValidValue(
                         Widget enable_default_warning) ;
 extern XmRepTypeList XmRepTypeGetRegistered( void ) ;
 extern XmRepTypeEntry XmRepTypeGetRecord( 
-#if NeedWidePrototypes
-                        int rep_type_id) ;
-#else
+//#if NeedWidePrototypes
+//                        int rep_type_id) ;
+//#else
                         XmRepTypeId rep_type_id) ;
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 extern XmRepTypeId XmRepTypeGetId( 
                         String rep_type) ;
 extern String * XmRepTypeGetNameList( 
-#if NeedWidePrototypes
-                        int rep_type_id,
-                        int use_uppercase_format) ;
-#else
+//#if NeedWidePrototypes
+//                        int rep_type_id,
+//                        int use_uppercase_format) ;
+//#else
                         XmRepTypeId rep_type_id,
                         Boolean use_uppercase_format) ;
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 extern void XmRepTypeInstallTearOffModelConverter( void ) ;
 
 /********    End Public Function Declarations    ********/

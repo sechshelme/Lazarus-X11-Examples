@@ -70,6 +70,7 @@ type
   TXtUIntPtr = LongInt;
 
 type
+  PPWidget = ^PWidget;
   PWidget = ^TWidget;
   TWidget = Pointer; //PWidgetRec;
 //  TWidget = PWidgetRec;
