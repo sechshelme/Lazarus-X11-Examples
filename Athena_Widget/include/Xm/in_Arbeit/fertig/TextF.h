@@ -38,7 +38,7 @@ typedef struct _XmTextFieldRec *XmTextFieldWidget;
 /******************
  * extern class   *
  ******************/
-externalref WidgetClass       xmTextFieldWidgetClass;
+extern WidgetClass       xmTextFieldWidgetClass;
 
 
 /************************
@@ -99,22 +99,22 @@ void XmTextFieldInsertWcs(
                  wchar_t *wcstring);
 void XmTextFieldSetAddMode( 
                         Widget w,
-#if NeedWidePrototypes
-                        int state);
-#else
+//#if NeedWidePrototypes
+//7/                        int state);
+//#else
                         Boolean state);
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 Boolean XmTextFieldGetAddMode( 
                  Widget w);
 Boolean XmTextFieldGetEditable( 
                  Widget w);
 void XmTextFieldSetEditable( 
                         Widget w,
-#if NeedWidePrototypes
-                        int editable);
-#else
+//#if NeedWidePrototypes
+//                        int editable);
+//#else
                         Boolean editable);
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 int XmTextFieldGetMaxLength( 
                  Widget w);
 void XmTextFieldSetMaxLength( 
@@ -163,13 +163,13 @@ void XmTextFieldSetSelection(
                  Time sel_time);
 XmTextPosition XmTextFieldXYToPos( 
                         Widget w,
-#if NeedWidePrototypes
-                        int x,
-                        int y);
-#else
+//#if NeedWidePrototypes
+//                        int x,
+//                        int y);
+//#else
                         Position x,
                         Position y);
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 Boolean XmTextFieldPosToXY( 
                  Widget w,
                  XmTextPosition position,

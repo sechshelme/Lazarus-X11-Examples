@@ -19,11 +19,13 @@ const
   var
     xmMultiListWidgetClass : TWidgetClass;cvar;external libXm;
 
-//type
-//  PXmMultiListWidgetClass = ^TXmMultiListWidgetClass;
-//  TXmMultiListWidgetClass = PXmMultiListClassRec;
-//
-//  PXmMultiListWidget = ^TXmMultiListWidget;
+type
+  PXmMultiListWidgetClass = ^TXmMultiListWidgetClass;
+  TXmMultiListWidgetClass = Pointer;
+  //  TXmMultiListWidgetClass = PXmMultiListClassRec;
+
+  PXmMultiListWidget = ^TXmMultiListWidget;
+  TXmMultiListWidget = Pointer;
 //  TXmMultiListWidget = PXmMultiListRec;
 
 type

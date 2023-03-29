@@ -33,7 +33,7 @@
 #include <Xm/Xm.h>
 
 #if defined(__cplusplus)
-extern "C" {
+//extern "C" {
 #endif
 
 
@@ -158,7 +158,7 @@ Boolean XmCompareXtWidgetGeometry(XtWidgetGeometry*, XtWidgetGeometry*);
 
 
 #if defined(__cplusplus)
-}
+//}
 #endif
 
 #if defined(VMS) || defined(__VMS)

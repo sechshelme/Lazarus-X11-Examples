@@ -32,9 +32,7 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Linker>
-			<Add library="GL" />
-			<Add library="X11" />
-			<Add library="wayland" />
+			<Add option="`pkg-config wayland-client --libs`" />
 		</Linker>
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />

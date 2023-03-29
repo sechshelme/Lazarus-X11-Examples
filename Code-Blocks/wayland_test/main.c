@@ -9,7 +9,7 @@ int main(int argc, char **argv) {
 
     display = wl_display_connect(NULL);
     if (display == NULL) {
-	fprintf(stderr, "Can't connect to display\n");
+	  fprintf(stderr, "Can't connect to display\n");
 	exit(1);
     }
     printf("connected to display\n");

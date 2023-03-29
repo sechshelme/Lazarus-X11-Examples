@@ -32,7 +32,12 @@ uses
   XmMultiList,
   XmToolTipT,
   XmToolTipCT,
-  XmStrDefs22,
+  XmXmStrDefs22,
+  XmDragC,
+  XmTextF,
+  XmMwmUtil,
+  XmExt,
+  XmExt18List,
 
 
   MyButtons,
@@ -51,7 +56,8 @@ uses
   procedure main;
   var
     i: integer = 0;
-    toplevel, box, sb, box2, bb, edit1, label1, column1, multiList1: TWidget;
+    toplevel, box, sb, box2, bb, edit1, label1, column1, multiList1,
+      ext18: TWidget;
     app: TXtAppContext;
 
   begin
@@ -101,6 +107,8 @@ label1:=    XmVaCreateManagedLabel(box, 'Ich bin ein Label', nil);
 // ToolTip: https://github.com/drbitboy/Motif_tooltip_example/blob/master/motif_tooltip.c
 
 multiList1:= XmVaCreateManagedMultiList(box,'col',XtNwidth,50, XtNheight,50,XtNbackground,$FF0000 ,nil);
+
+//ext18:=XmVaCreateManagedExt18List(box,'ext18',XtNwidth,50, XtNheight,50,XtNbackground,$FF0000 ,nil);
 
 
     XtRealizeWidget(toplevel);

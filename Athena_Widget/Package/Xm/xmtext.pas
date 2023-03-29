@@ -3,10 +3,8 @@ unit XmText;
 interface
 
 uses
-  xlib, x,
-  xutil,
-  XTIntrinsic,
-  XmXmStrDefs;
+  x,
+  XTIntrinsic;
 
 {$IFDEF FPC}
 {$PACKRECORDS C}

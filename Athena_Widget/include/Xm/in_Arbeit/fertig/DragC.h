@@ -60,17 +60,17 @@ typedef unsigned int	XmID;
 
 /* enums used for the message_type in client messages */
 
-enum{	XmTOP_LEVEL_ENTER,		XmTOP_LEVEL_LEAVE,
+typedef enum{	XmTOP_LEVEL_ENTER,		XmTOP_LEVEL_LEAVE,
 	XmDRAG_MOTION,			XmDROP_SITE_ENTER,
 	XmDROP_SITE_LEAVE,		XmDROP_START,
 	XmDROP_FINISH,			XmDRAG_DROP_FINISH,
 	XmOPERATION_CHANGED
-	} ;
+	} gggfg;
 
 /* enums for completionStatus */
-enum{	XmDROP,				XmDROP_HELP,
+typedef enum{	XmDROP,				XmDROP_HELP,
 	XmDROP_CANCEL,			XmDROP_INTERRUPT
-	} ;
+	} fgggfg;
 
 /* values for operation */
 #define	XmDROP_NOOP	0L
@@ -78,34 +78,34 @@ enum{	XmDROP,				XmDROP_HELP,
 #define XmDROP_COPY	(1L << 1)
 #define XmDROP_LINK	(1L << 2)
 
-enum{	XmMOVE = XmDROP_MOVE,		XmCOPY = XmDROP_COPY, 
+typedef enum{	XmMOVE = XmDROP_MOVE,		XmCOPY = XmDROP_COPY, 
 	XmLINK = XmDROP_LINK,		XmOTHER
-	} ;
+	}hghg ;
 
-enum{	XmBLEND_ALL,			XmBLEND_STATE_SOURCE,
+typedef enum{	XmBLEND_ALL,			XmBLEND_STATE_SOURCE,
 	XmBLEND_JUST_SOURCE,		XmBLEND_NONE
-	} ;
+	}hghh ;
 
-enum{  	XmDROP_FAILURE,			XmDROP_SUCCESS
-	} ;
+typedef enum{  	XmDROP_FAILURE,			XmDROP_SUCCESS
+	} ghhg;
 
 
 /* enums used for the public callback reason */
 
-enum{	XmCR_TOP_LEVEL_ENTER,		XmCR_TOP_LEVEL_LEAVE,
+typedef enum{	XmCR_TOP_LEVEL_ENTER,		XmCR_TOP_LEVEL_LEAVE,
 	XmCR_DRAG_MOTION,		XmCR_DROP_SITE_ENTER,
 	XmCR_DROP_SITE_LEAVE,		XmCR_DROP_START,
 	XmCR_DROP_FINISH,		XmCR_DRAG_DROP_FINISH,
 	XmCR_OPERATION_CHANGED,
 
 	_XmNUMBER_DND_CB_REASONS
-	} ;
+	} ghhgh;
 
 
 /* Class record constants */
 typedef struct _XmDragContextClassRec	*XmDragContextClass;
 typedef struct _XmDragContextRec	*XmDragContext;
-externalref WidgetClass xmDragContextClass;
+extern WidgetClass xmDragContextClass;
 
 typedef struct _XmAnyICCCallbackStruct{
     int          	reason;

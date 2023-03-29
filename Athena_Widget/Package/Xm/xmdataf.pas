@@ -5,7 +5,6 @@ interface
 uses
   x, xlib,
   XTIntrinsic,
-  XmXm,
   XmText;
 
 {$IFDEF FPC}
@@ -17,13 +16,13 @@ uses
 //{$include <Xm/Ext.h>}
 
 type
-//  PXmDataFieldWidgetClass = ^TXmDataFieldWidgetClass;
-//  TXmDataFieldWidgetClass = PXmDataFieldClassRec;
+  //  PXmDataFieldWidgetClass = ^TXmDataFieldWidgetClass;
+  //  TXmDataFieldWidgetClass = PXmDataFieldClassRec;
 
   PXmDataFieldWidget = ^TXmDataFieldWidget;
-  //  TXmDataFieldWidget = PXmDataFieldRec;
-    TXmDataFieldWidget = Pointer;
+  TXmDataFieldWidget = Pointer;
 
+//  TXmDataFieldWidget = PXmDataFieldRec;
 {      Function Name: XmCreateDataField
  *      Description: Creation Routine for UIL and ADA.
  *      Arguments: parent - the parent widget.
