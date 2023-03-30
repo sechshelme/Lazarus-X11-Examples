@@ -34,7 +34,7 @@
 extern "C" {
 #endif
 
-externalref XrmQuark XmQTscrollFrame;
+extern XrmQuark XmQTscrollFrame;
 
 /* Trait structures and typedefs, place typedefs first */
 

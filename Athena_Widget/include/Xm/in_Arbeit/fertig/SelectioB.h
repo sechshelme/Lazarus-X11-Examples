@@ -31,7 +31,7 @@ extern "C" {
 
 /* Class record constants */
 
-externalref WidgetClass xmSelectionBoxWidgetClass;
+extern WidgetClass xmSelectionBoxWidgetClass;
 
 typedef struct _XmSelectionBoxClassRec * XmSelectionBoxWidgetClass;
 typedef struct _XmSelectionBoxRec      * XmSelectionBoxWidget;
@@ -47,11 +47,11 @@ typedef struct _XmSelectionBoxRec      * XmSelectionBoxWidget;
 
 extern Widget XmSelectionBoxGetChild( 
                         Widget sb,
-#if NeedWidePrototypes
-                        unsigned int which) ;
-#else
+//#if NeedWidePrototypes
+//                        unsigned int which) ;
+//#else
                         unsigned char which) ;
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 extern Widget XmCreateSelectionBox( 
                         Widget p,
                         String name,

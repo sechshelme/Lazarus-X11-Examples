@@ -16,7 +16,7 @@
 #include  <Xm/MainW.h>
 #include  <Xm/Command.h>
 #include  <Xm/CutPaste.h>
-#include  <Xm/ToolTipCT.h>
+#include  <Xm/SlideC.h>
 #include  <X11/Xaw/Reports.h>
 #include  <stdio.h>         /* For popen() */
 

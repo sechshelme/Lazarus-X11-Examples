@@ -34,7 +34,7 @@
 extern "C" {
 #endif
 
-externalref WidgetClass xmNotebookWidgetClass;
+extern WidgetClass xmNotebookWidgetClass;
 
 typedef struct _XmNotebookClassRec *XmNotebookWidgetClass;
 typedef struct _XmNotebookRec *XmNotebookWidget;

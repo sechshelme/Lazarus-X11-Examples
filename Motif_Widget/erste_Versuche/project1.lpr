@@ -56,8 +56,12 @@ uses
   XmIconBox,
   XmNavigatorT,
   XmXmIm,
-  XmStrDefs23,
-  FileSB,
+  XmXmStrDefs23,
+  XmFileSB,
+  XmNotebook,
+  XmSelectioB,
+  XmScrollFrameT,
+  XmSlideC,
 
 
   MyButtons,
@@ -77,7 +81,7 @@ uses
   var
     i: integer = 0;
     toplevel, box, sb, box2, bb, edit1, label1, column1, multiList1,
-      ext18, cb, dropdown: TWidget;
+      ext18, cb, dropdown, notebook, selection: TWidget;
     app: TXtAppContext;
 
   begin
@@ -134,7 +138,11 @@ CreateComboBox(box);
 
     XtRealizeWidget(toplevel);
 
-dropdown:=    XmVaCreateManagedDropDown(box,'col',XtNwidth,250, XtNheight,250,XtNbackground,$FF0000 ,nil);
+    dropdown:=    XmVaCreateManagedDropDown(box,'col',XtNwidth,250, XtNheight,250,XtNbackground,$FF0000 ,nil);
+
+    notebook:=    XmVaCreateManagedNotebook(box,'col',XtNwidth,250, XtNheight,250,XtNbackground,$FF0000 ,nil);
+
+    selection:=    XmVaCreateManagedSelectionBox(box,'selction',XtNwidth,250, XtNheight,250,XtNbackground,$FF0000 ,nil);
 
     //    XtMainLoop;
     XtAppMainLoop(app);

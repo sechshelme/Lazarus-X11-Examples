@@ -1,4 +1,4 @@
-unit FileSB;
+unit XmFileSB;
 
 interface
 
