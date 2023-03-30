@@ -40,7 +40,7 @@ typedef void (*XmSearchProc)( Widget, XtPointer) ;
 
 /* Class record constants */
 
-externalref WidgetClass xmFileSelectionBoxWidgetClass;
+extern WidgetClass xmFileSelectionBoxWidgetClass;
 
 typedef struct _XmFileSelectionBoxClassRec * XmFileSelectionBoxWidgetClass;
 typedef struct _XmFileSelectionBoxRec      * XmFileSelectionBoxWidget;
@@ -55,11 +55,11 @@ typedef struct _XmFileSelectionBoxRec      * XmFileSelectionBoxWidget;
 
 extern Widget XmFileSelectionBoxGetChild( 
                         Widget fs,
-#if NeedWidePrototypes
-                        unsigned int which) ;
-#else
+//#if NeedWidePrototypes
+//                        unsigned int which) ;
+//#else
                         unsigned char which) ;
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 extern void XmFileSelectionDoSearch( 
                         Widget fs,
                         XmString dirmask) ;

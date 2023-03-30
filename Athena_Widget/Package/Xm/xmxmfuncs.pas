@@ -3,7 +3,6 @@ unit XmXmfuncs;
 interface
 
 uses
-  x, xlib,
   XTIntrinsic;
 
 {$IFDEF FPC}

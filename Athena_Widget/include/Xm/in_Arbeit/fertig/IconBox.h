@@ -39,9 +39,9 @@
 *	TYPEDEFS AND DEFINES
 *************************************************************/
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+//#if defined(__cplusplus)
+//extern "C" {
+//#endif
 
 #define XmIconBoxAnyCell (-5)
 
@@ -94,9 +94,9 @@ Widget, String, ArgList, Cardinal
 
 extern WidgetClass xmIconBoxWidgetClass; 
 
-#if defined(__cplusplus)
-}
-#endif
+//#if defined(__cplusplus)
+//}
+//#endif
 
 #if defined(VMS) || defined(__VMS)
 #include <X11/apienvrst.h>

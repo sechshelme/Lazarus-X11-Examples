@@ -52,6 +52,12 @@ uses
   XmVirtKeys,
   XmRepType,
   XmXmfuncs,
+  XmDropDown,
+  XmIconBox,
+  XmNavigatorT,
+  XmXmIm,
+  XmStrDefs23,
+  FileSB,
 
 
   MyButtons,
@@ -71,7 +77,7 @@ uses
   var
     i: integer = 0;
     toplevel, box, sb, box2, bb, edit1, label1, column1, multiList1,
-      ext18, cb: TWidget;
+      ext18, cb, dropdown: TWidget;
     app: TXtAppContext;
 
   begin
@@ -127,6 +133,8 @@ multiList1:= XmVaCreateManagedMultiList(box,'col',XtNwidth,250, XtNheight,250,Xt
 CreateComboBox(box);
 
     XtRealizeWidget(toplevel);
+
+dropdown:=    XmVaCreateManagedDropDown(box,'col',XtNwidth,250, XtNheight,250,XtNbackground,$FF0000 ,nil);
 
     //    XtMainLoop;
     XtAppMainLoop(app);

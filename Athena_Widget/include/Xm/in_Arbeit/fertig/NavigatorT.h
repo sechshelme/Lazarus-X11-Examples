@@ -29,11 +29,11 @@
 
 #include <Xm/Xm.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
 
-externalref XrmQuark XmQTnavigator;
+extern XrmQuark XmQTnavigator;
 
 /* Trait structures and typedefs, place typedefs first */
 
@@ -97,13 +97,8 @@ typedef struct _XmNavigatorTraitRec {
 /* convenience Macros */
 #define ACCESS_DIM(mask,field) ((mask & NavigDimensionX)?(field.x):(field.y))
 
-#define ASSIGN_DIM(mask,field,val)	\
-  {					\
-    if (mask & NavigDimensionX)		\
-      (field.x)=(val);			\
-    else				\
-      (field.y)=(val);			\
-  }
+#define ASSIGN_DIM(mask,field,val) ((mask & NavigDimensionX)?(field.x)=(val):(field.y)=(val))  
+//#define ASSIGN_DIM(mask,field,val) {if (mask & NavigDimensionX)(field.x)=(val);else (field.y)=(val);  }
 
 
 #ifdef __cplusplus

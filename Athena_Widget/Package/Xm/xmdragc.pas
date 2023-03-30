@@ -4,9 +4,7 @@ interface
 
 uses
   xlib, x,
-  XTIntrinsic,
-  XmXm,
-  XmText;
+  XTIntrinsic;
 
 {$IFDEF FPC}
 {$PACKRECORDS C}

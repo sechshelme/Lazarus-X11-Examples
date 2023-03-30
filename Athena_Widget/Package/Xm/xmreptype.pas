@@ -3,7 +3,6 @@ unit XmRepType;
 interface
 
 uses
-  x, xlib,
   XTIntrinsic;
 
 {$IFDEF FPC}

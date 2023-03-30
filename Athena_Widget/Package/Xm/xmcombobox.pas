@@ -3,7 +3,6 @@ unit XmComboBox;
 interface
 
 uses
-  x,
   XTIntrinsic,
   XmXm;
 

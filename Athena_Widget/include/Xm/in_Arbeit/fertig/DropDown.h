@@ -7,11 +7,11 @@
 #include <X11/apienvset.h>
 #endif
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+//#if defined(__cplusplus)
+//extern "C" {
+//#endif
     
-externalref WidgetClass xmDropDownWidgetClass;
+extern WidgetClass xmDropDownWidgetClass;
 
 typedef struct _XmDropDownClassRec	*XmDropDownWidgetClass;
 typedef struct _XmDropDownRec		*XmDropDownWidget;
@@ -97,8 +97,8 @@ extern Widget XmDropDownGetList(Widget w);
  */
 extern Widget XmDropDownGetChild(Widget w, int child);
 
-#if defined(__cplusplus)
-}
-#endif
+//#if defined(__cplusplus)
+//}
+//#endif
 
 #endif /* _XmDropDown_h_ */
