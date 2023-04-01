@@ -20,9 +20,8 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
 */ 
-/*  Separator Widget  */
-#ifndef _XmSeparator_h
-#define _XmSeparator_h
+#ifndef _XmArrowButton_h
+#define _XmArrowButton_h
 
 #include <Xm/Xm.h>
 
@@ -30,31 +29,27 @@
 extern "C" {
 #endif
 
-#ifndef XmIsSeparator
-#define XmIsSeparator(w) XtIsSubclass(w, xmSeparatorWidgetClass)
-#endif /* XmIsSeparator */
+#ifndef XmIsArrowButton
+#define XmIsArrowButton(w) XtIsSubclass(w, xmArrowButtonWidgetClass)
+#endif /* XmIsArrowButton */
 
-externalref WidgetClass xmSeparatorWidgetClass;
+extern WidgetClass xmArrowButtonWidgetClass;
 
-typedef struct _XmSeparatorClassRec * XmSeparatorWidgetClass;
-typedef struct _XmSeparatorRec      * XmSeparatorWidget;
+typedef struct _XmArrowButtonClassRec * XmArrowButtonWidgetClass;
+typedef struct _XmArrowButtonRec      * XmArrowButtonWidget;
 
 
 /********    Public Function Declarations    ********/
 
-Widget XmCreateSeparator( 
+extern Widget XmCreateArrowButton( 
                         Widget parent,
                         char *name,
                         ArgList arglist,
                         Cardinal argcount) ;
-Widget XmVaCreateSeparator(
-                        Widget parent,
-                        char *name,
-                        ...);
-Widget XmVaCreateManagedSeparator(
-                        Widget parent,
-                        char *name,
-                        ...);
+
+extern Widget XmVaCreateManagedArrowButton( Widget parent, char *name, ...);
+extern Widget XmVaCreateArrowButton( Widget parent, char *name, ...);
+
 /********    End Public Function Declarations    ********/
 
 
@@ -62,5 +57,5 @@ Widget XmVaCreateManagedSeparator(
 }  /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
-#endif /* _XmSeparator_h */
-/* DON'T ADD STUFF AFTER THIS #endif */
+#endif /* _XmArrowButton_h */
+/* DON'T ADD ANYTHING AFTER THIS #endif */

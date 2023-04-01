@@ -20,8 +20,8 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
 */ 
-#ifndef _XmArrowButton_h
-#define _XmArrowButton_h
+#ifndef _XmArrowButtonGadget_h
+#define _XmArrowButtonGadget_h
 
 #include <Xm/Xm.h>
 
@@ -29,26 +29,26 @@
 extern "C" {
 #endif
 
-#ifndef XmIsArrowButton
-#define XmIsArrowButton(w) XtIsSubclass(w, xmArrowButtonWidgetClass)
-#endif /* XmIsArrowButton */
+#ifndef XmIsArrowButtonGadget
+#define XmIsArrowButtonGadget(w) XtIsSubclass(w, xmArrowButtonGadgetClass)
+#endif /* XmIsArrowButtonGadget */
 
-externalref WidgetClass xmArrowButtonWidgetClass;
+extern WidgetClass xmArrowButtonGadgetClass;
 
-typedef struct _XmArrowButtonClassRec * XmArrowButtonWidgetClass;
-typedef struct _XmArrowButtonRec      * XmArrowButtonWidget;
+typedef struct _XmArrowButtonGadgetClassRec * XmArrowButtonGadgetClass;
+typedef struct _XmArrowButtonGadgetRec      * XmArrowButtonGadget;
 
 
 /********    Public Function Declarations    ********/
 
-extern Widget XmCreateArrowButton( 
+extern Widget XmCreateArrowButtonGadget( 
                         Widget parent,
                         char *name,
                         ArgList arglist,
                         Cardinal argcount) ;
 
-extern Widget XmVaCreateManagedArrowButton( Widget parent, char *name, ...);
-extern Widget XmVaCreateArrowButton( Widget parent, char *name, ...);
+extern Widget XmVaCreateManagedArrowButtonGadget( Widget parent, char *name, ...);
+extern Widget XmVaCreateArrowButtonGadget( Widget parent, char *name, ...);
 
 /********    End Public Function Declarations    ********/
 
@@ -57,5 +57,5 @@ extern Widget XmVaCreateArrowButton( Widget parent, char *name, ...);
 }  /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
-#endif /* _XmArrowButton_h */
+#endif /* _XmArrowButtonGadget_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

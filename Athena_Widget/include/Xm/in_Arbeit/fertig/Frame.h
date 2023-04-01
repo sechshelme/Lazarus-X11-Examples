@@ -35,7 +35,7 @@ extern "C" {
 
 /* Class record constants */
 
-externalref WidgetClass xmFrameWidgetClass;
+extern WidgetClass xmFrameWidgetClass;
 
 typedef struct _XmFrameClassRec * XmFrameWidgetClass;
 typedef struct _XmFrameRec      * XmFrameWidget;

@@ -20,8 +20,9 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
 */ 
-#ifndef _XmArrowButtonGadget_h
-#define _XmArrowButtonGadget_h
+/*  Separator Widget  */
+#ifndef _XmSeparator_h
+#define _XmSeparator_h
 
 #include <Xm/Xm.h>
 
@@ -29,27 +30,31 @@
 extern "C" {
 #endif
 
-#ifndef XmIsArrowButtonGadget
-#define XmIsArrowButtonGadget(w) XtIsSubclass(w, xmArrowButtonGadgetClass)
-#endif /* XmIsArrowButtonGadget */
+#ifndef XmIsSeparator
+#define XmIsSeparator(w) XtIsSubclass(w, xmSeparatorWidgetClass)
+#endif /* XmIsSeparator */
 
-externalref WidgetClass xmArrowButtonGadgetClass;
+extern WidgetClass xmSeparatorWidgetClass;
 
-typedef struct _XmArrowButtonGadgetClassRec * XmArrowButtonGadgetClass;
-typedef struct _XmArrowButtonGadgetRec      * XmArrowButtonGadget;
+typedef struct _XmSeparatorClassRec * XmSeparatorWidgetClass;
+typedef struct _XmSeparatorRec      * XmSeparatorWidget;
 
 
 /********    Public Function Declarations    ********/
 
-extern Widget XmCreateArrowButtonGadget( 
+Widget XmCreateSeparator( 
                         Widget parent,
                         char *name,
                         ArgList arglist,
                         Cardinal argcount) ;
-
-extern Widget XmVaCreateManagedArrowButtonGadget( Widget parent, char *name, ...);
-extern Widget XmVaCreateArrowButtonGadget( Widget parent, char *name, ...);
-
+Widget XmVaCreateSeparator(
+                        Widget parent,
+                        char *name,
+                        ...);
+Widget XmVaCreateManagedSeparator(
+                        Widget parent,
+                        char *name,
+                        ...);
 /********    End Public Function Declarations    ********/
 
 
@@ -57,5 +62,5 @@ extern Widget XmVaCreateArrowButtonGadget( Widget parent, char *name, ...);
 }  /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
-#endif /* _XmArrowButtonGadget_h */
-/* DON'T ADD ANYTHING AFTER THIS #endif */
+#endif /* _XmSeparator_h */
+/* DON'T ADD STUFF AFTER THIS #endif */

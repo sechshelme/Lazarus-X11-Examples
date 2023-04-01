@@ -88,6 +88,10 @@ XmToggleBG,
   XmDrawnB,
   XmDrawingA,
   XmCareVisualT,
+  XmSeparator,
+  XmFrame,
+  XmArrowB,
+  XmArrowBG,
 
 
   MyButtons,

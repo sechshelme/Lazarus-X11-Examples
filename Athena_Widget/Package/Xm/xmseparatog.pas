@@ -46,5 +46,4 @@ begin
   XmIsSeparatorGadget:=XtIsSubclass(w,xmSeparatorGadgetClass);
 end;
 
-
 end.
