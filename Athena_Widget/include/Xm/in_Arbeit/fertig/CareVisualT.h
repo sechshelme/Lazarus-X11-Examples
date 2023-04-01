@@ -33,7 +33,7 @@
 extern "C" {
 #endif
 
-externalref XrmQuark XmQTcareParentVisual;
+extern XrmQuark XmQTcareParentVisual;
 
 /* Trait structures and typedefs, place typedefs first */
 

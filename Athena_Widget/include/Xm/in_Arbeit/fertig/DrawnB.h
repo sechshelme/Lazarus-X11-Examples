@@ -20,8 +20,14 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
 */ 
-#ifndef _XmDrawingArea_h
-#define _XmDrawingArea_h
+/***********************************************************************
+ *
+ * DrawnButton Widget
+ *
+ ***********************************************************************/
+
+#ifndef _XmDButton_h
+#define _XmDButton_h
 
 #include <Xm/Xm.h>
 
@@ -29,32 +35,30 @@
 extern "C" {
 #endif
 
-/* Class record constants */
+#ifndef XmIsDrawnButton
+#define XmIsDrawnButton(w) XtIsSubclass(w, xmDrawnButtonWidgetClass)
+#endif /* XmIsDrawnButton */
 
-externalref WidgetClass xmDrawingAreaWidgetClass;
+/* DrawnButon Widget */
 
-typedef struct _XmDrawingAreaClassRec * XmDrawingAreaWidgetClass;
-typedef struct _XmDrawingAreaRec      * XmDrawingAreaWidget;
+extern WidgetClass xmDrawnButtonWidgetClass;
 
-
-#ifndef XmIsDrawingArea
-#define XmIsDrawingArea(w)  (XtIsSubclass (w, xmDrawingAreaWidgetClass))
-#endif
-
+typedef struct _XmDrawnButtonClassRec *XmDrawnButtonWidgetClass;
+typedef struct _XmDrawnButtonRec      *XmDrawnButtonWidget;
 
 
 /********    Public Function Declarations    ********/
 
-extern Widget XmCreateDrawingArea( 
-                        Widget p,
-                        String name,
-                        ArgList args,
-                        Cardinal n) ;
-extern Widget XmVaCreateDrawingArea(
+extern Widget XmCreateDrawnButton( 
+                        Widget parent,
+                        char *name,
+                        ArgList arglist,
+                        Cardinal argcount) ;
+extern Widget XmVaCreateDrawnButton(
                         Widget parent,
                         char *name,
                         ...);
-extern Widget XmVaCreateManagedDrawingArea(
+extern Widget XmVaCreateManagedDrawnButton(
                         Widget parent,
                         char *name,
                         ...);
@@ -66,5 +70,5 @@ extern Widget XmVaCreateManagedDrawingArea(
 }  /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
-#endif /* _XmDrawingArea_h */
+#endif /* _XmDButton_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

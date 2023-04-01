@@ -40,9 +40,9 @@
 *	TYPEDEFS AND DEFINES
 *************************************************************/
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+//#if defined(__cplusplus)
+//extern "C" {
+//#endif
 
 typedef struct _XmOutlineClassRec	*XmOutlineWidgetClass;
 typedef struct _XmOutlineRec		*XmOutlineWidget;
@@ -71,9 +71,9 @@ Widget, String, ArgList, Cardinal
 
 extern WidgetClass xmOutlineWidgetClass;
 
-#if defined(__cplusplus)
-}
-#endif
+//#if defined(__cplusplus)
+//}
+//#endif
 
 #if defined(VMS) || defined(__VMS)
 #include <X11/apienvrst.h>

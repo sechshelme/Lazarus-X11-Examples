@@ -39,9 +39,9 @@
 *	TYPEDEFS AND DEFINES
 *************************************************************/
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+//#if defined(__cplusplus)
+//extern "C" {
+//#endif
 
 typedef struct _XmHierarchyClassRec	*XmHierarchyWidgetClass;
 typedef struct _XmHierarchyRec		*XmHierarchyWidget;
@@ -71,8 +71,8 @@ WidgetList XmHierarchyGetChildNodes(Widget);
 
 extern WidgetClass xmHierarchyWidgetClass;
 
-#if defined(__cplusplus)
-}
-#endif
+//#if defined(__cplusplus)
+//}
+//#endif
 
 #endif /* _Hierarchy_h */

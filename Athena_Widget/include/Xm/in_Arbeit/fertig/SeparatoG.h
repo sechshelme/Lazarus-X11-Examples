@@ -19,49 +19,44 @@
  * License along with these librararies and programs; if not, write
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
- */ 
-
-#ifndef _XmPrintShell_h
-#define _XmPrintShell_h
+*/ 
+/*  Separator Gadget  */
+#ifndef _XmSeparatorGadget_h
+#define _XmSeparatorGadget_h
 
 #include <Xm/Xm.h>
-#include <X11/extensions/Print.h>
-  
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* Class record constants */
+#ifndef XmIsSeparatorGadget
+#define XmIsSeparatorGadget(w) XtIsSubclass(w, xmSeparatorGadgetClass)
+#endif /* XmIsSeparator */
 
-externalref WidgetClass xmPrintShellWidgetClass;
+extern WidgetClass xmSeparatorGadgetClass;
 
-typedef struct _XmPrintShellClassRec * XmPrintShellWidgetClass;
-typedef struct _XmPrintShellRec      * XmPrintShellWidget;
+typedef struct _XmSeparatorGadgetClassRec * XmSeparatorGadgetClass;
+typedef struct _XmSeparatorGadgetRec      * XmSeparatorGadget;
+typedef struct _XmSeparatorGCacheObjRec   * XmSeparatorGCacheObject;
 
-
-#ifndef XmIsPrintShell
-#define XmIsPrintShell(w)  (XtIsSubclass (w, xmPrintShellWidgetClass))
-#endif
 
 /********    Public Function Declarations    ********/
 
-extern Widget XmPrintSetup(
-             Widget           video_widget,
-             Screen           *print_screen,
-             String            print_shell_name,
-             ArgList           args,
-             Cardinal          num_args);
+Widget XmCreateSeparatorGadget( 
+                        Widget parent,
+                        char *name,
+                        ArgList arglist,
+                        Cardinal argcount) ;
+Widget XmVaCreateSeparatorGadget(
+                        Widget parent,
+                        char *name,
+                        ...);
 
-extern void XmRedisplayWidget(Widget widget) ;
-
-extern XtEnum XmPrintToFile(Display *dpy, 
-			    char *file_name,
-			    XPFinishProc finish_proc, 
-			    XPointer client_data) ;
-
-extern XtEnum XmPrintPopupPDM(Widget print_shell,
-			      Widget transient_for);
-
+Widget XmVaCreateManagedSeparatorGadget(
+                        Widget parent,
+                        char *name,
+                        ...);
 /********    End Public Function Declarations    ********/
 
 
@@ -69,5 +64,5 @@ extern XtEnum XmPrintPopupPDM(Widget print_shell,
 }  /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
-#endif /* _XmPrintShell_h */
-/* DON'T ADD ANYTHING AFTER THIS #endif */
+#endif /* _XmSeparatorGadget_h */
+/* DON'T ADD STUFF AFTER THIS #endif */

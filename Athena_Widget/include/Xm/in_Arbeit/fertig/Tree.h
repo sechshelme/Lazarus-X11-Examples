@@ -40,9 +40,9 @@
 *	TYPEDEFS AND DEFINES
 *************************************************************/
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+//#if defined(__cplusplus)
+///extern "C" {
+//#endif
 
 typedef struct _XmTreeClassRec		*XmTreeWidgetClass;
 typedef struct _XmTreeRec		*XmTreeWidget;
@@ -73,9 +73,9 @@ extern WidgetClass xmTreeWidgetClass;
 *	GLOBAL FUNCTION DECLARATIONS
 *************************************************************/
 
-#if defined(__cplusplus)
-}
-#endif
+//#if defined(__cplusplus)
+//}
+//#endif
 
 #if defined(VMS) || defined(__VMS)
 #include <X11/apienvrst.h>

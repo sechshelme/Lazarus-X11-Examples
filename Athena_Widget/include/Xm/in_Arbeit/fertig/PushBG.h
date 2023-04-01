@@ -20,56 +20,56 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
 */ 
-#ifndef _XmForm_h
-#define _XmForm_h
+/***********************************************************************
+ *
+ * PushButton Widget
+ *
+ ***********************************************************************/
 
+#ifndef _XmPButtonG_h
+#define _XmPButtonG_h
 
-#include <Xm/BulletinB.h>
+#include <Xm/Xm.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/*  Form Widget  */
+#ifndef XmIsPushButtonGadget
+#define XmIsPushButtonGadget(w) XtIsSubclass(w, xmPushButtonGadgetClass)
+#endif /* XmIsPushButtonGadget */
 
-externalref WidgetClass xmFormWidgetClass;
+extern WidgetClass xmPushButtonGadgetClass;
 
-typedef struct _XmFormClassRec * XmFormWidgetClass;
-typedef struct _XmFormRec      * XmFormWidget;
+typedef struct _XmPushButtonGadgetClassRec   *XmPushButtonGadgetClass;
+typedef struct _XmPushButtonGadgetRec        *XmPushButtonGadget;
+typedef struct _XmPushButtonGCacheObjRec     *XmPushButtonGCacheObject;
 
-
-/* ifndef for Fast Subclassing  */
-
-#ifndef XmIsForm
-#define XmIsForm(w)	XtIsSubclass(w, xmFormWidgetClass)
-#endif  /* XmIsForm */
 
 /********    Public Function Declarations    ********/
 
-extern Widget XmCreateForm( 
+extern Widget XmCreatePushButtonGadget( 
                         Widget parent,
                         char *name,
                         ArgList arglist,
                         Cardinal argcount) ;
-extern Widget XmCreateFormDialog( 
-                        Widget parent,
-                        char *name,
-                        ArgList arglist,
-                        Cardinal argcount) ;
-extern Widget XmVaCreateForm(
-                        Widget parent,
-                        char *name,
-                        ...);
-extern Widget XmVaCreateManagedForm(
-                        Widget parent,
-                        char *name,
-                        ...);
+
+extern Widget XmVaCreatePushButtonGadget(
+			Widget parent, 
+			char *name, 
+			...);
+
+extern Widget XmVaCreateManagedPushButtonGadget(
+			Widget parent, 
+			char *name, 
+			...);
 
 /********    End Public Function Declarations    ********/
+
 
 #ifdef __cplusplus
 }  /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
-#endif /* _XmForm_h */
+#endif /* _XmPButtonG_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

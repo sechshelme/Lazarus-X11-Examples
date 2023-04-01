@@ -33,7 +33,7 @@ extern "C" {
 #define XmTRANSFER_FAILURE 0
 #define XmTRANSFER_SUCCESS 1
 
-externalref WidgetClass xmDropTransferObjectClass;
+extern WidgetClass xmDropTransferObjectClass;
 
 typedef struct _XmDropTransferClassRec * XmDropTransferObjectClass;
 typedef struct _XmDropTransferRec      * XmDropTransferObject;
