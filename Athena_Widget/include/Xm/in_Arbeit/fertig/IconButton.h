@@ -39,9 +39,9 @@
 *	TYPEDEFS AND DEFINES
 *************************************************************/
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+//#if defined(__cplusplus)
+//extern "C" {
+//#endif
 
 typedef struct _XmIconButtonClassRec	*XmIconButtonWidgetClass;
 typedef struct _XmIconButtonRec	        *XmIconButtonWidget;
@@ -80,9 +80,9 @@ Widget, String, ArgList, Cardinal
 
 extern WidgetClass xmIconButtonWidgetClass;
 
-#if defined(__cplusplus)
-}
-#endif
+//#if defined(__cplusplus)
+//7/}
+//#endif
 
 #if defined(VMS) || defined(__VMS)
 #include <X11/apienvrst.h>

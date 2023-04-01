@@ -35,7 +35,7 @@ extern "C" {
 #endif
 
 
-externalref WidgetClass xmToggleButtonGadgetClass;
+extern WidgetClass xmToggleButtonGadgetClass;
 
 typedef struct _XmToggleButtonGadgetClassRec     *XmToggleButtonGadgetClass;
 typedef struct _XmToggleButtonGadgetRec          *XmToggleButtonGadget;
@@ -54,23 +54,23 @@ Boolean XmToggleButtonGadgetGetState(
                         Widget w);
 void XmToggleButtonGadgetSetState( 
                         Widget w,
-#if NeedWidePrototypes
-                        int newstate,
-                        int notify) ;
-#else
+//#if NeedWidePrototypes
+//                        int newstate,
+//                        int notify) ;
+//#else
                         Boolean newstate,
                         Boolean notify);
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 
 Boolean XmToggleButtonGadgetSetValue(
 					    Widget w,
-#if NeedWidePrototypes
-					    int newstate,
-					    int notify);
-#else
+//#if NeedWidePrototypes
+//					    int newstate,
+//					    int notify);
+//#else
 					    XmToggleButtonState newstate,
 					    Boolean notify);
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 
 Widget XmCreateToggleButtonGadget( 
                         Widget parent,

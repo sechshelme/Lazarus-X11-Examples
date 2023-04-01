@@ -62,6 +62,12 @@ uses
   XmSelectioB,
   XmScrollFrameT,
   XmSlideC,
+  XmToggleB,
+XmToggleBG,
+  XmIconButton,
+  XmFontS,
+  XmCascadeBG,
+  XmScrolledW,
 
 
   MyButtons,
@@ -81,7 +87,7 @@ uses
   var
     i: integer = 0;
     toplevel, box, sb, box2, bb, edit1, label1, column1, multiList1,
-      ext18, cb, dropdown, notebook, selection: TWidget;
+      ext18, cb, dropdown, notebook, selection, cascade1, scrollwin1: TWidget;
     app: TXtAppContext;
 
   begin
@@ -143,6 +149,17 @@ CreateComboBox(box);
     notebook:=    XmVaCreateManagedNotebook(box,'col',XtNwidth,250, XtNheight,250,XtNbackground,$FF0000 ,nil);
 
     selection:=    XmVaCreateManagedSelectionBox(box,'selction',XtNwidth,250, XtNheight,250,XtNbackground,$FF0000 ,nil);
+
+    XmVaCreateManagedToggleButton(box,'toggle',XtNwidth,75, XtNheight,25,XtNbackground,$FF0000 ,nil);
+    XmVaCreateManagedToggleButtonGadget(box,'toggle',XtNwidth,75, XtNheight,25,XtNbackground,$FF0000 ,nil);
+
+cascade1:=    XmVaCreateManagedCascadeButtonGadget(box,'caascade',XtNwidth,250, XtNheight,250,XtNbackground,$FF0000 ,nil);
+
+scrollwin1:=XmVaCreateManagedScrolledWindow(box,'caascade',XtNwidth,250, XtNheight,250,XtNbackground,$FF0000 ,nil);
+
+XmVaCreateManagedToggleButton(scrollwin1,'scrolltoggle',XtNwidth,75, XtNheight,25,XtNbackground,$FF0000 ,nil);
+XmVaCreateManagedToggleButton(scrollwin1,'scrolltoggle',XtNwidth,75, XtNheight,25,XtNbackground,$FF0000 ,nil);
+XmVaCreateManagedToggleButton(scrollwin1,'scrolltoggle',XtNwidth,75, XtNheight,25,XtNbackground,$FF0000 ,nil);
 
     //    XtMainLoop;
     XtAppMainLoop(app);

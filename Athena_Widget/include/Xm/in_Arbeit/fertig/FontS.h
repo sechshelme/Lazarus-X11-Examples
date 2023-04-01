@@ -35,9 +35,9 @@
 
 #include <Xm/Ext.h>
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+//#if defined(__cplusplus)
+//extern "C" {
+//#endif
 
 /************************************************************
  *       TYPEDEFS AND DEFINES
@@ -74,9 +74,9 @@ Widget, String, ArgList, Cardinal
 
 extern WidgetClass xmFontSelectorWidgetClass;
 
-#if defined(__cplusplus)
-}
-#endif
+//#if defined(__cplusplus)
+//7/}
+//#endif
 
 #if defined(VMS) || defined(__VMS)
 #include <X11/apienvrst.h>

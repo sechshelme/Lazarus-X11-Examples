@@ -20,13 +20,8 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
 */ 
-/***********************************************************************
- *
- * Toggle Widget
- *
- ***********************************************************************/
-#ifndef _XmToggle_h
-#define _XmToggle_h
+#ifndef _XmCascadeBG_h
+#define _XmCascadeBG_h
 
 #include <Xm/Xm.h>
 
@@ -34,50 +29,42 @@
 extern "C" {
 #endif
 
-externalref WidgetClass xmToggleButtonWidgetClass;
+extern WidgetClass xmCascadeButtonGadgetClass;
 
-typedef struct _XmToggleButtonClassRec *XmToggleButtonWidgetClass;
-typedef struct _XmToggleButtonRec      *XmToggleButtonWidget;
+typedef struct _XmCascadeButtonGadgetClassRec    * XmCascadeButtonGadgetClass;
+typedef struct _XmCascadeButtonGadgetRec         * XmCascadeButtonGadget;
+typedef struct _XmCascadeButtonGCacheObjRec      * XmCascadeButtonGCacheObject;
 
 /*fast subclass define */
-#ifndef XmIsToggleButton
-#define XmIsToggleButton(w)     XtIsSubclass(w, xmToggleButtonWidgetClass)
-#endif /* XmIsToggleButton */
+#ifndef XmIsCascadeButtonGadget
+#define XmIsCascadeButtonGadget(w)     XtIsSubclass(w, xmCascadeButtonGadgetClass)
+#endif /* XmIsCascadeButtonGadget */
 
 
 /********    Public Function Declarations    ********/
 
-Boolean XmToggleButtonGetState( 
-                        Widget w);
-void XmToggleButtonSetState( 
-                        Widget w,
-#if NeedWidePrototypes
-                        int newstate,
-                        int notify);
-#else
-                        Boolean newstate,
-                        Boolean notify);
-#endif /* NeedWidePrototypes */
-
-Boolean XmToggleButtonSetValue(
-        Widget w,
-#if NeedWidePrototypes
-        int newstate,
-        int notify );
-#else
-        XmToggleButtonState newstate,
-        Boolean notify );
-#endif /* NeedWidePrototypes */
-Widget XmCreateToggleButton( 
+extern Widget XmCreateCascadeButtonGadget( 
                         Widget parent,
                         char *name,
-                        Arg *arglist,
-                        Cardinal argCount);
-Widget XmVaCreateToggleButton(
+                        ArgList al,
+                        Cardinal ac) ;
+extern void XmCascadeButtonGadgetHighlight( 
+                        Widget wid,
+//#if NeedWidePrototypes
+//                        int highlight) ;
+//#else
+                        Boolean highlight) ;
+//#endif /* NeedWidePrototypes */
+
+/*
+ * Variable argument list functions
+ */
+
+extern Widget XmVaCreateCascadeButtonGadget(
                         Widget parent,
                         char *name,
                         ...);
-Widget XmVaCreateManagedToggleButton(
+extern Widget XmVaCreateManagedCascadeButtonGadget(
                         Widget parent,
                         char *name,
                         ...);
@@ -88,5 +75,5 @@ Widget XmVaCreateManagedToggleButton(
 }  /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
-#endif /* _XmToggle_h */
+#endif /* _XmCascadeBG_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

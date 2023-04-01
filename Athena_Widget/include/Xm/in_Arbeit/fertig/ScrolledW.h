@@ -20,8 +20,8 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
 */ 
-#ifndef _XmCascadeBG_h
-#define _XmCascadeBG_h
+#ifndef _XmScrolledWindow_h
+#define _XmScrolledWindow_h
 
 #include <Xm/Xm.h>
 
@@ -29,45 +29,49 @@
 extern "C" {
 #endif
 
-externalref WidgetClass xmCascadeButtonGadgetClass;
 
-typedef struct _XmCascadeButtonGadgetClassRec    * XmCascadeButtonGadgetClass;
-typedef struct _XmCascadeButtonGadgetRec         * XmCascadeButtonGadget;
-typedef struct _XmCascadeButtonGCacheObjRec      * XmCascadeButtonGCacheObject;
+#ifndef XmIsScrolledWindow
+#define XmIsScrolledWindow(w)	XtIsSubclass(w, xmScrolledWindowWidgetClass)
+#endif /* XmIsScrolledWindow */
 
-/*fast subclass define */
-#ifndef XmIsCascadeButtonGadget
-#define XmIsCascadeButtonGadget(w)     XtIsSubclass(w, xmCascadeButtonGadgetClass)
-#endif /* XmIsCascadeButtonGadget */
+
+extern WidgetClass xmScrolledWindowWidgetClass;
+
+typedef struct _XmScrolledWindowClassRec * XmScrolledWindowWidgetClass;
+typedef struct _XmScrolledWindowRec      * XmScrolledWindowWidget;
 
 
 /********    Public Function Declarations    ********/
 
-extern Widget XmCreateCascadeButtonGadget( 
+extern void XmScrolledWindowSetAreas( 
+                        Widget w,
+                        Widget hscroll,
+                        Widget vscroll,
+                        Widget wregion) ;
+extern Widget XmCreateScrolledWindow( 
                         Widget parent,
                         char *name,
-                        ArgList al,
-                        Cardinal ac) ;
-extern void XmCascadeButtonGadgetHighlight( 
-                        Widget wid,
-#if NeedWidePrototypes
-                        int highlight) ;
-#else
-                        Boolean highlight) ;
-#endif /* NeedWidePrototypes */
+                        ArgList args,
+                        Cardinal argCount) ;
+extern void XmScrollVisible(
+			Widget      	scrw,
+			Widget          wid,
+			Dimension       hor_margin, 
+			Dimension       ver_margin) ;
 
 /*
  * Variable argument list functions
  */
 
-extern Widget XmVaCreateCascadeButtonGadget(
+extern Widget XmVaCreateScrolledWindow(
                         Widget parent,
                         char *name,
                         ...);
-extern Widget XmVaCreateManagedCascadeButtonGadget(
+extern Widget XmVaCreateManagedScrolledWindow(
                         Widget parent,
                         char *name,
                         ...);
+
 /********    End Public Function Declarations    ********/
 
 
@@ -75,5 +79,5 @@ extern Widget XmVaCreateManagedCascadeButtonGadget(
 }  /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
-#endif /* _XmCascadeBG_h */
+#endif /* _XmScrolledWindow_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

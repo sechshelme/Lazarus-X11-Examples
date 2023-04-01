@@ -20,8 +20,13 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
 */ 
-#ifndef _XmScrolledWindow_h
-#define _XmScrolledWindow_h
+/***********************************************************************
+ *
+ * Toggle Widget
+ *
+ ***********************************************************************/
+#ifndef _XmToggle_h
+#define _XmToggle_h
 
 #include <Xm/Xm.h>
 
@@ -29,49 +34,53 @@
 extern "C" {
 #endif
 
+extern WidgetClass xmToggleButtonWidgetClass;
 
-#ifndef XmIsScrolledWindow
-#define XmIsScrolledWindow(w)	XtIsSubclass(w, xmScrolledWindowWidgetClass)
-#endif /* XmIsScrolledWindow */
+typedef struct _XmToggleButtonClassRec *XmToggleButtonWidgetClass;
+typedef struct _XmToggleButtonRec      *XmToggleButtonWidget;
 
-
-externalref WidgetClass xmScrolledWindowWidgetClass;
-
-typedef struct _XmScrolledWindowClassRec * XmScrolledWindowWidgetClass;
-typedef struct _XmScrolledWindowRec      * XmScrolledWindowWidget;
+/*fast subclass define */
+#ifndef XmIsToggleButton
+#define XmIsToggleButton(w)     XtIsSubclass(w, xmToggleButtonWidgetClass)
+#endif /* XmIsToggleButton */
 
 
 /********    Public Function Declarations    ********/
 
-extern void XmScrolledWindowSetAreas( 
+Boolean XmToggleButtonGetState( 
+                        Widget w);
+void XmToggleButtonSetState( 
                         Widget w,
-                        Widget hscroll,
-                        Widget vscroll,
-                        Widget wregion) ;
-extern Widget XmCreateScrolledWindow( 
+//#if NeedWidePrototypes
+//                        int newstate,
+//77/                        int notify);
+//#else
+                        Boolean newstate,
+                       Boolean notify);
+//#endif /* NeedWidePrototypes */
+
+Boolean XmToggleButtonSetValue(
+        Widget w,
+//#if NeedWidePrototypes
+//        int newstate,
+//        int notify );
+//#else
+        XmToggleButtonState newstate,
+        Boolean notify );
+//#endif /* NeedWidePrototypes */
+Widget XmCreateToggleButton( 
                         Widget parent,
                         char *name,
-                        ArgList args,
-                        Cardinal argCount) ;
-extern void XmScrollVisible(
-			Widget      	scrw,
-			Widget          wid,
-			Dimension       hor_margin, 
-			Dimension       ver_margin) ;
-
-/*
- * Variable argument list functions
- */
-
-extern Widget XmVaCreateScrolledWindow(
+                        Arg *arglist,
+                        Cardinal argCount);
+Widget XmVaCreateToggleButton(
                         Widget parent,
                         char *name,
                         ...);
-extern Widget XmVaCreateManagedScrolledWindow(
+Widget XmVaCreateManagedToggleButton(
                         Widget parent,
                         char *name,
                         ...);
-
 /********    End Public Function Declarations    ********/
 
 
@@ -79,5 +88,5 @@ extern Widget XmVaCreateManagedScrolledWindow(
 }  /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
-#endif /* _XmScrolledWindow_h */
+#endif /* _XmToggle_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */
