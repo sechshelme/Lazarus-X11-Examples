@@ -42,7 +42,7 @@ extern "C" {
 #endif
 
 /* XmSimpleSpinBox Widget */
-externalref WidgetClass xmSimpleSpinBoxWidgetClass;
+extern WidgetClass xmSimpleSpinBoxWidgetClass;
 
 typedef struct _XmSimpleSpinBoxClassRec *XmSimpleSpinBoxWidgetClass;
 typedef struct _XmSimpleSpinBoxRec      *XmSimpleSpinBoxWidget;

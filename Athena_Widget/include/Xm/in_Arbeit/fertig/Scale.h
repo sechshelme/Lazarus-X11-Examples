@@ -32,7 +32,7 @@ extern "C" {
 
 /* Class record constants */
 
-externalref WidgetClass xmScaleWidgetClass;
+extern WidgetClass xmScaleWidgetClass;
 
 /* fast XtIsSubclass define */
 #ifndef XmIsScale

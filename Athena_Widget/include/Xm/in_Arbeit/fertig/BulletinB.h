@@ -31,7 +31,7 @@ extern "C" {
 
 /* Class record constants */
 
-externalref WidgetClass xmBulletinBoardWidgetClass;
+extern WidgetClass xmBulletinBoardWidgetClass;
 
 typedef struct _XmBulletinBoardClassRec * XmBulletinBoardWidgetClass;
 typedef struct _XmBulletinBoardRec      * XmBulletinBoardWidget;

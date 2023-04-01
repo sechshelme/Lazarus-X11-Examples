@@ -33,7 +33,7 @@
 extern "C" {
 #endif
 
-externalref XrmQuark XmQTdialogShellSavvy;
+extern XrmQuark XmQTdialogShellSavvy;
 /* This trait also requires a resource named "defaultPosition".
    If the child has the trait, the resource will be get and set by 
    the DialogShell ChangeManaged */

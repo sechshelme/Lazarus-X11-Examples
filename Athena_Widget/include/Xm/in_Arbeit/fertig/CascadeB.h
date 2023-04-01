@@ -29,7 +29,7 @@
 extern "C" {
 #endif
 
-externalref WidgetClass xmCascadeButtonWidgetClass;
+extern WidgetClass xmCascadeButtonWidgetClass;
 
 typedef struct _XmCascadeButtonRec      * XmCascadeButtonWidget;
 typedef struct _XmCascadeButtonClassRec * XmCascadeButtonWidgetClass;
@@ -49,11 +49,11 @@ extern Widget XmCreateCascadeButton(
                         Cardinal ac) ;
 extern void XmCascadeButtonHighlight( 
                         Widget cb,
-#if NeedWidePrototypes
-                        int highlight) ;
-#else
+//#if NeedWidePrototypes
+//                        int highlight) ;
+//#else
                         Boolean highlight) ;
-#endif /* NeedWidePrototypes */
+//#endif /* NeedWidePrototypes */
 
 /*
  * Variable argument list functions

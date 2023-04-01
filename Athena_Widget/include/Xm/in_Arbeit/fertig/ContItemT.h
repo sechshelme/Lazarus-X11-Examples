@@ -33,7 +33,7 @@
 extern "C" {
 #endif
 
-externalref XrmQuark XmQTcontainerItem;
+extern XrmQuark XmQTcontainerItem;
 
 /* Trait structures and typedefs, place typedefs first */
 

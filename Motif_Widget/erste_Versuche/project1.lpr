@@ -68,6 +68,14 @@ XmToggleBG,
   XmFontS,
   XmCascadeBG,
   XmScrolledW,
+  XmSSpinB,
+  XmContItemT,
+  XmDialogSavvyT,
+  XmPaned,
+  XmCascadeB,
+  XmBulletinB,
+  XmScale,
+  XmPanedW,
 
 
   MyButtons,
@@ -87,7 +95,8 @@ XmToggleBG,
   var
     i: integer = 0;
     toplevel, box, sb, box2, bb, edit1, label1, column1, multiList1,
-      ext18, cb, dropdown, notebook, selection, cascade1, scrollwin1: TWidget;
+      ext18, cb, dropdown, notebook, selection, cascade1, scrollwin1,
+      bulettin1: TWidget;
     app: TXtAppContext;
 
   begin
@@ -160,6 +169,13 @@ scrollwin1:=XmVaCreateManagedScrolledWindow(box,'caascade',XtNwidth,250, XtNheig
 XmVaCreateManagedToggleButton(scrollwin1,'scrolltoggle',XtNwidth,75, XtNheight,25,XtNbackground,$FF0000 ,nil);
 XmVaCreateManagedToggleButton(scrollwin1,'scrolltoggle',XtNwidth,75, XtNheight,25,XtNbackground,$FF0000 ,nil);
 XmVaCreateManagedToggleButton(scrollwin1,'scrolltoggle',XtNwidth,75, XtNheight,25,XtNbackground,$FF0000 ,nil);
+
+XmVaCreateManagedSimpleSpinBox(box,'spinnbox',XtNwidth,200, XtNheight,25,XtNbackground,$FFFF00 ,nil);
+
+bulettin1:= XmVaCreateManagedBulletinBoard(box,'bulletin',XtNbackground,$00FFFF ,nil);
+XmVaCreateManagedToggleButton(bulettin1,'scrolltoggle',XtNwidth,75, XtNheight,25,XtNbackground,$FF0000 ,nil);
+XmVaCreateManagedToggleButton(bulettin1,'scrolltoggle',XtNwidth,75, XtNheight,25,XtNbackground,$FF0000 ,nil);
+XmVaCreateManagedToggleButton(bulettin1,'scrolltoggle',XtNwidth,75, XtNheight,25,XtNbackground,$FF0000 ,nil);
 
     //    XtMainLoop;
     XtAppMainLoop(app);

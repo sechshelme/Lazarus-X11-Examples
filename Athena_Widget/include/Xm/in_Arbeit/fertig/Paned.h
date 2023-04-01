@@ -31,9 +31,9 @@
 
 #include <Xm/Ext.h>
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+//#if defined(__cplusplus)
+//extern "C" {
+//#endif
 
 #define XmPanedAskChild 0
 
@@ -79,9 +79,9 @@ Widget, String, ArgList, Cardinal
 /* Class record constant */
 extern WidgetClass xmPanedWidgetClass;
 
-#if defined(__cplusplus)
-}
-#endif
+//#if defined(__cplusplus)
+//}
+//#endif
 
 #if defined(VMS) || defined(__VMS)
 #include <X11/apienvrst.h>

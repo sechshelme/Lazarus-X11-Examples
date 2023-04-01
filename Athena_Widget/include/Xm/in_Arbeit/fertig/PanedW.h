@@ -35,7 +35,7 @@ extern "C" {
 #endif
 
 /* Class record constant */
-externalref WidgetClass xmPanedWindowWidgetClass;
+extern WidgetClass xmPanedWindowWidgetClass;
 
 #ifndef XmIsPanedWindow
 #define XmIsPanedWindow(w)	XtIsSubclass(w, xmPanedWindowWidgetClass)
