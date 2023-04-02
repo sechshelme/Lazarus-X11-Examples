@@ -30,10 +30,11 @@ function XmIsArrowButtonGadget(w : TWidget) : TBoolean;
 {*******    Public Function Declarations    ******* }
 
 function XmCreateArrowButtonGadget(parent:TWidget; name:Pchar; arglist:TArgList; argcount:TCardinal):TWidget;cdecl;external libXm;
-function XmVaCreateManagedArrowButtonGadget(parent:TWidget; name:Pchar; args:array of const):TWidget;cdecl;external libXm;
-function XmVaCreateManagedArrowButtonGadget(parent:TWidget; name:Pchar):TWidget;cdecl;external libXm;
-function XmVaCreateArrowButtonGadget(parent:TWidget; name:Pchar; args:array of const):TWidget;cdecl;external libXm;
-function XmVaCreateArrowButtonGadget(parent:TWidget; name:Pchar):TWidget;cdecl;external libXm;
+
+//function XmVaCreateManagedArrowButtonGadget(parent:TWidget; name:Pchar; args:array of const):TWidget;cdecl;external libXm;
+function XmVaCreateManagedArrowButtonGadget(parent:TWidget; name:Pchar):TWidget;cdecl; varargs external libXm;
+//function XmVaCreateArrowButtonGadget(parent:TWidget; name:Pchar; args:array of const):TWidget;cdecl;external libXm;
+function XmVaCreateArrowButtonGadget(parent:TWidget; name:Pchar):TWidget;cdecl; varargs external libXm;
 {*******    End Public Function Declarations    ******* }
 
 implementation

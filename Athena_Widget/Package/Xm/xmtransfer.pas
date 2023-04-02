@@ -14,11 +14,11 @@ uses
 // {$include <Xm/DragC.h>}
 
 type
-  XmConvertCallbackProc = TXtCallbackProc;
-  XmSelectionDoneProc = TXtSelectionDoneProc;
-  XmCancelSelectionProc = TXtCancelConvertSelectionProc;
-  XmDestinationCallbackProc = TXtCallbackProc;
-  XmSelectionCallbackProc = TXtSelectionCallbackProc;
+  TXmConvertCallbackProc = TXtCallbackProc;
+  TXmSelectionDoneProc = TXtSelectionDoneProc;
+  TXmCancelSelectionProc = TXtCancelConvertSelectionProc;
+  TXmDestinationCallbackProc = TXtCallbackProc;
+  TXmSelectionCallbackProc = TXtSelectionCallbackProc;
 
 { Flags  }
 type

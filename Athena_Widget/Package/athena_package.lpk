@@ -296,6 +296,286 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="XmXm"/>
       </Item>
+      <Item>
+        <Filename Value="Xm/xmacccolort.pas"/>
+        <UnitName Value="XmAccColorT"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmactivatablet.pas"/>
+        <UnitName Value="XmActivatableT"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmarrowb.pas"/>
+        <UnitName Value="XmArrowB"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmarrowbg.pas"/>
+        <UnitName Value="XmArrowBG"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmatommgr.pas"/>
+        <UnitName Value="XmAtomMgr"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmbulletinb.pas"/>
+        <UnitName Value="XmBulletinB"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmcarevisualt.pas"/>
+        <UnitName Value="XmCareVisualT"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmcascadeb.pas"/>
+        <UnitName Value="XmCascadeB"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmcascadebg.pas"/>
+        <UnitName Value="XmCascadeBG"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmcombobox.pas"/>
+        <UnitName Value="XmComboBox"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmcombobox2.pas"/>
+        <UnitName Value="XmComboBox2"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmcontitemt.pas"/>
+        <UnitName Value="XmContItemT"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmdialogsavvyt.pas"/>
+        <UnitName Value="XmDialogSavvyT"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmdragc.pas"/>
+        <UnitName Value="XmDragC"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmdragovers.pas"/>
+        <UnitName Value="XmDragOverS"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmdrawinga.pas"/>
+        <UnitName Value="XmDrawingA"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmdrawnb.pas"/>
+        <UnitName Value="XmDrawnB"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmdrawutils.pas"/>
+        <UnitName Value="XmDrawUtils"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmdropdown.pas"/>
+        <UnitName Value="XmDropDown"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmdropsmgr.pas"/>
+        <UnitName Value="XmDropsMgr"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmdroptrans.pas"/>
+        <UnitName Value="XmDropTrans"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmext.pas"/>
+        <UnitName Value="XmExt"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmext18list.pas"/>
+        <UnitName Value="XmExt18List"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmfilesb.pas"/>
+        <UnitName Value="XmFileSB"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmfonts.pas"/>
+        <UnitName Value="XmFontS"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmform.pas"/>
+        <UnitName Value="XmForm"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmframe.pas"/>
+        <UnitName Value="XmFrame"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmhierarchy.pas"/>
+        <UnitName Value="XmHierarchy"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmiconbox.pas"/>
+        <UnitName Value="XmIconBox"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmiconbutton.pas"/>
+        <UnitName Value="XmIconButton"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmiconfile.pas"/>
+        <UnitName Value="XmIconFile"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmicong.pas"/>
+        <UnitName Value="XmIconG"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmjoinsidet.pas"/>
+        <UnitName Value="XmJoinSideT"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmlayoutt.pas"/>
+        <UnitName Value="XmLayoutT"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmmenut.pas"/>
+        <UnitName Value="XmMenuT"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmmwmutil.pas"/>
+        <UnitName Value="XmMwmUtil"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmnavigatort.pas"/>
+        <UnitName Value="XmNavigatorT"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmnotebook.pas"/>
+        <UnitName Value="XmNotebook"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmoutline.pas"/>
+        <UnitName Value="XmOutline"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmpaned.pas"/>
+        <UnitName Value="XmPaned"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmpanedw.pas"/>
+        <UnitName Value="XmPanedW"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmpicture.pas"/>
+        <UnitName Value="XmPicture"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmprotocols.pas"/>
+        <UnitName Value="XmProtocols"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmpushbg.pas"/>
+        <UnitName Value="XmPushBG"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmreptype.pas"/>
+        <UnitName Value="XmRepType"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmscale.pas"/>
+        <UnitName Value="XmScale"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmscrolledw.pas"/>
+        <UnitName Value="XmScrolledW"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmscrollframet.pas"/>
+        <UnitName Value="XmScrollFrameT"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmselectiob.pas"/>
+        <UnitName Value="XmSelectioB"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmseparatog.pas"/>
+        <UnitName Value="XmSeparatoG"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmseparator.pas"/>
+        <UnitName Value="XmSeparator"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmslidec.pas"/>
+        <UnitName Value="XmSlideC"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmspinb.pas"/>
+        <UnitName Value="XmSpinB"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmsspinb.pas"/>
+        <UnitName Value="XmSSpinB"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmtablist.pas"/>
+        <UnitName Value="XmTabList"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmtabstack.pas"/>
+        <UnitName Value="XmTabStack"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmtextf.pas"/>
+        <UnitName Value="XmTextF"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmtoggleb.pas"/>
+        <UnitName Value="XmToggleB"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmtogglebg.pas"/>
+        <UnitName Value="XmToggleBG"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmtooltipct.pas"/>
+        <UnitName Value="XmToolTipCT"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmtransfert.pas"/>
+        <UnitName Value="XmTransferT"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmtree.pas"/>
+        <UnitName Value="XmTree"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmunhighlightt.pas"/>
+        <UnitName Value="XmUnhighlightT"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmunittypet.pas"/>
+        <UnitName Value="XmUnitTypeT"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmvirtkeys.pas"/>
+        <UnitName Value="XmVirtKeys"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmxmfuncs.pas"/>
+        <UnitName Value="XmXmfuncs"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmxmim.pas"/>
+        <UnitName Value="XmXmIm"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmxmlist.pas"/>
+        <UnitName Value="Xmxmlist"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmxmstrdefs22.pas"/>
+        <UnitName Value="XmXmStrDefs22"/>
+      </Item>
+      <Item>
+        <Filename Value="Xm/xmxmstrdefs23.pas"/>
+        <UnitName Value="XmXmStrDefs23"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
