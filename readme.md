@@ -79,7 +79,7 @@ sudo apt install libmotif-dev
 - (http://cgit.freedesktop.org/xorg/lib/libXmu)
 
 # Schlagwörter
-Lazarus fpc pascal XToolkit Toolkit libx x11 xserver linux Athena Widget Modif
+Lazarus fpc pascal XToolkit Toolkit libx x11 xserver linux Athena Widget Modif Motif OpenMotif
 
 
 
