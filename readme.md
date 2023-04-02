@@ -29,6 +29,7 @@ Diese sind alle in C/C++
 
 | Datum | Änderungen 
 | :---: | ---
+| 02.04.2023 | Athena und Motif nach [Motif/Athena](https://github.com/sechshelme/Lazarus-Motif_Athena_Widget) verschoben.
 | 10.03.2023 | Erste Gehversuche mit **Athena Widgets**
 | 21.11.2022 | Infos zu Schriften hinzugefügt: [Fonts](font.md) 
 | 14.11.2022 | Beispiel wie man Komponenten erstellt
