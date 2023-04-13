@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="12"/>
+    <General>
+      <Flags>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
+        <MainUnitHasScaledStatement Value="False"/>
+        <CompatibilityMode Value="True"/>
+      </Flags>
+      <SessionStorage Value="InProjectDir"/>
+      <Title Value="Project1"/>
+      <UseAppBundle Value="False"/>
+      <ResourceType Value="res"/>
+    </General>
+    <i18n>
+      <EnableI18N LFM="False"/>
+    </i18n>
+    <BuildModes Count="1">
+      <Item1 Name="Default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default"/>
+      </Modes>
+    </RunParams>
+    <Units Count="10">
+      <Unit0>
+        <Filename Value="Project1.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="x11button.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="X11Button"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="x11component.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="X11Component"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="x11panel.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="X11Panel"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="x11window.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="X11Window"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="x11desktop.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="X11Desktop"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="mywindow.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MyWindow"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="x11edit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="X11Edit"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="x11utils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="X11Utils"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="x11scrollbar.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="X11Scrollbar"/>
+      </Unit9>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <Target>
+      <Filename Value="Project1"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <UnitOutputDirectory Value="/tmp"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <TargetOS Value="linux"/>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="False"/>
+        <DebugInfoType Value="dsDwarf2Set"/>
+      </Debugging>
+    </Linking>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

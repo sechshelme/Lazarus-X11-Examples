@@ -1,0 +1,3 @@
+(*
+Regionen dienen dazu, um Bereiche festzulegen, in denen gezeichnet werden darf.
+*)
