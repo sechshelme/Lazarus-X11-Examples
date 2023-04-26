@@ -22,8 +22,8 @@ var
 
 const
   EventMask = KeyPressMask or ExposureMask or PropertyChangeMask or StructureNotifyMask;
-  fallback_colours: array of PChar = ('red', 'white', 'yellow', 'green', 'blue', 'pink', 'cyan');
-  Width = 30;
+  fallback_colours: array of PChar = ('red', 'white', 'yellow', 'green', 'blue', 'pink', 'cyan','#BBBBBB','#FF8888','#88FF88','#8888FF','#FFFF00000000');
+  Width = 20;
 
 begin
   dis := XOpenDisplay(nil);
