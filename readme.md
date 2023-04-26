@@ -14,6 +14,7 @@ Diese sind alle in C/C++
 ## Hintergrundwissen von X11
 DE:
 - [Das X Window System](https://www.linux-praxis.de/das-x-window-system)
+
 EN:
 - [X Window System](http://x11.gweb.info/index.html)
 - [The X Window system](https://tronche.com/gui/x)
