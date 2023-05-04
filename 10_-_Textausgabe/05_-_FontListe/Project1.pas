@@ -132,7 +132,7 @@ const
     overall: TXCharStruct;
   begin
     WriteLn(FontList.Count);
-    ofs := 890;
+    ofs := 0;
     for i := 0 to 100 do begin
       Info := FontList.Data[i + ofs];
       fontname := XLoadFont(dis, FontList.Data[i + ofs]);

@@ -56,7 +56,7 @@ begin
   end;
   repeat
     sem_wait(@mySem);
-    TextAttr:=Random($F);
+    TextAttr := Random($F);
     WriteLn('XXX');
     sem_post(@mySem);
   until KeyPressed;
