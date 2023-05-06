@@ -57,3 +57,10 @@ editres
 
 - [X11 und die Schrift](http://x11.gweb.info/x11_0650_fonts.html)
 
+## Listet die Atoms
+```
+xlsatoms
+```
+
+
+

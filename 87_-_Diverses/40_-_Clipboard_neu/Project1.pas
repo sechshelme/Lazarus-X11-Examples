@@ -10,6 +10,7 @@ Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.
 program Project1;
 
 uses
+  sysutils,
   heaptrc,
   unixtype,
   ctypes,
@@ -89,7 +90,7 @@ var
 
       end;
       Inc(i);
-      if i>=3 then Exit;
+      if i>=13 then Exit;
       WriteLn(i);
 
     end;
@@ -160,7 +161,12 @@ var
         //        FormatID:=XA_STRING;
         FormatID := XInternAtom(dis, 'STRING', True);
       end;
+
+//      FormatID:=31;
+
       Xsel_dataID := XInternAtom(dis, 'XSEL_DATA', False);
+
+      WriteLn('string ',XInternAtom(dis, 'STRING', True));
 
       WriteLn(ClipboardID);
       WriteLn(FormatID);
@@ -203,7 +209,11 @@ var
               WriteLn(s);
             end;
             XK_c: begin
-              CopyClipboard('Hello World !'#10'Hallo Welt !');
+
+//              WriteStr(s,'{Hello World !'#10'Hallo Welt !}   ',Now:10:4);
+              WriteStr(s,'{Hello World !'#10'Hallo Welt !}   ',Now:10:4);
+              WriteLn(s);
+              CopyClipboard(s);
             end;
           end;
         end;
