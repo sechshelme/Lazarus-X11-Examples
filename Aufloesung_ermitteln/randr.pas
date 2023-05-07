@@ -1,5 +1,9 @@
 unit randr;
+
 interface
+
+uses
+  ctypes;
 
 {
   Automatically converted by H2Pas 1.0.0 from randr.h
@@ -12,11 +16,9 @@ interface
     randr.h
 }
 
-{ Pointers to basic pascal types, inserted by h2pas conversion program.}
 {$IFDEF FPC}
 {$PACKRECORDS C}
 {$ENDIF}
-
 
 {
  * Copyright © 2000 Compaq Computer Corporation
@@ -45,32 +47,30 @@ interface
  * Author:  Jim Gettys, HP Labs, Hewlett-Packard, Inc.
  *	    Keith Packard, Intel Corporation
   }
-{$ifndef _RANDR_H_}
-{$define _RANDR_H_}
 type
   PRotation = ^TRotation;
-  TRotation = word;
+  TRotation = cushort;
 
   PSizeID = ^TSizeID;
-  TSizeID = word;
+  TSizeID = cushort;
 
   PSubpixelOrder = ^TSubpixelOrder;
-  TSubpixelOrder = word;
+  TSubpixelOrder = cushort;
 
   PConnection = ^TConnection;
-  TConnection = word;
+  TConnection = cushort;
 
   PXRandrRotation = ^TXRandrRotation;
-  TXRandrRotation = word;
+  TXRandrRotation = cushort;
 
   PXRandrSizeID = ^TXRandrSizeID;
-  TXRandrSizeID = word;
+  TXRandrSizeID = cushort;
 
   PXRandrSubpixelOrder = ^TXRandrSubpixelOrder;
-  TXRandrSubpixelOrder = word;
+  TXRandrSubpixelOrder = cushort;
 
   PXRandrModeFlags = ^TXRandrModeFlags;
-  TXRandrModeFlags = dword;
+  TXRandrModeFlags = culong;
 
 const
   RANDR_NAME = 'RANDR';  
@@ -219,10 +219,7 @@ const
   RR_Capability_SinkOutput = 2;  
   RR_Capability_SourceOffload = 4;  
   RR_Capability_SinkOffload = 8;  
-{$endif}
-{ _RANDR_H_  }
 
 implementation
-
 
 end.

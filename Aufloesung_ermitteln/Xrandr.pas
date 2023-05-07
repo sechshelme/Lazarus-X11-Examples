@@ -2,7 +2,8 @@ unit Xrandr;
 
 interface
 
-uses x,xlib,
+uses x, xlib,
+  ctypes,
   xrender,
   randr;
 
@@ -21,7 +22,25 @@ uses x,xlib,
 {$PACKRECORDS C}
 {$ENDIF}
 
+const
+  libXrandr = 'Xrandr';
 
+
+// Eigene Typen von einer aktuellen xrender.h:
+
+type
+  PXFixed = ^TXFixed;
+  TXFixed = cint;
+
+  PXTransform = ^TXTransform;
+
+  TXTransform = record
+    matrix: array[0..2] of array[0..2] of TXFixed;
+  end;
+
+type
+  PXRRScreenConfiguration = ^TXRRScreenConfiguration;
+  TXRRScreenConfiguration = Pointer;
 {
  * Copyright © 2000 Compaq Computer Corporation, Inc.
  * Copyright © 2002 Hewlett-Packard Company, Inc.
@@ -47,7 +66,7 @@ uses x,xlib,
  * OF THIS SOFTWARE.
  *
  * Author:  Jim Gettys, HP Labs, Hewlett-Packard, Inc.
- *	    Keith Packard, Intel Corporation
+ *      Keith Packard, Intel Corporation
   }
 //{$include <X11/extensions/randr.h>}
 //{$include <X11/extensions/Xrender.h>}
@@ -67,212 +86,141 @@ type
   TRRProvider = TXID;
 
   PXRRScreenSize = ^TXRRScreenSize;
+
   TXRRScreenSize = record
-      width : longint;
-      height : longint;
-      mwidth : longint;
-      mheight : longint;
-    end;
-{
- *  Events.
-  }
-{ event base  }
-{ # of last request processed by server  }
-{ true if this came from a SendEvent request  }
-{ Display the event was read from  }
-{ window which selected for this event  }
-{ Root window for changed screen  }
-{ when the screen change occurred  }
-{ when the last configuration change  }
+    Width: cint;
+    Height: cint;
+    mwidth: cint;
+    mheight: cint;
+  end;
 
   PXRRScreenChangeNotifyEvent = ^TXRRScreenChangeNotifyEvent;
+
   TXRRScreenChangeNotifyEvent = record
-      _type : longint;
-      serial : dword;
-      send_event : TBool;
-      display : PDisplay;
-      window : TWindow;
-      root : TWindow;
-      timestamp : TTime;
-      config_timestamp : TTime;
-      size_index : TSizeID;
-      subpixel_order : TSubpixelOrder;
-      rotation : TRotation;
-      width : longint;
-      height : longint;
-      mwidth : longint;
-      mheight : longint;
-    end;
-{ event base  }
-{ # of last request processed by server  }
-{ true if this came from a SendEvent request  }
-{ Display the event was read from  }
-{ window which selected for this event  }
-{ RRNotify_ subtype  }
+    _type: cint;
+    serial: culong;
+    send_event: TBool;
+    display: PDisplay;
+    window: TWindow;
+    root: TWindow;
+    timestamp: TTime;
+    config_timestamp: TTime;
+    size_index: TSizeID;
+    subpixel_order: TSubpixelOrder;
+    rotation: TRotation;
+    Width: cint;
+    Height: cint;
+    mwidth: cint;
+    mheight: cint;
+  end;
 
   PXRRNotifyEvent = ^TXRRNotifyEvent;
+
   TXRRNotifyEvent = record
-      _type : longint;
-      serial : dword;
-      send_event : TBool;
-      display : PDisplay;
-      window : TWindow;
-      subtype : longint;
-    end;
-{ event base  }
-{ # of last request processed by server  }
-{ true if this came from a SendEvent request  }
-{ Display the event was read from  }
-{ window which selected for this event  }
-{ RRNotify_OutputChange  }
-{ affected output  }
-{ current crtc (or None)  }
-{ current mode (or None)  }
-{ current rotation of associated crtc  }
-{ current connection status  }
+    _type: cint;
+    serial: culong;
+    send_event: TBool;
+    display: PDisplay;
+    window: TWindow;
+    subtype: cint;
+  end;
 
   PXRROutputChangeNotifyEvent = ^TXRROutputChangeNotifyEvent;
+
   TXRROutputChangeNotifyEvent = record
-      _type : longint;
-      serial : dword;
-      send_event : TBool;
-      display : PDisplay;
-      window : TWindow;
-      subtype : longint;
-      output : TRROutput;
-      crtc : TRRCrtc;
-      mode : TRRMode;
-      rotation : TRotation;
-      connection : TConnection;
-      subpixel_order : TSubpixelOrder;
-    end;
-{ event base  }
-{ # of last request processed by server  }
-{ true if this came from a SendEvent request  }
-{ Display the event was read from  }
-{ window which selected for this event  }
-{ RRNotify_CrtcChange  }
-{ current crtc (or None)  }
-{ current mode (or None)  }
-{ current rotation of associated crtc  }
-{ position  }
-{ size  }
+    _type: cint;
+    serial: culong;
+    send_event: TBool;
+    display: PDisplay;
+    window: TWindow;
+    subtype: cint;
+    output: TRROutput;
+    crtc: TRRCrtc;
+    mode: TRRMode;
+    rotation: TRotation;
+    connection: TConnection;
+    subpixel_order: TSubpixelOrder;
+  end;
 
   PXRRCrtcChangeNotifyEvent = ^TXRRCrtcChangeNotifyEvent;
+
   TXRRCrtcChangeNotifyEvent = record
-      _type : longint;
-      serial : dword;
-      send_event : TBool;
-      display : PDisplay;
-      window : TWindow;
-      subtype : longint;
-      crtc : TRRCrtc;
-      mode : TRRMode;
-      rotation : TRotation;
-      x : longint;
-      y : longint;
-      width : dword;
-      height : dword;
-    end;
-{ event base  }
-{ # of last request processed by server  }
-{ true if this came from a SendEvent request  }
-{ Display the event was read from  }
-{ window which selected for this event  }
-{ RRNotify_OutputProperty  }
-{ related output  }
-{ changed property  }
-{ time of change  }
-{ NewValue, Deleted  }
+    _type: cint;
+    serial: culong;
+    send_event: TBool;
+    display: PDisplay;
+    window: TWindow;
+    subtype: longint;
+    crtc: TRRCrtc;
+    mode: TRRMode;
+    rotation: TRotation;
+    x: cint;
+    y: cint;
+    Width: cuint;
+    Height: cuint;
+  end;
 
   PXRROutputPropertyNotifyEvent = ^TXRROutputPropertyNotifyEvent;
+
   TXRROutputPropertyNotifyEvent = record
-      _type : longint;
-      serial : dword;
-      send_event : TBool;
-      display : PDisplay;
-      window : TWindow;
-      subtype : longint;
-      output : TRROutput;
-      _property : TAtom;
-      timestamp : TTime;
-      state : longint;
-    end;
-{ event base  }
-{ # of last request processed by server  }
-{ true if this came from a SendEvent request  }
-{ Display the event was read from  }
-{ window which selected for this event  }
-{ RRNotify_ProviderChange  }
-{ current provider (or None)  }
-{ time of change  }
+    _type: cint;
+    serial: culong;
+    send_event: TBool;
+    display: PDisplay;
+    window: TWindow;
+    subtype: cint;
+    output: TRROutput;
+    _property: TAtom;
+    timestamp: TTime;
+    state: cint;
+  end;
 
   PXRRProviderChangeNotifyEvent = ^TXRRProviderChangeNotifyEvent;
+
   TXRRProviderChangeNotifyEvent = record
-      _type : longint;
-      serial : dword;
-      send_event : TBool;
-      display : PDisplay;
-      window : TWindow;
-      subtype : longint;
-      provider : TRRProvider;
-      timestamp : TTime;
-      current_role : dword;
-    end;
-{ event base  }
-{ # of last request processed by server  }
-{ true if this came from a SendEvent request  }
-{ Display the event was read from  }
-{ window which selected for this event  }
-{ RRNotify_ProviderProperty  }
-{ related provider  }
-{ changed property  }
-{ time of change  }
-{ NewValue, Deleted  }
+    _type: cint;
+    serial: culong;
+    send_event: TBool;
+    display: PDisplay;
+    window: TWindow;
+    subtype: cint;
+    provider: TRRProvider;
+    timestamp: TTime;
+    current_role: cuint;
+  end;
 
   PXRRProviderPropertyNotifyEvent = ^TXRRProviderPropertyNotifyEvent;
+
   TXRRProviderPropertyNotifyEvent = record
-      _type : longint;
-      serial : dword;
-      send_event : TBool;
-      display : PDisplay;
-      window : TWindow;
-      subtype : longint;
-      provider : TRRProvider;
-      _property : TAtom;
-      timestamp : TTime;
-      state : longint;
-    end;
-{ event base  }
-{ # of last request processed by server  }
-{ true if this came from a SendEvent request  }
-{ Display the event was read from  }
-{ window which selected for this event  }
-{ RRNotify_ResourceChange  }
-{ time of change  }
+    _type: cint;
+    serial: culong;
+    send_event: TBool;
+    display: PDisplay;
+    window: TWindow;
+    subtype: cint;
+    provider: TRRProvider;
+    _property: TAtom;
+    timestamp: TTime;
+    state: cint;
+  end;
 
   PXRRResourceChangeNotifyEvent = ^TXRRResourceChangeNotifyEvent;
+
   TXRRResourceChangeNotifyEvent = record
-      _type : longint;
-      serial : dword;
-      send_event : TBool;
-      display : PDisplay;
-      window : TWindow;
-      subtype : longint;
-      timestamp : TTime;
-    end;
-{ internal representation is private to the library  }
+    _type: cint;
+    serial: culong;
+    send_event: TBool;
+    display: PDisplay;
+    window: TWindow;
+    subtype: cint;
+    timestamp: TTime;
+  end;
 
 
-// Eigenes:
-type PXRRScreenConfiguration=^TXRRScreenConfiguration;
-  TXRRScreenConfiguration=Pointer;
-
-
-function XRRQueryExtension(dpy:PDisplay; event_base_return:Plongint; error_base_return:Plongint):TBool;cdecl;external;
-function XRRQueryVersion(dpy:PDisplay; major_version_return:Plongint; minor_version_return:Plongint):TStatus;cdecl;external;
-function XRRGetScreenInfo(dpy:PDisplay; window:TWindow):PXRRScreenConfiguration;cdecl;external;
-procedure XRRFreeScreenConfigInfo(config:PXRRScreenConfiguration);cdecl;external;
+function XRRQueryExtension(dpy: PDisplay; event_base_return: Pcint; error_base_return: Pcint): TBool; cdecl; external;
+function XRRQueryVersion(dpy: PDisplay; major_version_return: Pcint; minor_version_return: Pcint): TStatus; cdecl; external libXrandr;
+function XRRGetScreenInfo(dpy: PDisplay; window: TWindow): PXRRScreenConfiguration; cdecl; external libXrandr;
+procedure XRRFreeScreenConfigInfo(config: PXRRScreenConfiguration); cdecl; external libXrandr;
 {
  * Note that screen configuration changes are only permitted if the client can
  * prove it has up to date configuration information.  We are trying to
@@ -280,18 +228,18 @@ procedure XRRFreeScreenConfigInfo(config:PXRRScreenConfiguration);cdecl;external
  * we want to ensure the client knows what it is talking about when requesting
  * changes.
   }
-function XRRSetScreenConfig(dpy:PDisplay; config:PXRRScreenConfiguration; draw:TDrawable; size_index:longint; rotation:TRotation; 
-           timestamp:TTime):TStatus;cdecl;external;
+function XRRSetScreenConfig(dpy: PDisplay; config: PXRRScreenConfiguration; draw: TDrawable; size_index: cint; rotation: TRotation;
+  timestamp: TTime): TStatus; cdecl; external libXrandr;
 { added in v1.1, sorry for the lame name  }
-function XRRSetScreenConfigAndRate(dpy:PDisplay; config:PXRRScreenConfiguration; draw:TDrawable; size_index:longint; rotation:TRotation; 
-           rate:smallint; timestamp:TTime):TStatus;cdecl;external;
-function XRRConfigRotations(config:PXRRScreenConfiguration; current_rotation:PRotation):TRotation;cdecl;external;
-function XRRConfigTimes(config:PXRRScreenConfiguration; config_timestamp:PTime):TTime;cdecl;external;
-function XRRConfigSizes(config:PXRRScreenConfiguration; nsizes:Plongint):PXRRScreenSize;cdecl;external;
-function XRRConfigRates(config:PXRRScreenConfiguration; sizeID:longint; nrates:Plongint):Psmallint;cdecl;external;
-function XRRConfigCurrentConfiguration(config:PXRRScreenConfiguration; rotation:PRotation):TSizeID;cdecl;external;
-function XRRConfigCurrentRate(config:PXRRScreenConfiguration):smallint;cdecl;external;
-function XRRRootToScreen(dpy:PDisplay; root:TWindow):longint;cdecl;external;
+function XRRSetScreenConfigAndRate(dpy: PDisplay; config: PXRRScreenConfiguration; draw: TDrawable; size_index: cint; rotation: TRotation;
+  rate: cshort; timestamp: TTime): TStatus; cdecl; external libXrandr;
+function XRRConfigRotations(config: PXRRScreenConfiguration; current_rotation: PRotation): TRotation; cdecl; external libXrandr;
+function XRRConfigTimes(config: PXRRScreenConfiguration; config_timestamp: PTime): TTime; cdecl; external libXrandr;
+function XRRConfigSizes(config: PXRRScreenConfiguration; nsizes: Pcint): PXRRScreenSize; cdecl; external libXrandr;
+function XRRConfigRates(config: PXRRScreenConfiguration; sizeID: cint; nrates: Pcint): Pcshort; cdecl; external libXrandr;
+function XRRConfigCurrentConfiguration(config: PXRRScreenConfiguration; rotation: PRotation): TSizeID; cdecl; external libXrandr;
+function XRRConfigCurrentRate(config: PXRRScreenConfiguration): cshort; cdecl; external libXrandr;
+function XRRRootToScreen(dpy: PDisplay; root: TWindow): cint; cdecl; external libXrandr;
 {
  * returns the screen configuration for the specified screen; does a lazy
  * evalution to delay getting the information, and caches the result.
@@ -299,254 +247,274 @@ function XRRRootToScreen(dpy:PDisplay; root:TWindow):longint;cdecl;external;
  * to avoid unneeded round trips to the X server.  These are new
  * in protocol version 0.1.
   }
-procedure XRRSelectInput(dpy:PDisplay; window:TWindow; mask:longint);cdecl;external;
+procedure XRRSelectInput(dpy: PDisplay; window: TWindow; mask: cint); cdecl; external libXrandr;
 {
  * the following are always safe to call, even if RandR is not implemented
  * on a screen
   }
-function XRRRotations(dpy:PDisplay; screen:longint; current_rotation:PRotation):TRotation;cdecl;external;
-function XRRSizes(dpy:PDisplay; screen:longint; nsizes:Plongint):PXRRScreenSize;cdecl;external;
-function XRRRates(dpy:PDisplay; screen:longint; sizeID:longint; nrates:Plongint):Psmallint;cdecl;external;
-function XRRTimes(dpy:PDisplay; screen:longint; config_timestamp:PTime):TTime;cdecl;external;
+function XRRRotations(dpy: PDisplay; screen: cint; current_rotation: PRotation): TRotation; cdecl; external libXrandr;
+function XRRSizes(dpy: PDisplay; screen: cint; nsizes: Pcint): PXRRScreenSize; cdecl; external libXrandr;
+function XRRRates(dpy: PDisplay; screen: cint; sizeID: cint; nrates: Pcint): Pcshort; cdecl; external libXrandr;
+function XRRTimes(dpy: PDisplay; screen: cint; config_timestamp: PTime): TTime; cdecl; external libXrandr;
 { Version 1.2 additions  }
 { despite returning a Status, this returns 1 for success  }
-function XRRGetScreenSizeRange(dpy:PDisplay; window:TWindow; minWidth:Plongint; minHeight:Plongint; maxWidth:Plongint; 
-           maxHeight:Plongint):TStatus;cdecl;external;
-procedure XRRSetScreenSize(dpy:PDisplay; window:TWindow; width:longint; height:longint; mmWidth:longint; 
-            mmHeight:longint);cdecl;external;
+function XRRGetScreenSizeRange(dpy: PDisplay; window: TWindow; minWidth: Pcint; minHeight: Pcint; maxWidth: Pcint;
+  maxHeight: Pcint): TStatus; cdecl; external libXrandr;
+procedure XRRSetScreenSize(dpy: PDisplay; window: TWindow; Width: cint; Height: cint; mmWidth: cint;
+  mmHeight: cint); cdecl; external libXrandr;
+
 type
   PXRRModeFlags = ^TXRRModeFlags;
   TXRRModeFlags = dword;
 
   PXRRModeInfo = ^TXRRModeInfo;
+
   TXRRModeInfo = record
-      id : TRRMode;
-      width : dword;
-      height : dword;
-      dotClock : dword;
-      hSyncStart : dword;
-      hSyncEnd : dword;
-      hTotal : dword;
-      hSkew : dword;
-      vSyncStart : dword;
-      vSyncEnd : dword;
-      vTotal : dword;
-      name : Pchar;
-      nameLength : dword;
-      modeFlags : TXRRModeFlags;
-    end;
+    id: TRRMode;
+    Width: cuint;
+    Height: cuint;
+    dotClock: cuint;
+    hSyncStart: cuint;
+    hSyncEnd: cuint;
+    hTotal: cuint;
+    hSkew: cuint;
+    vSyncStart: cuint;
+    vSyncEnd: cuint;
+    vTotal: cuint;
+    Name: PChar;
+    nameLength: dword;
+    modeFlags: TXRRModeFlags;
+  end;
 
   PXRRScreenResources = ^TXRRScreenResources;
-  TXRRScreenResources = record
-      timestamp : TTime;
-      configTimestamp : TTime;
-      ncrtc : longint;
-      crtcs : PRRCrtc;
-      noutput : longint;
-      outputs : PRROutput;
-      nmode : longint;
-      modes : PXRRModeInfo;
-    end;
 
-function XRRGetScreenResources(dpy:PDisplay; window:TWindow):PXRRScreenResources;cdecl;external;
-procedure XRRFreeScreenResources(resources:PXRRScreenResources);cdecl;external;
+  TXRRScreenResources = record
+    timestamp: TTime;
+    configTimestamp: TTime;
+    ncrtc: cint;
+    crtcs: PRRCrtc;
+    noutput: cint;
+    outputs: PRROutput;
+    nmode: cint;
+    modes: PXRRModeInfo;
+  end;
+
+function XRRGetScreenResources(dpy: PDisplay; window: TWindow): PXRRScreenResources; cdecl; external libXrandr;
+procedure XRRFreeScreenResources(resources: PXRRScreenResources); cdecl; external libXrandr;
+
 type
   PXRROutputInfo = ^TXRROutputInfo;
-  TXRROutputInfo = record
-      timestamp : TTime;
-      crtc : TRRCrtc;
-      name : Pchar;
-      nameLen : longint;
-      mm_width : dword;
-      mm_height : dword;
-      connection : TConnection;
-      subpixel_order : TSubpixelOrder;
-      ncrtc : longint;
-      crtcs : PRRCrtc;
-      nclone : longint;
-      clones : PRROutput;
-      nmode : longint;
-      npreferred : longint;
-      modes : PRRMode;
-    end;
 
-function XRRGetOutputInfo(dpy:PDisplay; resources:PXRRScreenResources; output:TRROutput):PXRROutputInfo;cdecl;external;
-procedure XRRFreeOutputInfo(outputInfo:PXRROutputInfo);cdecl;external;
-function XRRListOutputProperties(dpy:PDisplay; output:TRROutput; nprop:Plongint):PAtom;cdecl;external;
+  TXRROutputInfo = record
+    timestamp: TTime;
+    crtc: TRRCrtc;
+    Name: PChar;
+    nameLen: cint;
+    mm_width: culong;
+    mm_height: culong;
+    connection: TConnection;
+    subpixel_order: TSubpixelOrder;
+    ncrtc: cint;
+    crtcs: PRRCrtc;
+    nclone: cint;
+    clones: PRROutput;
+    nmode: cint;
+    npreferred: cint;
+    modes: PRRMode;
+  end;
+
+function XRRGetOutputInfo(dpy: PDisplay; resources: PXRRScreenResources; output: TRROutput): PXRROutputInfo; cdecl; external libXrandr;
+procedure XRRFreeOutputInfo(outputInfo: PXRROutputInfo); cdecl; external libXrandr;
+function XRRListOutputProperties(dpy: PDisplay; output: TRROutput; nprop: Pcint): PAtom; cdecl; external libXrandr;
+
 type
   PXRRPropertyInfo = ^TXRRPropertyInfo;
-  TXRRPropertyInfo = record
-      pending : TBool;
-      range : TBool;
-      immutable : TBool;
-      num_values : longint;
-      values : Plongint;
-    end;
 
-function XRRQueryOutputProperty(dpy:PDisplay; output:TRROutput; _property:TAtom):PXRRPropertyInfo;cdecl;external;
-procedure XRRConfigureOutputProperty(dpy:PDisplay; output:TRROutput; _property:TAtom; pending:TBool; range:TBool; 
-            num_values:longint; values:Plongint);cdecl;external;
-procedure XRRChangeOutputProperty(dpy:PDisplay; output:TRROutput; _property:TAtom; _type:TAtom; format:longint; 
-            mode:longint; data:Pbyte; nelements:longint);cdecl;external;
-procedure XRRDeleteOutputProperty(dpy:PDisplay; output:TRROutput; _property:TAtom);cdecl;external;
-function XRRGetOutputProperty(dpy:PDisplay; output:TRROutput; _property:TAtom; offset:longint; length:longint; 
-           _delete:TBool; pending:TBool; req_type:TAtom; actual_type:PAtom; actual_format:Plongint; 
-           nitems:Pdword; bytes_after:Pdword; prop:PPbyte):longint;cdecl;external;
-function XRRAllocModeInfo(name:Pchar; nameLength:longint):PXRRModeInfo;cdecl;external;
-function XRRCreateMode(dpy:PDisplay; window:TWindow; modeInfo:PXRRModeInfo):TRRMode;cdecl;external;
-procedure XRRDestroyMode(dpy:PDisplay; mode:TRRMode);cdecl;external;
-procedure XRRAddOutputMode(dpy:PDisplay; output:TRROutput; mode:TRRMode);cdecl;external;
-procedure XRRDeleteOutputMode(dpy:PDisplay; output:TRROutput; mode:TRRMode);cdecl;external;
-procedure XRRFreeModeInfo(modeInfo:PXRRModeInfo);cdecl;external;
+  TXRRPropertyInfo = record
+    pending: TBool;
+    range: TBool;
+    immutable: TBool;
+    num_values: cint;
+    values: pclong;
+  end;
+
+function XRRQueryOutputProperty(dpy: PDisplay; output: TRROutput; _property: TAtom): PXRRPropertyInfo; cdecl; external libXrandr;
+procedure XRRConfigureOutputProperty(dpy: PDisplay; output: TRROutput; _property: TAtom; pending: TBool; range: TBool;
+  num_values: cint; values: Pcint); cdecl; external libXrandr;
+procedure XRRChangeOutputProperty(dpy: PDisplay; output: TRROutput; _property: TAtom; _type: TAtom; format: cint;
+  mode: cint; Data: pbyte; nelements: cint); cdecl; external libXrandr;
+procedure XRRDeleteOutputProperty(dpy: PDisplay; output: TRROutput; _property: TAtom); cdecl; external libXrandr;
+function XRRGetOutputProperty(dpy: PDisplay; output: TRROutput; _property: TAtom; offset: clong; length: clong;
+  _delete: TBool; pending: TBool; req_type: TAtom; actual_type: PAtom; actual_format: Pcint;
+  nitems: pculong; bytes_after: pculong; prop: PPbyte): cint; cdecl; external libXrandr;
+function XRRAllocModeInfo(Name: PChar; nameLength: cint): PXRRModeInfo; cdecl; external libXrandr;
+function XRRCreateMode(dpy: PDisplay; window: TWindow; modeInfo: PXRRModeInfo): TRRMode; cdecl; external libXrandr;
+procedure XRRDestroyMode(dpy: PDisplay; mode: TRRMode); cdecl; external libXrandr;
+procedure XRRAddOutputMode(dpy: PDisplay; output: TRROutput; mode: TRRMode); cdecl; external libXrandr;
+procedure XRRDeleteOutputMode(dpy: PDisplay; output: TRROutput; mode: TRRMode); cdecl; external libXrandr;
+procedure XRRFreeModeInfo(modeInfo: PXRRModeInfo); cdecl; external libXrandr;
+
 type
   PXRRCrtcInfo = ^TXRRCrtcInfo;
-  TXRRCrtcInfo = record
-      timestamp : TTime;
-      x : longint;
-      y : longint;
-      width : dword;
-      height : dword;
-      mode : TRRMode;
-      rotation : TRotation;
-      noutput : longint;
-      outputs : PRROutput;
-      rotations : TRotation;
-      npossible : longint;
-      possible : PRROutput;
-    end;
 
-function XRRGetCrtcInfo(dpy:PDisplay; resources:PXRRScreenResources; crtc:TRRCrtc):PXRRCrtcInfo;cdecl;external;
-procedure XRRFreeCrtcInfo(crtcInfo:PXRRCrtcInfo);cdecl;external;
-function XRRSetCrtcConfig(dpy:PDisplay; resources:PXRRScreenResources; crtc:TRRCrtc; timestamp:TTime; x:longint; 
-           y:longint; mode:TRRMode; rotation:TRotation; outputs:PRROutput; noutputs:longint):TStatus;cdecl;external;
-function XRRGetCrtcGammaSize(dpy:PDisplay; crtc:TRRCrtc):longint;cdecl;external;
+  TXRRCrtcInfo = record
+    timestamp: TTime;
+    x: cint;
+    y: cint;
+    Width: cuint;
+    Height: cuint;
+    mode: TRRMode;
+    rotation: TRotation;
+    noutput: cint;
+    outputs: PRROutput;
+    rotations: TRotation;
+    npossible: cint;
+    possible: PRROutput;
+  end;
+
+function XRRGetCrtcInfo(dpy: PDisplay; resources: PXRRScreenResources; crtc: TRRCrtc): PXRRCrtcInfo; cdecl; external libXrandr;
+procedure XRRFreeCrtcInfo(crtcInfo: PXRRCrtcInfo); cdecl; external libXrandr;
+function XRRSetCrtcConfig(dpy: PDisplay; resources: PXRRScreenResources; crtc: TRRCrtc; timestamp: TTime; x: cint;
+  y: cint; mode: TRRMode; rotation: TRotation; outputs: PRROutput; noutputs: cint): TStatus; cdecl; external libXrandr;
+function XRRGetCrtcGammaSize(dpy: PDisplay; crtc: TRRCrtc): cint; cdecl; external libXrandr;
+
 type
   PXRRCrtcGamma = ^TXRRCrtcGamma;
-  TXRRCrtcGamma = record
-      size : longint;
-      red : Pword;
-      green : Pword;
-      blue : Pword;
-    end;
 
-function XRRGetCrtcGamma(dpy:PDisplay; crtc:TRRCrtc):PXRRCrtcGamma;cdecl;external;
-function XRRAllocGamma(size:longint):PXRRCrtcGamma;cdecl;external;
-procedure XRRSetCrtcGamma(dpy:PDisplay; crtc:TRRCrtc; gamma:PXRRCrtcGamma);cdecl;external;
-procedure XRRFreeGamma(gamma:PXRRCrtcGamma);cdecl;external;
+  TXRRCrtcGamma = record
+    size: cint;
+    red: pcushort;
+    green: pcushort;
+    blue: pcushort;
+  end;
+
+function XRRGetCrtcGamma(dpy: PDisplay; crtc: TRRCrtc): PXRRCrtcGamma; cdecl; external libXrandr;
+function XRRAllocGamma(size: cint): PXRRCrtcGamma; cdecl; external libXrandr;
+procedure XRRSetCrtcGamma(dpy: PDisplay; crtc: TRRCrtc; gamma: PXRRCrtcGamma); cdecl; external libXrandr;
+procedure XRRFreeGamma(gamma: PXRRCrtcGamma); cdecl; external libXrandr;
 { Version 1.3 additions  }
-function XRRGetScreenResourcesCurrent(dpy:PDisplay; window:TWindow):PXRRScreenResources;cdecl;external;
-procedure XRRSetCrtcTransform(dpy:PDisplay; crtc:TRRCrtc; transform:PXTransform; filter:Pchar; params:PXFixed; 
-            nparams:longint);cdecl;external;
+function XRRGetScreenResourcesCurrent(dpy: PDisplay; window: TWindow): PXRRScreenResources; cdecl; external libXrandr;
+procedure XRRSetCrtcTransform(dpy: PDisplay; crtc: TRRCrtc; transform: PXTransform; filter: PChar; params: PXFixed;
+  nparams: cint); cdecl; external libXrandr;
+
 type
+  PPXRRCrtcTransformAttributes = ^PXRRCrtcTransformAttributes;
   PXRRCrtcTransformAttributes = ^TXRRCrtcTransformAttributes;
+
   TXRRCrtcTransformAttributes = record
-      pendingTransform : TXTransform;
-      pendingFilter : Pchar;
-      pendingNparams : longint;
-      pendingParams : PXFixed;
-      currentTransform : TXTransform;
-      currentFilter : Pchar;
-      currentNparams : longint;
-      currentParams : PXFixed;
-    end;
+    pendingTransform: TXTransform;
+    pendingFilter: PChar;
+    pendingNparams: cint;
+    pendingParams: PXFixed;
+    currentTransform: TXTransform;
+    currentFilter: PChar;
+    currentNparams: cint;
+    currentParams: PXFixed;
+  end;
+
 {
  * Get current crtc transforms and filters.
  * Pass *attributes to XFree to free
   }
 
-function XRRGetCrtcTransform(dpy:PDisplay; crtc:TRRCrtc; attributes:PPXRRCrtcTransformAttributes):TStatus;cdecl;external;
+function XRRGetCrtcTransform(dpy: PDisplay; crtc: TRRCrtc; attributes: PPXRRCrtcTransformAttributes): TStatus; cdecl; external libXrandr;
 {
  * intended to take RRScreenChangeNotify,  or
  * ConfigureNotify (on the root window)
  * returns 1 if it is an event type it understands, 0 if not
   }
-function XRRUpdateConfiguration(event:PXEvent):longint;cdecl;external;
+function XRRUpdateConfiguration(event: PXEvent): cint; cdecl; external libXrandr;
+
 type
   PXRRPanning = ^TXRRPanning;
-  TXRRPanning = record
-      timestamp : TTime;
-      left : dword;
-      top : dword;
-      width : dword;
-      height : dword;
-      track_left : dword;
-      track_top : dword;
-      track_width : dword;
-      track_height : dword;
-      border_left : longint;
-      border_top : longint;
-      border_right : longint;
-      border_bottom : longint;
-    end;
 
-function XRRGetPanning(dpy:PDisplay; resources:PXRRScreenResources; crtc:TRRCrtc):PXRRPanning;cdecl;external;
-procedure XRRFreePanning(panning:PXRRPanning);cdecl;external;
-function XRRSetPanning(dpy:PDisplay; resources:PXRRScreenResources; crtc:TRRCrtc; panning:PXRRPanning):TStatus;cdecl;external;
-procedure XRRSetOutputPrimary(dpy:PDisplay; window:TWindow; output:TRROutput);cdecl;external;
-function XRRGetOutputPrimary(dpy:PDisplay; window:TWindow):TRROutput;cdecl;external;
+  TXRRPanning = record
+    timestamp: TTime;
+    left: cuint;
+    top: cuint;
+    Width: cuint;
+    Height: cuint;
+    track_left: cuint;
+    track_top: cuint;
+    track_width: cuint;
+    track_height: cuint;
+    border_left: cint;
+    border_top: cint;
+    border_right: cint;
+    border_bottom: cint;
+  end;
+
+function XRRGetPanning(dpy: PDisplay; resources: PXRRScreenResources; crtc: TRRCrtc): PXRRPanning; cdecl; external libXrandr;
+procedure XRRFreePanning(panning: PXRRPanning); cdecl; external libXrandr;
+function XRRSetPanning(dpy: PDisplay; resources: PXRRScreenResources; crtc: TRRCrtc; panning: PXRRPanning): TStatus; cdecl; external libXrandr;
+procedure XRRSetOutputPrimary(dpy: PDisplay; window: TWindow; output: TRROutput); cdecl; external libXrandr;
+function XRRGetOutputPrimary(dpy: PDisplay; window: TWindow): TRROutput; cdecl; external libXrandr;
+
 type
   PXRRProviderResources = ^TXRRProviderResources;
-  TXRRProviderResources = record
-      timestamp : TTime;
-      nproviders : longint;
-      providers : PRRProvider;
-    end;
 
-function XRRGetProviderResources(dpy:PDisplay; window:TWindow):PXRRProviderResources;cdecl;external;
-procedure XRRFreeProviderResources(resources:PXRRProviderResources);cdecl;external;
+  TXRRProviderResources = record
+    timestamp: TTime;
+    nproviders: cint;
+    providers: PRRProvider;
+  end;
+
+function XRRGetProviderResources(dpy: PDisplay; window: TWindow): PXRRProviderResources; cdecl; external libXrandr;
+procedure XRRFreeProviderResources(resources: PXRRProviderResources); cdecl; external libXrandr;
+
 type
   PXRRProviderInfo = ^TXRRProviderInfo;
-  TXRRProviderInfo = record
-      capabilities : dword;
-      ncrtcs : longint;
-      crtcs : PRRCrtc;
-      noutputs : longint;
-      outputs : PRROutput;
-      name : Pchar;
-      nassociatedproviders : longint;
-      associated_providers : PRRProvider;
-      associated_capability : Pdword;
-      nameLen : longint;
-    end;
 
-function XRRGetProviderInfo(dpy:PDisplay; resources:PXRRScreenResources; provider:TRRProvider):PXRRProviderInfo;cdecl;external;
-procedure XRRFreeProviderInfo(provider:PXRRProviderInfo);cdecl;external;
-function XRRSetProviderOutputSource(dpy:PDisplay; provider:TXID; source_provider:TXID):longint;cdecl;external;
-function XRRSetProviderOffloadSink(dpy:PDisplay; provider:TXID; sink_provider:TXID):longint;cdecl;external;
-function XRRListProviderProperties(dpy:PDisplay; provider:TRRProvider; nprop:Plongint):PAtom;cdecl;external;
-function XRRQueryProviderProperty(dpy:PDisplay; provider:TRRProvider; _property:TAtom):PXRRPropertyInfo;cdecl;external;
-procedure XRRConfigureProviderProperty(dpy:PDisplay; provider:TRRProvider; _property:TAtom; pending:TBool; range:TBool; 
-            num_values:longint; values:Plongint);cdecl;external;
-procedure XRRChangeProviderProperty(dpy:PDisplay; provider:TRRProvider; _property:TAtom; _type:TAtom; format:longint; 
-            mode:longint; data:Pbyte; nelements:longint);cdecl;external;
-procedure XRRDeleteProviderProperty(dpy:PDisplay; provider:TRRProvider; _property:TAtom);cdecl;external;
-function XRRGetProviderProperty(dpy:PDisplay; provider:TRRProvider; _property:TAtom; offset:longint; length:longint; 
-           _delete:TBool; pending:TBool; req_type:TAtom; actual_type:PAtom; actual_format:Plongint; 
-           nitems:Pdword; bytes_after:Pdword; prop:PPbyte):longint;cdecl;external;
+  TXRRProviderInfo = record
+    capabilities: cuint;
+    ncrtcs: cint;
+    crtcs: PRRCrtc;
+    noutputs: cint;
+    outputs: PRROutput;
+    Name: PChar;
+    nassociatedproviders: cint;
+    associated_providers: PRRProvider;
+    associated_capability: pcuint;
+    nameLen: cint;
+  end;
+
+function XRRGetProviderInfo(dpy: PDisplay; resources: PXRRScreenResources; provider: TRRProvider): PXRRProviderInfo; cdecl; external libXrandr;
+procedure XRRFreeProviderInfo(provider: PXRRProviderInfo); cdecl; external libXrandr;
+function XRRSetProviderOutputSource(dpy: PDisplay; provider: TXID; source_provider: TXID): cint; cdecl; external libXrandr;
+function XRRSetProviderOffloadSink(dpy: PDisplay; provider: TXID; sink_provider: TXID): cint; cdecl; external libXrandr;
+function XRRListProviderProperties(dpy: PDisplay; provider: TRRProvider; nprop: Pcint): PAtom; cdecl; external libXrandr;
+function XRRQueryProviderProperty(dpy: PDisplay; provider: TRRProvider; _property: TAtom): PXRRPropertyInfo; cdecl; external libXrandr;
+procedure XRRConfigureProviderProperty(dpy: PDisplay; provider: TRRProvider; _property: TAtom; pending: TBool; range: TBool;
+  num_values: cint; values: Pcint); cdecl; external libXrandr;
+procedure XRRChangeProviderProperty(dpy: PDisplay; provider: TRRProvider; _property: TAtom; _type: TAtom; format: cint;
+  mode: cint; Data: pbyte; nelements: cint); cdecl; external libXrandr;
+procedure XRRDeleteProviderProperty(dpy: PDisplay; provider: TRRProvider; _property: TAtom); cdecl; external libXrandr;
+function XRRGetProviderProperty(dpy: PDisplay; provider: TRRProvider; _property: TAtom; offset: clong; length: clong;
+  _delete: TBool; pending: TBool; req_type: TAtom; actual_type: PAtom; actual_format: Pcint;
+  nitems: pculong; bytes_after: pculong; prop: PPbyte): cint; cdecl; external libXrandr;
+
 type
   PXRRMonitorInfo = ^TXRRMonitorInfo;
-  TXRRMonitorInfo = record
-      name : TAtom;
-      primary : TBool;
-      automatic : TBool;
-      noutput : longint;
-      x : longint;
-      y : longint;
-      width : longint;
-      height : longint;
-      mwidth : longint;
-      mheight : longint;
-      outputs : PRROutput;
-    end;
 
-function XRRAllocateMonitor(dpy:PDisplay; noutput:longint):PXRRMonitorInfo;cdecl;external;
-function XRRGetMonitors(dpy:PDisplay; window:TWindow; get_active:TBool; nmonitors:Plongint):PXRRMonitorInfo;cdecl;external;
-procedure XRRSetMonitor(dpy:PDisplay; window:TWindow; monitor:PXRRMonitorInfo);cdecl;external;
-procedure XRRDeleteMonitor(dpy:PDisplay; window:TWindow; name:TAtom);cdecl;external;
-procedure XRRFreeMonitors(monitors:PXRRMonitorInfo);cdecl;external;
-{_XFUNCPROTOEND }
-{$endif}
-{ _XRANDR_H_  }
+  TXRRMonitorInfo = record
+    Name: TAtom;
+    primary: TBool;
+    automatic: TBool;
+    noutput: cint;
+    x: cint;
+    y: cint;
+    Width: cint;
+    Height: cint;
+    mwidth: cint;
+    mheight: cint;
+    outputs: PRROutput;
+  end;
+
+function XRRAllocateMonitor(dpy: PDisplay; noutput: cint): PXRRMonitorInfo; cdecl; external libXrandr;
+function XRRGetMonitors(dpy: PDisplay; window: TWindow; get_active: TBool; nmonitors: Pcint): PXRRMonitorInfo; cdecl; external libXrandr;
+procedure XRRSetMonitor(dpy: PDisplay; window: TWindow; monitor: PXRRMonitorInfo); cdecl; external libXrandr;
+procedure XRRDeleteMonitor(dpy: PDisplay; window: TWindow; Name: TAtom); cdecl; external libXrandr;
+procedure XRRFreeMonitors(monitors: PXRRMonitorInfo); cdecl; external libXrandr;
 
 implementation
 

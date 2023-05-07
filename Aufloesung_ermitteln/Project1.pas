@@ -1,11 +1,5 @@
-//image image.png
 (*
-Erstes Fenster mit <b>X11</b> wird erstellt.
-Es wird nur ein einziges Eregniss gebraucht.
-Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.
 *)
-//lineal
-//code+
 program Project1;
 
 uses
@@ -14,17 +8,44 @@ uses
   xlib,
   xutil,
   keysym,
-  x     ,
+  x,
+  randr,
   Xrandr;
 
 var
   dis: PDisplay;
-  win: TWindow;
+  win, root_win: TWindow;
   Event: TXEvent;
-  scr: cint;
+  scr, original_size_id: cint;
+  original_rotation: TRotation;
+  original_rate: cshort;
+  conf: PXRRScreenConfiguration;
+
+  procedure PrintInfo;
+  var
+    num_sizes, num_rates, major_v, minor_v: cint;
+    xrrs: PXRRScreenSize;
+    i, j: integer;
+    rates: pcshort;
+  begin
+    XRRQueryVersion(dis,@major_v, @minor_v);
+    WriteLn('Version:',major_v,'.',minor_v);
+
+    xrrs := XRRSizes(dis, 0, @num_sizes);
+    WriteLn('Anzahl Modus: ', num_sizes);
+    for i := 0 to num_sizes - 1 do begin
+      with xrrs[i] do begin
+        Write('Nr:', i: 4, Width: 6, 'x', Height: 6, '   (', mwidth: 4, 'mm x', mheight: 4, 'mm )   ');
+        rates := XRRRates(dis, 0, i, @num_rates);
+        for j := 0 to num_rates - 1 do begin
+          Write(rates[j], ' ');
+        end;
+        WriteLn();
+      end;
+    end;
+  end;
 
 begin
-  // Erstellt die Verbindung zum Server
   dis := XOpenDisplay(nil);
   if dis = nil then begin
     WriteLn('Kann nicht das Display öffnen');
@@ -32,18 +53,15 @@ begin
   end;
   scr := DefaultScreen(dis);
 
-  // Erstellt das Fenster
-  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-
-  // Wählt die gewünschten Ereignisse aus
-  // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
+  root_win := XRootWindow(dis, 0);
+  win := XCreateSimpleWindow(dis, root_win, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
   XSelectInput(dis, win, KeyPressMask);
-
-  // Fenster Titel festlegen
   XStoreName(dis, win, 'Mein Fenster');
-
-  // Fenster anzeigen
   XMapWindow(dis, win);
+
+  conf:=XRRGetScreenInfo(dis,root_win);
+  original_rate:=XRRConfigCurrentRate(conf);
+  original_size_id:=XRRConfigCurrentConfiguration(conf,@original_rotation);
 
   // Ereignisschleife
   while (True) do begin
@@ -51,18 +69,25 @@ begin
     case Event._type of
       KeyPress: begin
         // Beendet das Programm bei [ESC]
-        if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
-          Break;
+        case XLookupKeysym(@Event.xkey, 0) of
+          XK_Escape: begin
+            Break;
+          end;
+          XK_p: begin
+            PrintInfo;
+          end;
+          xk_s: begin
+            XRRSetScreenConfigAndRate(dis, conf, root_win, 1, RR_Rotate_0, 60, CurrentTime);
+          end;
+          XK_space: begin
+            XRRSetScreenConfigAndRate(dis, conf, root_win,original_size_id, original_rotation, original_rate, CurrentTime);
+          end;
         end;
       end;
     end;
   end;
 
-  // Schliesst das Fenster
   XDestroyWindow(dis, win);
-
-  // Schliesst Verbindung zum Server
   XCloseDisplay(dis);
 end.
-//code-
 
