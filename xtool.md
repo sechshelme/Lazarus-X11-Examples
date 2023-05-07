@@ -62,5 +62,8 @@ editres
 xlsatoms
 ```
 
-
+## Auflösungen listen:
+```
+xrandr
+```
 
