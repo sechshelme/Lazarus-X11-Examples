@@ -141,7 +141,7 @@ var
   var
     scr: cint;
     Event: TXEvent;
-    s: string;
+    ClipboardString: string;
     gc: TGC;
 
     // Paste
@@ -214,23 +214,27 @@ var
               Break;
             end;
             XK_v: begin
+              WriteLn('Auslesen einleiten');
               with AtomPara do begin
                 XConvertSelection(dis, ClipboardID, FormatID, Xsel_dataID, win, CurrentTime);
               end;
             end;
             XK_c: begin
-              WriteStr(s, '{Hello World !'#10'Hallo Welt !}   ', Now: 12: 6);
+              Writeln('Daten ready für Clipboard');
+              // Ein Pseudoinhalt fürs Clipboard
+              WriteStr(ClipboardString, 'Hello World !'#10'Hallo Welt !'#10, DateTimeToStr(Now));
 
               XSetSelectionOwner(dis, AtomPara.ClipboardID, win, CurrentTime);
               if XGetSelectionOwner(dis, AtomPara.ClipboardID) <> win then begin
-                WriteLn('Fehler');
-                //   Exit;
+                WriteLn('Fehler: Falsches Window');
               end;
             end;
           end;
         end;
+        // Wird ausgelöst, sobald Daten extern vom Clipboard verlangt werden.
         SelectionRequest: begin
           if event.xselectionrequest.selection = AtomPara.ClipboardID then begin
+            WriteLn('Daten stehen im Clipboard bereit');
             xsr := @event.xselectionrequest;
             ev._type := SelectionNotify;
             ev.display := xsr^.display;
@@ -243,30 +247,26 @@ var
             ev.send_event := 0;
             if ev.target = AtomPara.targets_atomID then begin
               R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AtomPara.FormatID, 1);
-              WriteLn('-1-');
             end else if (ev.target = XA_STRING) or (ev.target = AtomPara.text_atomID) then begin
-              R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_STRING, 8, PropModeReplace, pbyte(s), Length(s));
-              WriteLn('-2-');
+              R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_STRING, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
             end else if ev.target = AtomPara.FormatID then  begin
-              R := XChangeProperty(ev.display, ev.requestor, ev._property, AtomPara.FormatID, 8, PropModeReplace, pbyte(PChar(s)), Length(s));
-              WriteLn('-3-');
-              //              Exit;
+              R := XChangeProperty(ev.display, ev.requestor, ev._property, AtomPara.FormatID, 8, PropModeReplace, pbyte(PChar(ClipboardString)), Length(ClipboardString));
             end else begin
               ev._property := None;
-              WriteLn('-4-');
             end;
             if (R and 2) = 0 then begin
               XSendEvent(dis, ev.requestor, 0, 0, @ev);
-              WriteLn('R');
-              //              Exit;
             end;
           end;
         end;
+        // Wird ausgelöst, sobald eine andere App Daten fürs Chloboard hat.
         SelectionClear: begin
-          WriteLn('exit');
-          //          Exit;
+          WriteLn('Eine andere App hat Chliboard Daten');
+          ClipboardString:='';
         end;
+        // Daten vom Clipboard stehen bereit zur Abholung
         SelectionNotify: begin
+          Writeln('Clipboard auslesen');
           if Event.xselection._property <> 0 then begin
             with AtomPara do begin
               XGetWindowProperty(dis, win, Xsel_dataID, 0, MaxSIntValue, False, AnyPropertyType, @targetFormat, @resbits, @ressize, @restail, @res);
@@ -278,9 +278,10 @@ var
               //              Result := '';
             end;
             end;
-
             WriteLn('Buffer-Size: ', ressize);
+            WriteLn('------ Inhalt vom Clipboard ----------');
             WriteLn(res);
+            WriteLn('--------------------------------------');
             with Event.xselection do begin
               XDeleteProperty(display, requestor, _property);
             end;
@@ -290,7 +291,6 @@ var
     end;
 
     XDestroyWindow(dis, win);
-
     XCloseDisplay(dis);
   end;
 
