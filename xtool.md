@@ -46,6 +46,7 @@ bitmap
 ## Fenster Info
 ```
 xwininfo -tree
+xprop
 ```
 
 ## XTootls Fenster-Info

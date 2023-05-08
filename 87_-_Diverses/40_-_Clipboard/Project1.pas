@@ -12,6 +12,7 @@ program Project1;
 uses
   SysUtils,
   heaptrc,
+  BaseUnix,
   unixtype,
   ctypes,
   xlib,
@@ -33,68 +34,14 @@ var
   dis: PDisplay;
   win: TWindow;
 
-  procedure CopyClipboard(s: string);
-  const
-    XA_ATOM = 4;
-    XA_STRING = 31;
-  var
-    event: TXEvent;
-    xsr: PXSelectionRequestEvent;
-    ev: TXSelectionEvent;
-    R: cint;
-    i: integer = 0;
-  begin
-    //XSetSelectionOwner(dis, AtomPara.ClipboardID, win, CurrentTime);
-    //if XGetSelectionOwner(dis, AtomPara.ClipboardID) <> win then begin
-    //  WriteLn('Fehler');
-    //  Exit;
-    //end;
-    //
-    //    while True do begin
-    //      XNextEvent(dis, @event);
-    // case event._type of
-    //SelectionRequest: begin
-    //  if event.xselectionrequest.selection = AtomPara.ClipboardID then begin
-    //    xsr := @event.xselectionrequest;
-    //    ev._type := SelectionNotify;
-    //    ev.display := xsr^.display;
-    //    ev.requestor := xsr^.requestor;
-    //    ev.selection := xsr^.selection;
-    //    ev.time := xsr^.time;
-    //    ev.target := xsr^.target;
-    //    ev._property := xsr^._property;
-    //    ev.serial := 0;
-    //    ev.send_event := 0;
-    //    if ev.target = AtomPara.targets_atomID then begin
-    //      R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AtomPara.FormatID, 1);
-    //      WriteLn('-1-');
-    //    end else if (ev.target = XA_STRING) or (ev.target = AtomPara.text_atomID) then begin
-    //      R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_STRING, 8, PropModeReplace, pbyte(s), Length(s));
-    //      WriteLn('-2-');
-    //    end else if ev.target = AtomPara.FormatID then  begin
-    //      R := XChangeProperty(ev.display, ev.requestor, ev._property, AtomPara.FormatID, 8, PropModeReplace, pbyte(PChar(s)), Length(s));
-    //      WriteLn('-3-');
-    //      //              Exit;
-    //    end else begin
-    //      ev._property := None;
-    //      WriteLn('-4-');
-    //    end;
-    //    if (R and 2) = 0 then begin
-    //      XSendEvent(dis, ev.requestor, 0, 0, @ev);
-    //      WriteLn('R');
-    //      //              Exit;
-    //    end;
-    //  end;
-    //end;
-    //SelectionClear: begin
-    //  WriteLn('exit');
-    //  Exit;
-    //end;
-
-    //end;
-    //    end;
-  end;
-
+procedure wait;
+var
+  rem, Req: timespec;
+begin
+  Req.tv_nsec := 10000000;
+  Req.tv_sec := 3;
+  fpNanoSleep(@Req, @rem);
+end;
 
   function PasteClipboard: string;
   var
@@ -233,6 +180,8 @@ var
         end;
         // Wird ausgelöst, sobald Daten extern vom Clipboard verlangt werden.
         SelectionRequest: begin
+//          wait;
+          WriteLn('SelectionRequest');
           if event.xselectionrequest.selection = AtomPara.ClipboardID then begin
             WriteLn('Daten stehen im Clipboard bereit');
             xsr := @event.xselectionrequest;
@@ -266,6 +215,7 @@ var
         end;
         // Daten vom Clipboard stehen bereit zur Abholung
         SelectionNotify: begin
+          WriteLn('SelectionNotify');
           Writeln('Clipboard auslesen');
           if Event.xselection._property <> 0 then begin
             with AtomPara do begin
@@ -297,3 +247,4 @@ var
 begin
   Main;
 end.
+
