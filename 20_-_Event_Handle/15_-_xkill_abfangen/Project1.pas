@@ -93,7 +93,7 @@ type
         end;
 
         ClientMessage: begin
-          if (Event.xclient.Data.l[0] = wm_delete_window) then begin
+          if Event.xclient.Data.l[0] = wm_delete_window then begin
             WriteLn('[X] wurde gedrückt');
             quit := True;
           end;

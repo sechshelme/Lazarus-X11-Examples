@@ -28,15 +28,16 @@ const
 
 var
   dis: PDisplay;
-  win, x11_root_window: TWindow;
+  win, root_window: TWindow;
   xev, Event: TXEvent;
   scr: cint;
-  wm_close, wm_state, wm_fullscreen: TAtom;
+  wm_delete_window, wm_state, wm_fullscreen: TAtom;
   i, event_mask: integer;
   fullscreen: boolean = True;
   evt_sucess: TStatus;
   gc: TGC;
   boolresult: TBoolResult = (Success: False; Value: False);
+  quit:Boolean=False;
 
   // https://techdragonblog.de/2021/03/07/programmieren-in-c-vollbildfenster-mit-xlib/
 
@@ -48,15 +49,16 @@ begin
     Halt(1);
   end;
   scr := DefaultScreen(dis);
-  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  root_window := XRootWindow(dis, scr);
+  win := XCreateSimpleWindow(dis, root_window, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
   XSelectInput(dis, win, KeyPressMask or KeyReleaseMask or ExposureMask or VisibilityChangeMask);
   XStoreName(dis, win, 'Mein Fenster');
   XMapWindow(dis, win);
 
   gc := XCreateGC(dis, win, 0, nil);
 
-  wm_close := XInternAtom(dis, 'WM_DELETE_WINDOW', True);
-  XSetWMProtocols(dis, win, @wm_close, 1);
+  wm_delete_window := XInternAtom(dis, 'WM_DELETE_WINDOW', True);
+  XSetWMProtocols(dis, win, @wm_delete_window, 1);
 
   while (True) do begin
     XNextEvent(dis, @Event);
@@ -86,12 +88,11 @@ begin
   xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
   xev.xclient.Data.l[4] := 0;
 
-  x11_root_window := XRootWindow(dis, scr);
   event_mask := SubstructureRedirectMask;
 
 //  wm_state := XInternAtom(dis, '_NET_WM_STATE', False);
 
-  evt_sucess := XSendEvent(dis, x11_root_window, False, event_mask, @xev);
+  evt_sucess := XSendEvent(dis, root_window, False, event_mask, @xev);
   if event_mask = 0 then begin
     WriteLn('Fehler');
   end;
@@ -99,7 +100,7 @@ begin
 
 
   // Ereignisschleife
-  while (True) do begin
+  while not quit do begin
     XNextEvent(dis, @Event);
     case Event._type of
       Expose: begin
@@ -111,7 +112,14 @@ begin
       KeyPress: begin
         // Beendet das Programm bei [ESC]
         if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
-          Break;
+          quit:=True;
+        end;
+      end;
+      ClientMessage: begin
+        WriteLn('ClientMessage');
+        if Event.xclient.Data.l[0] = wm_delete_window then begin
+          WriteLn('[X] wurde gedrückt');
+          quit := True;
         end;
       end;
     end;

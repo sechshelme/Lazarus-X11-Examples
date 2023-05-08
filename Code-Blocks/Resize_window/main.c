@@ -16,6 +16,9 @@ Rotation                original_rotation;
 SizeID                  original_size_id;
 
 int main(int argc, char *argv[]){
+
+
+strncpy()
  //
  //     CONNECT TO X-SERVER, GET ROOT WINDOW ID
  //

@@ -115,7 +115,6 @@ end;
       targets_atomID := XInternAtom(dis, 'TARGETS', False);
       text_atomID := XInternAtom(dis, 'TEXT', False);
 
-
       ClipboardID := XInternAtom(dis, 'CLIPBOARD', False);
       FormatID := XInternAtom(dis, 'UTF8_STRING', True);
       WriteLn(FormatID);
