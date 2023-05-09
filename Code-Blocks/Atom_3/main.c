@@ -27,6 +27,8 @@ int main ()
 
     XMapWindow(d,w);
 
+    fprintf()
+
     a = XInternAtom(d, "_NET_FRAME_EXTENTS", True); /* Property to check */
 
     /* Window manager doesn't set up the extents immediately */
