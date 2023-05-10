@@ -128,7 +128,9 @@ type
 
   function TMyWin.CreatePixmap(xmb: TxbmMask): TBit;
   begin
-    Result.Drawable := XCreateBitmapFromData(dis, win, PChar(xmb.bits), xmb.Width, xmb.Height);
+//    Result.Drawable := XCreateBitmapFromData(dis, win, PChar(xmb.bits), xmb.Width, xmb.Height);
+
+    Result.Drawable :=    XCreatePixmapFromBitmapData(dis,win,PChar( xmb.bits),xmb.Width,xmb.Height,$FF,$FF00,24);
     Result.Width := xmb.Width;
     Result.Height := xmb.Height;
   end;

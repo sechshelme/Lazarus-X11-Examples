@@ -80,6 +80,13 @@ sudo apt install libmotif-dev
 Lazarus fpc pascal XToolkit Toolkit libx x11 xserver linux Athena Widget Modif Motif OpenMotif
 
 
+# Klasssische Programme
+## Vector Games
+- (https://github.com/ivanmarcin/MultiplayerMazewar/tree/master)
+
+
+
+
 
 
 

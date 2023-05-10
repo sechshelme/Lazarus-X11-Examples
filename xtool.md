@@ -43,6 +43,7 @@ Meht infos:
 ```bash
 bitmap
 ```
+
 ## Fenster Info
 ```
 xwininfo -tree
@@ -67,4 +68,6 @@ xlsatoms
 ```
 xrandr
 ```
+
+
 
