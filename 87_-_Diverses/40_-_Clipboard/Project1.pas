@@ -30,11 +30,6 @@ type
 const
   Mask = KeyPressMask or ExposureMask;
 
-var
-  AP: TAtomPara;
-  dis: PDisplay;
-  win: TWindow;
-
   procedure wait;
   var
     rem, Req: timespec;
@@ -44,48 +39,14 @@ var
     fpNanoSleep(@Req, @rem);
   end;
 
-  function PasteClipboard: string;
-  var
-    ev: TXEvent;
-    resbits: cint;
-    ressize, restail: culong;
-    targetFormat: TAtom;
-    res: PChar;
-    //    result1: PChar;
-  begin
-    Result := '';
-    XConvertSelection(dis, AP.XA_CLIPBOARD, AP.Format, AP.XSEL_DATA, win, CurrentTime);
-    XNextEvent(dis, @ev);
-
-    if ev._type = SelectionNotify then begin
-      WriteLn('bcbcb', ev.xselection._property);
-      if ev.xselection._property <> 0 then begin
-
-        XGetWindowProperty(dis, win, AP.XSEL_DATA, 0, MaxSIntValue, False, AnyPropertyType, @targetFormat, @resbits, @ressize, @restail, @res);
-        if AP.Format = targetFormat then begin
-          WriteLn('io');
-          Result := res;
-        end else begin
-          WriteLn('error');
-          Result := '';
-        end;
-
-        WriteLn('Buffer-Size: ', ressize);
-        with ev.xselection do begin
-          XDeleteProperty(display, requestor, _property);
-        end;
-      end;
-    end else begin
-      WriteLn('Falsches Event');
-    end;
-  end;
-
   procedure Main;
   var
+    AP: TAtomPara;
+    dis: PDisplay;
+    win: TWindow;
     scr: cint;
-    Event: TXEvent;
-    ClipboardString: string;
     gc: TGC;
+    Event: TXEvent;
 
     // Paste
     ressize, restail: culong;
@@ -97,7 +58,7 @@ var
     xsr: PXSelectionRequestEvent;
     ev: TXSelectionEvent;
     R: cint;
-
+    ClipboardString: string;
 
   begin
     // Erstellt die Verbindung zum Server
@@ -136,7 +97,6 @@ var
     gc := XCreateGC(dis, win, 0, nil);
     XSelectInput(dis, win, Mask);
     XMapWindow(dis, win);
-
 
     // Ereignisschleife
     while (True) do begin
@@ -201,7 +161,7 @@ var
         end;
         // Wird ausgelöst, sobald eine andere App Daten fürs Chloboard hat.
         SelectionClear: begin
-          WriteLn('Eine andere App hat Chliboard Daten');
+          WriteLn('Eine andere App hat Clipboard Daten');
           ClipboardString := '';
         end;
         // Daten vom Clipboard stehen bereit zur Abholung
@@ -213,10 +173,8 @@ var
               XGetWindowProperty(dis, win, XSEL_DATA, 0, MaxSIntValue, False, AnyPropertyType, @targetFormat, @resbits, @ressize, @restail, @res);
               if Format = targetFormat then begin
                 WriteLn('io');
-                //              Result := res;
               end else begin
                 WriteLn('error');
-                //              Result := '';
               end;
             end;
             WriteLn('Buffer-Size: ', ressize);

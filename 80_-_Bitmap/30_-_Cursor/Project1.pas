@@ -52,42 +52,46 @@ const
     $90, $db, $ed, $0a, $10, $00, $00, $08, $10, $00, $00, $08,
     $10, $00, $00, $08, $f0, $ff, $ff, $0f));
 
+
   dRat: TxbmMask = (Width: 16; Height: 16; x_hot: 0; y_hot: 9; bits: (
     $00, $00, $88, $20, $45, $10, $82, $00, $00, $00, $00, $10,
     $00, $20, $00, $41, $20, $82, $ff, $87, $fa, $8f, $fc, $7f,
     $e8, $0f, $c0, $07, $00, $00, $00, $00));
 
-  dRatMask: TxbmMask = (Width: 16; Height: 16; x_hot: -1; y_hot: -1;
-    bits: (
+  dRatMask: TxbmMask = (Width: 16; Height: 16; x_hot: -1; y_hot: -1; bits: (
     $98, $60, $dd, $71, $ef, $38, $c7, $19, $82, $00, $00, $30,
     $00, $f1, $e0, $f3, $ff, $c7, $ff, $cf, $ff, $ff, $fe, $ff,
     $fc, $7f, $e8, $0f, $c0, $07, $00, $00));
 
-type
-  TBit = record
-    Width, Height: cuint;
-    x_hot, y_hot: cint;
-    Drawable: TPixmap;
-  end;
+  rat: TxbmMask = (Width: 16; Height: 16; x_hot: 0; y_hot: 6; bits: (
+    $00, $00, $00, $00, $c0, $07, $e8, $0f, $fc, $0f, $fa, $7f,
+    $ff, $8f, $42, $08, $00, $40, $00, $3f, $80, $00, $00, $01,
+    $00, $02, $00, $01, $00, $00, $00, $00));
 
-  { TMyWin }
+  ratMask: TxbmMask = (Width: 16; Height: 16; x_hot: -1; y_hot: -1; bits: (
+    $00, $00, $c0, $07, $e8, $0f, $fc, $1f, $fe, $7f, $ff, $ff,
+    $ff, $ff, $ff, $df, $e7, $fc, $00, $ff, $80, $7f, $80, $03,
+    $00, $03, $80, $03, $00, $01, $00, $00));
+
+
+type
 
   TMyWin = class(TObject)
   private
     dis: PDisplay;
     scr: cint;
-    win: TWindow;
+    root_win, win: TWindow;
     gc: TGC;
-    Bit_cup, Bit_text, Bit_dRat, Bit_dRatMask: TBit;
-    cursor: TCursor;
+    Bit_cup, Bit_text: TPixmap;
+    RatCursor, dRatCursor: TCursor;
+    procedure DrawBitmap(bit: TPixmap; x, y: cint);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Run;
-    function CreatePixmap(xmb: TxbmMask): TBit;
-    function CreateCursor(cur, mas: TPixmap): TCursor;
+    function CreatePixmap(xmb: TxbmMask): TPixmap;
+    function CreateCursor(bit, bitmask: TxbmMask): TCursor;
   end;
-
 
   constructor TMyWin.Create;
   begin
@@ -101,7 +105,8 @@ type
     end;
     scr := DefaultScreen(dis);
     gc := DefaultGC(dis, scr);
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 200, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    root_win := RootWindow(dis, scr);
+    win := XCreateSimpleWindow(dis, root_win, 10, 10, 320, 200, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
     XSetBackground(dis, gc, $FF);
     XSetForeground(dis, gc, $FF0000);
     XSetWindowBackground(dis, win, $00);
@@ -110,11 +115,10 @@ type
     XMapWindow(dis, win);
     Bit_cup := CreatePixmap(cup);
     Bit_text := CreatePixmap(Text);
-    Bit_dRat := CreatePixmap(dRat);
-    Bit_dRatMask := CreatePixmap(dRatMask);
-    cursor := CreateCursor(Bit_dRat.Drawable, Bit_dRatMask.Drawable);
 
-    XDefineCursor(dis, win, cursor);
+    RatCursor := CreateCursor(rat, ratMask);
+
+    XDefineCursor(dis, win, RatCursor);
   end;
 
   destructor TMyWin.Destroy;
@@ -123,9 +127,20 @@ type
     XDestroyWindow(dis, win);
 
     // Schliesst Verbindung zum Server
-    XFreePixmap(dis, Bit_cup.Drawable);
+    XFreePixmap(dis, Bit_cup);
+    XFreePixmap(dis, Bit_text);
     XCloseDisplay(dis);
     inherited Destroy;
+  end;
+
+  procedure TMyWin.DrawBitmap(bit: TPixmap; x, y: cint);
+  var
+    root: TWindow;
+    x1, y1: cint;
+    Width, Height, border_width, depth: cuint;
+  begin
+    XGetGeometry(dis, bit, @root, @x1, @y1, @Width, @Height, @border_width, @depth);
+    XCopyPlane(dis, bit, win, gc, 0, 0, Width, Height, x, y, 1);
   end;
 
   procedure TMyWin.Run;
@@ -140,14 +155,12 @@ type
       case Event._type of
         Expose: begin
           XClearWindow(dis, win);
+
           l := Event.xexpose.Width div 2 - 16;
           t := Event.xexpose.Height div 2 - 8;
-          with Bit_cup do begin
-            XCopyPlane(dis, Drawable, win, gc, 0, 0, Width, Height, l + 32, t + 16, 1);
-          end;
-          with Bit_text do begin
-            XCopyPlane(dis, Drawable, win, gc, 0, 0, Width, Height, l, t, 1);
-          end;
+
+          DrawBitmap(Bit_cup, l + 32, t + 16);
+          DrawBitmap(Bit_text, l, t);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
@@ -159,23 +172,28 @@ type
     end;
   end;
 
-  function TMyWin.CreatePixmap(xmb: TxbmMask): TBit;
+  function TMyWin.CreatePixmap(xmb: TxbmMask): TPixmap;
   begin
-    Result.Drawable := XCreateBitmapFromData(dis, win, PChar(xmb.bits), xmb.Width, xmb.Height);
+      Result := XCreateBitmapFromData(dis, win, PChar(xmb.bits), xmb.Width, xmb.Height);
 
-    //    Result.Drawable := XCreatePixmapFromBitmapData(dis, win, PChar(xmb.bits), xmb.Width, xmb.Height, $FF, $FF00, 1);
-    Result.Width := xmb.Width;
-    Result.Height := xmb.Height;
-    Result.x_hot := xmb.x_hot;
-    Result.y_hot := xmb.y_hot;
+    //Result := XCreatePixmapFromBitmapData(dis, win, PChar(xmb.bits), xmb.Width, xmb.Height, $FF, $FF00, 1);
   end;
 
-  function TMyWin.CreateCursor(cur, mas: TPixmap): TCursor;
+  function TMyWin.CreateCursor(bit, bitmask: TxbmMask): TCursor;
   var
-    fg: TXColor = (pixel: 0; red: 0; green: 0; blue: 0; flags: $F; pad: 0);
-    bg: TXColor = (pixel: $FFFFFFFF; red: $FFFF; green: $FFFF; blue: $FFFF; flags: $F; pad: 0);
+    bg, fg, nearrgb: TXColor;
+    draw, drawMask: TPixmap;
   begin
-    Result := XCreatePixmapCursor(dis, cur, mas, @fg, @bg, 0, 0);
+    XLookupColor(dis, XDefaultColormap(dis, scr), 'green', @bg, @nearrgb);
+    XLookupColor(dis, XDefaultColormap(dis, scr), 'yellow', @fg, @nearrgb);
+
+    draw := XCreateBitmapFromData(dis, win, PChar(bit.bits), bit.Width, bit.Height);
+    drawMask := XCreateBitmapFromData(dis, win, PChar(bitmask.bits), bitmask.Width, bitmask.Height);
+
+    Result := XCreatePixmapCursor(dis, draw, drawMask, @fg, @bg, 0, 0);
+
+    XFreePixmap(dis, draw);
+    XFreePixmap(dis, drawMask);
   end;
 
 var

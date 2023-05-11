@@ -25,10 +25,8 @@ type
     win: TWindow;
     gc: TGC;
     visual: PVisual;
-    Bitmap: record
-      Width, Height: cuint;
-      Drawable: TPixmap;
-      end;
+    Bitmap: TPixmap;
+    procedure DrawBitmap(bit: TPixmap; x, y: cint; mono: boolean = False);
   public
     constructor Create;
     destructor Destroy; override;
@@ -62,9 +60,23 @@ type
     XDestroyWindow(dis, win);
 
     // Schliesst Verbindung zum Server
-    XFreePixmap(dis, Bitmap.Drawable);
+    XFreePixmap(dis, Bitmap);
     XCloseDisplay(dis);
     inherited Destroy;
+  end;
+
+  procedure TMyWin.DrawBitmap(bit: TPixmap; x, y: cint; mono: boolean);
+  var
+    root: TWindow;
+    x1, y1: cint;
+    Width, Height, border_width, depth: cuint;
+  begin
+    XGetGeometry(dis, bit, @root, @x1, @y1, @Width, @Height, @border_width, @depth);
+    if mono then begin
+      XCopyPlane(dis, bit, win, gc, 0, 0, Width, Height, x, y, 1);
+    end else begin
+      XCopyArea(dis, bit, win, gc, 0, 0, Width, Height, x, y);
+    end;
   end;
 
   procedure TMyWin.Run;
@@ -77,13 +89,8 @@ type
       case Event._type of
         Expose: begin
           XClearWindow(dis, win);
-          with Bitmap do begin
-            // Monochrom
-            XCopyPlane(dis, Drawable, win, gc, 0, 0, Width, Height, 0, 0, 1);
-
-            // Pixmap in Window kopieren
-            XCopyArea(dis, Drawable, win, gc, 0, 0, Width, Height, 50, 50);
-          end;
+          DrawBitmap(Bitmap, 0, 0, True);
+          DrawBitmap(Bitmap, 100, 100);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
@@ -96,31 +103,28 @@ type
   end;
 
   procedure TMyWin.CrateImage;
+  const
+    Width = 128;
+    Height = 128;
   var
     i: integer;
-    y_hot, x_hot: cint;
   begin
-    with Bitmap do begin
-      Width := 256;
-      Height := 256;
+    // Die Pixmap erzeugen.
+    Bitmap := XCreatePixmap(dis, win, Width, Height, DefaultDepth(dis, scr));
 
-      // Die Pixmap erzeugen.
-      Drawable := XCreatePixmap(dis, win, Width, Height, DefaultDepth(dis, scr));
+    // Pixmap mit einer Farbe ausfüllen
+    XSetForeground(dis, gc, $88FFFF);
+    XFillRectangle(dis, Bitmap, gc, 0, 0, Width, Height);
 
-      // Pixmap mit einer Farbe ausfüllen
-      XSetForeground(dis, gc, $88FFFF);
-      XFillRectangle(dis, Drawable, gc, 0, 0, Width, Height);
-
-      // Ein Muster reinzeichnen
-      for i := 0 to 16 do begin
-        XSetLineAttributes(dis, gc, i, LineSolid, CapButt, JoinBevel);
-        XSetForeground(dis, gc, random($FFFFFF));
-        XDrawRectangle(dis, Drawable, gc, i * 10, i * 10, 100, 100);
-      end;
-
-      // Gezeichnetes Bild abspeichern, nur Monocrom
-      XWriteBitmapFile(dis, 'test.xbm', Drawable, Width, Height, 0, 0);
+    // Ein Muster reinzeichnen
+    for i := 0 to 16 do begin
+      XSetLineAttributes(dis, gc, i, LineSolid, CapButt, JoinBevel);
+      XSetForeground(dis, gc, random($FFFFFF));
+      XDrawRectangle(dis, Bitmap, gc, i * 10, i * 10, 100, 100);
     end;
+
+    // Gezeichnetes Bild abspeichern, nur Monocrom
+    XWriteBitmapFile(dis, 'test.xbm', Bitmap, Width, Height, 0, 0);
   end;
 
 var

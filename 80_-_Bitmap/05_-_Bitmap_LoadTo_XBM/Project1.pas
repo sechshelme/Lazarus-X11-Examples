@@ -15,12 +15,6 @@ uses
   x;
 
 type
-
-  TBitmap = record
-    Width, Height: cuint;
-    Drawable: TPixmap;
-  end;
-
   TMyWin = class(TObject)
   private
     dis: PDisplay;
@@ -28,7 +22,8 @@ type
     win: TWindow;
     gc: TGC;
     visual: PVisual;
-    Bitmap: TBitmap;
+    Bitmap: TPixmap;
+    procedure DrawBitmap(bit: TPixmap; x, y: cint);
   public
     constructor Create;
     destructor Destroy; override;
@@ -68,9 +63,19 @@ type
     XDestroyWindow(dis, win);
 
     // Schliesst Verbindung zum Server
-    XFreePixmap(dis, Bitmap.Drawable);
+    XFreePixmap(dis, Bitmap);
     XCloseDisplay(dis);
     inherited Destroy;
+  end;
+
+  procedure TMyWin.DrawBitmap(bit: TPixmap; x, y: cint);
+  var
+    root: TWindow;
+    x1, y1: cint;
+    Width, Height, border_width, depth: cuint;
+  begin
+    XGetGeometry(dis, bit, @root, @x1, @y1, @Width, @Height, @border_width, @depth);
+    XCopyPlane(dis, bit, win, gc, 0, 0, Width, Height, x, y, 1);
   end;
 
   procedure TMyWin.Run;
@@ -84,10 +89,7 @@ type
       case Event._type of
         Expose: begin
           XClearWindow(dis, win);
-          with Bitmap do begin
-            XCopyPlane(dis, Drawable, win, gc, 0, 0, Width, Height, 0, 0, 1);
-            //                       XCopyArea(dis, Drawable, win, gc, 0, 0, Width, Height, 10, 10);
-          end;
+          DrawBitmap(Bitmap, 0, 0);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
@@ -103,12 +105,11 @@ type
   procedure TMyWin.LoadImage(path: string);
   var
     res, hotspotX, hotspotY: cint;
+    Width, Height: cuint;
   begin
-    with Bitmap do begin
-      res := XReadBitmapFile(dis, win, PChar(path), @Width, @Height, @Drawable, @hotspotX, @hotspotY);
-      if res <> 0 then begin
-        WriteLn('Bitmap Fehler: ', res);
-      end;
+    res := XReadBitmapFile(dis, win, PChar(path), @Width, @Height, @Bitmap, @hotspotX, @hotspotY);
+    if res <> 0 then begin
+      WriteLn('Bitmap Fehler: ', res);
     end;
   end;
 

@@ -1,6 +1,6 @@
 //image image.png
 (*
-Eine Bitmap laden, nur Monocrom.
+Eine Bitmap ab Konstante.
 *)
 //lineal
 //code+
@@ -42,10 +42,6 @@ const
     $08, $20, $10, $10, $20, $10, $20, $10));
 
 type
-  TBit = record
-    Width, Height: cuint;
-    Drawable: TPixmap;
-  end;
 
   { TMyWin }
 
@@ -55,12 +51,13 @@ type
     scr: cint;
     win: TWindow;
     gc: TGC;
-    Bit_hand, bit_cup: TBit;
+    Bit_hand, bit_cup: TPixmap;
+    procedure DrawBitmap(bit: TPixmap; x, y: cint);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Run;
-    function CreatePixmap(xmb: TxbmMask): TBit;
+    function CreatePixmap(xmb: TxbmMask): TPixmap;
   end;
 
 
@@ -90,9 +87,20 @@ type
     XDestroyWindow(dis, win);
 
     // Schliesst Verbindung zum Server
-    XFreePixmap(dis, Bit_hand.Drawable);
+    XFreePixmap(dis, Bit_hand);
+    XFreePixmap(dis, bit_cup);
     XCloseDisplay(dis);
     inherited Destroy;
+  end;
+
+  procedure TMyWin.DrawBitmap(bit: TPixmap; x, y: cint);
+  var
+    root: TWindow;
+    x1, y1: cint;
+    Width, Height, border_width, depth: cuint;
+  begin
+    XGetGeometry(dis, bit, @root, @x1, @y1, @Width, @Height, @border_width, @depth);
+    XCopyPlane(dis, bit, win, gc, 0, 0, Width, Height, x, y, 1);
   end;
 
   procedure TMyWin.Run;
@@ -109,12 +117,9 @@ type
           XClearWindow(dis, win);
           l := Event.xexpose.Width div 2 - 16;
           t := Event.xexpose.Height div 2 - 8;
-          with Bit_hand do begin
-            XCopyPlane(dis, Drawable, win, gc, 0, 0, Width, Height, l + 32, t + 16, 1);
-          end;
-          with bit_cup do begin
-            XCopyPlane(dis, Drawable, win, gc, 0, 0, Width, Height, l, t, 1);
-          end;
+
+          DrawBitmap(Bit_hand, l + 32, t + 16);
+          DrawBitmap(bit_cup, l, t);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
@@ -126,11 +131,9 @@ type
     end;
   end;
 
-  function TMyWin.CreatePixmap(xmb: TxbmMask): TBit;
+  function TMyWin.CreatePixmap(xmb: TxbmMask): TPixmap;
   begin
-    Result.Drawable := XCreateBitmapFromData(dis, win, PChar(xmb.bits), xmb.Width, xmb.Height);
-    Result.Width := xmb.Width;
-    Result.Height := xmb.Height;
+    Result := XCreateBitmapFromData(dis, win, PChar(xmb.bits), xmb.Width, xmb.Height);
   end;
 
 var
