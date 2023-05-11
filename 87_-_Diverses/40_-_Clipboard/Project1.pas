@@ -22,26 +22,27 @@ uses
 
 type
   TAtomPara = record
-    ClipboardID, FormatID, Xsel_dataID,
-    targets_atomID, text_atomID: TAtom;
+    XA_ATOM, XA_STRING,
+    XA_CLIPBOARD, Format, XSEL_DATA,
+    XA_TARGETS, XA_TEXT: TAtom;
   end;
 
 const
   Mask = KeyPressMask or ExposureMask;
 
 var
-  AtomPara: TAtomPara;
+  AP: TAtomPara;
   dis: PDisplay;
   win: TWindow;
 
-procedure wait;
-var
-  rem, Req: timespec;
-begin
-  Req.tv_nsec := 10000000;
-  Req.tv_sec := 3;
-  fpNanoSleep(@Req, @rem);
-end;
+  procedure wait;
+  var
+    rem, Req: timespec;
+  begin
+    Req.tv_nsec := 10000000;
+    Req.tv_sec := 3;
+    fpNanoSleep(@Req, @rem);
+  end;
 
   function PasteClipboard: string;
   var
@@ -53,38 +54,33 @@ end;
     //    result1: PChar;
   begin
     Result := '';
-    with AtomPara do begin
-      XConvertSelection(dis, ClipboardID, FormatID, Xsel_dataID, win, CurrentTime);
-      XNextEvent(dis, @ev);
+    XConvertSelection(dis, AP.XA_CLIPBOARD, AP.Format, AP.XSEL_DATA, win, CurrentTime);
+    XNextEvent(dis, @ev);
 
-      if ev._type = SelectionNotify then begin
-        WriteLn('bcbcb', ev.xselection._property);
-        if ev.xselection._property <> 0 then begin
+    if ev._type = SelectionNotify then begin
+      WriteLn('bcbcb', ev.xselection._property);
+      if ev.xselection._property <> 0 then begin
 
-          XGetWindowProperty(dis, win, Xsel_dataID, 0, MaxSIntValue, False, AnyPropertyType, @targetFormat, @resbits, @ressize, @restail, @res);
-          if FormatID = targetFormat then begin
-            WriteLn('io');
-            Result := res;
-          end else begin
-            WriteLn('error');
-            Result := '';
-          end;
-
-          WriteLn('Buffer-Size: ', ressize);
-          with ev.xselection do begin
-            XDeleteProperty(display, requestor, _property);
-          end;
+        XGetWindowProperty(dis, win, AP.XSEL_DATA, 0, MaxSIntValue, False, AnyPropertyType, @targetFormat, @resbits, @ressize, @restail, @res);
+        if AP.Format = targetFormat then begin
+          WriteLn('io');
+          Result := res;
+        end else begin
+          WriteLn('error');
+          Result := '';
         end;
-      end else begin
-        WriteLn('Falsches Event');
+
+        WriteLn('Buffer-Size: ', ressize);
+        with ev.xselection do begin
+          XDeleteProperty(display, requestor, _property);
+        end;
       end;
+    end else begin
+      WriteLn('Falsches Event');
     end;
   end;
 
   procedure Main;
-  const
-    XA_ATOM = 4;
-    XA_STRING = 31;
   var
     scr: cint;
     Event: TXEvent;
@@ -111,32 +107,28 @@ end;
       Halt(1);
     end;
 
-    with AtomPara do begin
-      targets_atomID := XInternAtom(dis, 'TARGETS', False);
-      text_atomID := XInternAtom(dis, 'TEXT', False);
+    AP.XA_ATOM := XInternAtom(dis, 'ATOM', False);
+    AP.XA_STRING := XInternAtom(dis, 'STRING', False);
 
-      ClipboardID := XInternAtom(dis, 'CLIPBOARD', False);
-      FormatID := XInternAtom(dis, 'UTF8_STRING', True);
-      WriteLn(FormatID);
-      if FormatID = 0 then begin
-        //        FormatID:=XA_STRING;
-        FormatID := XInternAtom(dis, 'STRING', True);
-      end;
+    AP.XA_TARGETS := XInternAtom(dis, 'TARGETS', False);
+    AP.XA_TEXT := XInternAtom(dis, 'TEXT', False);
 
-      //      FormatID:=31;
-
-      Xsel_dataID := XInternAtom(dis, 'XSEL_DATA', False);
-
-      WriteLn('string ', XInternAtom(dis, 'STRING', True));
-
-      WriteLn(ClipboardID);
-      WriteLn(FormatID);
-      WriteLn(Xsel_dataID);
-
-      WriteLn(MaxUIntValue);
-      WriteLn(not PtrUInt(0));
-      WriteLn(MaxInt * MaxInt);
+    AP.XA_CLIPBOARD := XInternAtom(dis, 'CLIPBOARD', False);
+    AP.Format := XInternAtom(dis, 'UTF8_STRING', True);
+    if AP.Format = 0 then begin
+      AP.Format := XInternAtom(dis, 'STRING', True);
     end;
+
+    AP.XSEL_DATA := XInternAtom(dis, 'XSEL_DATA', False);
+
+    WriteLn(AP.XA_ATOM);
+    WriteLn(AP.XA_STRING);
+    WriteLn(AP.XA_TARGETS);
+    WriteLn(AP.XA_TEXT);
+
+    WriteLn(AP.XA_CLIPBOARD);
+    WriteLn(AP.Format);
+    WriteLn(AP.XSEL_DATA);
 
     scr := DefaultScreen(dis);
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
@@ -161,8 +153,8 @@ end;
             end;
             XK_v: begin
               WriteLn('Auslesen einleiten');
-              with AtomPara do begin
-                XConvertSelection(dis, ClipboardID, FormatID, Xsel_dataID, win, CurrentTime);
+              with AP do begin
+                XConvertSelection(dis, XA_CLIPBOARD, Format, XSEL_DATA, win, CurrentTime);
               end;
             end;
             XK_c: begin
@@ -170,8 +162,8 @@ end;
               // Ein Pseudoinhalt fürs Clipboard
               WriteStr(ClipboardString, 'Hello World !'#10'Hallo Welt !'#10, DateTimeToStr(Now));
 
-              XSetSelectionOwner(dis, AtomPara.ClipboardID, win, CurrentTime);
-              if XGetSelectionOwner(dis, AtomPara.ClipboardID) <> win then begin
+              XSetSelectionOwner(dis, AP.XA_CLIPBOARD, win, CurrentTime);
+              if XGetSelectionOwner(dis, AP.XA_CLIPBOARD) <> win then begin
                 WriteLn('Fehler: Falsches Window');
               end;
             end;
@@ -179,9 +171,9 @@ end;
         end;
         // Wird ausgelöst, sobald Daten extern vom Clipboard verlangt werden.
         SelectionRequest: begin
-//          wait;
+          //          wait;
           WriteLn('SelectionRequest');
-          if event.xselectionrequest.selection = AtomPara.ClipboardID then begin
+          if event.xselectionrequest.selection = AP.XA_CLIPBOARD then begin
             WriteLn('Daten stehen im Clipboard bereit');
             xsr := @event.xselectionrequest;
             ev._type := SelectionNotify;
@@ -193,12 +185,12 @@ end;
             ev._property := xsr^._property;
             ev.serial := 0;
             ev.send_event := 0;
-            if ev.target = AtomPara.targets_atomID then begin
-              R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AtomPara.FormatID, 1);
-            end else if (ev.target = XA_STRING) or (ev.target = AtomPara.text_atomID) then begin
-              R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_STRING, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-            end else if ev.target = AtomPara.FormatID then  begin
-              R := XChangeProperty(ev.display, ev.requestor, ev._property, AtomPara.FormatID, 8, PropModeReplace, pbyte(PChar(ClipboardString)), Length(ClipboardString));
+            if ev.target = AP.XA_TARGETS then begin
+              R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_ATOM, 32, PropModeReplace, @AP.Format, 1);
+            end else if (ev.target = AP.XA_STRING) or (ev.target = AP.XA_TEXT) then begin
+              R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_STRING, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
+            end else if ev.target = AP.Format then  begin
+              R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.Format, 8, PropModeReplace, pbyte(PChar(ClipboardString)), Length(ClipboardString));
             end else begin
               ev._property := None;
             end;
@@ -210,22 +202,22 @@ end;
         // Wird ausgelöst, sobald eine andere App Daten fürs Chloboard hat.
         SelectionClear: begin
           WriteLn('Eine andere App hat Chliboard Daten');
-          ClipboardString:='';
+          ClipboardString := '';
         end;
         // Daten vom Clipboard stehen bereit zur Abholung
         SelectionNotify: begin
           WriteLn('SelectionNotify');
           Writeln('Clipboard auslesen');
           if Event.xselection._property <> 0 then begin
-            with AtomPara do begin
-              XGetWindowProperty(dis, win, Xsel_dataID, 0, MaxSIntValue, False, AnyPropertyType, @targetFormat, @resbits, @ressize, @restail, @res);
-            if FormatID = targetFormat then begin
-              WriteLn('io');
-              //              Result := res;
-            end else begin
-              WriteLn('error');
-              //              Result := '';
-            end;
+            with AP do begin
+              XGetWindowProperty(dis, win, XSEL_DATA, 0, MaxSIntValue, False, AnyPropertyType, @targetFormat, @resbits, @ressize, @restail, @res);
+              if Format = targetFormat then begin
+                WriteLn('io');
+                //              Result := res;
+              end else begin
+                WriteLn('error');
+                //              Result := '';
+              end;
             end;
             WriteLn('Buffer-Size: ', ressize);
             WriteLn('------ Inhalt vom Clipboard ----------');
@@ -246,4 +238,3 @@ end;
 begin
   Main;
 end.
-
