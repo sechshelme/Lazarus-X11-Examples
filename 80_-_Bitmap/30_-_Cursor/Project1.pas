@@ -109,14 +109,16 @@ type
     win := XCreateSimpleWindow(dis, root_win, 10, 10, 320, 200, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
     XSetBackground(dis, gc, $FF);
     XSetForeground(dis, gc, $FF0000);
-    XSetWindowBackground(dis, win, $00);
+    XSetWindowBackground(dis, win, $8888FF);
 
-    XSelectInput(dis, win, KeyPressMask or ExposureMask);
+    XSelectInput(dis, win, KeyPressMask or ExposureMask or ButtonPressMask or ButtonReleaseMask);
     XMapWindow(dis, win);
+
     Bit_cup := CreatePixmap(cup);
     Bit_text := CreatePixmap(Text);
 
     RatCursor := CreateCursor(rat, ratMask);
+    dRatCursor := CreateCursor(dRat, dRatMask);
 
     XDefineCursor(dis, win, RatCursor);
   end;
@@ -160,7 +162,13 @@ type
           t := Event.xexpose.Height div 2 - 8;
 
           DrawBitmap(Bit_cup, l + 32, t + 16);
-          DrawBitmap(Bit_text, l, t);
+          DrawBitmap(Bit_text, l - 32, t + 16);
+        end;
+        ButtonPress: begin
+          XDefineCursor(dis, win, dRatCursor);
+        end;
+        ButtonRelease: begin
+          XDefineCursor(dis, win, RatCursor);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
@@ -174,7 +182,7 @@ type
 
   function TMyWin.CreatePixmap(xmb: TxbmMask): TPixmap;
   begin
-      Result := XCreateBitmapFromData(dis, win, PChar(xmb.bits), xmb.Width, xmb.Height);
+    Result := XCreateBitmapFromData(dis, win, PChar(xmb.bits), xmb.Width, xmb.Height);
 
     //Result := XCreatePixmapFromBitmapData(dis, win, PChar(xmb.bits), xmb.Width, xmb.Height, $FF, $FF00, 1);
   end;
