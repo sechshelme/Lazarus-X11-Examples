@@ -88,18 +88,12 @@ begin
   xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
   xev.xclient.Data.l[4] := 0;
 
-  //xev.xclient.Data.l[1] := 0;
-  //xev.xclient.Data.l[2] := 0;
-  //xev.xclient.Data.l[3] := 0;
-  //xev.xclient.Data.l[4] := 0;
-  //xev.xclient.Data.l[3] := wm_fullscreen;
-
   event_mask := SubstructureRedirectMask;
 
 //  wm_state := XInternAtom(dis, '_NET_WM_STATE', False);
 
   evt_sucess := XSendEvent(dis, root_window, False, event_mask, @xev);
-  if event_mask = 0 then begin
+  if evt_sucess = 0 then begin
     WriteLn('Fehler');
   end;
 
