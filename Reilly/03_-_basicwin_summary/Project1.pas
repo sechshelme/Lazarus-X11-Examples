@@ -44,9 +44,10 @@ var
   var
     display_name: PChar = nil;
     progname: PChar;
-    screen_num, x, y: cint;
+    screen_num, x, y, Count: cint;
     display_width, display_heigth,
-    Width, Height, border_width, depth: cuint;
+    Width, Height, depth: cuint;
+    border_width: cint = 4;
     screen_ptr: PScreen;
     win, root: TWindow;
     windowattr: TXWindowAttributes;
@@ -57,14 +58,31 @@ var
     Event: TXEvent;
     window_size: cint = 0;
     windowName, iconname: TXTextProperty;
-    font_info:TXFontStruct;
-    gc:TGC;
+    font_info: TXFontStruct;
+    gc: TGC;
+    size_list: PXIconSize;
 
   begin
-    fprintf(stdout, 'Hello World %d'#10, 1234);
-    fflush(stdout);
-
     progname := argv[0];
+
+    size_hints := XAllocSizeHints;
+    if size_hints = nil then begin
+      fprintf(stderr, '%s: failure allocating memory'#10, progname);
+      Halt(0);
+    end;
+
+    wm_hints := XAllocWMHints;
+    if wm_hints = nil then begin
+      fprintf(stderr, '%s: failure allocating memory'#10, progname);
+      Halt(0);
+    end;
+
+    class_hints := XAllocClassHint;
+    if class_hints = nil then begin
+      fprintf(stderr, '%s: failure allocating memory'#10, progname);
+      Halt(0);
+    end;
+
     display := XOpenDisplay(display_name);
     if display = nil then begin
       fprintf(stderr, '%s: connat connect to X server %s'#10, progname, XDisplayName(display_name));
@@ -72,10 +90,27 @@ var
     end;
 
     screen_num := DefaultScreen(display);
-    screen_ptr := DefaultScreenOfDisplay(display);
-
     display_width := DisplayWidth(display, screen_num);
     display_heigth := DisplayHeight(display, screen_num);
+
+    x := 0;
+    y := 0;
+
+    Width := display_width div 3;
+    Height := display_heigth div 4;
+    win := XCreateSimpleWindow(display, RootWindow(display, screen_num), x, y, Width, Height, border_width, BlackPixel(display, screen_num), WhitePixel(display, screen_num));
+
+    if XGetIconSizes(display, RootWindow(display, screen_num), @size_list, @Count) = 0 then begin
+      fprintf(stderr, '%s: Window manager didn’t set icon sizes − using default.\n', progname);
+    end;
+
+
+
+
+
+
+    screen_ptr := DefaultScreenOfDisplay(display);
+
     printf('DisplayWidth: %d'#10, display_width);
     printf('DisplayHeight: %d'#10, display_heigth);
 
@@ -100,32 +135,9 @@ var
     printf('DisplayWidth: %d'#10, display_width);
     printf('DisplayHeight: %d'#10, display_heigth);
 
-    x := 0;
-    y := 0;
     border_width := 4;
-    Width := display_width div 3;
-    Height := display_heigth div 4;
-    win := XCreateSimpleWindow(display, RootWindow(display, screen_num), x, y, Width, Height, border_width, BlackPixel(display, screen_num), WhitePixel(display, screen_num));
 
     icon_pixmap := XCreateBitmapFromData(display, win, PChar(icon_bitmap_bits), icon_bitmap_width, icon_bitmap_height);
-
-    size_hints := XAllocSizeHints;
-    if size_hints = nil then begin
-      fprintf(stderr, '%s: failure allocating memory'#10, progname);
-      Halt(0);
-    end;
-
-    wm_hints := XAllocWMHints;
-    if wm_hints = nil then begin
-      fprintf(stderr, '%s: failure allocating memory'#10, progname);
-      Halt(0);
-    end;
-
-    class_hints := XAllocClassHint;
-    if class_hints = nil then begin
-      fprintf(stderr, '%s: failure allocating memory'#10, progname);
-      Halt(0);
-    end;
 
     size_hints^.flags := PPosition or PSize or PMinSize;
     size_hints^.min_width := 300;
@@ -162,11 +174,11 @@ var
       XNextEvent(display, @Event);
       case Event._type of
         Expose: begin
-//          if Event.xexpose.Count <> 0 then begin
-//            Break;
-//          end;
+          //          if Event.xexpose.Count <> 0 then begin
+          //            Break;
+          //          end;
           if window_size = TOO_SMALL then begin
-//            TooSmall(win, gc, font_info);
+            //            TooSmall(win, gc, font_info);
           end;
         end;
         KeyPress: begin

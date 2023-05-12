@@ -76,6 +76,8 @@ const
 
 type
 
+  { TMyWin }
+
   TMyWin = class(TObject)
   private
     dis: PDisplay;
@@ -91,6 +93,7 @@ type
     procedure Run;
     function CreatePixmap(xmb: TxbmMask): TPixmap;
     function CreateCursor(bit, bitmask: TxbmMask): TCursor;
+    procedure SetCursorColor(cursor: TCursor; Afg, Abg: PChar);
   end;
 
   constructor TMyWin.Create;
@@ -172,8 +175,22 @@ type
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
-          if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
-            Break;
+          case XLookupKeysym(@Event.xkey, 0) of
+            XK_Escape: begin
+              Break;
+            end;
+            XK_r: begin
+              SetCursorColor(RatCursor, 'red', 'white');
+            end;
+            XK_b: begin
+              SetCursorColor(RatCursor, 'blue', 'white');
+            end;
+            XK_g: begin
+              SetCursorColor(RatCursor, 'green', 'white');
+            end;
+            XK_y: begin
+              SetCursorColor(RatCursor, 'yellow', 'black');
+            end;
           end;
         end;
       end;
@@ -192,16 +209,26 @@ type
     bg, fg, nearrgb: TXColor;
     draw, drawMask: TPixmap;
   begin
-    XLookupColor(dis, XDefaultColormap(dis, scr), 'green', @bg, @nearrgb);
     XLookupColor(dis, XDefaultColormap(dis, scr), 'yellow', @fg, @nearrgb);
+    XLookupColor(dis, XDefaultColormap(dis, scr), 'green', @bg, @nearrgb);
 
     draw := XCreateBitmapFromData(dis, win, PChar(bit.bits), bit.Width, bit.Height);
     drawMask := XCreateBitmapFromData(dis, win, PChar(bitmask.bits), bitmask.Width, bitmask.Height);
 
-    Result := XCreatePixmapCursor(dis, draw, drawMask, @fg, @bg, 0, 0);
+    Result := XCreatePixmapCursor(dis, draw, drawMask, @fg, @bg, bit.Width div 2, bit.Height div 2);
 
     XFreePixmap(dis, draw);
     XFreePixmap(dis, drawMask);
+  end;
+
+  procedure TMyWin.SetCursorColor(cursor: TCursor; Afg, Abg: PChar);
+  var
+    bg, fg, nearrgb: TXColor;
+  begin
+    XLookupColor(dis, XDefaultColormap(dis, scr), Afg, @fg, @nearrgb);
+    XLookupColor(dis, XDefaultColormap(dis, scr), Abg, @bg, @nearrgb);
+
+    XRecolorCursor(dis, cursor, @fg, @bg);
   end;
 
 var
