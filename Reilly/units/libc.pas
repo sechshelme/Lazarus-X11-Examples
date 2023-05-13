@@ -19,6 +19,7 @@ var
 function printf(format:PChar):cint;varargs cdecl;external lib_stdio;
 function fprintf(stream:cFILE; format:PChar):cint;varargs cdecl;external lib_stdio;
 function fflush(stream:cFILE):cint; cdecl;external lib_stdio;
+//function sprintf(
 
 implementation
 

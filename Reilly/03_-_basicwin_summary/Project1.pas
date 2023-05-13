@@ -9,6 +9,8 @@ uses
   x,
   libc;
 
+// Ab Seite 65
+
 const
   icon_bitmap_width = 20;
   icon_bitmap_height = 20;
@@ -23,19 +25,7 @@ const
 
 var
   display: PDisplay;
-  screen_num:cint;
-
-
-  procedure TooSmall(win: TWindow; gc: TGC; font_info: PXFontStruct);
-  var
-    string1: PChar;
-    x_offset, y_offset: cint;
-  begin
-    string1 := PChar('Too Small');
-    y_offset := font_info^.ascent + 2;
-    x_offset := 2;
-    XDrawString(display, win, gc, x_offset, y_offset, string1, StrLen(string1));
-  end;
+  screen_num: cint;
 
   procedure load_font(font_info: PPXFontStruct);
   var
@@ -65,9 +55,63 @@ var
     gc^ := XCreateGC(display, win, valuemask, @values);
     XSetFont(display, gc^, font_info^.fid);
 
-    XSetForeground(display,gc^,BlackPixel(display,screen_num));
-    XSetLineAttributes(display,gc^,linw_width,line_style,cap_style,join_style);
-    XSetDashes(display,gc^,dash_offfset,dash_list,list_length);
+    XSetForeground(display, gc^, BlackPixel(display, screen_num));
+    XSetLineAttributes(display, gc^, linw_width, line_style, cap_style, join_style);
+    XSetDashes(display, gc^, dash_offfset, dash_list, list_length);
+  end;
+
+  procedure place_text(win: TWindow; gc: TGC; font_info: PXFontStruct; win_width, win_height: cuint);
+const     string1:PChar = 'Hi! I''m a window, who are you?';
+string2:PChar = 'To terminate program; Press any key';
+string3:PChar = 'or button while in this window.';
+string4 :PChar= 'Screen Dimensions:';
+var cd_height,cd_width,cd_depth:array [0..49]of Char;
+  len1, len2, len3, len4: SizeInt;
+  width1, width2, width3, font_height, initial_y_offset: cint;
+  x_offset: cuint;
+  begin
+    len1:=StrLen(string1);
+    len2:=StrLen(string2);
+    len3:=StrLen(string3);
+    width1:=XTextWidth(font_info,string1,len1);
+    width2:=XTextWidth(font_info,string1,len2);
+    width3:=XTextWidth(font_info,string1,len3);
+    font_height:=font_info^.ascent+font_info^.descent;
+    XDrawString(display,win,gc,(win_width-width1)div 2,font_height,string1,len1);
+    XDrawString(display,win,gc,(win_width-width2)div 2, win_height-(2* font_height),string2,len2);
+    XDrawString(display,win,gc,(win_width-width3)div 2,win_height- font_height,string3,len3);
+    len4:=StrLen(string4);
+    len1:=StrLen(cd_height);
+    len2:=StrLen(cd_width);
+    len3:=StrLen(cd_depth);
+
+    initial_y_offset:=win_height div 2-font_height-font_info^.descent;
+    x_offset:=win_width div 4;
+
+    XDrawString(display,win,gc,x_offset, initial_y_offset,string4,len4);
+
+  end;
+
+  procedure place_graphics(win: TWindow; gc: TGC; window_width, window_height: cuint);
+  var
+    Height, Width, x, y: cuint;
+  begin
+    Height := window_height div 2;
+    Width := 3 * window_height div 2;
+    x := window_width div 2 - Width div 2;
+    y := window_height div 2 - Height div 2;
+    XDrawRectangle(display, win, gc, x, y, Width, Height);
+  end;
+
+  procedure TooSmall(win: TWindow; gc: TGC; font_info: PXFontStruct);
+  var
+    string1: PChar;
+    x_offset, y_offset: cint;
+  begin
+    string1 := PChar('Too Small');
+    y_offset := font_info^.ascent + 2;
+    x_offset := 2;
+    XDrawString(display, win, gc, x_offset, y_offset, string1, StrLen(string1));
   end;
 
   procedure main;
@@ -80,11 +124,9 @@ var
     progname: PChar;
     x, y, Count: cint;
     display_width, display_heigth,
-    Width, Height, depth: cuint;
+    Width, Height: cuint;
     border_width: cint = 4;
-    screen_ptr: PScreen;
-    win, root: TWindow;
-    windowattr: TXWindowAttributes;
+    win: TWindow;
     icon_pixmap: TPixmap;
     size_hints: PXSizeHints;
     wm_hints: PXWMHints;
@@ -166,28 +208,44 @@ var
     class_hints^.res_class := 'Basicwin';
 
     XSetWMProperties(display, win, @windowname, @iconname, argv, argc, size_hints, wm_hints, class_hints);
-    XSelectInput(display, win, KeyPressMask or ExposureMask or ButtonPressMask or SubstructureNotifyMask);
+    XSelectInput(display, win, KeyPressMask or ExposureMask or ButtonPressMask or StructureNotifyMask);
 
     load_font(@font_info);
 
     getGC(win, @gc, font_info);
-
 
     XMapWindow(display, win);
     while (True) do begin
       XNextEvent(display, @Event);
       case Event._type of
         Expose: begin
-          //          if Event.xexpose.Count <> 0 then begin
-          //            Break;
-          //          end;
-          if window_size = TOO_SMALL then begin
-            //            TooSmall(win, gc, font_info);
+          if Event.xexpose.Count <> 0 then begin
+            Continue;
           end;
+          if window_size = TOO_SMALL then begin
+            TooSmall(win, gc, font_info);
+          end else begin
+            place_text(win, gc, font_info, Width, Height);
+            place_graphics(win, gc, Width, Height);
+          end;
+        end;
+        ConfigureNotify: begin
+          Width := Event.xconfigure.Width;
+          Height := Event.xconfigure.Height;
+          if (Width < size_hints^.min_width) or (Height < size_hints^.min_height) then begin
+            window_size := TOO_SMALL;
+          end else begin
+            window_size := BIG_ENOUGH;
+          end;
+        end;
+        ButtonPress: begin
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
           if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
+            XUnloadFont(display,font_info^.fid);
+            XFreeGC(display, gc);
+            XCloseDisplay(display);
             Break;
           end;
         end;
