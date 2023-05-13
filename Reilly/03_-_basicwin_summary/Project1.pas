@@ -23,6 +23,7 @@ const
 
 var
   display: PDisplay;
+  screen_num:cint;
 
 
   procedure TooSmall(win: TWindow; gc: TGC; font_info: PXFontStruct);
@@ -36,6 +37,39 @@ var
     XDrawString(display, win, gc, x_offset, y_offset, string1, StrLen(string1));
   end;
 
+  procedure load_font(font_info: PPXFontStruct);
+  var
+    fontname: PChar = '9x15';
+  begin
+    font_info^ := XLoadQueryFont(display, fontname);
+    if font_info^ = nil then begin
+      fprintf(stderr, '%s: Cannot open 9x15 font'#10);
+      Halt(-1);
+    end;
+  end;
+
+  procedure getGC(win: TWindow; gc: PGC; font_info: PXFontStruct);
+  var
+    valuemask: clong = 0;
+    values: TXGCValues;
+    linw_width: cuint = 6;
+    line_style: cint = LineOnOffDash;
+    cap_style: cint = CapRound;
+    join_style: cint = JoinRound;
+    dash_offfset: cint = 0;
+  const
+    dash_list: array[0..1] of char = (#12, #24);
+  var
+    list_length: cint = length(dash_list);
+  begin
+    gc^ := XCreateGC(display, win, valuemask, @values);
+    XSetFont(display, gc^, font_info^.fid);
+
+    XSetForeground(display,gc^,BlackPixel(display,screen_num));
+    XSetLineAttributes(display,gc^,linw_width,line_style,cap_style,join_style);
+    XSetDashes(display,gc^,dash_offfset,dash_list,list_length);
+  end;
+
   procedure main;
   const
     BITMAPDEPTH = 1;
@@ -44,7 +78,7 @@ var
   var
     display_name: PChar = nil;
     progname: PChar;
-    screen_num, x, y, Count: cint;
+    x, y, Count: cint;
     display_width, display_heigth,
     Width, Height, depth: cuint;
     border_width: cint = 4;
@@ -58,7 +92,7 @@ var
     Event: TXEvent;
     window_size: cint = 0;
     windowName, iconname: TXTextProperty;
-    font_info: TXFontStruct;
+    font_info: PXFontStruct;
     gc: TGC;
     size_list: PXIconSize;
 
@@ -100,42 +134,12 @@ var
     Height := display_heigth div 4;
     win := XCreateSimpleWindow(display, RootWindow(display, screen_num), x, y, Width, Height, border_width, BlackPixel(display, screen_num), WhitePixel(display, screen_num));
 
+
     if XGetIconSizes(display, RootWindow(display, screen_num), @size_list, @Count) = 0 then begin
       fprintf(stderr, '%s: Window manager didn’t set icon sizes − using default.\n', progname);
+    end else begin
+      WriteLn('icon io');
     end;
-
-
-
-
-
-
-    screen_ptr := DefaultScreenOfDisplay(display);
-
-    printf('DisplayWidth: %d'#10, display_width);
-    printf('DisplayHeight: %d'#10, display_heigth);
-
-    if XGetGeometry(display, RootWindow(display, screen_num), @root, @x, @y, @Width, @Height, @border_width, @depth) = 0 then begin
-      fprintf(stderr, '%s: can’t get root window geometry'#10, progname);
-      Halt(-1);
-    end;
-
-    display_width := Width;
-    display_heigth := Height;
-    printf('DisplayWidth: %d'#10, display_width);
-    printf('DisplayHeight: %d'#10, display_heigth);
-    printf('Depth: %d'#10, depth);
-
-    if XGetWindowAttributes(display, RootWindow(display, screen_num), @windowattr) = 0 then begin
-      fprintf(stderr, '%s: failed to get window attributes.'#10, progname);
-      Halt(-1);
-    end;
-
-    display_width := windowattr.Width;
-    display_heigth := windowattr.Height;
-    printf('DisplayWidth: %d'#10, display_width);
-    printf('DisplayHeight: %d'#10, display_heigth);
-
-    border_width := 4;
 
     icon_pixmap := XCreateBitmapFromData(display, win, PChar(icon_bitmap_bits), icon_bitmap_width, icon_bitmap_height);
 
@@ -143,19 +147,15 @@ var
     size_hints^.min_width := 300;
     size_hints^.min_height := 200;
 
-    size_hints^.Width := 200;
-    size_hints^.Height := 200;
-
     if XStringListToTextProperty(@window_name, 1, @windowname) = 0 then begin
       fprintf(stderr, '%s: structure allocation for iconName failed.'#10, progname);
-      Halt(0);
+      Halt(-1);
     end;
 
     if XStringListToTextProperty(@icon_name, 1, @iconname) = 0 then begin
       fprintf(stderr, '%s: structure allocation for iconName failed.'#10, progname);
-      Halt(0);
+      Halt(-1);
     end;
-
 
     wm_hints^.initial_state := NormalState;
     wm_hints^.input := 1;
@@ -166,9 +166,13 @@ var
     class_hints^.res_class := 'Basicwin';
 
     XSetWMProperties(display, win, @windowname, @iconname, argv, argc, size_hints, wm_hints, class_hints);
-
-
     XSelectInput(display, win, KeyPressMask or ExposureMask or ButtonPressMask or SubstructureNotifyMask);
+
+    load_font(@font_info);
+
+    getGC(win, @gc, font_info);
+
+
     XMapWindow(display, win);
     while (True) do begin
       XNextEvent(display, @Event);
