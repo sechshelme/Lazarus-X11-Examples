@@ -16,10 +16,10 @@ var
   stdout :cFILE;cvar;external lib_stdio;
   stderr :cFILE;cvar;external lib_stdio;
 
-function printf(format:PChar):cint;varargs cdecl;external lib_stdio;
-function fprintf(stream:cFILE; format:PChar):cint;varargs cdecl;external lib_stdio;
+function printf(str:PChar):cint;varargs cdecl;external lib_stdio;
+function fprintf(stream:cFILE; str:PChar):cint;varargs cdecl;external lib_stdio;
 function fflush(stream:cFILE):cint; cdecl;external lib_stdio;
-//function sprintf(
+function sprintf(desr,src:PChar):cint;varargs cdecl;external lib_stdio;
 
 implementation
 

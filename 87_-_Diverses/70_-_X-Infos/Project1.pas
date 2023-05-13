@@ -135,6 +135,24 @@ var
     WriteLn();
   end;
 
+procedure PrintIcon;
+var
+  size_list: PXIconSize;
+  cnt: cint=0;
+  i: Integer;
+begin
+  if XGetIconSizes(dis,RootWindow(dis, scr) , @size_list, @cnt) = 0 then begin
+    WriteLn('Fenstermanager unterstützt keine Icons');
+  end else begin
+    WriteLn(' No  | min_w | min_h | max_w | max_h | w_inc | h_inc');
+    for i := 0 to cnt - 1 do begin
+      with size_list[i] do begin
+        WriteLn(i: 4, ' |', min_width: 6, ' |', min_height:6, ' |', max_width: 6, ' |', max_height:6, ' |', width_inc: 6, ' |', height_inc:6);
+      end;
+    end;
+  end;
+  end;
+
 begin
   // Erstellt die Verbindung zum Server
   dis := XOpenDisplay(nil);
@@ -166,6 +184,7 @@ begin
   PrintHosts;
   PrintColorMaps;
   PrintPropertys;
+  PrintIcon;
 
   // Ereignisschleife
   while (True) do begin

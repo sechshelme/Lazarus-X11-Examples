@@ -25,6 +25,7 @@ type
     dis: PDisplay;
     scr: cint;
     win: TWindow;
+    subwin: TWindow;
     gc: TGC;
     Pitmap: TPixmap;
     procedure DrawBitmap(bit: TPixmap; x, y: cint; mono: boolean = False);
@@ -50,9 +51,14 @@ type
     gc := DefaultGC(dis, scr);
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
+    subwin := XCreateSimpleWindow(dis, win, 100, 100, 320, 180, 50, BlackPixel(dis, scr), WhitePixel(dis, scr));
+
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
+    XSelectInput(dis, subwin, KeyPressMask or ExposureMask);
     XMapWindow(dis, win);
+    XMapWindow(dis, subwin);
     CrateImage;
+    XSetWindowBorderPixmap(dis, subwin, Pitmap);
   end;
 
   destructor TMyWin.Destroy;
@@ -89,12 +95,20 @@ type
       XNextEvent(dis, @Event);
       case Event._type of
         Expose: begin
-          XClearWindow(dis, win);
-          // Drawable in Window kopieren
-          DrawBitmap(Pitmap, 0, 0);
+          if Event.xexpose.window = win then begin
+            XClearWindow(dis, win);
+            // Drawable in Window kopieren
+            DrawBitmap(Pitmap, 0, 0);
 
-          // Monochrom
-          DrawBitmap(Pitmap, 100, 100, True);
+            // Monochrom
+            DrawBitmap(Pitmap, 100, 100, True);
+          end;
+          if Event.xexpose.window = subwin then begin
+            XClearWindow(dis, subwin);
+
+            XSetForeground(dis,gc,$FF0000);
+            XDrawRectangle(dis,subwin,gc,50,50,220,80);
+          end;
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]

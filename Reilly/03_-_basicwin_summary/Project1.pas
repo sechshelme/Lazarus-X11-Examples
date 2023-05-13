@@ -61,35 +61,48 @@ var
   end;
 
   procedure place_text(win: TWindow; gc: TGC; font_info: PXFontStruct; win_width, win_height: cuint);
-const     string1:PChar = 'Hi! I''m a window, who are you?';
-string2:PChar = 'To terminate program; Press any key';
-string3:PChar = 'or button while in this window.';
-string4 :PChar= 'Screen Dimensions:';
-var cd_height,cd_width,cd_depth:array [0..49]of Char;
-  len1, len2, len3, len4: SizeInt;
-  width1, width2, width3, font_height, initial_y_offset: cint;
-  x_offset: cuint;
+  const
+    string1: PChar = 'Hi! I''m a window, who are you?';
+    string2: PChar = 'To terminate program; Press any key';
+    string3: PChar = 'or button while in this window.';
+    string4: PChar = 'Screen Dimensions:';
+  var
+    cd_height, cd_width, cd_depth: array [0..49] of char;
+    len1, len2, len3, len4: SizeInt;
+    width1, width2, width3, font_height, initial_y_offset: cint;
+    x_offset: cuint;
   begin
-    len1:=StrLen(string1);
-    len2:=StrLen(string2);
-    len3:=StrLen(string3);
-    width1:=XTextWidth(font_info,string1,len1);
-    width2:=XTextWidth(font_info,string1,len2);
-    width3:=XTextWidth(font_info,string1,len3);
-    font_height:=font_info^.ascent+font_info^.descent;
-    XDrawString(display,win,gc,(win_width-width1)div 2,font_height,string1,len1);
-    XDrawString(display,win,gc,(win_width-width2)div 2, win_height-(2* font_height),string2,len2);
-    XDrawString(display,win,gc,(win_width-width3)div 2,win_height- font_height,string3,len3);
-    len4:=StrLen(string4);
-    len1:=StrLen(cd_height);
-    len2:=StrLen(cd_width);
-    len3:=StrLen(cd_depth);
+    len1 := StrLen(string1);
+    len2 := StrLen(string2);
+    len3 := StrLen(string3);
+    len4 := StrLen(string4);
 
-    initial_y_offset:=win_height div 2-font_height-font_info^.descent;
-    x_offset:=win_width div 4;
+    width1 := XTextWidth(font_info, string1, len1);
+    width2 := XTextWidth(font_info, string1, len2);
+    width3 := XTextWidth(font_info, string1, len3);
 
-    XDrawString(display,win,gc,x_offset, initial_y_offset,string4,len4);
+    font_height := font_info^.ascent + font_info^.descent;
 
+    XDrawString(display, win, gc, (win_width - width1) div 2, font_height, string1, len1);
+    XDrawString(display, win, gc, (win_width - width2) div 2, win_height - (2 * font_height), string2, len2);
+    XDrawString(display, win, gc, (win_width - width3) div 2, win_height - font_height, string3, len3);
+
+    sprintf(cd_height, ' Height - %d pixels', DisplayHeight(display, screen_num));
+    sprintf(cd_width, ' Width  - %d pixels', DisplayWidth(display, screen_num));
+    sprintf(cd_depth, ' Depth  - %d pixels', DefaultDepth(display, screen_num));
+
+    len1 := StrLen(cd_height);
+    len2 := StrLen(cd_width);
+    len3 := StrLen(cd_depth);
+
+    initial_y_offset := win_height div 2 - font_height - font_info^.descent;
+    x_offset := win_width div 4;
+
+    XDrawString(display, win, gc, x_offset, initial_y_offset, string4, len4);
+
+    XDrawString(display, win, gc, x_offset, initial_y_offset + font_height, cd_height, len1);
+    XDrawString(display, win, gc, x_offset, initial_y_offset + font_height * 2, cd_width, len2);
+    XDrawString(display, win, gc, x_offset, initial_y_offset + font_height * 3, cd_depth, len3);
   end;
 
   procedure place_graphics(win: TWindow; gc: TGC; window_width, window_height: cuint);
@@ -181,6 +194,7 @@ var cd_height,cd_width,cd_depth:array [0..49]of Char;
       fprintf(stderr, '%s: Window manager didn’t set icon sizes − using default.\n', progname);
     end else begin
       WriteLn('icon io');
+      WriteLn('Icon Count: ', Count);
     end;
 
     icon_pixmap := XCreateBitmapFromData(display, win, PChar(icon_bitmap_bits), icon_bitmap_width, icon_bitmap_height);
@@ -243,7 +257,7 @@ var cd_height,cd_width,cd_depth:array [0..49]of Char;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
           if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
-            XUnloadFont(display,font_info^.fid);
+            XUnloadFont(display, font_info^.fid);
             XFreeGC(display, gc);
             XCloseDisplay(display);
             Break;
