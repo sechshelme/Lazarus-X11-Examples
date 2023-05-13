@@ -1,8 +1,6 @@
 //image image.png
 (*
-Eine Pixmap erzeugen.
-In diese kann man mit den üblichen Zeichenfunktion reinzeichnen, ZB. Rechtecke und Kreise, wie bei einem Window.
-Eine frisch erzeugte Pixmap muss man mit **XFillRectangle** eine Rechteck zeichen, ansonsten hat so von Anfang an ein zufälliger Inhalt.
+Den Fensterrand kann man auch mit einer Bitmap befüllen.
 *)
 //lineal
 //code+
@@ -17,6 +15,18 @@ uses
   x;
 
 type
+  TxbmMask = record
+    Width, Height: cuint;
+    bits: array of byte;
+  end;
+
+const
+  hand: TxbmMask = (Width: 16; Height: 16; bits: (
+    $80, $01, $58, $0e, $64, $12, $64, $52, $48, $b2, $48, $92,
+    $16, $90, $19, $80, $11, $40, $02, $40, $04, $40, $04, $20,
+    $08, $20, $10, $10, $20, $10, $20, $10));
+
+type
 
   { TMyWin }
 
@@ -25,15 +35,16 @@ type
     dis: PDisplay;
     scr: cint;
     win: TWindow;
-    subwin: TWindow;
+    subwin1, subwin2: TWindow;
     gc: TGC;
-    Pitmap: TPixmap;
+    Pitmap1, Pitmap2: TPixmap;
     procedure DrawBitmap(bit: TPixmap; x, y: cint; mono: boolean = False);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Run;
-    procedure CrateImage;
+    function CrateImageFromBitmap: TPixmap;
+    function CrateImage: TPixmap;
   end;
 
 
@@ -51,14 +62,23 @@ type
     gc := DefaultGC(dis, scr);
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 640, 480, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
-    subwin := XCreateSimpleWindow(dis, win, 100, 100, 320, 180, 50, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    subwin1 := XCreateSimpleWindow(dis, win, 100, 100, 100, 100, 30, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    subwin2 := XCreateSimpleWindow(dis, win, 320, 100, 100, 100, 50, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
-    XSelectInput(dis, subwin, KeyPressMask or ExposureMask);
+    XSelectInput(dis, subwin1, KeyPressMask or ExposureMask);
+    XSelectInput(dis, subwin2, KeyPressMask or ExposureMask);
+
     XMapWindow(dis, win);
-    XMapWindow(dis, subwin);
-    CrateImage;
-    XSetWindowBorderPixmap(dis, subwin, Pitmap);
+    XMapWindow(dis, subwin1);
+    XMapWindow(dis, subwin2);
+
+    Pitmap1 := CrateImageFromBitmap;
+    XSetWindowBorderPixmap(dis, subwin1, Pitmap1);
+
+    Pitmap2 := CrateImage;
+    XSetWindowBorderPixmap(dis, subwin2, Pitmap2);
+    XSetWindowBackgroundPixmap(dis,subwin2, Pitmap1);
   end;
 
   destructor TMyWin.Destroy;
@@ -67,7 +87,7 @@ type
     XDestroyWindow(dis, win);
 
     // Schliesst Verbindung zum Server
-    XFreePixmap(dis, Pitmap);
+    XFreePixmap(dis, Pitmap1);
     XCloseDisplay(dis);
     inherited Destroy;
   end;
@@ -98,16 +118,22 @@ type
           if Event.xexpose.window = win then begin
             XClearWindow(dis, win);
             // Drawable in Window kopieren
-            DrawBitmap(Pitmap, 0, 0);
+            DrawBitmap(Pitmap1, 0, 0);
 
             // Monochrom
-            DrawBitmap(Pitmap, 100, 100, True);
+            DrawBitmap(Pitmap1, 100, 100, True);
           end;
-          if Event.xexpose.window = subwin then begin
-            XClearWindow(dis, subwin);
+          if Event.xexpose.window = subwin1 then begin
+            XClearWindow(dis, subwin1);
 
-            XSetForeground(dis,gc,$FF0000);
-            XDrawRectangle(dis,subwin,gc,50,50,220,80);
+            XSetForeground(dis, gc, $FF0000);
+            XDrawRectangle(dis, subwin1, gc, 10, 10, 80, 80);
+          end;
+          if Event.xexpose.window = subwin2 then begin
+            XClearWindow(dis, subwin1);
+
+            XSetForeground(dis, gc, $00FF00);
+            XDrawRectangle(dis, subwin2, gc, 20, 20, 60, 60);
           end;
         end;
         KeyPress: begin
@@ -120,24 +146,31 @@ type
     end;
   end;
 
-  procedure TMyWin.CrateImage;
-  const
-    Width = 128;
-    Height = 128;
+  function TMyWin.CrateImageFromBitmap: TPixmap;
+  begin
+    Result := XCreatePixmapFromBitmapData(dis, win, PChar(hand.bits), hand.Width, hand.Height, $88FF88, $FF8888, DefaultDepth(dis, scr));
+    XSetForeground(dis, gc, $0);
+    XDrawLine(dis, Result, gc, 0, 0, hand.Width, hand.Height);
+    XDrawLine(dis, Result, gc, 0, hand.Width, hand.Height, 0);
+  end;
+
+  function TMyWin.CrateImage: TPixmap;
   var
     i: integer;
+    Width: cuint = 32;
+    Height: cuint = 32;
   begin
     // Die Drawable erzeugen.
-    Pitmap := XCreatePixmap(dis, win, Width, Height, DefaultDepth(dis, scr));
+    Result := XCreatePixmap(dis, win, Width, Height, DefaultDepth(dis, scr));
 
     // Drawable mit einer Farbe ausfüllen
     XSetForeground(dis, gc, $88FFFF);
-    XFillRectangle(dis, Pitmap, gc, 0, 0, Width, Height);
+    XFillRectangle(dis, Result, gc, 0, 0, Width, Height);
     // Ein Muster reinzeichnen
-    for i := 0 to 16 do begin
+    for i := 0 to 3 do begin
       XSetLineAttributes(dis, gc, i, LineSolid, CapButt, JoinBevel);
       XSetForeground(dis, gc, random($FFFFFF));
-      XDrawRectangle(dis, Pitmap, gc, i * 10, i * 10, 100, 100);
+      XDrawRectangle(dis, Result, gc, i * 3, i * 3, 100, 100);
     end;
   end;
 
