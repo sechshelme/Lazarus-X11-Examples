@@ -35,8 +35,8 @@ var
     c: Pcairo_t;
   begin
     c := cairo_create(cs);
-    cairo_rectangle(c, 10.0, 10.0, SIZEX - 20, SIZEY - 20);
     cairo_set_source_rgb(c, 0.0, 0.0, 0.5);
+    cairo_rectangle(c, 10.0, 10.0, SIZEX - 20, SIZEY - 20);
     cairo_fill(c);
     cairo_move_to(c, 20.0, 20.0);
     cairo_set_source_rgb(c, 1.0, 1.0, 0.0);
