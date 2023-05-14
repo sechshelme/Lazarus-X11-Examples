@@ -43,8 +43,8 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Run;
-    function CrateImageFromBitmap: TPixmap;
-    function CrateImage: TPixmap;
+    function CreateImageFromBitmap: TPixmap;
+    function CreateImage: TPixmap;
   end;
 
 
@@ -73,10 +73,10 @@ type
     XMapWindow(dis, subwin1);
     XMapWindow(dis, subwin2);
 
-    Pitmap1 := CrateImageFromBitmap;
+    Pitmap1 := CreateImageFromBitmap;
     XSetWindowBorderPixmap(dis, subwin1, Pitmap1);
 
-    Pitmap2 := CrateImage;
+    Pitmap2 := CreateImage;
     XSetWindowBorderPixmap(dis, subwin2, Pitmap2);
     XSetWindowBackgroundPixmap(dis,subwin2, Pitmap1);
   end;
@@ -146,7 +146,7 @@ type
     end;
   end;
 
-  function TMyWin.CrateImageFromBitmap: TPixmap;
+  function TMyWin.CreateImageFromBitmap: TPixmap;
   begin
     Result := XCreatePixmapFromBitmapData(dis, win, PChar(hand.bits), hand.Width, hand.Height, $88FF88, $FF8888, DefaultDepth(dis, scr));
     XSetForeground(dis, gc, $0);
@@ -154,7 +154,7 @@ type
     XDrawLine(dis, Result, gc, 0, hand.Width, hand.Height, 0);
   end;
 
-  function TMyWin.CrateImage: TPixmap;
+  function TMyWin.CreateImage: TPixmap;
   var
     i: integer;
     Width: cuint = 32;

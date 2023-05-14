@@ -103,15 +103,15 @@ var
     valuemask:=CWBackPixel or CWBorderPixel;
     setwinattr.background_pixel:=WhitePixel(display,screen_num);
     setwinattr.border_pixel:=BlackPixel(display,screen_num);
-//    setwinattr.border_pixmap:=icon_pixmap;
 
+
+ //   setwinattr.bit_gravity:=EastGravity;
 
     win:=XCreateWindow(display,root_win,x,y,Width,Height, border_width,depth,class1, visual,valuemask, @setwinattr);
-    icon_pixmap := XCreateBitmapFromData(display, win, PChar(icon_bitmap_bits), icon_bitmap_width, icon_bitmap_height);
 
-    XSetWindowBorderPixmap(display,win,icon_pixmap);
+    setwinattr.background_pixel:=$FF8888;
 
-//    win := XCreateSimpleWindow(display, RootWindow(display, screen_num), x, y, Width, Height, border_width, BlackPixel(display, screen_num), WhitePixel(display, screen_num));
+    XChangeWindowAttributes(display,win,valuemask,@setwinattr);
 
 
 
@@ -162,12 +162,15 @@ var
     XSetWMProperties(display, win, @windowname, @iconname, argv, argc, size_hints, wm_hints, class_hints);
 
 
+    gc:=XCreateGC(display,win,0,nil);
+
     XSelectInput(display, win, KeyPressMask or ExposureMask or ButtonPressMask or SubstructureNotifyMask);
     XMapWindow(display, win);
     while (True) do begin
       XNextEvent(display, @Event);
       case Event._type of
         Expose: begin
+             XFillRectangle(display,win,gc,10,10,200,200);
 //          if Event.xexpose.Count <> 0 then begin
 //            Break;
 //          end;
