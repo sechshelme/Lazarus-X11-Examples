@@ -1,6 +1,7 @@
 //image image.png
 (*
 Eine Bitmap laden, nur Monocrom.
+Dafür kann man dies auch für den Maus-Cursor verwenden.
 *)
 //lineal
 //code+
@@ -106,11 +107,20 @@ type
   var
     res, hotspotX, hotspotY: cint;
     Width, Height: cuint;
+    fg, bg, nearrgb: TXColor;
+    cursor: TCursor;
   begin
     res := XReadBitmapFile(dis, win, PChar(path), @Width, @Height, @Bitmap, @hotspotX, @hotspotY);
     if res <> 0 then begin
       WriteLn('Bitmap Fehler: ', res);
     end;
+
+    // Es geht auch für den Maus-Cursor
+    XLookupColor(dis, XDefaultColormap(dis, scr), 'yellow', @fg, @nearrgb);
+    XLookupColor(dis, XDefaultColormap(dis, scr), 'green', @bg, @nearrgb);
+    cursor := XCreatePixmapCursor(dis, Bitmap, Bitmap, @fg, @bg, Width, Height);
+    XDefineCursor(dis, win, cursor);
+    XFreeCursor(dis, cursor);
   end;
 
 var

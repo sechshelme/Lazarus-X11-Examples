@@ -135,6 +135,9 @@ type
     XFreePixmap(dis, Bit_cup);
     XFreePixmap(dis, Bit_text);
     XCloseDisplay(dis);
+    XFreeCursor(dis, RatCursor);
+    XFreeCursor(dis, dRatCursor);
+
     inherited Destroy;
   end;
 
