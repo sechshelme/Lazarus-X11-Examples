@@ -7,6 +7,7 @@ Fenster in Fullscreen schalten.
 program Project1;
 
 uses
+  SysUtils,
   unixtype,
   ctypes,
   xlib,
@@ -50,7 +51,7 @@ const
     xev.xclient.message_type := XA__NET_WM_STATE;
     xev.xclient.format := 32;
 
-    if fullscreen then begin
+    if fs then begin
       xev.xclient.Data.l[0] := _NET_WM_STATE_ADD;
     end else begin
       xev.xclient.Data.l[0] := _NET_WM_STATE_REMOVE;
@@ -68,19 +69,32 @@ const
     end;
   end;
 
-procedure SetTitel;
-const
-  Titel: PChar = 'Hello World';
-begin
-  XChangeProperty(dis, win, XA__NET_WM_NAME, XA_UTF8_STRING, 8, PropModeReplace, PByte(Titel), Length(Titel));
-end;
+  procedure SetTitel;
+  const
+    Titel: string = 'Hello World';
+  begin
+    Titel := TimeToStr(now);
+    XChangeProperty(dis, win, XA__NET_WM_NAME, XA_UTF8_STRING, 8, PropModeReplace, pbyte(Titel), Length(Titel));
+  end;
 
-procedure GetTitel;
-const
-  Titel: PChar = 'Hello World';
-begin
-//  XGetWindowProperty(dis, win, XA__NET_WM_NAME, XA_UTF8_STRING, 8, PropModeReplace, PByte(Titel), Length(Titel));
-end;
+  procedure GetTitel;
+  var
+    type_: TAtom;
+    format, status: cint;
+    nitems, after: culong;
+    Data: PChar = nil;
+  begin
+    XStoreName(dis, win, 'Mein Fenster');
+    status := XGetWindowProperty(dis, win, XA__NET_WM_NAME, 0, 1024, False, XA_UTF8_STRING, @type_, @format, @nitems, @after, @Data);
+    WriteLn('status; ', status);
+    WriteLn('nitems', nitems);
+    if Data <> nil then begin
+      WriteLn(Data);
+    end else begin
+      WriteLn('none');
+    end;
+    XFree(Data);
+  end;
 
 begin
   dis := XOpenDisplay(nil);
@@ -137,8 +151,11 @@ begin
             fullscreen := not fullscreen;
             Switch_FullScreen(fullscreen);
           end;
-          XK_m: begin
+          XK_s: begin
             SetTitel;
+          end;
+          XK_g: begin
+            GetTitel;
           end;
         end;
       end;

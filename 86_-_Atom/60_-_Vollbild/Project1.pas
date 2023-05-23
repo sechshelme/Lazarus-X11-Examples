@@ -49,7 +49,7 @@ const
     xev.xclient.message_type := XA__NET_WM_STATE;
     xev.xclient.format := 32;
 
-    if fullscreen then begin
+    if fs then begin
       xev.xclient.Data.l[0] := _NET_WM_STATE_ADD;
     end else begin
       xev.xclient.Data.l[0] := _NET_WM_STATE_REMOVE;
