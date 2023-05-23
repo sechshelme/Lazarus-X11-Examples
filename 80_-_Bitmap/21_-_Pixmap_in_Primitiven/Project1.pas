@@ -101,7 +101,6 @@ type
   procedure TMyWin.Run;
   const
     maxSektoren = 8;
-    ofs_x:cint=0; ofs_y: cint=0;
   var
     Event: TXEvent;
     punkte: array[0..maxSektoren] of TXPoint;

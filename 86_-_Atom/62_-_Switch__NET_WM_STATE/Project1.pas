@@ -20,13 +20,29 @@ var
   xev, Event: TXEvent;
   scr: cint;
 
+  state_Atom: record
+    _NET_WM_STATE,
+    _NET_WM_STATE_MODAL,
+    _NET_WM_STATE_STICKY,
+    _NET_WM_STATE_SHADED,
+    _NET_WM_STATE_SKIP_TASKBAR,
+    _NET_WM_STATE_SKIP_PAGER,
+    _NET_WM_STATE_HIDDEN,
+    _NET_WM_STATE_MAXIMIZE_HORZD,
+    _NET_WM_STATE_MAXIMIZED_VERT,
+    _NET_WM_STATE_FULLSCREEN,
+    _NET_WM_STATE_ABOVE,
+    _NET_WM_STATE_BELOW,
+    _NET_WM_STATE_DEMANDS_ATTENTION: TAtom
+      end;
+
   i: integer;
   fullscreen: boolean = False;
   evt_sucess: TStatus;
   gc: TGC;
   quit: boolean = False;
   pc: PChar;
-  XA_WM_DELETE_WINDOW, XA__NET_WM_STATE, XA__NET_WM_STATE_FULLSCREEN: TAtom;
+  XA_WM_DELETE_WINDOW: TAtom;
 
 const
   _NET_WM_STATE_REMOVE = 0;
@@ -41,20 +57,16 @@ const
   //  https://specifications.freedesktop.org/wm-spec/1.3/ar01s05.html
   //  https://specifications.freedesktop.org/wm-spec/1.4/ar01s06.html
 
-  procedure Switch_FullScreen(fs: boolean);
+  procedure SwitchState(state: TAtom; toggle_Mod: cint);
   begin
     xev._type := ClientMessage;
     xev.xclient.display := dis;
     xev.xclient.window := win;
-    xev.xclient.message_type := XA__NET_WM_STATE;
+    xev.xclient.message_type := state_Atom._NET_WM_STATE;
     xev.xclient.format := 32;
 
-    if fullscreen then begin
-      xev.xclient.Data.l[0] := _NET_WM_STATE_ADD;
-    end else begin
-      xev.xclient.Data.l[0] := _NET_WM_STATE_REMOVE;
-    end;
-    xev.xclient.Data.l[1] := XA__NET_WM_STATE_FULLSCREEN;
+    xev.xclient.Data.l[0] := toggle_Mod;
+    xev.xclient.Data.l[1] := state;
     xev.xclient.Data.l[2] := 0;
     xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
     xev.xclient.Data.l[4] := 0;
@@ -62,6 +74,14 @@ const
     evt_sucess := XSendEvent(dis, root_window, False, SubstructureRedirectMask, @xev);
     if evt_sucess = 0 then begin
       WriteLn('Fehler');
+    end;
+  end;
+
+  function GetAtom(dis: PDisplay; Name: PChar): TAtom;
+  begin
+    Result := XInternAtom(dis, Name, True);
+    if Result = 0 then begin
+      WriteLn('Atom "', Name, '" nicht gefunden !');
     end;
   end;
 
@@ -80,12 +100,23 @@ begin
 
   gc := XCreateGC(dis, win, 0, nil);
 
-  XA_WM_DELETE_WINDOW := XInternAtom(dis, 'WM_DELETE_WINDOW', True);
+  state_atom._NET_WM_STATE := GetAtom(dis, '_NET_WM_STATE');
+  state_atom._NET_WM_STATE_MODAL := GetAtom(dis, '_NET_WM_STATE_MODAL');
+  state_atom._NET_WM_STATE_STICKY := GetAtom(dis, '_NET_WM_STATE_STICKY');
+  state_atom._NET_WM_STATE_MAXIMIZE_HORZD := GetAtom(dis, '_NET_WM_STATE_MAXIMIZED_HORZ');
+  state_atom._NET_WM_STATE_MAXIMIZED_VERT := GetAtom(dis, '_NET_WM_STATE_MAXIMIZED_VERT');
+  state_atom._NET_WM_STATE_SHADED := GetAtom(dis, '_NET_WM_STATE_SHADED');
+  state_atom._NET_WM_STATE_SKIP_TASKBAR := GetAtom(dis, '_NET_WM_STATE_SKIP_TASKBAR');
+  state_atom._NET_WM_STATE_SKIP_PAGER := GetAtom(dis, '_NET_WM_STATE_SKIP_PAGER');
+  state_atom._NET_WM_STATE_HIDDEN := GetAtom(dis, '_NET_WM_STATE_HIDDEN');
+  state_atom._NET_WM_STATE_FULLSCREEN := GetAtom(dis, '_NET_WM_STATE_FULLSCREEN');
+  state_atom._NET_WM_STATE_ABOVE := GetAtom(dis, '_NET_WM_STATE_ABOVE');
+  state_atom._NET_WM_STATE_BELOW := GetAtom(dis, '_NET_WM_STATE_BELOW');
+  state_atom._NET_WM_STATE_DEMANDS_ATTENTION := GetAtom(dis, '_NET_WM_STATE_DEMANDS_ATTENTION');
+
+
+  XA_WM_DELETE_WINDOW := GetAtom(dis, 'WM_DELETE_WINDOW');
   XSetWMProtocols(dis, win, @XA_WM_DELETE_WINDOW, 1);
-
-  XA__NET_WM_STATE := XInternAtom(dis, '_NET_WM_STATE', True);
-  XA__NET_WM_STATE_FULLSCREEN := XInternAtom(dis, '_NET_WM_STATE_FULLSCREEN', True);
-
   // Ereignisschleife
   while not quit do begin
     XNextEvent(dis, @Event);
@@ -110,8 +141,25 @@ begin
             quit := True;
           end;
           XK_space: begin
-            fullscreen := not fullscreen;
-            Switch_FullScreen(fullscreen);
+            SwitchState(state_Atom._NET_WM_STATE_FULLSCREEN, _NET_WM_STATE_TOGGLE);
+          end;
+          XK_h: begin
+            SwitchState(state_Atom._NET_WM_STATE_MAXIMIZE_HORZD, _NET_WM_STATE_TOGGLE);
+          end;
+          XK_v: begin
+            SwitchState(state_Atom._NET_WM_STATE_MAXIMIZED_VERT, _NET_WM_STATE_TOGGLE);
+          end;
+          XK_t: begin
+            SwitchState(state_Atom._NET_WM_STATE_SKIP_TASKBAR, _NET_WM_STATE_TOGGLE);
+          end;
+          XK_s: begin
+            SwitchState(state_Atom._NET_WM_STATE_SHADED, _NET_WM_STATE_TOGGLE);
+          end;
+          XK_a: begin
+            SwitchState(state_Atom._NET_WM_STATE_ABOVE, _NET_WM_STATE_TOGGLE);
+          end;
+          XK_b: begin
+            SwitchState(state_Atom._NET_WM_STATE_BELOW, _NET_WM_STATE_TOGGLE);
           end;
         end;
       end;

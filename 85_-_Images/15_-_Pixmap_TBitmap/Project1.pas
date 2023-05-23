@@ -1,6 +1,6 @@
 //image image.png
 (*
-Eine Bitmap laden
+Eine Bitmap laden, mit Missbrauch der TBitmap der LCL
 *)
 //lineal
 //code+

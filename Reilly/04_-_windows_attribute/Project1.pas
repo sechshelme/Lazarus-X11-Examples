@@ -170,7 +170,9 @@ var
       XNextEvent(display, @Event);
       case Event._type of
         Expose: begin
-             XFillRectangle(display,win,gc,10,10,200,200);
+          XFillRectangle(display,win,gc,10,10,200,200);
+
+          XDrawRectangle(display,win,gc,230,10,200,200);
 //          if Event.xexpose.Count <> 0 then begin
 //            Break;
 //          end;

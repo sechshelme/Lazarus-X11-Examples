@@ -65,6 +65,7 @@ type
     RootWin := RootWindow(dis, scr);
 
     win := XCreateSimpleWindow(dis, RootWin, 2000, 100, FWidth, FHeight, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
+
     XSelectInput(dis, win, EventMask or StructureNotifyMask);
 
     with  size_hints do begin

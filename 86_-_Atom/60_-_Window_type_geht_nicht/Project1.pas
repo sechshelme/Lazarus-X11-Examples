@@ -20,13 +20,14 @@ var
   xev, Event: TXEvent;
   scr: cint;
 
-  i: integer;
+  i, event_mask: integer;
   fullscreen: boolean = False;
   evt_sucess: TStatus;
   gc: TGC;
   quit: boolean = False;
   pc: PChar;
-  XA_WM_DELETE_WINDOW, XA__NET_WM_STATE, XA__NET_WM_STATE_FULLSCREEN: TAtom;
+  XA_WM_DELETE_WINDOW, XA__NET_WM_STATE, XA__NET_WM_STATE_FULLSCREEN,
+    XA__NET_WM_NAME, XA__NET_WM_WINDOW_TYPE_MENU: TAtom;
 
 const
   _NET_WM_STATE_REMOVE = 0;
@@ -41,29 +42,66 @@ const
   //  https://specifications.freedesktop.org/wm-spec/1.3/ar01s05.html
   //  https://specifications.freedesktop.org/wm-spec/1.4/ar01s06.html
 
-  procedure Switch_FullScreen(fs: boolean);
-  begin
-    xev._type := ClientMessage;
-    xev.xclient.display := dis;
-    xev.xclient.window := win;
-    xev.xclient.message_type := XA__NET_WM_STATE;
-    xev.xclient.format := 32;
+procedure Switch_FullScreen(fs: boolean);
+begin
+  xev._type := ClientMessage;
+  xev.xclient.display := dis;
+  xev.xclient.window := win;
+  xev.xclient.message_type := XA__NET_WM_STATE;
+  xev.xclient.format := 32;
 
-    if fullscreen then begin
-      xev.xclient.Data.l[0] := _NET_WM_STATE_ADD;
-    end else begin
-      xev.xclient.Data.l[0] := _NET_WM_STATE_REMOVE;
-    end;
-    xev.xclient.Data.l[1] := XA__NET_WM_STATE_FULLSCREEN;
-    xev.xclient.Data.l[2] := 0;
-    xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
-    xev.xclient.Data.l[4] := 0;
-
-    evt_sucess := XSendEvent(dis, root_window, False, SubstructureRedirectMask, @xev);
-    if evt_sucess = 0 then begin
-      WriteLn('Fehler');
-    end;
+  if fullscreen then begin
+    xev.xclient.Data.l[0] := _NET_WM_STATE_ADD;
+  end else begin
+    xev.xclient.Data.l[0] := _NET_WM_STATE_REMOVE;
   end;
+  xev.xclient.Data.l[1] := XA__NET_WM_STATE_FULLSCREEN;
+  xev.xclient.Data.l[2] := 0;
+  xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
+  xev.xclient.Data.l[4] := 0;
+
+  event_mask := SubstructureRedirectMask;
+
+  evt_sucess := XSendEvent(dis, root_window, False, event_mask, @xev);
+  if evt_sucess = 0 then begin
+    WriteLn('Fehler');
+  end;
+end;
+
+procedure Switch_Menu;
+begin
+  xev._type := ClientMessage;
+  xev.xclient.display := dis;
+  xev.xclient.window := win;
+//  xev.xclient.message_type := XA__NET_WM_STATE;
+  xev.xclient.message_type := XA__NET_WM_NAME;
+  xev.xclient.format := 32;
+
+  //if fullscreen then begin
+  //  xev.xclient.Data.l[0] := _NET_WM_STATE_ADD;
+  //end else begin
+  //  xev.xclient.Data.l[0] := _NET_WM_STATE_REMOVE;
+  //end;
+  //xev.xclient.Data.l[1] := XA__NET_WM_STATE_FULLSCREEN;
+  //xev.xclient.Data.l[2] := 0;
+  //xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
+  //xev.xclient.Data.l[4] := 0;
+
+xev.xclient.Data.l[0] := PtrUInt( PChar('Hello'));
+xev.xclient.Data.l[1] := 5;
+xev.xclient.Data.l[2] := 0;
+xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
+xev.xclient.Data.l[4] := 0;
+
+
+  event_mask := SubstructureRedirectMask;
+
+  WriteLn('m');
+  evt_sucess := XSendEvent(dis, root_window, False, event_mask, @xev);
+  if evt_sucess = 0 then begin
+    WriteLn('Fehler');
+  end;
+end;
 
 begin
   dis := XOpenDisplay(nil);
@@ -85,6 +123,13 @@ begin
 
   XA__NET_WM_STATE := XInternAtom(dis, '_NET_WM_STATE', True);
   XA__NET_WM_STATE_FULLSCREEN := XInternAtom(dis, '_NET_WM_STATE_FULLSCREEN', True);
+
+  XA__NET_WM_NAME := XInternAtom(dis, '_NET_WM_NAME', True);
+  XA__NET_WM_WINDOW_TYPE_MENU := XInternAtom(dis, '_NET_WM_WINDOW_TYPE_MENU', True);
+
+
+  WriteLn(XA__NET_WM_NAME);
+  WriteLn(XA__NET_WM_WINDOW_TYPE_MENU);
 
   // Ereignisschleife
   while not quit do begin
@@ -112,6 +157,9 @@ begin
           XK_space: begin
             fullscreen := not fullscreen;
             Switch_FullScreen(fullscreen);
+          end;
+          XK_m: begin
+            Switch_Menu;
           end;
         end;
       end;

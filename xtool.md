@@ -77,5 +77,14 @@ xprop -f _NET_WM_WINDOW_OPACITY 32c -set _NET_WM_WINDOW_OPACITY 2000000000
 xprop -root _NET_SUPPORTED 
 ```
 
+## CPU-Auslastung:
+```
+xload -update 1 &
+```
 
+## Display Info
+```
+xdpyinfo
+```
 
+Mehr: (https://www.oreilly.com/library/view/x-window-system/9780937175149/Chapter07.html)

@@ -27,7 +27,7 @@ int main ()
 
     XMapWindow(d,w);
 
-    fprintf()
+    //fprintf()
 
     a = XInternAtom(d, "_NET_FRAME_EXTENTS", True); /* Property to check */
 

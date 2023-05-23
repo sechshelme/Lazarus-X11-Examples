@@ -20,13 +20,14 @@ var
   xev, Event: TXEvent;
   scr: cint;
 
-  i: integer;
+  i, event_mask: integer;
   fullscreen: boolean = False;
   evt_sucess: TStatus;
   gc: TGC;
   quit: boolean = False;
   pc: PChar;
-  XA_WM_DELETE_WINDOW, XA__NET_WM_STATE, XA__NET_WM_STATE_FULLSCREEN: TAtom;
+  XA_WM_DELETE_WINDOW, XA__NET_WM_STATE, XA__NET_WM_STATE_FULLSCREEN,
+  XA__NET_WM_NAME, XA_UTF8_STRING: TAtom;
 
 const
   _NET_WM_STATE_REMOVE = 0;
@@ -59,11 +60,27 @@ const
     xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
     xev.xclient.Data.l[4] := 0;
 
-    evt_sucess := XSendEvent(dis, root_window, False, SubstructureRedirectMask, @xev);
+    event_mask := SubstructureRedirectMask;
+
+    evt_sucess := XSendEvent(dis, root_window, False, event_mask, @xev);
     if evt_sucess = 0 then begin
       WriteLn('Fehler');
     end;
   end;
+
+procedure SetTitel;
+const
+  Titel: PChar = 'Hello World';
+begin
+  XChangeProperty(dis, win, XA__NET_WM_NAME, XA_UTF8_STRING, 8, PropModeReplace, PByte(Titel), Length(Titel));
+end;
+
+procedure GetTitel;
+const
+  Titel: PChar = 'Hello World';
+begin
+//  XGetWindowProperty(dis, win, XA__NET_WM_NAME, XA_UTF8_STRING, 8, PropModeReplace, PByte(Titel), Length(Titel));
+end;
 
 begin
   dis := XOpenDisplay(nil);
@@ -85,6 +102,13 @@ begin
 
   XA__NET_WM_STATE := XInternAtom(dis, '_NET_WM_STATE', True);
   XA__NET_WM_STATE_FULLSCREEN := XInternAtom(dis, '_NET_WM_STATE_FULLSCREEN', True);
+
+  XA__NET_WM_NAME := XInternAtom(dis, '_NET_WM_NAME', True);
+  XA_UTF8_STRING := XInternAtom(dis, 'UTF8_STRING', True);
+
+
+  WriteLn(XA__NET_WM_NAME);
+  WriteLn(XA_UTF8_STRING);
 
   // Ereignisschleife
   while not quit do begin
@@ -112,6 +136,9 @@ begin
           XK_space: begin
             fullscreen := not fullscreen;
             Switch_FullScreen(fullscreen);
+          end;
+          XK_m: begin
+            SetTitel;
           end;
         end;
       end;
