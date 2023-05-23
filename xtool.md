@@ -47,7 +47,6 @@ bitmap
 ## Fenster Info
 ```
 xwininfo -tree
-xprop
 ```
 
 ## XTootls Fenster-Info
@@ -75,6 +74,7 @@ xrandr
 xprop
 xprop -f _NET_WM_WINDOW_OPACITY 32c -set _NET_WM_WINDOW_OPACITY 2000000000
 xprop -root _NET_SUPPORTED 
+xprop -f _NET_WM_NAME 8u -set _NET_WM_NAME "New Titel"
 ```
 
 ## CPU-Auslastung:
