@@ -115,26 +115,27 @@ const
 
   procedure TMyWin.Paint;
   const
-    Caption = 'öäü-ÄÜÖ !Ÿ←←««¥¥<<';
-    Hello = 'Hello World !'#152
-      ;
+    Caption = 'Halloöäü-ÄÜÖ !Ÿ←←««¥¥<<';
+    Hello = 'Hello World !'#152;
   begin
-    XDrawString(dis, win, gc, 10, 10, PChar(Hello), Length(Caption));
-
-    XDrawString(dis, win, gc, 10, 70, PChar(Hello), Length(Hello));
+    XDrawString(dis, win, gc, 10, 10, PChar(Caption), Length(Caption));
+    XDrawString(dis, win, gc, 10, 30, PChar(Hello), Length(Hello));
     //     XmbDrawString(dis,win, @fontset,gc,20,70,PChar(Caption), Length(Caption));
-    DrawString(Caption, 10, 30);
-    DrawString(sl, 10, 50);
+    DrawString(Caption, 10, 60);
+    DrawString(sl, 10, 80);
   end;
+
 
   constructor TMyWin.Create;
   var
     xim: PXIM;
   begin
     inherited Create;
-    if setlocale(LC_ALL, '') = 0 then begin
+    if setlocale(LC_ALL, 'de_DE.utf8') = 0 then begin
       WriteLn('setlocale Fehler');
     end;
+
+    sL := '1234';
 
     // Erstellt die Verbindung zum Server
     dis := XOpenDisplay(nil);
@@ -192,12 +193,12 @@ const
     while not quit do begin
       XNextEvent(dis, @Event);
 
-        case Event._type of
-          Expose: begin
-            Paint;
-          end;
-          KeyPress: begin
-            if not XFilterEvent(@Event, 0) then begin
+      case Event._type of
+        Expose: begin
+          Paint;
+        end;
+        KeyPress: begin
+          if not XFilterEvent(@Event, 0) then begin
             keysym := NoSymbol;
 
             FillChar(buf, Length(buf), #0);
@@ -232,10 +233,10 @@ const
             end;
             WriteLn();
 
-            end;
           end;
-          KeyRelease: begin
-          end;
+        end;
+        KeyRelease: begin
+        end;
       end;
     end;
   end;

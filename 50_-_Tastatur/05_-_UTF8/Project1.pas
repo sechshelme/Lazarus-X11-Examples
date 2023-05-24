@@ -8,7 +8,6 @@ Die macht es übersichtlicher und ausbaufähiger.
 program Project1;
 
 uses
-  //  libc,
   unixtype,
   ctypes,
   xlib,
