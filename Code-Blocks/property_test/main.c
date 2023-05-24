@@ -7,21 +7,17 @@ Window w, root;
 int s;
 XEvent xev;
 int quit = 0;
+    Atom nameAtom;
+    Atom utf8Atom;
 
 void setTitel()
 {
-    Atom nameAtom = XInternAtom(d,"_NET_WM_NAME",0);
-    Atom utf8Atom = XInternAtom(d,"UTF8_STRING",0);
     char * title = "Mein zweiter Titel";
-
-    XChangeProperty( d, w,   XInternAtom(d, "_NET_WM_NAME", False),  XInternAtom(d, "UTF8_STRING", False),
-                     8, PropModeReplace, (unsigned char *) title,   strlen(title));
+    XChangeProperty( d, w,   nameAtom,  utf8Atom, 8, PropModeReplace, title, strlen(title));
 }
 
 void getTitel()
 {
-    Atom nameAtom = XInternAtom(d,"_NET_WM_NAME",0);
-    Atom utf8Atom = XInternAtom(d,"UTF8_STRING",0);
     Atom type;
     int format;
     unsigned long nitems, after;
@@ -35,6 +31,10 @@ void getTitel()
 int main ()
 {
     d = XOpenDisplay(0);
+
+    nameAtom = XInternAtom(d,"NET_WM_NAME",0);
+    utf8Atom = XInternAtom(d,"UTF8_STRING",0);
+
     s = DefaultScreen(d);
     root = DefaultRootWindow(d);
     w = XCreateSimpleWindow(d, root, 0, 0, 200, 200, 0, 0,255);
