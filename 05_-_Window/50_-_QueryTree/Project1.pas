@@ -29,21 +29,34 @@ var
 const
   EventMask = KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask;
 
-  procedure PrintKind;
+  function CreateTree(k:Integer):String;
+  var
+    i:Integer;
+  begin
+    Result:='';
+    for i:=0 to k do Result:=Result+'-';
+  end;
+
+  procedure PrintKind(win:TWindow;k:Integer);
   var
     root, parent: TWindow;
     children: PWindow;
     children_count: cuint;
     i: integer;
+    tree: String;
   begin
-    XQueryTree(dis, root_win, @root, @parent, @children, @children_count);
+    XQueryTree(dis, win, @root, @parent, @children, @children_count);
 
+    if k=0 then begin
     WriteLn('root:   ', root);
     WriteLn('parent: ', parent);
-    WriteLn('Count Child: ', children_count);
+    end;
+    tree:=CreateTree(k);
+    WriteLn(tree,'Count Child: ', children_count);
     for i := 0 to children_count - 1 do begin
-      WriteLn(i:5,'Nr: ', children[i]);
+      WriteLn(tree,i:5,'   Nr: ', children[i]);
 //      XKillClient(dis,children[i]);
+      PrintKind(children[i],k+1);
     end;
     XFree(children);
     WriteLn();
@@ -120,7 +133,7 @@ begin
             Break;
           end;
           XK_space: begin
-            PrintKind;
+            PrintKind(root_win,0);
           end;
         end;
       end;

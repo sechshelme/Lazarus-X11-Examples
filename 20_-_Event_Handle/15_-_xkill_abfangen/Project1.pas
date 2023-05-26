@@ -21,6 +21,7 @@ type
     dis: PDisplay;
     scr: cint;
     win: TWindow;
+    subwin1, subwin2: TWindow;
     widht, Height: cuint;
     wm_delete_window: TAtom;
   public
@@ -47,12 +48,19 @@ type
     // Erstellt das Fenster
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, widht, Height, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
+    subwin1:=XCreateSimpleWindow(dis, win, 10, 10, 100, 50, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    subwin2:=XCreateSimpleWindow(dis, win, 120, 10, 100, 50, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+
     // Wählt die gewünschten Ereignisse aus
     // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
+    XSelectInput(dis, subwin1, KeyPressMask or ExposureMask);
+    XSelectInput(dis, subwin2, KeyPressMask or ExposureMask);
 
     // Fenster anzeigen
     XMapWindow(dis, win);
+    XMapWindow(dis, subwin1);
+    XMapWindow(dis, subwin2);
 
     // [X] abfangen
     wm_delete_window := XInternAtom(dis, 'WM_DELETE_WINDOW', False);
@@ -85,6 +93,12 @@ type
           case XLookupKeysym(@Event.xkey, 0) of
             XK_Escape: begin
               quit := True;
+            end;
+            XK_k: begin
+              XKillClient(dis, subwin1);
+            end;
+            XK_d: begin
+              XDestroyWindow(dis, subwin2);
             end;
           end;
         end;
