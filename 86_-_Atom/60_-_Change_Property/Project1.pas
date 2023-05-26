@@ -44,6 +44,8 @@ const
   //  https://specifications.freedesktop.org/wm-spec/1.3/ar01s05.html
   //  https://specifications.freedesktop.org/wm-spec/1.4/ar01s06.html
 
+  // https://tronche.com/gui/x/icccm/sec-4.html
+
   procedure SetWMName;
   const
     titel: PChar = 'üäö';
@@ -132,13 +134,9 @@ const
         XFree(Data);
       end else if type_ = XA_CARDINAL then begin
         carData := PCardinal(Data);
-        ;
         for i := 0 to nitems - 1 do begin
           WriteLn('CARDINAL: ', carData[i] shr 24);
         end;
-
-        //        WriteLn('CARDINAL: ', (Cardinal(Data[0]) shr 24));
-        //        WriteLn('CARDINAL: ', (PCardinal(Data)^ shr 24));
       end;
 
     end;

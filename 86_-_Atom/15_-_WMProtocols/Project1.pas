@@ -15,21 +15,33 @@ uses
   keysym,
   x;
 
+const
+  ProtocolsName: array of PChar = (
+    'WM_CLIENT_LEADER', 'WM_DELETE_WINDOW', 'WM_TAKE_FOCUS', 'WM_WINDOW_ROLE',
+    'WM_SIZE_HINT', 'WM_NORMAL_HINT', 'WM_PROTOCOLS','WM_SAVE_YOURSELF',
+    'WM_CLIENT_MACHINE','WM_COMMAND');
+
 type
+
+  { TMyWin }
+
   TMyWin = class(TObject)
   private
     dis: PDisplay;
     scr: cint;
     win: TWindow;
     widht, Height: cuint;
-    wm_delete_window: TAtom;
+    Protocols: array of TAtom;
   public
     constructor Create;
     destructor Destroy; override;
+    procedure ShowProtocols;
     procedure Run;
   end;
 
   constructor TMyWin.Create;
+  var
+    i: integer;
   begin
     inherited Create;
 
@@ -54,9 +66,12 @@ type
     // Fenster anzeigen
     XMapWindow(dis, win);
 
-    // [X] abfangen
-    wm_delete_window := XInternAtom(dis, 'WM_DELETE_WINDOW', False);
-    XSetWMProtocols(dis, win, @wm_delete_window, 1);
+    SetLength(Protocols, Length(ProtocolsName));
+    for i := 0 to Length(Protocols) - 1 do begin
+      Protocols[i] := XInternAtom(dis, ProtocolsName[i], True);
+      WriteLn(Protocols[i]);
+    end;
+    XSetWMProtocols(dis, win, PAtom(Protocols), Length(Protocols));
   end;
 
   destructor TMyWin.Destroy;
@@ -69,16 +84,38 @@ type
     inherited Destroy;
   end;
 
+  procedure TMyWin.ShowProtocols;
+  var
+    atoms: PAtom;
+    Count: cint;
+    i: integer;
+    ch: PChar;
+  begin
+    XGetWMProtocols(dis, win, @atoms, @Count);
+    WriteLn('Count:', Count);
+    for i := 0 to Count - 1 do begin
+      if atoms[i] <> 0 then  begin
+        ch := XGetAtomName(dis, atoms[i]);
+        Write(ch,'  ');
+        XFree(ch);
+      end else begin
+        Write('Atom = 0  ');
+      end;
+    end;
+    WriteLn();
+    XFree(atoms);
+  end;
+
   procedure TMyWin.Run;
   var
     Event: TXEvent;
     quit: boolean = False;
+    l: clong;
+    ch: PChar;
   begin
     // Ereignisschleife
     while not quit do begin
       XNextEvent(dis, @Event);
-      WriteLn('Event: ', Event._type);
-
       case Event._type of
         KeyPress: begin
           // Beendet das Programm bei [ESC]
@@ -86,21 +123,21 @@ type
             XK_Escape: begin
               quit := True;
             end;
+            XK_p: begin
+              ShowProtocols;
+            end;
           end;
         end;
         ResizeRequest: begin
           WriteLn('resize');
         end;
-
         ClientMessage: begin
-          if Event.xclient.Data.l[0] = wm_delete_window then begin
-            WriteLn('[X] wurde gedrückt');
-            quit := True;
-          end;
-        end;
-        DestroyNotify: begin
-          WriteLn('Ende ', Event.xbutton.window);
-          //          Exit;
+          l := Event.xclient.Data.l[0];
+          if l <> 0 then begin
+            ch := XGetAtomName(dis, l);
+            WriteLn('Atomname:', ch);
+            XFree(ch);
+          end else WriteLn('Ungültiges Atom !');
         end;
       end;
 
