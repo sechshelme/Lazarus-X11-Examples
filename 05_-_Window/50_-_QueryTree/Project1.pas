@@ -37,6 +37,20 @@ const
     for i:=0 to k do Result:=Result+'-';
   end;
 
+procedure PrintParent(win:TWindow);
+var
+  root, parent: TWindow;
+  children: PWindow;
+  children_count: cuint;
+
+begin
+  parent:=win;
+  repeat
+  WriteLn('Parent: ',parent);
+  XQueryTree(dis, parent, @root, @parent, @children, @children_count);
+  until parent=0;
+  end;
+
   procedure PrintKind(win:TWindow;k:Integer);
   var
     root, parent: TWindow;
@@ -56,6 +70,7 @@ const
     for i := 0 to children_count - 1 do begin
       WriteLn(tree,i:5,'   Nr: ', children[i]);
 //      XKillClient(dis,children[i]);
+
       PrintKind(children[i],k+1);
     end;
     XFree(children);
@@ -79,16 +94,13 @@ begin
 
   // Zwei Subfenster
   Subwin1 := XCreateSimpleWindow(dis, win, 100, 100, 320, 240, 10, BlackPixel(dis, scr), WhitePixel(dis, scr));
-  Subwin2 := XCreateSimpleWindow(dis, win, 250, 80, 320, 240, 0, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  Subwin2 := XCreateSimpleWindow(dis, win, 250, 80, 320, 240, 15, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
   WriteLn('root: ', root_win);
   WriteLn('win:  ', win);
   WriteLn('sub1: ', Subwin1);
   WriteLn('sub2: ', Subwin2);
   WriteLn();
-
-  // Border-Breite nachträglich festlegen, geht nur bei Sub-Fenster
-  XSetWindowBorderWidth(dis, Subwin2, 15);
 
   // Es werden Events für Zeichen, Maus und Tastatur gebraucht.
   XSelectInput(dis, win, EventMask);
@@ -134,6 +146,9 @@ begin
           end;
           XK_space: begin
             PrintKind(root_win,0);
+          end;
+          XK_p: begin
+            PrintParent(Subwin1);
           end;
         end;
       end;
