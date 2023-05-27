@@ -54,24 +54,9 @@ from The Open Group.
 #define SelectButtonAny (-1)
 #define SelectButtonFirst (-2)
 
-static int parse_button ( const char *s, int *buttonp );
 static XID get_window_id ( Display *dpy, int screen, int button);
-static int catch_window_errors ( Display *dpy, XErrorEvent *ev );
-static Bool wm_state_set ( Display *dpy, Window win );
-static Bool wm_running ( Display *dpy, int screenno );
 
-static void _X_NORETURN
-Exit(int code, Display *dpy)
-{
-    if (dpy)
-    {
-        XCloseDisplay (dpy);
-    }
-    exit (code);
-}
-
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     Display *dpy = NULL;
     char *displayname = NULL;		/* name of server to contact */
@@ -90,61 +75,23 @@ main(int argc, char *argv[])
 
     if (id == None)
     {
-        unsigned char pointer_map[256];	 /* 8 bits of pointer num */
-        int count;
-        unsigned int ub = (unsigned int) button;
-
-
-        count = XGetPointerMapping (dpy, pointer_map, 256);
-
-        button = (int) ((unsigned int) pointer_map[0]);
-        button=1;
-
-
-
-        if ((id = get_window_id (dpy, screenno, button)))
-        {
-            if (id == RootWindow(dpy,screenno)) id = None;
-            else if (!top)
-            {
-//                XID indicated = id;
-                id = XmuClientWindow(dpy, id);
-            }
-        }
+        id = get_window_id (dpy, screenno, 1);
+        id = XmuClientWindow(dpy, id);
     }
 
     if (id != None)
     {
         printf ("killing creator of resource 0x%lx\n", id);
         XSync (dpy, 0);			/* give xterm a chance */
-   //        XKillClient (dpy, id);
+        //        XKillClient (dpy, id);
         XSync (dpy, 0);
     }
 
     return 0;
 }
 
-static int
-parse_button(const char *s, int *buttonp)
-{
-    if (strcasecmp (s, "any") == 0)
-    {
-        *buttonp = SelectButtonAny;
-        return (1);
-    }
 
-    /* check for non-numeric input */
-    for (const char *cp = s; *cp; cp++)
-    {
-        if (!(isascii (*cp) && isdigit (*cp))) return (0);  /* bogus name */
-    }
-
-    *buttonp = atoi (s);
-    return (1);
-}
-
-static XID
-get_window_id(Display *dpy, int screen, int button)
+static XID get_window_id(Display *dpy, int screen, int button)
 {
     Cursor cursor;		/* cursor to use when selecting */
     Window root;		/* the current root */
@@ -187,40 +134,4 @@ get_window_id(Display *dpy, int screen, int button)
     XSync (dpy, 0);
 
     return ((button == -1 || retbutton == button) ? retwin : None);
-}
-
-
-static Bool
-wm_state_set(Display *dpy, Window win)
-{
-    Atom wm_state;
-    Atom actual_type;
-    int success;
-    int actual_format;
-    unsigned long nitems, remaining;
-    unsigned char* prop = NULL;
-
-    wm_state = XInternAtom(dpy, "WM_STATE", True);
-    if (wm_state == None) return False;
-    success = XGetWindowProperty(dpy, win, wm_state, 0L, 0L, False,
-                                 AnyPropertyType, &actual_type, &actual_format,
-                                 &nitems, &remaining, &prop);
-    if (prop) XFree((char *) prop);
-    return (success == Success && actual_type != None && actual_format);
-}
-
-/* Using a heuristic method, return True if a window manager is running,
- * otherwise, return False.
- */
-
-static Bool
-wm_running(Display *dpy, int screenno)
-{
-    XWindowAttributes	xwa;
-    Status		status;
-
-    status = XGetWindowAttributes(dpy, RootWindow(dpy, screenno), &xwa);
-    return (status &&
-            ((xwa.all_event_masks & SubstructureRedirectMask) ||
-             (xwa.all_event_masks & SubstructureNotifyMask)));
 }

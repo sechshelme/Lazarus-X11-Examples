@@ -27,9 +27,38 @@ var
   scr, cursor: cint;
   gc: TGC;
   i: integer;
+  gp: TXID;
+
+  function XmuClientWindow(ADisplay: PDisplay; AWindow: TWindow): TWindow; cdecl; external 'Xmu';
+
 
 const
   EventMask = KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask or ButtonReleaseMask;
+
+  function ParentWin(win: TWindow): TWindow;
+  var
+    root, parent: TWindow;
+    children: PWindow;
+    children_count: cuint;
+  begin
+    XQueryTree(dis, win, @root, @parent, @children, @children_count);
+    Result := parent;
+  end;
+
+  function ChildWin(win: TWindow): TWindow;
+  var
+    root, parent: TWindow;
+    children: PWindow;
+    children_count: cuint;
+  begin
+    XQueryTree(dis, win, @root, @parent, @children, @children_count);
+    if children_count > 0 then  begin
+      Result := children[0];
+    end else begin
+      WriteLn('Kein Kind');
+      Result := 0;
+    end;
+  end;
 
   procedure GetMapping;
   var
@@ -89,6 +118,7 @@ const
     end else begin
       Result := 0;
     end;
+    //    XDestroyWindow(dis, Result);
   end;
 
 
@@ -124,7 +154,12 @@ begin
   XMapWindow(dis, Subwin1);
   XMapWindow(dis, Subwin2);
 
-  WriteLn(IntToHex(win));
+  WriteLn('RootWin: ', IntToHex(root_win));
+  WriteLn('win:     ', IntToHex(win));
+  WriteLn('Parent:  ', IntToHex(ParentWin(win)));
+  WriteLn('Subwin1: ', IntToHex(Subwin1));
+  WriteLn('Subwin2: ', IntToHex(Subwin2));
+  WriteLn();
 
   // Ereignisschleife
   while (True) do begin
@@ -151,17 +186,23 @@ begin
         WriteLn('press:', Event.xbutton.window);
         // Angeklicktes Fenster zuoberst
         XRaiseWindow(dis, Event.xbutton.window);
-        GetMapping;
       end;
 
       KeyPress: begin
-        // Beendet das Programm bei [ESC]
         case XLookupKeysym(@Event.xkey, 0) of
           XK_Escape: begin
             Break;
           end;
+          XK_m: begin
+            GetMapping;
+          end;
           XK_space: begin
-           WriteLn('win: ', GrabPointer(1));
+            gp := GrabPointer(1);
+            WriteLn('win:    ', IntToHex(gp));
+            WriteLn('Child: ', IntToHex(ChildWin(gp)));
+            WriteLn('Parent: ', IntToHex(ParentWin(gp)));
+            WriteLn('Client  ', IntToHex(XmuClientWindow(dis, gp)));
+            WriteLn();
           end;
         end;
       end;
