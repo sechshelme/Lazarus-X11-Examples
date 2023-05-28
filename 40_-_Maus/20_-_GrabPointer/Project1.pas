@@ -73,52 +73,22 @@ const
     WriteLn(i);
   end;
 
-  function GrabPointer(button: cint): TXID;
+  function GrabPointer: TXID;
   var
     ev: TXEvent;
-    retwin: TWindow = 0;
-    pressed: integer = 0;
-    retbutton: cint = -1;
   begin
     cursor := XCreateFontCursor(dis, XC_pirate);
+    Result := 0;
 
-    XSync(dis, 0);
-    //  XGrabButton();
-    XGrabPointer(dis, root_win, False, ButtonPressMask or ButtonReleaseMask, GrabModeSync, GrabModeAsync, 0, cursor, CurrentTime);
+    XGrabPointer(dis, root_win, False, ButtonPressMask, GrabModeSync, GrabModeAsync, 0, cursor, CurrentTime);
 
-    while (retwin = 0) or (pressed <> 0) do begin
-      XAllowEvents(dis, SyncPointer, CurrentTime);
-      XWindowEvent(dis, root_win, ButtonPressMask or ButtonReleaseMask, @ev);
-      case ev._type of
-        ButtonPress: begin
-          if retwin = 0 then begin
-            retbutton := ev.xbutton.button;
-            if ev.xbutton.subwindow <> 0 then begin
-              retwin := ev.xbutton.subwindow;
-            end else begin
-              retwin := root_win;
-            end;
-            Inc(pressed);
-          end;
-        end;
-        ButtonRelease: begin
-          if pressed > 0 then begin
-            Dec(pressed);
-          end;
-        end;
-      end;
+    XAllowEvents(dis, SyncPointer, CurrentTime);
+    XWindowEvent(dis, root_win, ButtonPressMask, @ev);
+    Result := ev.xbutton.subwindow;
 
-    end;
     XUngrabPointer(dis, CurrentTime);
-    XFreeCursor(dis, cursor);
-    XSync(dis, 0);
 
-    if (button = -1) or (retbutton = button) then begin
-      Result := retwin;
-    end else begin
-      Result := 0;
-    end;
-    //    XDestroyWindow(dis, Result);
+    XFreeCursor(dis, cursor);
   end;
 
 
@@ -183,11 +153,7 @@ begin
       MotionNotify: begin
       end;
       ButtonPress: begin
-        WriteLn('press:', Event.xbutton.window);
-        // Angeklicktes Fenster zuoberst
-        XRaiseWindow(dis, Event.xbutton.window);
       end;
-
       KeyPress: begin
         case XLookupKeysym(@Event.xkey, 0) of
           XK_Escape: begin
@@ -197,11 +163,13 @@ begin
             GetMapping;
           end;
           XK_space: begin
-            gp := GrabPointer(1);
+            gp := GrabPointer;
             WriteLn('win:    ', IntToHex(gp));
-            WriteLn('Child: ', IntToHex(ChildWin(gp)));
-            WriteLn('Parent: ', IntToHex(ParentWin(gp)));
-            WriteLn('Client  ', IntToHex(XmuClientWindow(dis, gp)));
+            if gp <> 0 then begin
+              WriteLn('Child:  ', IntToHex(ChildWin(gp)));
+              WriteLn('Parent: ', IntToHex(ParentWin(gp)));
+              WriteLn('Client  ', IntToHex(XmuClientWindow(dis, gp)));
+            end;
             WriteLn();
           end;
         end;
