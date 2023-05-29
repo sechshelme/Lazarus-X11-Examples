@@ -1,0 +1,40 @@
+at line 282 error : syntax error
+at line 286 error : syntax error
+at line 1754 error : syntax error
+at line 1755 error : syntax error
+at line 1913 error : syntax error
+Unexpected wrap of line 1913
+"    do { fl_polygon( 1, p, n, c );            \"
+at line 1914 error : syntax error
+Unexpected wrap of line 1914
+"         fl_polygon( 0, p, n, FL_BLACK );     \"
+at line 1915 error : syntax error
+at line 1945 error : syntax error
+Unexpected wrap of line 1946
+"        FL_COORD fli_x = ( x ), fli_y = ( y );                                \"
+at line 1947 error : syntax error
+Unexpected wrap of line 1947
+"        fl_line( fli_x, fli_y, fli_x + ( w ) - 1, fli_y + ( h ) - 1, ( c ) ); \"
+at line 1948 error : syntax error
+at line 2248 error : syntax error
+at line 2321 error : syntax error
+at line 2539 error : syntax error
+Unexpected wrap of line 2539
+"    do { r = FL_GETR( p );        \"
+at line 2540 error : syntax error
+Unexpected wrap of line 2540
+"         g = FL_GETG( p );        \"
+at line 2541 error : syntax error
+Unexpected wrap of line 2541
+"         b = FL_GETB( p );        \"
+at line 2542 error : syntax error
+at line 2547 error : syntax error
+Unexpected wrap of line 2547
+"    do { FL_UNPACK3( p, r, g, b );    \"
+at line 2548 error : syntax error
+Unexpected wrap of line 2548
+"         a = FL_GETA( p );            \"
+at line 2549 error : syntax error
+at line 2565 error : syntax error
+at line 4108 error : syntax error
+at line 6478 error : syntax error
