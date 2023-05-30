@@ -33,6 +33,7 @@
 		</Compiler>
 		<Linker>
 			<Add library="X11" />
+			<Add library="forms" />
 		</Linker>
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />

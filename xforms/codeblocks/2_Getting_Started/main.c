@@ -1,5 +1,6 @@
 #include <forms.h>
 #include <flimage.h>
+#include <glcanvas.h>
 
 int main(int argc, char *argv[])
 {
@@ -9,14 +10,10 @@ int main(int argc, char *argv[])
               *help,
               *but;
 
-              printf("%d\n", buttonFontSize);
-
-
-
     fl_initialize(&argc, argv, "FormDemo", 0, 0);
     form = fl_bgn_form(FL_UP_BOX, 320, 140);
 
-    fl_add_box(FL_NO_BOX, 160, 40, 0, 0, "Do you want to Quit?");
+    fl_add_box(FL_UP_BOX, 160, 40, 0, 0, "Do you want to Quit?");
     yes = fl_add_button(FL_NORMAL_BUTTON, 20, 70, 75, 25, "Yes");
     no = fl_add_button(FL_NORMAL_BUTTON, 120, 70, 75, 25, "No");
     help = fl_add_button(FL_NORMAL_BUTTON, 220, 70, 75, 25, "Help");
