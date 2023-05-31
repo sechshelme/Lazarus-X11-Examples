@@ -876,21 +876,13 @@ type
     want_update: cint;
   end;
 
-  //TFL_FORM_ = TFL_FORM;
-  //TFL_OBJECT_ = TFL_OBJECT;
-  //TFL_pixmap_ = TFL_pixmap;
-
-  //  PFL_FORM = ^TFL_FORM;
-  //      PFL_FORM = Pointer;
-  //    PFL_OBJECT = Pointer ;
-
-  TFL_FORMCALLBACKPTR = procedure(para1: PFL_OBJECT; para2: pointer); cdecl;
-  TFL_CALLBACKPTR = procedure(para1: PFL_OBJECT; para2: cint); cdecl;
-  TFL_RAW_CALLBACK = function(para1: PFL_FORM; para2: pointer): cint; cdecl;
-  TFL_FORM_ATCLOSE = function(para1: PFL_FORM; para2: pointer): cint; cdecl;
-  TFL_FORM_ATDEACTIVATE = procedure(para1: PFL_FORM; para2: pointer); cdecl;
-  TFL_FORM_ATACTIVATE = procedure(para1: PFL_FORM; para2: pointer); cdecl;
-  TFL_HANDLEPTR = function(para1: PFL_OBJECT; para2: cint; para3: TFL_Coord; para4: TFL_Coord; para5: cint; para6: pointer): cint; cdecl;
+  TFL_FORMCALLBACKPTR = procedure(obj: PFL_OBJECT; para2: pointer); cdecl;
+  TFL_CALLBACKPTR = procedure(obj: PFL_OBJECT; user_data: clong); cdecl;
+  TFL_RAW_CALLBACK = function(frm: PFL_FORM; para2: pointer): cint; cdecl;
+  TFL_FORM_ATCLOSE = function(frm: PFL_FORM; para2: pointer): cint; cdecl;
+  TFL_FORM_ATDEACTIVATE = procedure(frm: PFL_FORM; para2: pointer); cdecl;
+  TFL_FORM_ATACTIVATE = procedure(frm: PFL_FORM; para2: pointer); cdecl;
+  TFL_HANDLEPTR = function(obj: PFL_OBJECT; para2: cint; para3: TFL_Coord; para4: TFL_Coord; para5: cint; para6: pointer): cint; cdecl;
   TFL_ERROR_FUNC = procedure(para1: PChar; para2: PChar; args: array of const); cdecl;
 
   TFL_FORM = record
