@@ -27,6 +27,11 @@ var
   gc: TGC;
   quit: boolean = False;
   pc: PChar;
+
+// https://snyk.io/advisor/python/pyglet/functions/pyglet.libs.x11.xlib
+  XA_ATOM,
+  XA__NET_WM_WINDOW_TYPE, XA__NET_WM_WINDOW_TYPE_DIALOG,
+
   XA_WM_DELETE_WINDOW,
   XA__NET_WM_NAME, XA_UTF8_STRING, XA_WM_NAME, XA_STRING,
   XA__NET_WM_WINDOW_OPACITY, XA_CARDINAL: TAtom;
@@ -67,13 +72,20 @@ const
     WriteLn('GetName: ', PChar(pro.Value));
   end;
 
-  procedure SetTitel;
-  var
-    Titel: string;
-  begin
-    Titel := 'Property: ' + TimeToStr(now);
-    XChangeProperty(dis, win, XA__NET_WM_NAME, XA_UTF8_STRING, 8, PropModeReplace, pbyte(Titel), Length(Titel));
-  end;
+procedure SetTitel;
+var
+  Titel: string;
+begin
+  Titel := 'Property: ' + TimeToStr(now);
+  XChangeProperty(dis, win, XA__NET_WM_NAME, XA_UTF8_STRING, 8, PropModeReplace, pbyte(Titel), Length(Titel));
+end;
+
+procedure SetDialog;
+// https://github.com/godotengine/godot/issues/55415
+begin
+//  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA__NET_WM_WINDOW_TYPE_DIALOG, 8, PropModeReplace, nil, 0);
+  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace,PByte( @XA__NET_WM_WINDOW_TYPE_DIALOG), 1);
+end;
 
   procedure GetTitel;
   var
@@ -119,6 +131,7 @@ const
     nitems, after: culong;
     Data, ch: PChar;
     carData: PCardinal;
+    aData:PAtom;
   begin
     if atom <> 0 then begin
       ch := XGetAtomName(dis, atom);
@@ -132,10 +145,16 @@ const
       if type_ = XA_UTF8_STRING then begin
         WriteLn('UTF8_STRING: ', Data);
         XFree(Data);
+      end else if type_ = XA_ATOM then begin
+        aData := PAtom(Data);
+        for i := 0 to nitems - 1 do begin
+          WriteLn('ATOM: ', aData[i]);
+        end;
       end else if type_ = XA_CARDINAL then begin
         carData := PCardinal(Data);
         for i := 0 to nitems - 1 do begin
-          WriteLn('CARDINAL: ', carData[i] shr 24);
+//          WriteLn('CARDINAL: ', carData[i] shr 24);
+          WriteLn('CARDINAL: ', carData[i]);
         end;
       end;
 
@@ -187,6 +206,16 @@ begin
 
   gc := XCreateGC(dis, win, 0, nil);
 
+  XA_ATOM := XInternAtom(dis, 'ATOM', True);
+  XA__NET_WM_WINDOW_TYPE := XInternAtom(dis, '_NET_WM_WINDOW_TYPE', True);
+  XA__NET_WM_WINDOW_TYPE_DIALOG := XInternAtom(dis, '_NET_WM_WINDOW_TYPE_DIALOG', True);
+//  XA__NET_WM_WINDOW_TYPE_DIALOG := XInternAtom(dis, '_NET_WM_WINDOW_TYPE_DIALOG', True);
+  WriteLn(XA_ATOM);
+  WriteLn(XA__NET_WM_WINDOW_TYPE);
+  WriteLn(XA__NET_WM_WINDOW_TYPE_DIALOG);
+
+
+
   XA_WM_DELETE_WINDOW := XInternAtom(dis, 'WM_DELETE_WINDOW', True);
   XSetWMProtocols(dis, win, @XA_WM_DELETE_WINDOW, 1);
 
@@ -236,6 +265,9 @@ begin
           end;
           XK_a: begin
             setAlpha(128);
+          end;
+          XK_d: begin
+            SetDialog;
           end;
           XK_q: begin
             setAlpha(129);

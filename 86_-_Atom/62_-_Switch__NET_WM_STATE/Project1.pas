@@ -21,6 +21,9 @@ var
   scr: cint;
 
   state_Atom: record
+    _NET_WM_WINDOW_TYPE,
+    _NET_WM_WINDOW_TYPE_DIALOG,
+
     _NET_WM_STATE,
     _NET_WM_STATE_MODAL,
     _NET_WM_STATE_STICKY,
@@ -28,7 +31,7 @@ var
     _NET_WM_STATE_SKIP_TASKBAR,
     _NET_WM_STATE_SKIP_PAGER,
     _NET_WM_STATE_HIDDEN,
-    _NET_WM_STATE_MAXIMIZE_HORZD,
+    _NET_WM_STATE_MAXIMIZED_HORZ,
     _NET_WM_STATE_MAXIMIZED_VERT,
     _NET_WM_STATE_FULLSCREEN,
     _NET_WM_STATE_ABOVE,
@@ -57,25 +60,65 @@ const
   //  https://specifications.freedesktop.org/wm-spec/1.3/ar01s05.html
   //  https://specifications.freedesktop.org/wm-spec/1.4/ar01s06.html
 
-  procedure SwitchState(state: TAtom; toggle_Mod: cint);
-  begin
-    xev._type := ClientMessage;
-    xev.xclient.display := dis;
-    xev.xclient.window := win;
-    xev.xclient.message_type := state_Atom._NET_WM_STATE;
-    xev.xclient.format := 32;
+procedure SwitchState(state: TAtom; toggle_Mod: cint);
+begin
+  xev._type := ClientMessage;
+  xev.xclient.display := dis;
+  xev.xclient.window := win;
+  xev.xclient.message_type := state_Atom._NET_WM_STATE;
+  xev.xclient.format := 32;
 
-    xev.xclient.Data.l[0] := toggle_Mod;
-    xev.xclient.Data.l[1] := state;
-    xev.xclient.Data.l[2] := 0;
-    xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
-    xev.xclient.Data.l[4] := 0;
+  xev.xclient.Data.l[0] := toggle_Mod;
+  xev.xclient.Data.l[1] := state;
+  xev.xclient.Data.l[2] := 0;
+  xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
+  xev.xclient.Data.l[4] := 0;
 
-    evt_sucess := XSendEvent(dis, root_window, False, SubstructureRedirectMask, @xev);
-    if evt_sucess = 0 then begin
-      WriteLn('Fehler');
-    end;
+  evt_sucess := XSendEvent(dis, root_window, False, SubstructureRedirectMask, @xev);
+  if evt_sucess = 0 then begin
+    WriteLn('Fehler');
   end;
+end;
+
+procedure SwitchHoriAndVert(toggle_Mod: cint);
+begin
+  xev._type := ClientMessage;
+  xev.xclient.display := dis;
+  xev.xclient.window := win;
+  xev.xclient.message_type := state_Atom._NET_WM_STATE;
+  xev.xclient.format := 32;
+
+  xev.xclient.Data.l[0] := toggle_Mod;
+  xev.xclient.Data.l[1] := state_atom._NET_WM_STATE_MAXIMIZED_HORZ;
+  xev.xclient.Data.l[2] := state_atom._NET_WM_STATE_MAXIMIZED_VERT;
+  xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
+  xev.xclient.Data.l[4] := 0;
+
+  evt_sucess := XSendEvent(dis, root_window, False, SubstructureRedirectMask, @xev);
+  if evt_sucess = 0 then begin
+    WriteLn('Fehler');
+  end;
+end;
+
+procedure SwitchDialog(toggle_Mod: cint);
+begin
+  xev._type := ClientMessage;
+  xev.xclient.display := dis;
+  xev.xclient.window := win;
+  xev.xclient.message_type := state_Atom._NET_WM_WINDOW_TYPE;
+  xev.xclient.format := 32;
+
+  xev.xclient.Data.l[0] := _NET_WM_STATE_ADD;
+  xev.xclient.Data.l[1] := state_atom._NET_WM_WINDOW_TYPE_DIALOG;
+  xev.xclient.Data.l[2] := 0;
+  xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
+  xev.xclient.Data.l[4] := 0;
+
+  evt_sucess := XSendEvent(dis, root_window, False, SubstructureRedirectMask, @xev);
+  if evt_sucess = 0 then begin
+    WriteLn('Fehler');
+  end;
+end;
 
   function GetAtom(dis: PDisplay; Name: PChar): TAtom;
   begin
@@ -100,10 +143,15 @@ begin
 
   gc := XCreateGC(dis, win, 0, nil);
 
+  state_atom._NET_WM_WINDOW_TYPE := GetAtom(dis, '_NET_WM_WINDOW_TYPE');
+//  state_atom._NET_WM_WINDOW_TYPE_DIALOG := GetAtom(dis, '_NET_WM_WINDOW_TYPE_DIALOG');
+  state_atom._NET_WM_WINDOW_TYPE_DIALOG := GetAtom(dis, '_NET_WM_WINDOW_TYPE_UTILITY');
+
+
   state_atom._NET_WM_STATE := GetAtom(dis, '_NET_WM_STATE');
   state_atom._NET_WM_STATE_MODAL := GetAtom(dis, '_NET_WM_STATE_MODAL');
   state_atom._NET_WM_STATE_STICKY := GetAtom(dis, '_NET_WM_STATE_STICKY');
-  state_atom._NET_WM_STATE_MAXIMIZE_HORZD := GetAtom(dis, '_NET_WM_STATE_MAXIMIZED_HORZ');
+  state_atom._NET_WM_STATE_MAXIMIZED_HORZ := GetAtom(dis, '_NET_WM_STATE_MAXIMIZED_HORZ');
   state_atom._NET_WM_STATE_MAXIMIZED_VERT := GetAtom(dis, '_NET_WM_STATE_MAXIMIZED_VERT');
   state_atom._NET_WM_STATE_SHADED := GetAtom(dis, '_NET_WM_STATE_SHADED');
   state_atom._NET_WM_STATE_SKIP_TASKBAR := GetAtom(dis, '_NET_WM_STATE_SKIP_TASKBAR');
@@ -140,11 +188,17 @@ begin
           XK_Escape: begin
             quit := True;
           end;
+          XK_Return: begin
+            SwitchDialog(0);
+          end;
+          XK_y: begin
+            SwitchHoriAndVert(_NET_WM_STATE_TOGGLE);
+          end;
           XK_space: begin
             SwitchState(state_Atom._NET_WM_STATE_FULLSCREEN, _NET_WM_STATE_TOGGLE);
           end;
           XK_h: begin
-            SwitchState(state_Atom._NET_WM_STATE_MAXIMIZE_HORZD, _NET_WM_STATE_TOGGLE);
+            SwitchState(state_Atom._NET_WM_STATE_MAXIMIZED_HORZ, _NET_WM_STATE_TOGGLE);
           end;
           XK_v: begin
             SwitchState(state_Atom._NET_WM_STATE_MAXIMIZED_VERT, _NET_WM_STATE_TOGGLE);
