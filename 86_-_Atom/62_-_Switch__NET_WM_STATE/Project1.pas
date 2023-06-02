@@ -144,8 +144,8 @@ begin
   gc := XCreateGC(dis, win, 0, nil);
 
   state_atom._NET_WM_WINDOW_TYPE := GetAtom(dis, '_NET_WM_WINDOW_TYPE');
-//  state_atom._NET_WM_WINDOW_TYPE_DIALOG := GetAtom(dis, '_NET_WM_WINDOW_TYPE_DIALOG');
-  state_atom._NET_WM_WINDOW_TYPE_DIALOG := GetAtom(dis, '_NET_WM_WINDOW_TYPE_UTILITY');
+  state_atom._NET_WM_WINDOW_TYPE_DIALOG := GetAtom(dis, '_NET_WM_WINDOW_TYPE_DIALOG');
+//  state_atom._NET_WM_WINDOW_TYPE_DIALOG := GetAtom(dis, '_NET_WM_WINDOW_TYPE_SPLASH');
 
 
   state_atom._NET_WM_STATE := GetAtom(dis, '_NET_WM_STATE');

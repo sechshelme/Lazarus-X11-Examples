@@ -28,9 +28,11 @@ var
   quit: boolean = False;
   pc: PChar;
 
-// https://snyk.io/advisor/python/pyglet/functions/pyglet.libs.x11.xlib
+  // https://snyk.io/advisor/python/pyglet/functions/pyglet.libs.x11.xlib
   XA_ATOM,
-  XA__NET_WM_WINDOW_TYPE, XA__NET_WM_WINDOW_TYPE_DIALOG,
+  XA__NET_WM_WINDOW_TYPE, XA__NET_WM_WINDOW_TYPE_SPLASH,
+  XA__NET_WM_WINDOW_TYPE_NORMAL,
+   XA__NET_WM_WINDOW_TYPE_DIALOG,
 
   XA_WM_DELETE_WINDOW,
   XA__NET_WM_NAME, XA_UTF8_STRING, XA_WM_NAME, XA_STRING,
@@ -72,20 +74,34 @@ const
     WriteLn('GetName: ', PChar(pro.Value));
   end;
 
-procedure SetTitel;
-var
-  Titel: string;
-begin
-  Titel := 'Property: ' + TimeToStr(now);
-  XChangeProperty(dis, win, XA__NET_WM_NAME, XA_UTF8_STRING, 8, PropModeReplace, pbyte(Titel), Length(Titel));
-end;
+  procedure SetTitel;
+  var
+    Titel: string;
+  begin
+    Titel := 'Property: ' + TimeToStr(now);
+    XChangeProperty(dis, win, XA__NET_WM_NAME, XA_UTF8_STRING, 8, PropModeReplace, pbyte(Titel), Length(Titel));
+  end;
 
 procedure SetDialog;
 // https://github.com/godotengine/godot/issues/55415
 begin
-//  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA__NET_WM_WINDOW_TYPE_DIALOG, 8, PropModeReplace, nil, 0);
-  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace,PByte( @XA__NET_WM_WINDOW_TYPE_DIALOG), 1);
+  //  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA__NET_WM_WINDOW_TYPE_SPLASH, 8, PropModeReplace, nil, 0);
+  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace, pbyte(@XA__NET_WM_WINDOW_TYPE_DIALOG), 1);
 end;
+
+procedure SetSplash;
+// https://github.com/godotengine/godot/issues/55415
+begin
+  //  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA__NET_WM_WINDOW_TYPE_SPLASH, 8, PropModeReplace, nil, 0);
+  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace, pbyte(@XA__NET_WM_WINDOW_TYPE_SPLASH), 1);
+end;
+
+  procedure SetNormal;
+  // https://github.com/godotengine/godot/issues/55415
+  begin
+    //  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA__NET_WM_WINDOW_TYPE_SPLASH, 8, PropModeReplace, nil, 0);
+    XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace, pbyte(@XA__NET_WM_WINDOW_TYPE_NORMAL), 1);
+  end;
 
   procedure GetTitel;
   var
@@ -131,7 +147,7 @@ end;
     nitems, after: culong;
     Data, ch: PChar;
     carData: PCardinal;
-    aData:PAtom;
+    aData: PAtom;
   begin
     if atom <> 0 then begin
       ch := XGetAtomName(dis, atom);
@@ -153,7 +169,7 @@ end;
       end else if type_ = XA_CARDINAL then begin
         carData := PCardinal(Data);
         for i := 0 to nitems - 1 do begin
-//          WriteLn('CARDINAL: ', carData[i] shr 24);
+          //          WriteLn('CARDINAL: ', carData[i] shr 24);
           WriteLn('CARDINAL: ', carData[i]);
         end;
       end;
@@ -208,11 +224,14 @@ begin
 
   XA_ATOM := XInternAtom(dis, 'ATOM', True);
   XA__NET_WM_WINDOW_TYPE := XInternAtom(dis, '_NET_WM_WINDOW_TYPE', True);
+  XA__NET_WM_WINDOW_TYPE_NORMAL := XInternAtom(dis, '_NET_WM_WINDOW_TYPE_NORMAL', True);
   XA__NET_WM_WINDOW_TYPE_DIALOG := XInternAtom(dis, '_NET_WM_WINDOW_TYPE_DIALOG', True);
-//  XA__NET_WM_WINDOW_TYPE_DIALOG := XInternAtom(dis, '_NET_WM_WINDOW_TYPE_DIALOG', True);
+  XA__NET_WM_WINDOW_TYPE_SPLASH := XInternAtom(dis, '_NET_WM_WINDOW_TYPE_SPLASH', True);
+  //  XA__NET_WM_WINDOW_TYPE_SPLASH := XInternAtom(dis, '_NET_WM_WINDOW_TYPE_DIALOG', True);
+  //  state_atom._NET_WM_WINDOW_TYPE_DIALOG := GetAtom(dis, '_NET_WM_WINDOW_TYPE_SPLASH');
   WriteLn(XA_ATOM);
   WriteLn(XA__NET_WM_WINDOW_TYPE);
-  WriteLn(XA__NET_WM_WINDOW_TYPE_DIALOG);
+  WriteLn(XA__NET_WM_WINDOW_TYPE_SPLASH);
 
 
 
@@ -266,8 +285,14 @@ begin
           XK_a: begin
             setAlpha(128);
           end;
-          XK_d: begin
+          XK_1: begin
+            SetNormal;
+          end;
+          XK_2: begin
             SetDialog;
+          end;
+          XK_3: begin
+            SetSplash;
           end;
           XK_q: begin
             setAlpha(129);
