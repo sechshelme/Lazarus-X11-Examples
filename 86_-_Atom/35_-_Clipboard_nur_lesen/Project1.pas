@@ -21,7 +21,7 @@ uses
 
 type
   TAtomPara = record
-    bufid, fmtid, propid, incrid: TAtom;
+    XA_CLIPBOARD, XA_UTF8_STRING, XA_XSEL_DATA, XA_INCR: TAtom;
   end;
 
 var
@@ -36,18 +36,18 @@ var
     result1: PChar;
   begin
     with AtomPara do begin
-      XConvertSelection(dis, bufid, fmtid, propid, win, CurrentTime);
+      XConvertSelection(dis, XA_CLIPBOARD, XA_UTF8_STRING, XA_XSEL_DATA, win, CurrentTime);
       repeat
         XNextEvent(dis, @event);
-      until not ((event._type <> SelectionNotify) or (event.xselection.selection <> bufid));
+      until not ((event._type <> SelectionNotify) or (event.xselection.selection <> XA_CLIPBOARD));
 
-      WriteLn(event.xselection._property);
+      WriteLn('prop: ',event.xselection._property);
       if event.xselection._property <> 0 then begin
 
-        XGetWindowProperty(dis, win, propid, 0, MaxLongint div 4, False, AnyPropertyType, @fmtid, @resbits, @ressize, @restail, @result1);
+        XGetWindowProperty(dis, win, XA_XSEL_DATA, 0, MaxLongint div 4, False, AnyPropertyType, @XA_UTF8_STRING, @resbits, @ressize, @restail, @result1);
 
         WriteLn('ressize: ', ressize);
-        if fmtid = incrid then begin
+        if XA_UTF8_STRING = XA_INCR then begin
           WriteLn('Buffer is too large and INCR reading is not implemented yet.');
         end else begin
           WriteLn(result1);
@@ -76,19 +76,19 @@ begin
   end;
 
   with AtomPara do begin
-    bufid := XInternAtom(dis, 'CLIPBOARD', True);
-    fmtid := XInternAtom(dis, 'UTF8_STRING', True);
-    WriteLn(fmtid);
-    if fmtid = 0 then begin
-      fmtid := XInternAtom(dis, 'STRING', True);
+    XA_CLIPBOARD := XInternAtom(dis, 'CLIPBOARD', True);
+    XA_UTF8_STRING := XInternAtom(dis, 'UTF8_STRING', True);
+    WriteLn(XA_UTF8_STRING);
+    if XA_UTF8_STRING = 0 then begin
+      XA_UTF8_STRING := XInternAtom(dis, 'STRING', True);
     end;
-    propid := XInternAtom(dis, 'XSEL_DATA', True);
-    incrid := XInternAtom(dis, 'INCR', True);
+    XA_XSEL_DATA := XInternAtom(dis, 'XSEL_DATA', False);
+    XA_INCR := XInternAtom(dis, 'INCR', True);
 
-    WriteLn(bufid);
-    WriteLn(fmtid);
-    WriteLn(propid);
-    WriteLn(incrid);
+    WriteLn(XA_CLIPBOARD);
+    WriteLn(XA_UTF8_STRING);
+    WriteLn(XA_XSEL_DATA);
+    WriteLn(XA_INCR);
   end;
 
 
