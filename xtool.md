@@ -87,4 +87,9 @@ xload -update 1 &
 xdpyinfo
 ```
 
+## Events fernsteuern
+```
+xdotool
+```
+
 Mehr: (https://www.oreilly.com/library/view/x-window-system/9780937175149/Chapter07.html)

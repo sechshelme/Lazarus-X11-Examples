@@ -173,7 +173,6 @@ end;
           WriteLn('CARDINAL: ', carData[i]);
         end;
       end;
-
     end;
   end;
 

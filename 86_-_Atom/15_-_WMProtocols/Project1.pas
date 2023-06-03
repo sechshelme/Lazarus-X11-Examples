@@ -140,7 +140,6 @@ type
           end else WriteLn('Ungültiges Atom !');
         end;
       end;
-
     end;
   end;
 
