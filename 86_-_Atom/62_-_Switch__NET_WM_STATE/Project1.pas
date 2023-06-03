@@ -20,6 +20,24 @@ var
   xev, Event: TXEvent;
   scr: cint;
 
+const
+  Message: array of PChar = (
+    'Press Key to switch State:   ( non <Shift>= on; <Shift>= off )',
+    '(1)_NET_WM_STATE_MODAL',
+    '(2)_NET_WM_STATE_STICKY',
+    '(3)_NET_WM_STATE_MAXIMIZED_VERT',
+    '(4)_NET_WM_STATE_MAXIMIZED_HORZ',
+    '(5)_NET_WM_STATE_SHADED',
+    '(6)_NET_WM_STATE_SKIP_TASKBAR',
+    '(7)_NET_WM_STATE_SKIP_PAGER',
+    '(8)_NET_WM_STATE_HIDDEN',
+    '(9)_NET_WM_STATE_FULLSCREEN',
+    '(0)_NET_WM_STATE_ABOVE',
+    '(A)_NET_WM_STATE_BELOW',
+    '(B)_NET_WM_STATE_DEMANDS_ATTENTION',
+    '(C) NET_WM_STATE_MAXIMIZED_VERT and NET_WM_STATE_MAXIMIZED_HORZ');
+
+var
   state_Atom: record
     _NET_WM_WINDOW_TYPE,
     _NET_WM_WINDOW_TYPE_DIALOG,
@@ -27,12 +45,12 @@ var
     _NET_WM_STATE,
     _NET_WM_STATE_MODAL,
     _NET_WM_STATE_STICKY,
+    _NET_WM_STATE_MAXIMIZED_VERT,
+    _NET_WM_STATE_MAXIMIZED_HORZ,
     _NET_WM_STATE_SHADED,
     _NET_WM_STATE_SKIP_TASKBAR,
     _NET_WM_STATE_SKIP_PAGER,
     _NET_WM_STATE_HIDDEN,
-    _NET_WM_STATE_MAXIMIZED_HORZ,
-    _NET_WM_STATE_MAXIMIZED_VERT,
     _NET_WM_STATE_FULLSCREEN,
     _NET_WM_STATE_ABOVE,
     _NET_WM_STATE_BELOW,
@@ -40,11 +58,10 @@ var
       end;
 
   i: integer;
-  fullscreen: boolean = False;
   evt_sucess: TStatus;
   gc: TGC;
   quit: boolean = False;
-  pc: PChar;
+  shift:Boolean;
   XA_WM_DELETE_WINDOW: TAtom;
 
 const
@@ -60,65 +77,45 @@ const
   //  https://specifications.freedesktop.org/wm-spec/1.3/ar01s05.html
   //  https://specifications.freedesktop.org/wm-spec/1.4/ar01s06.html
 
-procedure SwitchState(state: TAtom; toggle_Mod: cint);
-begin
-  xev._type := ClientMessage;
-  xev.xclient.display := dis;
-  xev.xclient.window := win;
-  xev.xclient.message_type := state_Atom._NET_WM_STATE;
-  xev.xclient.format := 32;
+  procedure SwitchState(state: TAtom; toggle_Mod: cint);
+  begin
+    xev._type := ClientMessage;
+    xev.xclient.display := dis;
+    xev.xclient.window := win;
+    xev.xclient.message_type := state_Atom._NET_WM_STATE;
+    xev.xclient.format := 32;
 
-  xev.xclient.Data.l[0] := toggle_Mod;
-  xev.xclient.Data.l[1] := state;
-  xev.xclient.Data.l[2] := 0;
-  xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
-  xev.xclient.Data.l[4] := 0;
+    xev.xclient.Data.l[0] := toggle_Mod;
+    xev.xclient.Data.l[1] := state;
+    xev.xclient.Data.l[2] := 0;
+    xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
+    xev.xclient.Data.l[4] := 0;
 
-  evt_sucess := XSendEvent(dis, root_window, False, SubstructureRedirectMask, @xev);
-  if evt_sucess = 0 then begin
-    WriteLn('Fehler');
+    evt_sucess := XSendEvent(dis, root_window, False, SubstructureRedirectMask, @xev);
+    if evt_sucess = 0 then begin
+      WriteLn('Fehler');
+    end;
   end;
-end;
 
-procedure SwitchHoriAndVert(toggle_Mod: cint);
-begin
-  xev._type := ClientMessage;
-  xev.xclient.display := dis;
-  xev.xclient.window := win;
-  xev.xclient.message_type := state_Atom._NET_WM_STATE;
-  xev.xclient.format := 32;
+  procedure SwitchHoriAndVert(toggle_Mod: cint);
+  begin
+    xev._type := ClientMessage;
+    xev.xclient.display := dis;
+    xev.xclient.window := win;
+    xev.xclient.message_type := state_Atom._NET_WM_STATE;
+    xev.xclient.format := 32;
 
-  xev.xclient.Data.l[0] := toggle_Mod;
-  xev.xclient.Data.l[1] := state_atom._NET_WM_STATE_MAXIMIZED_HORZ;
-  xev.xclient.Data.l[2] := state_atom._NET_WM_STATE_MAXIMIZED_VERT;
-  xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
-  xev.xclient.Data.l[4] := 0;
+    xev.xclient.Data.l[0] := toggle_Mod;
+    xev.xclient.Data.l[1] := state_atom._NET_WM_STATE_MAXIMIZED_HORZ;
+    xev.xclient.Data.l[2] := state_atom._NET_WM_STATE_MAXIMIZED_VERT;
+    xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
+    xev.xclient.Data.l[4] := 0;
 
-  evt_sucess := XSendEvent(dis, root_window, False, SubstructureRedirectMask, @xev);
-  if evt_sucess = 0 then begin
-    WriteLn('Fehler');
+    evt_sucess := XSendEvent(dis, root_window, False, SubstructureRedirectMask, @xev);
+    if evt_sucess = 0 then begin
+      WriteLn('Fehler');
+    end;
   end;
-end;
-
-procedure SwitchDialog(toggle_Mod: cint);
-begin
-  xev._type := ClientMessage;
-  xev.xclient.display := dis;
-  xev.xclient.window := win;
-  xev.xclient.message_type := state_Atom._NET_WM_WINDOW_TYPE;
-  xev.xclient.format := 32;
-
-  xev.xclient.Data.l[0] := _NET_WM_STATE_ADD;
-  xev.xclient.Data.l[1] := state_atom._NET_WM_WINDOW_TYPE_DIALOG;
-  xev.xclient.Data.l[2] := 0;
-  xev.xclient.Data.l[3] := EVENT_SOURCE_APPLICATION;
-  xev.xclient.Data.l[4] := 0;
-
-  evt_sucess := XSendEvent(dis, root_window, False, SubstructureRedirectMask, @xev);
-  if evt_sucess = 0 then begin
-    WriteLn('Fehler');
-  end;
-end;
 
   function GetAtom(dis: PDisplay; Name: PChar): TAtom;
   begin
@@ -136,7 +133,7 @@ begin
   end;
   scr := DefaultScreen(dis);
   root_window := XRootWindow(dis, scr);
-  win := XCreateSimpleWindow(dis, root_window, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  win := XCreateSimpleWindow(dis, root_window, 10, 10, 480, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
   XSelectInput(dis, win, KeyPressMask or KeyReleaseMask or ExposureMask or VisibilityChangeMask);
   XStoreName(dis, win, 'Mein Fenster');
   XMapWindow(dis, win);
@@ -145,7 +142,7 @@ begin
 
   state_atom._NET_WM_WINDOW_TYPE := GetAtom(dis, '_NET_WM_WINDOW_TYPE');
   state_atom._NET_WM_WINDOW_TYPE_DIALOG := GetAtom(dis, '_NET_WM_WINDOW_TYPE_DIALOG');
-//  state_atom._NET_WM_WINDOW_TYPE_DIALOG := GetAtom(dis, '_NET_WM_WINDOW_TYPE_SPLASH');
+  //  state_atom._NET_WM_WINDOW_TYPE_DIALOG := GetAtom(dis, '_NET_WM_WINDOW_TYPE_SPLASH');
 
 
   state_atom._NET_WM_STATE := GetAtom(dis, '_NET_WM_STATE');
@@ -170,51 +167,109 @@ begin
     XNextEvent(dis, @Event);
     case Event._type of
       Expose: begin
-        XSetForeground(dis, gc, $008800);
-        if fullscreen then  begin
-          pc := PChar('Press [Space] switch to Normalscreen');
-        end else begin
-          pc := PChar('Press [Space] switch to Fullscreen');
-        end;
-        XDrawString(dis, win, gc, 10, 20, pc, Length(pc));
-        for i := 0 to 255 do begin
-          XSetForeground(dis, gc, i);
-          XDrawLine(dis, win, gc, 10 + i, 30, 100 + i, 100);
+        XSetForeground(dis, gc, $004400);
+        for i := 0 to Length(Message) - 1 do begin
+          XDrawString(dis, win, gc, 10, 16 * i + 16, Message[i], Length(Message[i]));
         end;
       end;
       KeyPress: begin
         // Beendet das Programm bei [ESC]
+        shift:=Event.xkey.state and ShiftMask = ShiftMask ;
         case XLookupKeysym(@Event.xkey, 0) of
           XK_Escape: begin
             quit := True;
           end;
-          XK_Return: begin
-            SwitchDialog(0);
+          XK_1: begin
+            if shift then begin
+              SwitchState(state_Atom._NET_WM_STATE_MODAL, _NET_WM_STATE_REMOVE);
+            end else begin
+              SwitchState(state_Atom._NET_WM_STATE_MODAL, _NET_WM_STATE_ADD);
+            end;
           end;
-          XK_y: begin
-            SwitchHoriAndVert(_NET_WM_STATE_TOGGLE);
+          XK_2: begin
+            if shift then begin
+              SwitchState(state_Atom._NET_WM_STATE_STICKY, _NET_WM_STATE_REMOVE);
+            end else begin
+              SwitchState(state_Atom._NET_WM_STATE_STICKY, _NET_WM_STATE_ADD);
+            end;
           end;
-          XK_space: begin
-            SwitchState(state_Atom._NET_WM_STATE_FULLSCREEN, _NET_WM_STATE_TOGGLE);
+          XK_3: begin
+            if shift then begin
+              SwitchState(state_Atom._NET_WM_STATE_MAXIMIZED_VERT, _NET_WM_STATE_REMOVE);
+            end else begin
+              SwitchState(state_Atom._NET_WM_STATE_MAXIMIZED_VERT, _NET_WM_STATE_ADD);
+            end;
           end;
-          XK_h: begin
-            SwitchState(state_Atom._NET_WM_STATE_MAXIMIZED_HORZ, _NET_WM_STATE_TOGGLE);
+          XK_4: begin
+            if shift then begin
+              SwitchState(state_Atom._NET_WM_STATE_MAXIMIZED_HORZ, _NET_WM_STATE_REMOVE);
+            end else begin
+              SwitchState(state_Atom._NET_WM_STATE_MAXIMIZED_HORZ, _NET_WM_STATE_ADD);
+            end;
           end;
-          XK_v: begin
-            SwitchState(state_Atom._NET_WM_STATE_MAXIMIZED_VERT, _NET_WM_STATE_TOGGLE);
+          XK_5: begin
+            if shift then begin
+              SwitchState(state_Atom._NET_WM_STATE_SHADED, _NET_WM_STATE_REMOVE);
+            end else begin
+              SwitchState(state_Atom._NET_WM_STATE_SHADED, _NET_WM_STATE_ADD);
+            end;
           end;
-          XK_t: begin
-            SwitchState(state_Atom._NET_WM_STATE_SKIP_TASKBAR, _NET_WM_STATE_TOGGLE);
+          XK_6: begin
+            if shift then begin
+              SwitchState(state_Atom._NET_WM_STATE_SKIP_TASKBAR, _NET_WM_STATE_REMOVE);
+            end else begin
+              SwitchState(state_Atom._NET_WM_STATE_SKIP_TASKBAR, _NET_WM_STATE_ADD);
+            end;
           end;
-          XK_s: begin
-            SwitchState(state_Atom._NET_WM_STATE_SHADED, _NET_WM_STATE_TOGGLE);
+          XK_7: begin
+            if shift then begin
+              SwitchState(state_Atom._NET_WM_STATE_SKIP_PAGER, _NET_WM_STATE_REMOVE);
+            end else begin
+              SwitchState(state_Atom._NET_WM_STATE_SKIP_PAGER, _NET_WM_STATE_ADD);
+            end;
+          end;
+          XK_8: begin
+            if shift then begin
+              SwitchState(state_Atom._NET_WM_STATE_HIDDEN, _NET_WM_STATE_REMOVE);
+            end else begin
+              SwitchState(state_Atom._NET_WM_STATE_HIDDEN, _NET_WM_STATE_ADD);
+            end;
+          end;
+          XK_9: begin
+            if shift then begin
+              SwitchState(state_Atom._NET_WM_STATE_FULLSCREEN, _NET_WM_STATE_REMOVE);
+            end else begin
+              SwitchState(state_Atom._NET_WM_STATE_FULLSCREEN, _NET_WM_STATE_ADD);
+            end;
+          end;
+          XK_0: begin
+            if shift then begin
+              SwitchState(state_Atom._NET_WM_STATE_ABOVE, _NET_WM_STATE_REMOVE);
+            end else begin
+              SwitchState(state_Atom._NET_WM_STATE_ABOVE, _NET_WM_STATE_ADD);
+            end;
           end;
           XK_a: begin
-            SwitchState(state_Atom._NET_WM_STATE_ABOVE, _NET_WM_STATE_TOGGLE);
+            if shift then begin
+              SwitchState(state_Atom._NET_WM_STATE_BELOW, _NET_WM_STATE_REMOVE);
+            end else begin
+              SwitchState(state_Atom._NET_WM_STATE_BELOW, _NET_WM_STATE_ADD);
+            end;
           end;
           XK_b: begin
-            SwitchState(state_Atom._NET_WM_STATE_BELOW, _NET_WM_STATE_TOGGLE);
+            if shift then begin
+              SwitchState(state_Atom._NET_WM_STATE_DEMANDS_ATTENTION, _NET_WM_STATE_REMOVE);
+            end else begin
+              SwitchState(state_Atom._NET_WM_STATE_DEMANDS_ATTENTION, _NET_WM_STATE_ADD);
+            end;
           end;
+            XK_c: begin
+              if shift then begin
+                SwitchHoriAndVert(_NET_WM_STATE_REMOVE);
+              end else begin
+                SwitchHoriAndVert(_NET_WM_STATE_ADD);
+              end;
+            end;
         end;
       end;
       ClientMessage: begin
