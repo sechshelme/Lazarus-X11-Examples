@@ -1,6 +1,7 @@
 //image image.png
 (*
-Fenster in Fullscreen schalten.
+Fenster an einer bestimmten Position positionieren.
+Mit XMoveResizeWindow() oder XCreateSimpleWindow() hat x,y keinen Einfluss, ausser bei den Sub-Fenstern.
 *)
 //lineal
 //code+
@@ -22,41 +23,26 @@ var
 
 const
   Message: array of PChar = (
-    'Press Key to switch State:   ( non <Shift>= on; <Shift>= off )',
-    '(1)_NET_WM_STATE_MODAL',
-    '(2)_NET_WM_STATE_STICKY',
-    '(3)_NET_WM_STATE_MAXIMIZED_VERT',
-    '(4)_NET_WM_STATE_MAXIMIZED_HORZ',
-    '(5)_NET_WM_STATE_SHADED',
-    '(6)_NET_WM_STATE_SKIP_TASKBAR',
-    '(7)_NET_WM_STATE_SKIP_PAGER',
-    '(8)_NET_WM_STATE_HIDDEN',
-    '(9)_NET_WM_STATE_FULLSCREEN',
-    '(0)_NET_WM_STATE_ABOVE',
-    '(A)_NET_WM_STATE_BELOW',
-    '(B)_NET_WM_STATE_DEMANDS_ATTENTION',
-    '(C) NET_WM_STATE_MAXIMIZED_VERT and NET_WM_STATE_MAXIMIZED_HORZ');
-
+    'Press Key to switch Size and Position',
+    '(1) 200x200',
+    '(2) 150x150',
+    '(3) 500x500',
+    '(0) Zentrieren');
 var
-  XA__NET_MOVERESIZE_WINDOW: TAtom;
-
-
-  i: integer;
-  evt_sucess: TStatus;
   gc: TGC;
   quit: boolean = False;
-  shift: boolean;
-  XA_WM_DELETE_WINDOW: TAtom;
-
-const
-  _NET_WM_STATE_REMOVE = 0;
-  _NET_WM_STATE_ADD = 1;
-  _NET_WM_STATE_TOGGLE = 2;
-
-  EVENT_SOURCE_APPLICATION = 1;
+  i,  w, h: cint;
 
   //  https://specifications.freedesktop.org/wm-spec/1.3/ar01s05.html
   //  https://specifications.freedesktop.org/wm-spec/1.4/ar01s06.html
+
+  function GetAtom(Name: PChar): TAtom;
+  begin
+    Result := XInternAtom(dis, Name, True);
+    if Result = 0 then begin
+      WriteLn('Atom "', Name, '" nicht gefunden !');
+    end;
+  end;
 
   procedure MoveWindow(x, y, w, h: clong);
   var
@@ -65,7 +51,7 @@ const
     xev._type := ClientMessage;
     xev.xclient.display := dis;
     xev.xclient.window := win;
-    xev.xclient.message_type := XA__NET_MOVERESIZE_WINDOW;
+    xev.xclient.message_type := GetAtom('_NET_MOVERESIZE_WINDOW');
     xev.xclient.format := 32;
 
     xev.xclient.Data.l[0] := %111100000000;
@@ -74,18 +60,7 @@ const
     xev.xclient.Data.l[3] := w;
     xev.xclient.Data.l[4] := h;
 
-    evt_sucess := XSendEvent(dis, root_window, False, SubstructureRedirectMask, @xev);
-    if evt_sucess = 0 then begin
-      WriteLn('Fehler');
-    end;
-  end;
-
-  function GetAtom(Name: PChar): TAtom;
-  begin
-    Result := XInternAtom(dis, Name, True);
-    if Result = 0 then begin
-      WriteLn('Atom "', Name, '" nicht gefunden !');
-    end;
+    XSendEvent(dis, root_window, False, SubstructureRedirectMask, @xev);
   end;
 
 begin
@@ -96,17 +71,19 @@ begin
   end;
   scr := DefaultScreen(dis);
   root_window := XRootWindow(dis, scr);
+
+  w := DisplayWidth(dis, scr);
+  h := DisplayHeight(dis, scr);
+
   win := XCreateSimpleWindow(dis, root_window, 10, 10, 480, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
   XSelectInput(dis, win, KeyPressMask or KeyReleaseMask or ExposureMask or VisibilityChangeMask or PropertyChangeMask);
   XStoreName(dis, win, 'Mein Fenster');
+
   XMapWindow(dis, win);
+  MoveWindow(w div 2 - 240, h div 2 - 120, 480, 240);
 
   gc := XCreateGC(dis, win, 0, nil);
 
-  XA__NET_MOVERESIZE_WINDOW := GetAtom('_NET_MOVERESIZE_WINDOW');
-
-  XA_WM_DELETE_WINDOW := GetAtom('WM_DELETE_WINDOW');
-  XSetWMProtocols(dis, win, @XA_WM_DELETE_WINDOW, 1);
   while not quit do begin
     XNextEvent(dis, @Event);
     case Event._type of
@@ -118,7 +95,6 @@ begin
       end;
       KeyPress: begin
         // Beendet das Programm bei [ESC]
-        shift := Event.xkey.state and ShiftMask = ShiftMask;
         case XLookupKeysym(@Event.xkey, 0) of
           XK_Escape: begin
             quit := True;
@@ -132,6 +108,9 @@ begin
           XK_3: begin
             MoveWindow(500, 500, 150, 150);
           end;
+          XK_0: begin
+            MoveWindow(w div 2 - 240, h div 2 - 120, 480, 240);
+          end;
         end;
       end;
       PropertyNotify: begin
@@ -139,10 +118,6 @@ begin
       end;
       ClientMessage: begin
         WriteLn('ClientMessage');
-        if Event.xclient.Data.l[0] = XA_WM_DELETE_WINDOW then begin
-          WriteLn('[X] wurde gedrückt');
-          quit := True;
-        end;
       end;
     end;
   end;

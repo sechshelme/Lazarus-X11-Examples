@@ -33,15 +33,14 @@ const
   _NET_WM_STATE_ADD = 1;
   _NET_WM_STATE_TOGGLE = 2;
 
-  EVENT_SOURCE_APPLICATION = 1;
-
-
   // https://techdragonblog.de/2021/03/07/programmieren-in-c-vollbildfenster-mit-xlib/
 
   //  https://specifications.freedesktop.org/wm-spec/1.3/ar01s05.html
   //  https://specifications.freedesktop.org/wm-spec/1.4/ar01s06.html
 
   procedure Switch_FullScreen(fs: boolean);
+  const
+      EVENT_SOURCE_APPLICATION = 1;
   begin
     xev._type := ClientMessage;
     xev.xclient.display := dis;
