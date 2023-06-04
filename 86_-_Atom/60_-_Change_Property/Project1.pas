@@ -30,9 +30,10 @@ var
 
   // https://snyk.io/advisor/python/pyglet/functions/pyglet.libs.x11.xlib
   XA_ATOM,
+  XA__NET_MOVERESIZE_WINDOW,
   XA__NET_WM_WINDOW_TYPE, XA__NET_WM_WINDOW_TYPE_SPLASH,
   XA__NET_WM_WINDOW_TYPE_NORMAL,
-   XA__NET_WM_WINDOW_TYPE_DIALOG,
+  XA__NET_WM_WINDOW_TYPE_DIALOG,
 
   XA_WM_DELETE_WINDOW,
   XA__NET_WM_NAME, XA_UTF8_STRING, XA_WM_NAME, XA_STRING,
@@ -52,6 +53,14 @@ const
   //  https://specifications.freedesktop.org/wm-spec/1.4/ar01s06.html
 
   // https://tronche.com/gui/x/icccm/sec-4.html
+
+  function GetAtom(Name: PChar): TAtom;
+  begin
+    Result := XInternAtom(dis, Name, True);
+    if Result = 0 then begin
+      WriteLn('Atom "', Name, '" nicht gefunden !');
+    end;
+  end;
 
   procedure SetWMName;
   const
@@ -82,26 +91,47 @@ const
     XChangeProperty(dis, win, XA__NET_WM_NAME, XA_UTF8_STRING, 8, PropModeReplace, pbyte(Titel), Length(Titel));
   end;
 
-procedure SetDialog;
-// https://github.com/godotengine/godot/issues/55415
-begin
-  //  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA__NET_WM_WINDOW_TYPE_SPLASH, 8, PropModeReplace, nil, 0);
-  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace, pbyte(@XA__NET_WM_WINDOW_TYPE_DIALOG), 1);
-end;
+  procedure SetDialog;
+  // https://github.com/godotengine/godot/issues/55415
+  begin
+    XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace, pbyte(@XA__NET_WM_WINDOW_TYPE_DIALOG), 1);
+  end;
 
-procedure SetSplash;
-// https://github.com/godotengine/godot/issues/55415
-begin
-  //  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA__NET_WM_WINDOW_TYPE_SPLASH, 8, PropModeReplace, nil, 0);
-  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace, pbyte(@XA__NET_WM_WINDOW_TYPE_SPLASH), 1);
-end;
+  procedure SetSplash;
+  // https://github.com/godotengine/godot/issues/55415
+  begin
+    XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace, pbyte(@XA__NET_WM_WINDOW_TYPE_SPLASH), 1);
+  end;
 
   procedure SetNormal;
   // https://github.com/godotengine/godot/issues/55415
   begin
-    //  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA__NET_WM_WINDOW_TYPE_SPLASH, 8, PropModeReplace, nil, 0);
     XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace, pbyte(@XA__NET_WM_WINDOW_TYPE_NORMAL), 1);
   end;
+
+
+  procedure MoveWindow(x, y, w, h: clong);
+  var
+    xev: TXEvent;
+  begin
+    xev._type := ClientMessage;
+    xev.xclient.display := dis;
+    xev.xclient.window := win;
+    xev.xclient.message_type := XA__NET_MOVERESIZE_WINDOW;
+    xev.xclient.format := 32;
+
+    xev.xclient.Data.l[0] := %111100000000;
+    xev.xclient.Data.l[1] := x;
+    xev.xclient.Data.l[2] := y;
+    xev.xclient.Data.l[3] := w;
+    xev.xclient.Data.l[4] := h;
+
+    evt_sucess := XSendEvent(dis, root_window, False, SubstructureRedirectMask, @xev);
+    if evt_sucess = 0 then begin
+      WriteLn('Fehler');
+    end;
+  end;
+
 
   procedure GetTitel;
   var
@@ -184,27 +214,6 @@ end;
     XChangeProperty(dis, win, XA__NET_WM_WINDOW_OPACITY, XA_CARDINAL, 32, PropModeReplace, @tmpAlpha, 1);
   end;
 
-  procedure setFullScreen;
-  const
-    _NET_WM_STATE_REMOVE = 0;
-    _NET_WM_STATE_ADD = 1;
-    _NET_WM_STATE_TOGGLE = 2;
-  var
-    tmpAlpha: array[0..4] of clong;
-    XA__NET_WM_STATE_FULLSCREEN, XA__NET_WM_STATE: TAtom;
-  begin
-    XA__NET_WM_STATE := XInternAtom(dis, '_NET_WM_STATE', True);
-    XA__NET_WM_STATE_FULLSCREEN := XInternAtom(dis, '_NET_WM_STATE_FULLSCREEN', True);
-
-    tmpAlpha[0] := _NET_WM_STATE_ADD;
-    tmpAlpha[1] := XA__NET_WM_STATE_FULLSCREEN;
-    tmpAlpha[2] := 0;
-    tmpAlpha[3] := EVENT_SOURCE_APPLICATION;
-    tmpAlpha[4] := 0;
-
-    XChangeProperty(dis, win, XA__NET_WM_STATE, XA_CARDINAL, 32, PropModeReplace, @tmpAlpha, 5);
-  end;
-
 begin
   dis := XOpenDisplay(nil);
   if dis = nil then begin
@@ -222,35 +231,23 @@ begin
   gc := XCreateGC(dis, win, 0, nil);
 
   XA_ATOM := XInternAtom(dis, 'ATOM', True);
-  XA__NET_WM_WINDOW_TYPE := XInternAtom(dis, '_NET_WM_WINDOW_TYPE', True);
-  XA__NET_WM_WINDOW_TYPE_NORMAL := XInternAtom(dis, '_NET_WM_WINDOW_TYPE_NORMAL', True);
-  XA__NET_WM_WINDOW_TYPE_DIALOG := XInternAtom(dis, '_NET_WM_WINDOW_TYPE_DIALOG', True);
-  XA__NET_WM_WINDOW_TYPE_SPLASH := XInternAtom(dis, '_NET_WM_WINDOW_TYPE_SPLASH', True);
-  //  XA__NET_WM_WINDOW_TYPE_SPLASH := XInternAtom(dis, '_NET_WM_WINDOW_TYPE_DIALOG', True);
-  //  state_atom._NET_WM_WINDOW_TYPE_DIALOG := GetAtom(dis, '_NET_WM_WINDOW_TYPE_SPLASH');
-  WriteLn(XA_ATOM);
-  WriteLn(XA__NET_WM_WINDOW_TYPE);
-  WriteLn(XA__NET_WM_WINDOW_TYPE_SPLASH);
+  XA__NET_WM_WINDOW_TYPE := GetAtom('_NET_WM_WINDOW_TYPE');
+  XA__NET_WM_WINDOW_TYPE_NORMAL := GetAtom('_NET_WM_WINDOW_TYPE_NORMAL');
+  XA__NET_WM_WINDOW_TYPE_DIALOG := GetAtom('_NET_WM_WINDOW_TYPE_DIALOG');
+  XA__NET_WM_WINDOW_TYPE_SPLASH := GetAtom('_NET_WM_WINDOW_TYPE_SPLASH');
+  XA__NET_MOVERESIZE_WINDOW := GetAtom('_NET_MOVERESIZE_WINDOW');
 
-
-
-  XA_WM_DELETE_WINDOW := XInternAtom(dis, 'WM_DELETE_WINDOW', True);
+  XA_WM_DELETE_WINDOW := GetAtom('WM_DELETE_WINDOW');
   XSetWMProtocols(dis, win, @XA_WM_DELETE_WINDOW, 1);
 
-  XA__NET_WM_WINDOW_OPACITY := XInternAtom(dis, '_NET_WM_WINDOW_OPACITY', True);
+  XA__NET_WM_WINDOW_OPACITY := GetAtom('_NET_WM_WINDOW_OPACITY');
 
-  XA_CARDINAL := XInternAtom(dis, 'CARDINAL', True);
-  XA_STRING := XInternAtom(dis, 'STRING', True);
-  XA_UTF8_STRING := XInternAtom(dis, 'UTF8_STRING', True);
+  XA_CARDINAL := GetAtom('CARDINAL');
+  XA_STRING := GetAtom('STRING');
+  XA_UTF8_STRING := GetAtom('UTF8_STRING');
 
-  XA_WM_NAME := XInternAtom(dis, 'WM_NAME', True);
-  XA__NET_WM_NAME := XInternAtom(dis, '_NET_WM_NAME', True);
-
-  WriteLn(XA_CARDINAL);
-  WriteLn(XA_UTF8_STRING);
-  WriteLn(XA_UTF8_STRING);
-  WriteLn(XA_WM_NAME);
-  WriteLn(XA__NET_WM_NAME);
+  XA_WM_NAME := GetAtom('WM_NAME');
+  XA__NET_WM_NAME := GetAtom('_NET_WM_NAME');
 
   SetWMName;
   GetWMName;
@@ -279,10 +276,13 @@ begin
             quit := True;
           end;
           XK_space: begin
-            setFullScreen;
+//            setFullScreen;
           end;
           XK_a: begin
             setAlpha(128);
+          end;
+          XK_0: begin
+            MoveWindow(100, 100, 200, 200);
           end;
           XK_1: begin
             SetNormal;
