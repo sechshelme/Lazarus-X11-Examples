@@ -18,7 +18,7 @@ uses
 
 const
   Message: array of PChar = (
-    'Druecke 1-4');
+    'Drue21cke 1-4');
 
 var
   dis: PDisplay;
@@ -47,6 +47,7 @@ var
   var
     xev: TXEvent;
   begin
+    WriteLn('stack');
     xev._type := ClientMessage;
     xev.xclient.display := dis;
     xev.xclient.window := win1;
