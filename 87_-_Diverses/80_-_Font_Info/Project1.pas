@@ -9,6 +9,7 @@ Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.
 program Project1;
 
 uses
+  sysutils,
   unixtype,
   ctypes,
   xlib,
@@ -22,6 +23,36 @@ var
   Event: TXEvent;
   scr: cint;
 
+  procedure Print_FontInfo;
+  var
+    i: integer;
+    font: PXFontStruct;
+    font_name: TAtom;
+    fontprop: culong;
+    pc: PChar;
+  begin
+
+
+    font := XLoadQueryFont(dis, '-bitstream-bitstream charter-medium-r-normal--0-0-0-0-p-0-adobe-standard');
+//    font := XLoadQueryFont(dis, 'rk24');
+    if font = nil then begin
+      WriteLn('Konnte Font nicht laden !');
+    end;
+    WriteLn('count: ', font^.n_properties);
+    for i := 0 to font^.n_properties - 1 do begin
+      font_name:=font^.properties[i].Name;
+      fontprop:=font^.properties[i].card32;
+      Write(XGetAtomName(dis, font_name),': ');
+      WriteLn(fontprop,'  ',fontprop.ToHexString);
+    end;
+
+//    fontprop:=font^.properties[0].card32;
+
+//         pc:=PChar(@fontprop);
+//   WriteLn(pc);
+
+  end;
+
 begin
   // Erstellt die Verbindung zum Server
   dis := XOpenDisplay(nil);
@@ -30,6 +61,8 @@ begin
     Halt(1);
   end;
   scr := DefaultScreen(dis);
+
+
 
   // Erstellt das Fenster
   win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
@@ -53,6 +86,9 @@ begin
         case XLookupKeysym(@Event.xkey, 0) of
           XK_Escape: begin
             Break;
+          end;
+          XK_space: begin
+            Print_FontInfo;
           end;
         end;
       end;

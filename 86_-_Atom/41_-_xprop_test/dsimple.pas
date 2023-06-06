@@ -13,6 +13,7 @@ var
   screen: cint;
 
 procedure Setup_Display_And_Screen(argc: pcint; argv: PPChar);
+function select_Window_Args(rargc:pcint;argv:PPChar):TWindow;
 
 procedure usage(errmsg: PChar);
 
@@ -102,6 +103,22 @@ begin
   displaynname := Get_Display_Name(argc, argv);
   dpy := Open_Display(displaynname);
   screen := XDefaultScreen(dpy);
+end;
+
+function select_Window_Args(rargc: pcint; argv: PPChar): TWindow;
+var nargc:cint=1; argc:cint;nargv:PPChar;
+  w:TWindow=0;
+  OPTION: PChar;
+begin
+  //nargv:=argv+1;argc:=rargc^;
+  //OPTION:=argv[0];
+  //while       argc>=0 do begin
+  //  Inc(argv);Dec(argc);
+  //  if strcomp(OPTION,'-'+'')=0 then ;
+  //
+  //end;
+
+    Result:=w;
 end;
 
 procedure usage(errmsg: PChar);

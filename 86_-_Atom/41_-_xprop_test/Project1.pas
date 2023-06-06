@@ -15,14 +15,15 @@ const
 LC_CTYPE	=	 0;
 LC_ALL = 6;
 
-
+ XpropWindowProperties= 0;
+ XpropFontProperties =  1;
 
 
 var
   dis: PDisplay;
-  win: TWindow;
+  win:TWindow; target_win: TWindow=0;
   Event: TXEvent;
-  scr: cint;
+  xpropMode: Integer;
 
 begin
   program_name:=argv[0];
@@ -31,16 +32,22 @@ begin
 
   Setup_Display_And_Screen(@argc, argv);
 
+  target_win:=  select_Window_Args(@argc, argv);
+
+  xpropMode:=XpropWindowProperties;
+
+
+
+
   // Erstellt die Verbindung zum Server
   dis := XOpenDisplay(nil);
   if dis = nil then begin
     WriteLn('Kann nicht das Display öffnen');
     Halt(1);
   end;
-  scr := DefaultScreen(dis);
 
   // Erstellt das Fenster
-  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  win := XCreateSimpleWindow(dis, RootWindow(dis, screen), 10, 10, 320, 240, 1, BlackPixel(dis, screen), WhitePixel(dis, screen));
 
   // Wählt die gewünschten Ereignisse aus
   // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
