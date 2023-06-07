@@ -27,6 +27,7 @@ var
 
 const
   ListAtoms: TStringArray = (
+  'FONT_NAME',
     'FOUNDRY',
     'FAMILY_NAME',
     'WEIGHT_NAME',
@@ -36,11 +37,25 @@ const
     'SPACING',
     'CHARSET_REGISTRY',
     'CHARSET_ENCODING',
+    'FONT',
     'FACE_NAME',
+    'FULL_NAME',
     'COPYRIGHT',
     'NOTICE',
-    'FONT',
-    'FONT_NAME');
+    'FONT_TYPE',
+    'FONT_VERSION',
+    'RASTERIZER_NAME',
+    'RASTERIZER_VERSION',
+    '_ADOBE_POSTSCRIPT_FONTNAME',
+
+    'CHARSET_COLLECTIONS',
+    'CLASSIFICATION',
+    'DEVICE_FONT_NAME',
+    'FONTNAME_REGISTRY',
+    'MONOSPACED',
+    'QUALITY',
+    'RELATIVE_SET',
+    'STYLE'    )    ;
 
   ListCardinal: TStringArray = (
     'PIXEL_SIZE',
@@ -56,8 +71,6 @@ const
     'RELATIVE_SETWIDTH',
     'RELATIVE_WEIGHT',
     'CAP_HEIGHT',
-    'SUPERSCRIPT_SIZE',
-    'SUBSCRIPT_SIZE',
     'DESTINATION');
 
   ListInt: TStringArray = (
@@ -66,6 +79,8 @@ const
     'SUPERSCRIPT_Y',
     'SUBSCRIPT_X',
     'SUBSCRIPT_Y',
+    'SUPERSCRIPT_SIZE',
+    'SUBSCRIPT_SIZE',
     'UNDERLINE_POSITION',
     'UNDERLINE_THICKNESS',
     'STRIKEOUT_ASCENT',
