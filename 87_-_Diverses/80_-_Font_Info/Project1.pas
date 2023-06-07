@@ -113,14 +113,71 @@ const
     XSetErrorHandler(oldhandler);
   end;
 
-procedure ComputeFontType(fs:PXFontStruct);
-begin
-  //////////////////////////////
+  procedure ComputeFontType(fs: PXFontStruct);
+  var
+    awatom: TAtom;
+    i: integer;
+    char_cell: boolean = True;
+    reason: PChar = nil;
+    cs: PXCharStruct;
+    s: String;
+  begin
+    awatom := XInternAtom(dis, 'AVERAGE_WIDTH', True);
+    Write('  font type:'#9#9);
+    if fs^.min_bounds.Width <> fs^.max_bounds.Width then begin
+      WriteLn('Proportional (min and max widths not equal)');
+      Exit;
+    end;
+    if awatom <> 0 then begin
+      for i := 0 to fs^.n_properties - 1 do begin
+        if (fs^.properties[i].Name = awatom) and (fs^.max_bounds.Width * 10 <> fs^.properties[i].card32) then begin
+          char_cell := False;
+          reason := 'font width not equal to AVERAGE_WIDTH';
+          Break;
+        end;
+      end;
+    end;
+
+    if fs^.per_char <> nil then begin
+      i := fs^.min_char_or_byte2;
+      cs := fs^.per_char;
+      while i <= fs^.max_char_or_byte2 do begin
+        if cs^.Width = 0 then begin
+          Continue;
+        end;
+        if cs^.Width <> fs^.max_bounds.Width then begin
+          WriteLn('Proportional (characters not all the same width)');
+          Exit;
+        end;
+        if char_cell then begin
+          if cs^.Width < 0 then begin
+            if not ((cs^.Width <= cs^.lbearing) and (cs^.lbearing <= cs^.rbearing) and (cs^.rbearing <= 0)) then begin
+              char_cell := False;
+              reason := 'ink outside bounding box';
+            end;
+          end else if not ((0 <= cs^.lbearing) and (cs^.lbearing <= cs^.rbearing) and (cs^.rbearing <= cs^.Width)) then begin
+            char_cell := False;
+            reason := 'ink outside bounding box';
+          end;
+          if not ((cs^.ascent <= fs^.ascent) and (cs^.rbearing <= cs^.Width)) then begin
+            char_cell := False;
+            reason := 'ink outside bounding box';
+          end;
+        end;
+
+        Inc(i);
+        Inc(cs);
+      end;
+      if char_cell then s:='Character Cell' else s:= 'Monospaced';
+      Write(char_cell);
+      if reason<>nil then Write(' (',reason,')');
+      WriteLn();
+    end;
   end;
 
   procedure do_query_font(Name: PChar);
   const
-    bounds_metrics_title:PChar ='width left  right  asc  desc   attr   keysym';
+    bounds_metrics_title: PChar = 'width left  right  asc  desc   attr   keysym';
   var
     i: integer;
     info: PXFontStruct;
@@ -145,22 +202,26 @@ begin
     WriteLn('  indexing:'#9#9, ((info^.min_byte1 = 0) and (info^.max_byte1 = 0)));
     WriteLn('rows:'#9#9#9'$', IntToHex(info^.min_byte1, 2), ' thru $', IntToHex(info^.max_byte1, 2), ' (', info^.min_byte1, ' thur ', info^.max_byte1, ')');
     WriteLn('columns:'#9#9'$', IntToHex(info^.min_char_or_byte2, 2), ' thru $', IntToHex(info^.max_char_or_byte2, 2), ' (', info^.min_char_or_byte2, ' thur ', info^.max_char_or_byte2, ')');
-    if info^.all_chars_exist<>0 then s:='yes'else s:='no';
+    if info^.all_chars_exist <> 0 then begin
+      s := 'yes';
+    end else begin
+      s := 'no';
+    end;
     WriteLn('  all chars_exits'#9, s);
-    WriteLn('  default char:'#9#9'$',IntToHex(info^.default_char,4),' (',info^.default_char,')');
-    WriteLn('  ascent:'#9#9,info^.ascent);
-    WriteLn('  descent:'#9#9,info^.descent);
+    WriteLn('  default char:'#9#9'$', IntToHex(info^.default_char, 4), ' (', info^.default_char, ')');
+    WriteLn('  ascent:'#9#9, info^.ascent);
+    WriteLn('  descent:'#9#9, info^.descent);
     ComputeFontType(info);
     WriteLn('  bounds:'#9#9, bounds_metrics_title);
 
-   // PrintBounds('min', @info^.min_bounds);
-//    PrintBounds('max', @info^.max_bounds);
-//
+    // PrintBounds('min', @info^.min_bounds);
+    //    PrintBounds('max', @info^.max_bounds);
+    //
 
 
 
 
-    WriteLn('count: ', info^.n_properties);
+    WriteLn('  properties: ', info^.n_properties);
     for i := 0 to info^.n_properties - 1 do begin
       PrintProperty(@info^.properties[i]);
     end;
@@ -201,9 +262,11 @@ begin
           XK_Escape: begin
             Break;
           end;
-          XK_space: begin
-            //    info := XLoadQueryFont(dis, 'rk24');
+          XK_1: begin
             do_query_font('-bitstream-bitstream charter-medium-r-normal--0-0-0-0-p-0-adobe-standard');
+          end;
+          XK_2: begin
+            do_query_font('rk24');
           end;
         end;
       end;
