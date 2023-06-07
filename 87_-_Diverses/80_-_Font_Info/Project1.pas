@@ -27,7 +27,7 @@ var
 
 const
   ListAtoms: TStringArray = (
-  'FONT_NAME',
+    'FONT_NAME',
     'FOUNDRY',
     'FAMILY_NAME',
     'WEIGHT_NAME',
@@ -55,43 +55,7 @@ const
     'MONOSPACED',
     'QUALITY',
     'RELATIVE_SET',
-    'STYLE'    )    ;
-
-  ListCardinal: TStringArray = (
-    'PIXEL_SIZE',
-    'POINT_SIZE',
-    'RESOLUTION_X',
-    'RESOLUTION_Y',
-    'AVERAGE_WIDTH',
-    'RESOLUTION',
-    'MIN_SPACE',
-    'NORM_SPACE',
-    'MAX_SPACE',
-    'END_SPACE',
-    'RELATIVE_SETWIDTH',
-    'RELATIVE_WEIGHT',
-    'CAP_HEIGHT',
-    'DESTINATION');
-
-  ListInt: TStringArray = (
-    'QUAD_WIDTH',
-    'SUPERSCRIPT_X',
-    'SUPERSCRIPT_Y',
-    'SUBSCRIPT_X',
-    'SUBSCRIPT_Y',
-    'SUPERSCRIPT_SIZE',
-    'SUBSCRIPT_SIZE',
-    'UNDERLINE_POSITION',
-    'UNDERLINE_THICKNESS',
-    'STRIKEOUT_ASCENT',
-    'STRIKEOUT_DESCENT',
-    'ITALIC_ANGLE',
-    'X_HEIGHT',
-    'WEIGHT',
-    'AVG_CAPITAL_WIDTH',
-    'AVG_LOWERCASE_WIDTH',
-    'FIGURE_WIDTH',
-    'SMALL_CAP_SIZE');
+    'STYLE');
 
   function Is_Atom(Src: string; list: TStringArray): boolean;
   var
@@ -108,37 +72,99 @@ const
     end;
   end;
 
-  procedure Print_FontInfo;
+
+
+  function IngnoreError(para1: PDisplay; para2: PXErrorEvent): cint; cdecl;
+  begin
+    Result := 0;
+  end;
+
+  procedure PrintProperty(prop: PXFontProp);
+  var
+    oldhandler: TXErrorHandler;
+    atom, Value: PChar;
+    nosuch: string;
+    i: integer;
+  begin
+    oldhandler := XSetErrorHandler(@IngnoreError);
+
+    atom := XGetAtomName(dis, prop^.Name);
+    if atom = nil then begin
+      WriteStr(nosuch, 'No such atom = ', prop^.Name);
+      atom := PChar(nosuch);
+    end;
+    Write('      ', atom);
+    for i := StrLen(atom) to 25 do begin
+      Write(' ');
+    end;
+    Write(' ');
+
+    if Is_Atom(atom, ListAtoms) then begin
+      Value := XGetAtomName(dis, prop^.card32);
+      if Value = nil then begin
+        WriteLn(prop^.card32, '(expected string value)');
+      end else begin
+        WriteLn(Value);
+        XFree(Value);
+      end;
+    end else begin
+      WriteLn(prop^.card32);
+    end;
+    XSetErrorHandler(oldhandler);
+  end;
+
+procedure ComputeFontType(fs:PXFontStruct);
+begin
+  //////////////////////////////
+  end;
+
+  procedure do_query_font(Name: PChar);
+  const
+    bounds_metrics_title:PChar ='width left  right  asc  desc   attr   keysym';
   var
     i: integer;
-    font: PXFontStruct;
-    font_prop_Atom: TAtom;
-    fontprop: culong;
-    pc, font_prop_Name: PChar;
+    info: PXFontStruct;
+    s: string;
   begin
+    if Name = nil then begin
+      exit;
+    end;
+    info := XLoadQueryFont(dis, Name);
 
-    font := XLoadQueryFont(dis, '-bitstream-bitstream charter-medium-r-normal--0-0-0-0-p-0-adobe-standard');
-    //    font := XLoadQueryFont(dis, 'rk24');
-    if font = nil then begin
-      WriteLn('Konnte Font nicht laden !');
+    if info = nil then  begin
+      WriteLn('Font nicht gefunden');
     end;
-    WriteLn('count: ', font^.n_properties);
-    for i := 0 to font^.n_properties - 1 do begin
-      font_prop_Atom := font^.properties[i].Name;
-      font_prop_Name := XGetAtomName(dis, font_prop_Atom);
-      fontprop := font^.properties[i].card32;
-      Write(font_prop_Name, ': ');
-      if Is_Atom(font_prop_Name, ListAtoms) then begin
-        WriteLn(XGetAtomName(dis, fontprop));
-      end else if Is_Atom(font_prop_Name, ListCardinal) then begin
-        WriteLn('cardinal: ',fontprop);
-      end else if Is_Atom(font_prop_Name, ListInt) then begin
-        WriteLn('int: ',fontprop);
-      end else begin
-        WriteLn('unknow: ',fontprop );
-      end;
-//      WriteLn(fontprop, '  ', fontprop.ToHexString);
+
+    WriteLn('name: ', Name);
+    if info^.direction = FontLeftToRight then begin
+      s := 'left to right';
+    end else begin
+      s := 'right to left';
     end;
+    WriteLn('  direction:'#9#9, s);
+    WriteLn('  indexing:'#9#9, ((info^.min_byte1 = 0) and (info^.max_byte1 = 0)));
+    WriteLn('rows:'#9#9#9'$', IntToHex(info^.min_byte1, 2), ' thru $', IntToHex(info^.max_byte1, 2), ' (', info^.min_byte1, ' thur ', info^.max_byte1, ')');
+    WriteLn('columns:'#9#9'$', IntToHex(info^.min_char_or_byte2, 2), ' thru $', IntToHex(info^.max_char_or_byte2, 2), ' (', info^.min_char_or_byte2, ' thur ', info^.max_char_or_byte2, ')');
+    if info^.all_chars_exist<>0 then s:='yes'else s:='no';
+    WriteLn('  all chars_exits'#9, s);
+    WriteLn('  default char:'#9#9'$',IntToHex(info^.default_char,4),' (',info^.default_char,')');
+    WriteLn('  ascent:'#9#9,info^.ascent);
+    WriteLn('  descent:'#9#9,info^.descent);
+    ComputeFontType(info);
+    WriteLn('  bounds:'#9#9, bounds_metrics_title);
+
+   // PrintBounds('min', @info^.min_bounds);
+//    PrintBounds('max', @info^.max_bounds);
+//
+
+
+
+
+    WriteLn('count: ', info^.n_properties);
+    for i := 0 to info^.n_properties - 1 do begin
+      PrintProperty(@info^.properties[i]);
+    end;
+    XFreeFontInfo(nil, info, 1);
   end;
 
 begin
@@ -176,7 +202,8 @@ begin
             Break;
           end;
           XK_space: begin
-            Print_FontInfo;
+            //    info := XLoadQueryFont(dis, 'rk24');
+            do_query_font('-bitstream-bitstream charter-medium-r-normal--0-0-0-0-p-0-adobe-standard');
           end;
         end;
       end;
