@@ -120,7 +120,7 @@ const
     char_cell: boolean = True;
     reason: PChar = nil;
     cs: PXCharStruct;
-    s: String;
+    s: string;
   begin
     awatom := XInternAtom(dis, 'AVERAGE_WIDTH', True);
     Write('  font type:'#9#9);
@@ -139,9 +139,8 @@ const
     end;
 
     if fs^.per_char <> nil then begin
-      i := fs^.min_char_or_byte2;
       cs := fs^.per_char;
-      while i <= fs^.max_char_or_byte2 do begin
+      for i := fs^.min_char_or_byte2 to fs^.max_char_or_byte2 do begin
         if cs^.Width = 0 then begin
           Continue;
         end;
@@ -159,20 +158,33 @@ const
             char_cell := False;
             reason := 'ink outside bounding box';
           end;
-          if not ((cs^.ascent <= fs^.ascent) and (cs^.rbearing <= cs^.Width)) then begin
+          if not ((cs^.ascent <= fs^.ascent) and (cs^.descent <= fs^.descent)) then begin
             char_cell := False;
-            reason := 'ink outside bounding box';
+            reason := 'characters not all same ascent or descent';
           end;
         end;
 
-        Inc(i);
         Inc(cs);
       end;
-      if char_cell then s:='Character Cell' else s:= 'Monospaced';
-      Write(char_cell);
-      if reason<>nil then Write(' (',reason,')');
+      if char_cell then begin
+        s := 'Character Cell';
+      end else begin
+        s := 'Monospaced';
+      end;
+      Write(s);
+      if reason <> nil then begin
+        Write(' (', reason, ')');
+      end;
       WriteLn();
     end;
+  end;
+
+  procedure PrintBounds(_what: PChar; ptr: PXCharStruct);
+  var
+    p: PXCharStruct;
+  begin
+    p := ptr;
+    WriteLn(#9, _what: 3, #9#9, p^.Width: 4, '  ', p^.lbearing: 4, '  ', p^.rbearing: 4, '  ', p^.ascent: 4, '  ', p^.descent: 4, '  $', IntToHex(p^.attributes, 4));
   end;
 
   procedure do_query_font(Name: PChar);
@@ -214,12 +226,8 @@ const
     ComputeFontType(info);
     WriteLn('  bounds:'#9#9, bounds_metrics_title);
 
-    // PrintBounds('min', @info^.min_bounds);
-    //    PrintBounds('max', @info^.max_bounds);
-    //
-
-
-
+    PrintBounds('min', @info^.min_bounds);
+    PrintBounds('max', @info^.max_bounds);
 
     WriteLn('  properties: ', info^.n_properties);
     for i := 0 to info^.n_properties - 1 do begin
@@ -236,8 +244,6 @@ begin
     Halt(1);
   end;
   scr := DefaultScreen(dis);
-
-
 
   // Erstellt das Fenster
   win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
