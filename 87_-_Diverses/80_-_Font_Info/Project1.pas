@@ -187,6 +187,33 @@ const
     WriteLn(#9, _what: 3, #9#9, p^.Width: 4, '  ', p^.lbearing: 4, '  ', p^.rbearing: 4, '  ', p^.ascent: 4, '  ', p^.descent: 4, '  $', IntToHex(p^.attributes, 4));
   end;
 
+  procedure print_character_metrics(info: PXFontStruct);
+  var
+    saven, n, j, i: cunsigned;
+    pc: PXCharStruct;
+    s: PChar;
+    s2: string;
+  begin
+    pc := info^.per_char;
+    WriteLn('  character metrics:');
+    saven := (info^.min_byte1 shl 8) or info^.min_char_or_byte2;
+    for  j := info^.min_byte1 to info^.max_byte1 do begin
+      n := saven;
+      for i := info^.min_char_or_byte2 to info^.max_char_or_byte2 do begin
+        s := XKeysymToString(n);
+        if s <> nil then begin
+          s2 := s;
+        end else begin
+          s2 := '.';
+        end;
+        WriteLn(#9'$', IntToHex(j, 2), IntToHex(i, 2), ' (', n, ')'#9, pc^.Width, ' ', pc^.lbearing, ' ', pc^.rbearing, ' ', pc^.ascent, ' ', pc^.descent, ' $', IntToHex(pc^.attributes, 4), '  ', s);
+        Inc(pc);
+        Inc(n);
+      end;
+      Inc(saven, 256);
+    end;
+  end;
+
   procedure do_query_font(Name: PChar);
   const
     bounds_metrics_title: PChar = 'width left  right  asc  desc   attr   keysym';
@@ -234,6 +261,8 @@ const
       PrintProperty(@info^.properties[i]);
     end;
     XFreeFontInfo(nil, info, 1);
+
+    print_character_metrics(info);
   end;
 
 begin
