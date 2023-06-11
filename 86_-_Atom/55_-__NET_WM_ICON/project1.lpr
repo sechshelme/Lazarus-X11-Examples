@@ -8,6 +8,7 @@ program project1;
 
 uses
   cursorfont,
+  xatom,
   ctypes,
   unixtype,
   xlib,
@@ -62,8 +63,7 @@ var
     XChangeProperty(dis, win, XA__NET_WM_ICON, XA_CARDINAL, 32, PropModePrepend, @Icons, len);
   end;
 
-
-  procedure Read_Icon(w: TWindow);
+  procedure Read_Icon(window: TWindow);
   const
     bo = 4;
   var
@@ -71,13 +71,22 @@ var
     format: cint;
     nitems, after: culong;
     //    Data: Pcuchar;
-    IconData: PCardinal;
+    IconData: pclong;
     ch: PChar;
     x, y: integer;
+    h,w: clong;
   begin
     XA__NET_WM_ICON := XInternAtom(dis, '_NET_WM_ICON', True);
+//
+//    XGetWindowProperty(dis, w, XA__NET_WM_ICON, 0, 1, False, AnyPropertyType, @type_, @format, @nitems, @after, @IconData);
+//    WriteLn('w: ',IconData^);
+//    XGetWindowProperty(dis, w, XA__NET_WM_ICON, 1, 1, False, AnyPropertyType, @type_, @format, @nitems, @after, @IconData);
+//    WriteLn('h: ',IconData^);
+//
+
+
     //    XGetWindowProperty(dis, w, XA__NET_WM_ICON, 0, MaxInt, False, 0, @type_, @format, @nitems, @after, @Data);
-    XGetWindowProperty(dis, w, XA__NET_WM_ICON, 0, MaxInt, False, 0, @type_, @format, @nitems, @after, @IconData);
+    XGetWindowProperty(dis, window, XA__NET_WM_ICON, 0, MaxInt, False, XA_CARDINAL, @type_, @format, @nitems, @after, @IconData);
     if type_ = 0 then begin
       WriteLn('Kein Icon');
     end else begin
@@ -88,11 +97,13 @@ var
         WriteLn('Keine Daten');
       end else begin
           WriteLn('format: ',format);
-        WriteLn(IconData[0]);
-        WriteLn(IconData[1]);
-        for x := 0 to 15 do begin
-          for y := 0 to 15 do begin
-            XSetForeground(dis, gc, IconData[x + y * 16 + 2]);
+          w:=IconData[0];
+          h:=IconData[1];
+        WriteLn(w);
+        WriteLn(h);
+        for x := 0 to w-1 do begin
+          for y := 0 to h-1 do begin
+            XSetForeground(dis, gc, IconData[x + y * w + 2]);
             XFillRectangle(dis, win, gc, x * bo, y * bo, bo, bo);
           end;
         end;
