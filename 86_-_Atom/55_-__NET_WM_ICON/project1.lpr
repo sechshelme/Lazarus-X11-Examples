@@ -74,15 +74,18 @@ var
     IconData: pclong;
     ch: PChar;
     x, y: integer;
-    h,w: clong;
+    Count: culong = 0;
+    ofs: culong = 0;
+    h, w: clong;
+
   begin
     XA__NET_WM_ICON := XInternAtom(dis, '_NET_WM_ICON', True);
-//
-//    XGetWindowProperty(dis, w, XA__NET_WM_ICON, 0, 1, False, AnyPropertyType, @type_, @format, @nitems, @after, @IconData);
-//    WriteLn('w: ',IconData^);
-//    XGetWindowProperty(dis, w, XA__NET_WM_ICON, 1, 1, False, AnyPropertyType, @type_, @format, @nitems, @after, @IconData);
-//    WriteLn('h: ',IconData^);
-//
+    //
+    //    XGetWindowProperty(dis, w, XA__NET_WM_ICON, 0, 1, False, AnyPropertyType, @type_, @format, @nitems, @after, @IconData);
+    //    WriteLn('w: ',IconData^);
+    //    XGetWindowProperty(dis, w, XA__NET_WM_ICON, 1, 1, False, AnyPropertyType, @type_, @format, @nitems, @after, @IconData);
+    //    WriteLn('h: ',IconData^);
+    //
 
 
     //    XGetWindowProperty(dis, w, XA__NET_WM_ICON, 0, MaxInt, False, 0, @type_, @format, @nitems, @after, @Data);
@@ -96,18 +99,24 @@ var
       if nitems = 0 then begin
         WriteLn('Keine Daten');
       end else begin
-          WriteLn('format: ',format);
-          w:=IconData[0];
-          h:=IconData[1];
-        WriteLn(w);
-        WriteLn(h);
-        for x := 0 to w-1 do begin
-          for y := 0 to h-1 do begin
-            XSetForeground(dis, gc, IconData[x + y * w + 2]);
-            XFillRectangle(dis, win, gc, x * bo, y * bo, bo, bo);
+        while ofs < nitems do begin
+          WriteLn('format: ', format);
+          w := IconData[ofs];
+          Inc(ofs);
+          h := IconData[ofs];
+          Inc(ofs);
+          WriteLn(w);
+          WriteLn(h);
+          for x := 0 to w - 1 do begin
+            for y := 0 to h - 1 do begin
+              XSetForeground(dis, gc, IconData[x + y * w + ofs]);
+              XFillRectangle(dis, win, gc, x * bo, y * bo, bo, bo);
+            end;
           end;
+          Inc(ofs, w * h);
+          Inc(Count);
         end;
-
+        WriteLn('count: ', Count);
       end;
     end;
   end;
@@ -134,7 +143,7 @@ begin
     XNextEvent(dis, @Event);
     case Event._type of
       Expose: begin
-//        XDrawRectangle(dis, win, gc, 10, 10, 100, 100);
+        //        XDrawRectangle(dis, win, gc, 10, 10, 100, 100);
       end;
       KeyPress: begin
         // Beendet das Programm bei [ESC]
@@ -143,8 +152,8 @@ begin
             Break;
           end;
           XK_Return: begin
-//            w := GrabPointer;
-//            w := XmuClientWindow(dis, w);
+            //            w := GrabPointer;
+            //            w := XmuClientWindow(dis, w);
             Write_Icon(win);
           end;
           XK_space: begin
