@@ -29,49 +29,51 @@ var
 const
   EventMask = KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask;
 
-  function CreateTree(k:Integer):String;
+  function CreateTree(k: integer): string;
   var
-    i:Integer;
+    i: integer;
   begin
-    Result:='';
-    for i:=0 to k do Result:=Result+'-';
+    Result := '';
+    for i := 0 to k do begin
+      Result := Result + '-';
+    end;
   end;
 
-procedure PrintParent(win:TWindow);
-var
-  root, parent: TWindow;
-  children: PWindow;
-  children_count: cuint;
+  procedure PrintParent(win: TWindow);
+  var
+    root, parent: TWindow;
+    children: PWindow;
+    children_count: cuint;
 
-begin
-  parent:=win;
-  repeat
-  WriteLn('Parent: ',parent);
-  XQueryTree(dis, parent, @root, @parent, @children, @children_count);
-  until parent=0;
+  begin
+    parent := win;
+    repeat
+      WriteLn('Parent: ', parent);
+      XQueryTree(dis, parent, @root, @parent, @children, @children_count);
+    until parent = 0;
   end;
 
-  procedure PrintKind(win:TWindow;k:Integer);
+  procedure PrintKind(win: TWindow; k: integer);
   var
     root, parent: TWindow;
     children: PWindow;
     children_count: cuint;
     i: integer;
-    tree: String;
+    tree: string;
   begin
     XQueryTree(dis, win, @root, @parent, @children, @children_count);
 
-    if k=0 then begin
-    WriteLn('root:   ', root);
-    WriteLn('parent: ', parent);
+    if k = 0 then begin
+      WriteLn('root:   ', root);
+      WriteLn('parent: ', parent);
     end;
-    tree:=CreateTree(k);
-    WriteLn(tree,'Count Child: ', children_count);
+    tree := CreateTree(k);
+    WriteLn(tree, 'Count Child: ', children_count);
     for i := 0 to children_count - 1 do begin
-      WriteLn(tree,i:5,'   Nr: ', children[i]);
-//      XKillClient(dis,children[i]);
+      WriteLn(tree, i: 5, '   Nr: ', children[i]);
+      //      XKillClient(dis,children[i]);
 
-      PrintKind(children[i],k+1);
+      PrintKind(children[i], k + 1);
     end;
     XFree(children);
     WriteLn();
@@ -145,7 +147,7 @@ begin
             Break;
           end;
           XK_space: begin
-            PrintKind(root_win,0);
+            PrintKind(root_win, 0);
           end;
           XK_p: begin
             PrintParent(Subwin1);
