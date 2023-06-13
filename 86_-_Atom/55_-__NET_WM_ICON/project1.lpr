@@ -31,6 +31,13 @@ var
   scr: cint;
   w, root_win: TWindow;
   gc: TGC;
+  icon: array of record
+    Width, Height: culong;
+    Data: array of culong;
+    end;
+  Icon_index: integer = -1;
+  len: SizeInt;
+
 
   function GrabPointer: TXID;
   var
@@ -63,34 +70,53 @@ var
     XChangeProperty(dis, win, XA__NET_WM_ICON, XA_CARDINAL, 32, PropModePrepend, @Icons, len);
   end;
 
-  procedure Read_Icon(window: TWindow);
+  procedure DrawIcon;
   const
     bo = 4;
+  var
+    x, y: integer;
+    col, a: uint32;
+    rgb: record
+    case byte of
+      0: (r, g, b, a: byte);
+      1: (rgba: uint32);
+      end;
+
+  begin
+    if Icon_index >= 0 then begin
+      XClearWindow(dis, win);
+      for x := 0 to icon[Icon_index].Width - 1 do begin
+        for y := 0 to icon[Icon_index].Height - 1 do begin
+          col := icon[Icon_index].Data[x + y * icon[Icon_index].Width];
+          rgb.rgba := col;
+          rgb.r := rgb.r * rgb.a div 255;
+          rgb.g := rgb.g * rgb.a div 255;
+          rgb.b := rgb.b * rgb.a div 255;
+          XSetForeground(dis, gc, rgb.rgba and $FFFFFF);
+          XFillRectangle(dis, win, gc, x * bo, y * bo, bo, bo);
+        end;
+      end;
+    end;
+  end;
+
+  procedure Read_Icon(window: TWindow);
   var
     XA__NET_WM_ICON, type_: TAtom;
     format: cint;
     nitems, after: culong;
-    //    Data: Pcuchar;
     IconData: pclong;
     ch: PChar;
-    x, y: integer;
     Count: culong = 0;
     ofs: culong = 0;
     h, w: clong;
+    len: SizeInt;
 
   begin
     XA__NET_WM_ICON := XInternAtom(dis, '_NET_WM_ICON', True);
-    //
-    //    XGetWindowProperty(dis, w, XA__NET_WM_ICON, 0, 1, False, AnyPropertyType, @type_, @format, @nitems, @after, @IconData);
-    //    WriteLn('w: ',IconData^);
-    //    XGetWindowProperty(dis, w, XA__NET_WM_ICON, 1, 1, False, AnyPropertyType, @type_, @format, @nitems, @after, @IconData);
-    //    WriteLn('h: ',IconData^);
-    //
-
-
-    //    XGetWindowProperty(dis, w, XA__NET_WM_ICON, 0, MaxInt, False, 0, @type_, @format, @nitems, @after, @Data);
+    SetLength(icon, 0);
     XGetWindowProperty(dis, window, XA__NET_WM_ICON, 0, MaxInt, False, XA_CARDINAL, @type_, @format, @nitems, @after, @IconData);
     if type_ = 0 then begin
+      Icon_index := -1;
       WriteLn('Kein Icon');
     end else begin
       ch := XGetAtomName(dis, type_);
@@ -107,16 +133,21 @@ var
           Inc(ofs);
           WriteLn(w);
           WriteLn(h);
-          for x := 0 to w - 1 do begin
-            for y := 0 to h - 1 do begin
-              XSetForeground(dis, gc, IconData[x + y * w + ofs]);
-              XFillRectangle(dis, win, gc, x * bo, y * bo, bo, bo);
-            end;
-          end;
+
+          len := Length(icon);
+          SetLength(icon, len + 1);
+          icon[len].Width := w;
+          icon[len].Height := h;
+          SetLength(icon[len].Data, w * h);
+          Move(IconData[ofs], icon[len].Data[0], w * h * SizeOf(culong));
+
+          Icon_index := 0;
+          DrawIcon;
+
           Inc(ofs, w * h);
           Inc(Count);
         end;
-        WriteLn('count: ', Count);
+        WriteLn('Icon count: ', Count);
       end;
     end;
   end;
@@ -132,9 +163,9 @@ begin
 
   root_win := RootWindow(dis, scr);
 
-  win := XCreateSimpleWindow(dis, root_win, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  win := XCreateSimpleWindow(dis, root_win, 10, 10, 520, 520, 1, $FFFFFF, 0);
   XSelectInput(dis, win, KeyPressMask or ExposureMask);
-  XStoreName(dis, win, 'Mein Fenster');
+  XStoreName(dis, win, 'Icon View');
   XMapWindow(dis, win);
 
   gc := XCreateGC(dis, win, 0, nil);
@@ -143,23 +174,39 @@ begin
     XNextEvent(dis, @Event);
     case Event._type of
       Expose: begin
-        //        XDrawRectangle(dis, win, gc, 10, 10, 100, 100);
+        DrawIcon();
       end;
       KeyPress: begin
-        // Beendet das Programm bei [ESC]
+        len := Length(icon);
         case XLookupKeysym(@Event.xkey, 0) of
           XK_Escape: begin
             Break;
           end;
           XK_Return: begin
-            //            w := GrabPointer;
-            //            w := XmuClientWindow(dis, w);
             Write_Icon(win);
           end;
           XK_space: begin
             w := GrabPointer;
             w := XmuClientWindow(dis, w);
             Read_Icon(w);
+          end;
+          XK_Up: begin
+            if len > 0 then begin
+              Inc(Icon_index);
+              if Icon_index >= len then begin
+                Icon_index := 0;
+              end;
+            end;
+            DrawIcon;
+          end;
+          XK_Down: begin
+            if len > 0 then begin
+              Dec(Icon_index);
+              if Icon_index < 0 then begin
+                Icon_index := len - 1;
+              end;
+            end;
+            DrawIcon;
           end;
         end;
       end;

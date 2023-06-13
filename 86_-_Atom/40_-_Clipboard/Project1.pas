@@ -150,7 +150,7 @@ const
             end else if (ev.target = AP.XA_STRING) or (ev.target = AP.XA_TEXT) then begin
               R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_STRING, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
             end else if ev.target = AP.Format then  begin
-              R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.Format, 8, PropModeReplace, pbyte(PChar(ClipboardString)), Length(ClipboardString));
+              R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.Format, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
             end else begin
               ev._property := None;
             end;
