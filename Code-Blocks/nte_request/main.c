@@ -45,9 +45,8 @@ int main () {
   _request = XInternAtom(display, "_NET_REQUEST_FRAME_EXTENTS", False);
   _extents = XInternAtom(display, "_NET_FRAME_EXTENTS", False);
 
-  win = XCreateWindow(display, RootWindow(display, 0),
-		      x, y, w, h, 10, CopyFromParent, CopyFromParent,
-		      CopyFromParent, 0, NULL);
+  //win = XCreateWindow(display, RootWindow(display, 0),		      x, y, w, h, 10, CopyFromParent, CopyFromParent,		      CopyFromParent, 0, NULL);
+  win = XCreateSimpleWindow(display, RootWindow(display, 0),		      10, 10, 480,240, 10, 0xFFFFFF,0);
   XSelectInput(display, win, PropertyChangeMask);
 
   printf("requesting for type normal\n");
