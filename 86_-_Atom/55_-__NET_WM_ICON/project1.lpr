@@ -150,6 +150,7 @@ var
         WriteLn('Icon count: ', Count);
       end;
     end;
+    XFree(IconData);
   end;
 
 

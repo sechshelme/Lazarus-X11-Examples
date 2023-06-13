@@ -113,21 +113,21 @@ var
     strut.top := 0;
     strut.bottom := 0;
 
-    struct_partial.left:=300;
-    struct_partial.right:=0;
-    struct_partial.top:=0;
-    struct_partial.bottom:=0;
-    struct_partial.left_start_y:=0;
-    struct_partial.left_end_y:=0;
-    struct_partial.right_start_y:=0;
-    struct_partial.right_end_y:=0;
-    struct_partial.top_start_x:=0;
-    struct_partial.top_end_x:=0;
-    struct_partial.bottom_start_x:=0;
-    struct_partial.bottom_end_x:=0;
+    struct_partial.left := 300;
+    struct_partial.right := 0;
+    struct_partial.top := 0;
+    struct_partial.bottom := 0;
+    struct_partial.left_start_y := 0;
+    struct_partial.left_end_y := 0;
+    struct_partial.right_start_y := 0;
+    struct_partial.right_end_y := 0;
+    struct_partial.top_start_x := 0;
+    struct_partial.top_end_x := 0;
+    struct_partial.bottom_start_x := 0;
+    struct_partial.bottom_end_x := 0;
 
     XChangeProperty(dis, win, XA__NET_WM_STRUT, XA_CARDINAL, 32, PropModeReplace, pbyte(@strut), 4);
-        XChangeProperty(dis, win, XA__NET_WM_STRUT_PARTIAL, XA_CARDINAL, 32, PropModeReplace, pbyte(@struct_partial), 12);
+    XChangeProperty(dis, win, XA__NET_WM_STRUT_PARTIAL, XA_CARDINAL, 32, PropModeReplace, pbyte(@struct_partial), 12);
   end;
 
 begin

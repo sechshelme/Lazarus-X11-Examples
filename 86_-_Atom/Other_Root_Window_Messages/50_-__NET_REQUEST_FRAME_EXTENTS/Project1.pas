@@ -41,7 +41,7 @@ var
     end;
   end;
 
-  procedure Restack(win1, win2: TWindow);
+  procedure Restack(win1: TWindow);
   const
     EVENT_SOURCE_APPLICATION = 1;
   var
@@ -50,16 +50,16 @@ var
     xev._type := ClientMessage;
     xev.xclient.display := dis;
     xev.xclient.window := win1;
-    xev.xclient.message_type := GetAtom('_NET_RESTACK_WINDOW');
+    xev.xclient.message_type := GetAtom('_NET_REQUEST_FRAME_EXTENTS');
     xev.xclient.format := 32;
 
-    xev.xclient.Data.l[0] := 2;
-    xev.xclient.Data.l[1] := win2;
+    xev.xclient.Data.l[0] := 0;
+    xev.xclient.Data.l[1] := 0;
     xev.xclient.Data.l[2] := 0;
     xev.xclient.Data.l[3] := 0;
     xev.xclient.Data.l[4] := 0;
 
-    XSendEvent(dis, root_window, False, SubstructureRedirectMask, @xev);
+    XSendEvent(dis, root_window, False,SubstructureNotifyMask or SubstructureRedirectMask, @xev);
   end;
 
 begin
@@ -96,17 +96,18 @@ begin
             quit := True;
           end;
           XK_1: begin
-            Restack(win[0], win[3]);
+            Restack(win[0]);
           end;
           XK_2: begin
-            Restack(win[1], win[2]);
+            Restack(win[1]);
           end;
           XK_3: begin
-            Restack(win[2], win[1]);
+            Restack(win[2]);
           end;
           XK_4: begin
-            Restack(win[3], win[0]);
+            Restack(win[3]);
           end;
+          XK_Return:WriteLn('sdfsd');
         end;
       end;
       PropertyNotify: begin
