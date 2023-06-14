@@ -39,9 +39,9 @@ int main () {
     return 0;
   }
 
-  _type = XInternAtom(display, "_NET_WM_WINDOW_TYPE", False);
-  _normal = XInternAtom(display, "_NET_WM_WINDOW_TYPE_NORMAL", False);
-  _desktop = XInternAtom(display, "_NET_WM_WINDOW_TYPE_DESKTOP", False);
+//  _type = XInternAtom(display, "_NET_WM_WINDOW_TYPE", False);
+//  _normal = XInternAtom(display, "_NET_WM_WINDOW_TYPE_NORMAL", False);
+//  _desktop = XInternAtom(display, "_NET_WM_WINDOW_TYPE_DESKTOP", False);
   _request = XInternAtom(display, "_NET_REQUEST_FRAME_EXTENTS", False);
   _extents = XInternAtom(display, "_NET_FRAME_EXTENTS", False);
 
@@ -50,8 +50,7 @@ int main () {
   XSelectInput(display, win, PropertyChangeMask);
 
   printf("requesting for type normal\n");
-  XChangeProperty(display, win, _type, XA_ATOM, 32,
-                  PropModeReplace, (unsigned char*)&_normal, 1);
+  //XChangeProperty(display, win, _type, XA_ATOM, 32,                  PropModeReplace, (unsigned char*)&_normal, 1);
   msg.xclient.type = ClientMessage;
   msg.xclient.message_type = _request;
   msg.xclient.display = display;
@@ -62,8 +61,7 @@ int main () {
   msg.xclient.data.l[2] = 0l;
   msg.xclient.data.l[3] = 0l;
   msg.xclient.data.l[4] = 0l;
-  XSendEvent(display, RootWindow(display, 0), False,
-             SubstructureNotifyMask | SubstructureRedirectMask, &msg);
+  XSendEvent(display, RootWindow(display, 0), False, SubstructureNotifyMask | SubstructureRedirectMask, &msg);
   XFlush(display);
 
   printf("waiting for extents\n");
@@ -90,8 +88,7 @@ int main () {
   }
 
   printf("requesting for type desktop\n");
-  XChangeProperty(display, win, _type, XA_ATOM, 32,
-                  PropModeReplace, (unsigned char*)&_desktop, 1);
+  //XChangeProperty(display, win, _type, XA_ATOM, 32,                  PropModeReplace, (unsigned char*)&_desktop, 1);
   msg.xclient.type = ClientMessage;
   msg.xclient.message_type = _request;
   msg.xclient.display = display;
