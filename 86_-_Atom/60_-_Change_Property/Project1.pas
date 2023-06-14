@@ -109,7 +109,6 @@ const
     XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace, pbyte(@XA__NET_WM_WINDOW_TYPE_NORMAL), 1);
   end;
 
-
   procedure MoveWindow(x, y, w, h: clong);
   var
     xev: TXEvent;
@@ -194,15 +193,15 @@ const
       end else if type_ = XA_ATOM then begin
         aData := PAtom(Data);
         for i := 0 to nitems - 1 do begin
-          WriteLn('ATOM: ', aData[i]);
+          WriteLn('ATOM Nr.: ', aData[i]:5, ' Atom-Name: ', XGetAtomName(dis, aData[i]));
         end;
       end else if type_ = XA_CARDINAL then begin
         carData := PCardinal(Data);
         for i := 0 to nitems - 1 do begin
           //          WriteLn('CARDINAL: ', carData[i] shr 24);
           WriteLn('CARDINAL: ', carData[i]);
-        end;
-      end;
+        end ;
+      end else WriteLn('Unbekannter Atom-Typ');
     end;
   end;
 
@@ -278,9 +277,6 @@ begin
           XK_space: begin
 //            setFullScreen;
           end;
-          XK_a: begin
-            setAlpha(128);
-          end;
           XK_0: begin
             MoveWindow(100, 100, 200, 200);
           end;
@@ -293,8 +289,8 @@ begin
           XK_3: begin
             SetSplash;
           end;
-          XK_q: begin
-            setAlpha(129);
+          XK_a: begin
+            setAlpha(128);
           end;
           XK_s: begin
             SetTitel;

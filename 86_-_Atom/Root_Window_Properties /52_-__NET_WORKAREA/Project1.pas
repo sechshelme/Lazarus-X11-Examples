@@ -86,7 +86,7 @@ begin
   root_window := XRootWindow(dis, scr);
 
   win := XCreateSimpleWindow(dis, root_window, 10, 10, 480, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-  XSelectInput(dis, win, KeyPressMask or KeyReleaseMask);
+  XSelectInput(dis, win, KeyPressMask or KeyReleaseMask or  VisibilityChangeMask or PropertyChangeMask);
   XMapWindow(dis, win);
 
   while not quit do begin
@@ -105,6 +105,12 @@ begin
             Draw(size_Str);
           end;
         end;
+      end;
+      PropertyNotify: begin
+        WriteLn('PropertyNotify');
+      end;
+      ClientMessage: begin
+        WriteLn('ClientMessage');
       end;
     end;
   end;
