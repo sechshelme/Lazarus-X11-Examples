@@ -41,19 +41,20 @@ var
     xev: TXEvent;
   begin
     xev.xclient._type := ClientMessage;
-    xev.xclient.message_type := XA__NET_REQUEST_FRAME_EXTENTS;
+    xev.xclient.message_type := GetAtom('WM_PROTOCOLS');
     xev.xclient.display := dis;
     xev.xclient.window := win;
     xev.xclient.format := 32;
 
-    xev.xclient.Data.l[0] := 0;
-    xev.xclient.Data.l[1] := 0;
+    xev.xclient.Data.l[0] := GetAtom('WM_DELETE_WINDOW');;
+    xev.xclient.Data.l[1] := CurrentTime;
     xev.xclient.Data.l[2] := 0;
     xev.xclient.Data.l[3] := 0;
     xev.xclient.Data.l[4] := 0;
 
-//    XSendEvent(dis, root_window, False, SubstructureNotifyMask or SubstructureRedirectMask, @xev);
-    XSendEvent(dis, root_window, False, SubstructureNotifyMask, @xev);
+    XSendEvent(dis, win, False, 0, @xev);
+//    XSendEvent(dis, win, False, SubstructureNotifyMask or SubstructureRedirectMask, @xev);
+//    XSendEvent(dis, root_window, False, SubstructureNotifyMask, @xev);
     XFlush(dis);
   end;
 
@@ -89,7 +90,7 @@ begin
   win := XCreateSimpleWindow(dis, root_window, 10, 10, 480, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
   XSelectInput(dis, win, PropertyChangeMask);
   // Fenster nicht öffnen
-//    XMapWindow(dis, win);
+    XMapWindow(dis, win);
 
   Init_Request_Frame;
 
@@ -97,8 +98,9 @@ begin
     XNextEvent(dis, @Event);
     case Event._type of
       PropertyNotify: begin
+        WriteLn('PropertyNotify');
         Read_Frames(Event.xproperty.atom);
-        quit:=True;
+//        quit:=True;
       end;
     end;
   end;
