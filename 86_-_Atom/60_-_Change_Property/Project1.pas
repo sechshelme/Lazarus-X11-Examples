@@ -13,6 +13,7 @@ uses
   xlib,
   xutil,
   keysym,
+  xatom,
   x;
 
 var
@@ -29,23 +30,12 @@ var
   pc: PChar;
 
   // https://snyk.io/advisor/python/pyglet/functions/pyglet.libs.x11.xlib
-  XA_ATOM,
   XA__NET_MOVERESIZE_WINDOW,
-  XA__NET_WM_WINDOW_TYPE, XA__NET_WM_WINDOW_TYPE_SPLASH,
-  XA__NET_WM_WINDOW_TYPE_NORMAL,
-  XA__NET_WM_WINDOW_TYPE_DIALOG,
+  XA__NET_WM_WINDOW_TYPE,
 
   XA_WM_DELETE_WINDOW,
-  XA__NET_WM_NAME, XA_UTF8_STRING, XA_WM_NAME, XA_STRING,
-  XA__NET_WM_WINDOW_OPACITY, XA_CARDINAL: TAtom;
-
-const
-  _NET_WM_STATE_REMOVE = 0;
-  _NET_WM_STATE_ADD = 1;
-  _NET_WM_STATE_TOGGLE = 2;
-
-  EVENT_SOURCE_APPLICATION = 1;
-
+  XA__NET_WM_NAME, XA_UTF8_STRING,
+  XA__NET_WM_WINDOW_OPACITY: TAtom;
 
   // https://techdragonblog.de/2021/03/07/programmieren-in-c-vollbildfenster-mit-xlib/
 
@@ -88,26 +78,13 @@ const
     Titel: string;
   begin
     Titel := 'Property: ' + TimeToStr(now);
-    XChangeProperty(dis, win, XA__NET_WM_NAME, XA_UTF8_STRING, 8, PropModeReplace, pbyte(Titel), Length(Titel));
+    XChangeProperty(dis, win, XA__NET_WM_NAME, XA_UTF8_STRING, 8, PropModeReplace, PByte(Titel), Length(Titel));
   end;
 
-  procedure SetDialog;
-  // https://github.com/godotengine/godot/issues/55415
-  begin
-    XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace, pbyte(@XA__NET_WM_WINDOW_TYPE_DIALOG), 1);
-  end;
-
-  procedure SetSplash;
-  // https://github.com/godotengine/godot/issues/55415
-  begin
-    XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace, pbyte(@XA__NET_WM_WINDOW_TYPE_SPLASH), 1);
-  end;
-
-  procedure SetNormal;
-  // https://github.com/godotengine/godot/issues/55415
-  begin
-    XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace, pbyte(@XA__NET_WM_WINDOW_TYPE_NORMAL), 1);
-  end;
+procedure SetWindowTyp(typ:TAtom);
+begin
+  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace, @typ, 1);
+end;
 
   procedure MoveWindow(x, y, w, h: clong);
   var
@@ -203,6 +180,7 @@ const
         end ;
       end else WriteLn('Unbekannter Atom-Typ');
     end;
+    WriteLn();
   end;
 
   procedure setAlpha(Alpha: byte);
@@ -229,11 +207,7 @@ begin
 
   gc := XCreateGC(dis, win, 0, nil);
 
-  XA_ATOM := XInternAtom(dis, 'ATOM', True);
   XA__NET_WM_WINDOW_TYPE := GetAtom('_NET_WM_WINDOW_TYPE');
-  XA__NET_WM_WINDOW_TYPE_NORMAL := GetAtom('_NET_WM_WINDOW_TYPE_NORMAL');
-  XA__NET_WM_WINDOW_TYPE_DIALOG := GetAtom('_NET_WM_WINDOW_TYPE_DIALOG');
-  XA__NET_WM_WINDOW_TYPE_SPLASH := GetAtom('_NET_WM_WINDOW_TYPE_SPLASH');
   XA__NET_MOVERESIZE_WINDOW := GetAtom('_NET_MOVERESIZE_WINDOW');
 
   XA_WM_DELETE_WINDOW := GetAtom('WM_DELETE_WINDOW');
@@ -241,11 +215,7 @@ begin
 
   XA__NET_WM_WINDOW_OPACITY := GetAtom('_NET_WM_WINDOW_OPACITY');
 
-  XA_CARDINAL := GetAtom('CARDINAL');
-  XA_STRING := GetAtom('STRING');
   XA_UTF8_STRING := GetAtom('UTF8_STRING');
-
-  XA_WM_NAME := GetAtom('WM_NAME');
   XA__NET_WM_NAME := GetAtom('_NET_WM_NAME');
 
   SetWMName;
@@ -281,13 +251,13 @@ begin
             MoveWindow(100, 100, 200, 200);
           end;
           XK_1: begin
-            SetNormal;
+            SetWindowTyp(GetAtom('_NET_WM_WINDOW_TYPE_NORMAL'));
           end;
           XK_2: begin
-            SetDialog;
+            SetWindowTyp(GetAtom('_NET_WM_WINDOW_TYPE_DIALOG'));
           end;
           XK_3: begin
-            SetSplash;
+            SetWindowTyp(GetAtom('_NET_WM_WINDOW_TYPE_SPLASH'));
           end;
           XK_a: begin
             setAlpha(128);
