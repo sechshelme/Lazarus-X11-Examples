@@ -30,12 +30,8 @@ var
   pc: PChar;
 
   // https://snyk.io/advisor/python/pyglet/functions/pyglet.libs.x11.xlib
-  XA__NET_MOVERESIZE_WINDOW,
-  XA__NET_WM_WINDOW_TYPE,
-
   XA_WM_DELETE_WINDOW,
-  XA__NET_WM_NAME, XA_UTF8_STRING,
-  XA__NET_WM_WINDOW_OPACITY: TAtom;
+  XA__NET_WM_NAME, XA_UTF8_STRING: TAtom;
 
   // https://techdragonblog.de/2021/03/07/programmieren-in-c-vollbildfenster-mit-xlib/
 
@@ -81,9 +77,13 @@ var
     XChangeProperty(dis, win, XA__NET_WM_NAME, XA_UTF8_STRING, 8, PropModeReplace, PByte(Titel), Length(Titel));
   end;
 
-procedure SetWindowTyp(typ:TAtom);
+procedure Set_Window_Typ(typ:PChar);
+var
+  XA__NET_WM_WINDOW_TYPE, a: TAtom;
 begin
-  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace, @typ, 1);
+  a:=GetAtom(typ);
+  XA__NET_WM_WINDOW_TYPE := GetAtom('_NET_WM_WINDOW_TYPE');
+  XChangeProperty(dis, win, XA__NET_WM_WINDOW_TYPE, XA_ATOM, 32, PropModeReplace, @a, 1);
 end;
 
   procedure MoveWindow(x, y, w, h: clong);
@@ -93,7 +93,7 @@ end;
     xev._type := ClientMessage;
     xev.xclient.display := dis;
     xev.xclient.window := win;
-    xev.xclient.message_type := XA__NET_MOVERESIZE_WINDOW;
+    xev.xclient.message_type := GetAtom('_NET_MOVERESIZE_WINDOW');
     xev.xclient.format := 32;
 
     xev.xclient.Data.l[0] := %111100000000;
@@ -186,8 +186,10 @@ end;
   procedure setAlpha(Alpha: byte);
   var
     tmpAlpha: cuint32;
+    XA__NET_WM_WINDOW_OPACITY: TAtom;
   begin
     tmpAlpha := Alpha shl 24;
+    XA__NET_WM_WINDOW_OPACITY := GetAtom('_NET_WM_WINDOW_OPACITY');
     XChangeProperty(dis, win, XA__NET_WM_WINDOW_OPACITY, XA_CARDINAL, 32, PropModeReplace, @tmpAlpha, 1);
   end;
 
@@ -207,13 +209,9 @@ begin
 
   gc := XCreateGC(dis, win, 0, nil);
 
-  XA__NET_WM_WINDOW_TYPE := GetAtom('_NET_WM_WINDOW_TYPE');
-  XA__NET_MOVERESIZE_WINDOW := GetAtom('_NET_MOVERESIZE_WINDOW');
-
   XA_WM_DELETE_WINDOW := GetAtom('WM_DELETE_WINDOW');
   XSetWMProtocols(dis, win, @XA_WM_DELETE_WINDOW, 1);
 
-  XA__NET_WM_WINDOW_OPACITY := GetAtom('_NET_WM_WINDOW_OPACITY');
 
   XA_UTF8_STRING := GetAtom('UTF8_STRING');
   XA__NET_WM_NAME := GetAtom('_NET_WM_NAME');
@@ -247,20 +245,35 @@ begin
           XK_space: begin
 //            setFullScreen;
           end;
-          XK_0: begin
-            MoveWindow(100, 100, 200, 200);
-          end;
           XK_1: begin
-            SetWindowTyp(GetAtom('_NET_WM_WINDOW_TYPE_NORMAL'));
+            Set_Window_Typ('_NET_WM_WINDOW_TYPE_DESKTOP');
           end;
           XK_2: begin
-            SetWindowTyp(GetAtom('_NET_WM_WINDOW_TYPE_DIALOG'));
+            Set_Window_Typ('_NET_WM_WINDOW_TYPE_DOCK');
           end;
           XK_3: begin
-            SetWindowTyp(GetAtom('_NET_WM_WINDOW_TYPE_SPLASH'));
+            Set_Window_Typ('_NET_WM_WINDOW_TYPE_TOOLBAR');
+          end;
+          XK_4: begin
+            Set_Window_Typ('_NET_WM_WINDOW_TYPE_MENU');
+          end;
+          XK_5: begin
+            Set_Window_Typ('_NET_WM_WINDOW_TYPE_UTILITY');
+          end;
+          XK_6: begin
+            Set_Window_Typ('_NET_WM_WINDOW_TYPE_SPLASH');
+          end;
+          XK_7: begin
+            Set_Window_Typ('_NET_WM_WINDOW_TYPE_DIALOG');
+          end;
+          XK_8: begin
+            Set_Window_Typ('_NET_WM_WINDOW_TYPE_NORMAL');
           end;
           XK_a: begin
             setAlpha(128);
+          end;
+          XK_m: begin
+            MoveWindow(100, 100, 200, 200);
           end;
           XK_s: begin
             SetTitel;
