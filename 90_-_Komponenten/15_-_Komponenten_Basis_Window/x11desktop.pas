@@ -48,7 +48,6 @@ begin
   if setlocale(0 {LC_ALL}, '') = 0 then begin
     WriteLn('setlocale Fehler');
   end;
-  //    XSetLocaleModifiers('');
 
   xim := XOpenIM(dis, nil, nil, nil);
   if xim = nil then begin

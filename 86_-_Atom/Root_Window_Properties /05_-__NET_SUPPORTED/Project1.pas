@@ -37,7 +37,7 @@ var
     end;
   end;
 
-  function Read_WorkArea: string;
+  function Read_WorkArea(w:TWindow): string;
   var
     XA__NET_SUPPORTED: TAtom;
     ret_type: TAtom;
@@ -49,7 +49,7 @@ var
     Result := '';
     XA__NET_SUPPORTED := GetAtom('_NET_SUPPORTED');
     if XA__NET_SUPPORTED <> 0 then begin
-      XGetWindowProperty(dis, root_window, XA__NET_SUPPORTED, 0, 1024, False, XA_CARDINAL, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
+      XGetWindowProperty(dis, w, XA__NET_SUPPORTED, 0, 1024, False, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
 
       WriteLn(ret_type);
       WriteLn(ret_format);
@@ -57,14 +57,10 @@ var
       WriteLn(ret_bytesleft);
 
       if ret_type = XA_ATOM then begin
-        for i := 0 to ret_bytesleft - 1 do begin
-          WriteLn(prop_return[i]);
+        for i := 0 to ret_items - 1 do begin
+          WriteLn('Nr: ',prop_return[i]:5, '  Name: ', XGetAtomName(dis,prop_return[i] ));
         end;
       end;
-
-//      if (ret_type = XA_CARDINAL) and (ret_format = 32) and (ret_items = 4) then begin
-//        WriteStr(Result, 'Frame Extents:  x: ', prop_return[0], ', y: ', prop_return[1], ', width: ', prop_return[2], ', height: ', prop_return[3]);
-//      end;
     end;
   end;
 
@@ -108,7 +104,7 @@ begin
             quit := True;
           end;
           XK_space: begin
-            size_Str := Read_WorkArea;
+            size_Str := Read_WorkArea(root_window);
             Draw(size_Str);
           end;
         end;
