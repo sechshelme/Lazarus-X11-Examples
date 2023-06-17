@@ -49,7 +49,7 @@ var
     Result := '';
     XA__NET_WORKAREA := GetAtom('_NET_WORKAREA');
     if XA__NET_WORKAREA <> 0 then begin
-      XGetWindowProperty(dis, root_window, XA__NET_WORKAREA, 0, 1024, False, XA_CARDINAL, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
+      XGetWindowProperty(dis, root_window, XA__NET_WORKAREA, 0, 1024, False, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
       WriteLn(ret_items);
       if (ret_type = XA_CARDINAL) and (ret_format = 32) then begin
         WriteStr(Result, 'Frame Extents:  x: ', prop_return[0], ', y: ', prop_return[1], ', width: ', prop_return[2], ', height: ', prop_return[3]);

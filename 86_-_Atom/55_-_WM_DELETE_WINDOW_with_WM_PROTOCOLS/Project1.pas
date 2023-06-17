@@ -12,6 +12,7 @@ uses
   xlib,
   xutil,
   keysym,
+  xatom,
   x;
 
 var
@@ -27,10 +28,9 @@ const
 
 var
   i: integer;
-  evt_sucess: TStatus;
   gc: TGC;
   quit: boolean = False;
-  XA_WM_PROTOCOLS, XA_ATOM, XA_WM_DELETE_WINDOW: TAtom;
+  XA_WM_PROTOCOLS, XA_WM_DELETE_WINDOW: TAtom;
 
   //  https://specifications.freedesktop.org/wm-spec/1.3/ar01s05.html
   //  https://specifications.freedesktop.org/wm-spec/1.4/ar01s06.html
@@ -58,7 +58,6 @@ begin
 
   gc := XCreateGC(dis, win, 0, nil);
 
-  XA_ATOM := GetAtom('ATOM');
   XA_WM_PROTOCOLS := GetAtom('WM_PROTOCOLS');
   XA_WM_DELETE_WINDOW := GetAtom('WM_DELETE_WINDOW');
 
@@ -86,7 +85,7 @@ begin
         WriteLn('ClientMessage');
         if Event.xclient.Data.l[0] = XA_WM_DELETE_WINDOW then begin
           WriteLn('[X] wurde gedrückt');
-          quit := True;
+//          quit := True;
         end;
       end;
     end;

@@ -16,7 +16,7 @@ uses
 
 var
   dis: PDisplay;
-  win: TWindow;
+  win, rootWin: TWindow;
   Event: TXEvent;
   scr: cint;
 
@@ -122,12 +122,12 @@ var
     WriteLn();
   end;
 
-  procedure PrintPropertys;
+  procedure PrintPropertys(w:TWindow);
   var
     atoms: PAtom;
     i, cnt: cint;
   begin
-    atoms := XListProperties(dis, win, @cnt);
+    atoms := XListProperties(dis, w, @cnt);
     WriteLn('Propertys: ', cnt);
     for i := 0 to cnt - 1 do begin
       WriteLn('ID: ', atoms[i], '   ', XGetAtomName(dis, atoms[i]));
@@ -135,22 +135,22 @@ var
     WriteLn();
   end;
 
-procedure PrintIcon;
-var
-  size_list: PXIconSize;
-  cnt: cint=0;
-  i: Integer;
-begin
-  if XGetIconSizes(dis,RootWindow(dis, scr) , @size_list, @cnt) = 0 then begin
-    WriteLn('Fenstermanager unterstützt keine Icons');
-  end else begin
-    WriteLn(' No  | min_w | min_h | max_w | max_h | w_inc | h_inc');
-    for i := 0 to cnt - 1 do begin
-      with size_list[i] do begin
-        WriteLn(i: 4, ' |', min_width: 6, ' |', min_height:6, ' |', max_width: 6, ' |', max_height:6, ' |', width_inc: 6, ' |', height_inc:6);
+  procedure PrintIcon;
+  var
+    size_list: PXIconSize;
+    cnt: cint = 0;
+    i: integer;
+  begin
+    if XGetIconSizes(dis, rootWin, @size_list, @cnt) = 0 then begin
+      WriteLn('Fenstermanager unterstützt keine Icons');
+    end else begin
+      WriteLn(' No  | min_w | min_h | max_w | max_h | w_inc | h_inc');
+      for i := 0 to cnt - 1 do begin
+        with size_list[i] do begin
+          WriteLn(i: 4, ' |', min_width: 6, ' |', min_height: 6, ' |', max_width: 6, ' |', max_height: 6, ' |', width_inc: 6, ' |', height_inc: 6);
+        end;
       end;
     end;
-  end;
   end;
 
 begin
@@ -162,9 +162,10 @@ begin
   end;
   scr := DefaultScreen(dis);
 
+  rootWin := RootWindow(dis, scr);
 
   // Erstellt das Fenster
-  win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  win := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
   // Wählt die gewünschten Ereignisse aus
   // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
@@ -183,7 +184,8 @@ begin
   //   PrintFontWithInfo;
   PrintHosts;
   PrintColorMaps;
-  PrintPropertys;
+  PrintPropertys(rootWin);
+  PrintPropertys(win);
   PrintIcon;
 
   // Ereignisschleife

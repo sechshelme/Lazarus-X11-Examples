@@ -3,4 +3,9 @@ https://specifications.freedesktop.org/wm-spec/wm-spec-latest.html
 https://bbs.archlinux.org/viewtopic.php?id=11558
 https://de.wikibrief.org/wiki/Extended_Window_Manager_Hints
 
+```
+xprop -root _NET_SUPPORTED _NET_CLIENT_LIST _NET_NUMBER_OF_DESKTOPS _NET_DESKTOP_GEOMETRY _NET_DESKTOP_VIEWPORT _NET_CURRENT_DESKTOP _NET_DESKTOP_NAMES _NET_ACTIVE_WINDOW _NET_WORKAREA _NET_SUPPORTING_WM_CHECK _NET_VIRTUAL_ROOTS _NET_DESKTOP_LAYOUT _NET_SHOWING_DESKTOP
+```
+
+
 
