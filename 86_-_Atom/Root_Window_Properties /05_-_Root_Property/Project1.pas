@@ -18,8 +18,10 @@ uses
   cursorfont,
   x;
 
+  function XmuClientWindow(ADisplay: PDisplay; AWindow: TWindow): TWindow; cdecl; external 'Xmu';
+
 const
-  Props_root: array of PChar = (
+  Props_root: TStringArray = (
     '_NET_SUPPORTED',
     '_NET_CLIENT_LIST',
     '_NET_NUMBER_OF_DESKTOPS',
@@ -34,26 +36,26 @@ const
     '_NET_DESKTOP_LAYOUT',
     '_NET_SHOWING_DESKTOP');
 
-  Props_win: array of PChar = (
-  '_NET_WM_NAME',
-  '_NET_WM_VISIBLE_NAME',
-  '_NET_WM_ICON_NAME',
-  '_NET_WM_VISIBLE_ICON_NAME',
-  '_NET_WM_DESKTOP',
-  '_NET_WM_WINDOW_TYPE',
-  '_NET_WM_STATE',
-  '_NET_WM_ALLOWED_ACTIONS',
-  '_NET_WM_STRUT',
-  '_NET_WM_STRUT_PARTIAL',
-  '_NET_WM_ICON_GEOMETRY',
-  '_NET_WM_ICON',
-  '_NET_WM_PID',
-  '_NET_WM_HANDLED_ICONS',
-  '_NET_WM_USER_TIME',
-  '_NET_WM_USER_TIME_WINDOW',
-  '_NET_FRAME_EXTENTS',
-  '_NET_WM_OPAQUE_REGION',
-  '_NET_WM_BYPASS_COMPOSITOR');
+  Props_win: TStringArray = (
+    '_NET_WM_NAME',
+    '_NET_WM_VISIBLE_NAME',
+    '_NET_WM_ICON_NAME',
+    '_NET_WM_VISIBLE_ICON_NAME',
+    '_NET_WM_DESKTOP',
+    '_NET_WM_WINDOW_TYPE',
+    '_NET_WM_STATE',
+    '_NET_WM_ALLOWED_ACTIONS',
+    '_NET_WM_STRUT',
+    '_NET_WM_STRUT_PARTIAL',
+    '_NET_WM_ICON_GEOMETRY',
+    '_NET_WM_ICON',
+    '_NET_WM_PID',
+    '_NET_WM_HANDLED_ICONS',
+    '_NET_WM_USER_TIME',
+    '_NET_WM_USER_TIME_WINDOW',
+    '_NET_FRAME_EXTENTS',
+    '_NET_WM_OPAQUE_REGION',
+    '_NET_WM_BYPASS_COMPOSITOR');
 
 var
   dis: PDisplay;
@@ -65,6 +67,9 @@ var
   i: integer;
   XA_UTF8_STRING: TAtom;
   w: TXID;
+  end_of_atoms: boolean;
+  atom_List: TStringArray;
+
 
   //  https://specifications.freedesktop.org/wm-spec/1.3/ar01s05.html
   //  https://specifications.freedesktop.org/wm-spec/1.4/ar01s06.html
@@ -106,60 +111,86 @@ var
     ch: char;
   begin
     Result := '';
-    //    atom := GetAtom('_NET_SUPPORTED');
     if a <> 0 then begin
       XGetWindowProperty(dis, w, a, 0, 1024, False, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
-      Write('Property: ', XGetAtomName(dis, a));
 
       if ret_type = 0 then begin
-        WriteLn(#10'Unbekannt !');
+//                WriteLn(#10'Unbekannt !');
       end else begin
-        WriteLn(' (', XGetAtomName(dis, ret_type), ', ', ret_format, ', ', ret_items, ') =');
-      end;
-
-      if ret_type = XA_ATOM then begin
-        for i := 0 to ret_items - 1 do begin
-          WriteLn('Nr: ', prop_return[i]: 5, '  Name: ', XGetAtomName(dis, prop_return[i]));
-        end;
-      end else if ret_type = XA_CARDINAL then  begin
-        for i := 0 to ret_items - 1 do begin
-          Write(prop_return[i]: 5);
-          if i <> ret_items - 1 then begin
-            Write(', ');
-          end;
-        end;
         WriteLn();
-      end else if ret_type = XA_WINDOW then  begin
-        for i := 0 to ret_items - 1 do begin
-          WriteLn('Window: ', prop_return[i]: 10, ' ');
-        end;
-      end else if ret_type = XA_UTF8_STRING then  begin
-        for i := 0 to ret_items - 1 do begin
-          ch := PChar(prop_return)[i];
-          if (ch = #0) and (i <> ret_items - 1) then begin
-            Write('", "');
-          end else begin
-            Write(PChar(prop_return)[i]);
+        Write('Property: ', XGetAtomName(dis, a));
+        WriteLn(' (', XGetAtomName(dis, ret_type), ', ', ret_format, ', ', ret_items, ') =');
+
+        if ret_type = XA_ATOM then begin
+          for i := 0 to ret_items - 1 do begin
+            WriteLn('Nr: ', prop_return[i]: 5, '  Name: ', XGetAtomName(dis, prop_return[i]));
           end;
+        end else if (ret_type = XA_CARDINAL)or(ret_type = XA_INTEGER) then  begin
+          for i := 0 to ret_items - 1 do begin
+            Write(prop_return[i]);
+            if i <> ret_items - 1 then begin
+              Write(', ');
+            end;
+          end;
+          WriteLn();
+        end else if ret_type = XA_WINDOW then  begin
+          for i := 0 to ret_items - 1 do begin
+            Write('$',IntToHex( prop_return[i],8));
+            if i <> ret_items - 1 then begin
+              Write(', ');
+            end;
+          end;
+          WriteLn();
+        end else if ret_type = XA_PIXMAP then  begin
+          for i := 0 to ret_items - 1 do begin
+            Write('pixmap id # $',IntToHex( prop_return[i],8),'  ');
+            if i <> ret_items - 1 then begin
+              Write(', ');
+            end;
+          end;
+          WriteLn();
+        end else if (ret_type = XA_UTF8_STRING)or (ret_type = XA_STRING) then  begin
+          for i := 0 to ret_items - 1 do begin
+            ch := PChar(prop_return)[i];
+            if (ch = #0) and (i <> ret_items - 1) then begin
+              Write('", "');
+            end else begin
+              Write(PChar(prop_return)[i]);
+            end;
+          end;
+          WriteLn('"');
+        end else begin
+          WriteLn('Unbekanntes Formt !  (', XGetAtomName(dis, ret_type), ')');
         end;
-        WriteLn('"');
+        XFree(prop_return);
       end;
-      WriteLn();
     end;
   end;
 
-  procedure Draw(size: string);
-  const
-    msg: PChar = 'Press <space>';
-  var
-    gc: TGC;
+  function show_error(para1: PDisplay; para2: PXErrorEvent): cint; cdecl;
   begin
-    gc := XCreateGC(dis, root_window, 0, nil);
+    Result := 0;
+    end_of_atoms := True;
+  end;
 
-    XSetForeground(dis, gc, $008800);
-    XDrawString(dis, Event.xexpose.window, gc, 10, 16, msg, Length(msg));
-    XSetForeground(dis, gc, $000000);
-    XDrawString(dis, Event.xexpose.window, gc, 10, 32, PChar(size), Length(size));
+  function CreateAtomList: TStringArray;
+  var
+    index: cint = 0;
+    pc: PChar;
+    old_Error_Handle: TXErrorHandler;
+  begin
+    Result := nil;
+    end_of_atoms := False;
+    old_Error_Handle := XSetErrorHandler(@show_error);
+    repeat
+      Inc(index);
+      pc := XGetAtomName(dis, index);
+      if not end_of_atoms then begin
+        Insert(pc, Result, index);
+      end;
+      XFree(pc);
+    until end_of_atoms;
+    XSetErrorHandler(old_Error_Handle);
   end;
 
 begin
@@ -188,15 +219,30 @@ begin
           XK_Escape: begin
             quit := True;
           end;
-          XK_space: begin
+          XK_r: begin
             for i := 0 to Length(Props_root) - 1 do begin
-              Read_Property(root_window, GetAtom(Props_root[i]));
+              Read_Property(root_window, GetAtom(PChar(Props_root[i])));
             end;
           end;
           XK_w: begin
-            w:=GrabPointer;
-            for i := 0 to Length(Props_root) - 1 do begin
-              Read_Property(w, GetAtom(Props_win[i]));
+            w := GrabPointer;
+            w := XmuClientWindow(dis, w);
+            for i := 0 to Length(Props_win) - 1 do begin
+              Read_Property(w, GetAtom(PChar(Props_win[i])));
+            end;
+          end;
+          XK_Return: begin
+            atom_List := CreateAtomList;
+            w := GrabPointer;
+            w := XmuClientWindow(dis, w);
+            for i := 0 to Length(atom_List) - 1 do begin
+              Read_Property(w, GetAtom(PChar(atom_List[i])));
+            end;
+          end;
+          XK_space: begin
+            atom_List := CreateAtomList;
+            for i := 0 to Length(atom_List) - 1 do begin
+              Read_Property(root_window, GetAtom(PChar(atom_List[i])));
             end;
           end;
         end;

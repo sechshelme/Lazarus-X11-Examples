@@ -6,6 +6,7 @@
       <Flags>
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
+        <MainUnitHasScaledStatement Value="False"/>
         <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
@@ -24,13 +25,13 @@
     </PublishOptions>
     <RunParams>
       <local>
-        <LaunchingApplication Use="True"/>
+        <LaunchingApplication Use="True" PathPlusParams="/usr/bin/xterm -bg black -fg gray -geometry 200x200 -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
       <FormatVersion Value="2"/>
       <Modes Count="1">
         <Mode0 Name="default">
           <local>
-            <LaunchingApplication Use="True"/>
+            <LaunchingApplication Use="True" PathPlusParams="/usr/bin/xterm -bg black -fg gray -geometry 200x200 -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
           </local>
         </Mode0>
       </Modes>
@@ -53,6 +54,8 @@
     </SearchPaths>
     <Linking>
       <Debugging>
+        <GenerateDebugInfo Value="False"/>
+        <RunWithoutDebug Value="True"/>
         <DebugInfoType Value="dsDwarf2Set"/>
       </Debugging>
     </Linking>
