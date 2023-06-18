@@ -9,6 +9,7 @@ Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.
 program Project1;
 
 uses
+  SysUtils,
   unixtype,
   ctypes,
   xlib,
@@ -21,53 +22,60 @@ var
   win: TWindow;
   Event: TXEvent;
   scr: cint;
-  atomID: TAtom;
-  i: integer;
-  res: array of PChar;
-
-  atoms: array of TAtom;
-
-  days: array of string = ('Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'freitag', 'Samtag', 'Sonntag');
+  end_of_atoms: boolean = False;
+  atomList: TStringArray;
 
 const
   Mask = ExposureMask or ButtonPressMask or KeyPressMask or PropertyChangeMask;
 
   // In der Konsole überprüfen mit "xlsatoms"
 
-  procedure Show__NET_FRAME_EXTENTS;
+  procedure Write_New_Atoms;
+  const
+    days: array of string = ('Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samtag', 'Sonntag');
   var
-    a, t: TAtom;
-    f: cint;
-    n, b: culong;
-    Data: Pcuchar;
-    extens: pclong;
-    pc: PChar='                                           ';
+    atoms: PAtom = nil;
   begin
-    // _NET_FRAME_EXTENTS, left, right, top, bottom, CARDINAL[4]/32
-    a := XInternAtom(dis, '_NET_FRAME_EXTENTS', True);
-    XGetWindowProperty(dis, win, a, 0, 4, False, AnyPropertyType, @t, @f, @n, @b, @Data);
-    WriteLn('_NET_FRAME_EXTENTS   Nr: ', a);
-    extens := pclong(Data);
-    WriteLn('Format: ', f);
-    WriteLn('elemente: ',n);
-    WriteLn('typ: ',t);
-    WriteLn('Got frame extents: left ', extens[0], ' right ', extens[1], ' top ', extens[2], ' botom ', extens[3]);
-    WriteLn();
-
-    // _NET_FRAME_EXTENTS, left, right, top, bottom, CARDINAL[4]/32
-    a := XInternAtom(dis, '_NET_WM_NAME', True);
-    XGetWindowProperty(dis, win, a, 0, 4, False, AnyPropertyType, @t, @f, @n, @b, @Data);
-    WriteLn('_NET_WM_NAME   Nr: ', a);
-    pc := PChar(Data);
-    WriteLn(StrLen(pc));
-    WriteLn('Format: ', f);
-    WriteLn('elemente: ',n);
-    WriteLn('typ: ',t);
-    WriteLn('Name: ', pc);
-    WriteLn();
-
+    Getmem(atoms, Length(days) * SizeOf(TAtom));
+    XInternAtoms(dis, PPChar(days), Length(days), False, atoms);
+    Freemem(atoms);
   end;
 
+  function show_error(para1: PDisplay; para2: PXErrorEvent): cint; cdecl;
+  begin
+    Result := 0;
+    end_of_atoms := True;
+  end;
+
+  function CreateAtomList: TStringArray;
+  var
+    index: cint = 0;
+    pc: PChar;
+    old_Error_Handle: TXErrorHandler;
+  begin
+    Result := nil;
+    end_of_atoms := False;
+    old_Error_Handle := XSetErrorHandler(@show_error);
+    repeat
+      Inc(index);
+      pc := XGetAtomName(dis, index);
+      if not end_of_atoms then begin
+        Insert(pc, Result, index);
+      end;
+      XFree(pc);
+    until end_of_atoms;
+    XSetErrorHandler(old_Error_Handle);
+  end;
+
+  procedure ShowAtoms(const sa: TStringArray);
+  var
+    i: integer;
+  begin
+    WriteLn('Atome:', Length(sa));
+    for i := 0 to Length(sa) - 1 do begin
+      WriteLn(sa[i]);
+    end;
+  end;
 
 begin
   dis := XOpenDisplay(nil);
@@ -81,31 +89,6 @@ begin
   XStoreName(dis, win, 'Mein Fenster');
   XMapWindow(dis, win);
 
-  SetLength(atoms, Length(days));
-  XInternAtoms(dis, PPChar(days), Length(days), False, PAtom(atoms));
-
-
-
-  //  for i:=1 to 100 do WriteLn(XGetAtomName(dis,i));
-
-  SetLength(atoms, 200);
-  for i := 0 to Length(atoms) - 1 do begin
-    atoms[i] := i + 1;
-  end;
-
-  //Getmem(res, Length(atoms)*SizeOf(TAtom));
-  SetLength(res, Length(atoms));
-  XGetAtomNames(dis, PAtom(atoms), Length(atoms), PPChar(res));
-  for i := 0 to Length(atoms) - 1 do begin
-    WriteLn(res[i]);
-  end;
-
-  //  atomID := XInternAtom(dis, 'blabla', False);
-  //  WriteLn(atomID);
-
-
-
-
   // Ereignisschleife
   while (True) do begin
     XNextEvent(dis, @Event);
@@ -116,18 +99,20 @@ begin
           XK_Escape: begin
             Break;
           end;
-          XK_space: begin
-            Show__NET_FRAME_EXTENTS;
+          XK_w: begin
+            Write_New_Atoms;
+          end;
+          XK_s: begin
+            // Alle Atome listen
+            atomList := CreateAtomList;
+            ShowAtoms(atomList);
           end;
         end;
       end;
     end;
   end;
 
-  // Schliesst das Fenster
   XDestroyWindow(dis, win);
-
-  // Schliesst Verbindung zum Server
   XCloseDisplay(dis);
 end.
 //code-
