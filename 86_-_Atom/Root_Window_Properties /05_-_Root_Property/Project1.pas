@@ -113,6 +113,7 @@ var
     Result := '';
     if a <> 0 then begin
       XGetWindowProperty(dis, w, a, 0, 1024, False, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
+//      XGetWindowProperty(dis, win, XA_XSEL_DATA, 0, MaxLongint div 4, False, AnyPropertyType, @XA_UTF8_STRING, @resbits, @ressize, @restail, @result1);
 
       if ret_type = 0 then begin
 //                WriteLn(#10'Unbekannt !');
@@ -141,9 +142,9 @@ var
             end;
           end;
           WriteLn();
-        end else if ret_type = XA_PIXMAP then  begin
+        end else if (ret_type = XA_PIXMAP)or(ret_type = XA_CURSOR)or(ret_type = XA_COLORMAP) then  begin
           for i := 0 to ret_items - 1 do begin
-            Write('pixmap id # $',IntToHex( prop_return[i],8),'  ');
+            Write('pixmap/cursor id # $',IntToHex( prop_return[i],8),'  ');
             if i <> ret_items - 1 then begin
               Write(', ');
             end;

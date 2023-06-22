@@ -6,6 +6,7 @@ Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.
 *)
 
 // https://stackoverflow.com/questions/27378318/c-get-string-from-clipboard-on-linux
+// https://www.uninformativ.de/blog/postings/2017-04-02/0/POSTING-en.html
 
 program Project1;
 
@@ -18,17 +19,42 @@ uses
   xlib,
   xutil,
   keysym,
+  xatom,
   x;
 
 type
   TAtomPara = record
-    XA_ATOM, XA_STRING,
     XA_CLIPBOARD, Format, XSEL_DATA,
     XA_TARGETS, XA_TEXT: TAtom;
   end;
 
+type
+
+  { TMyWin }
+
+  TMyWin = class(TObject)
+  private
+    AP: TAtomPara;
+    dis: PDisplay;
+    win: TWindow;
+    scr: cint;
+    gc: TGC;
+    Event: TXEvent;
+  private
+    procedure ReadClipboard;
+    procedure WriteClipboard;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Run;
+  end;
+
+
 const
   Mask = KeyPressMask or ExposureMask;
+
+var
+  ClipboardString: string;
 
   procedure wait;
   var
@@ -39,27 +65,68 @@ const
     fpNanoSleep(@Req, @rem);
   end;
 
-  procedure Main;
+  procedure TMyWin.ReadClipboard;
   var
-    AP: TAtomPara;
-    dis: PDisplay;
-    win: TWindow;
-    scr: cint;
-    gc: TGC;
-    Event: TXEvent;
-
-    // Paste
-    ressize, restail: culong;
-    resbits: cint;
     targetFormat: TAtom;
+    resbits: cint;
+    ressize, restail: culong;
     res: PChar;
+  begin
+    Writeln('Clipboard auslesen');
+    if Event.xselection._property <> 0 then begin
+      XGetWindowProperty(dis, win, AP.XSEL_DATA, 0, MaxSIntValue, False, AnyPropertyType, @targetFormat, @resbits, @ressize, @restail, @res);
+      if AP.Format = targetFormat then begin
+        WriteLn('io');
+      end else begin
+        WriteLn('error');
+      end;
+      WriteLn('Buffer-Size: ', ressize);
+      WriteLn('------ Inhalt vom Clipboard ----------');
+      WriteLn(res);
+      WriteLn('--------------------------------------');
+      with Event.xselection do begin
+        XDeleteProperty(display, requestor, _property);
+      end;
+      XFree(res);
+    end;
+  end;
 
-    // Copy
-    xsr: PXSelectionRequestEvent;
+  procedure TMyWin.WriteClipboard;
+  var
     ev: TXSelectionEvent;
+    xsr: PXSelectionRequestEvent;
     R: cint;
-    ClipboardString: string;
+  begin
+    //          wait;
+    WriteLn('SelectionRequest');
+    if Event.xselectionrequest.selection = AP.XA_CLIPBOARD then begin
+      WriteLn('Daten stehen im Clipboard bereit');
+      xsr := @Event.xselectionrequest;
+      ev._type := SelectionNotify;
+      ev.display := xsr^.display;
+      ev.requestor := xsr^.requestor;
+      ev.selection := xsr^.selection;
+      ev.time := xsr^.time;
+      ev.target := xsr^.target;
+      ev._property := xsr^._property;
+      ev.serial := 0;
+      ev.send_event := 0;
+      if ev.target = AP.XA_TARGETS then begin
+        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AP.Format, 1);
+      end else if (ev.target = XA_STRING) or (ev.target = AP.XA_TEXT) then begin
+        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_STRING, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
+      end else if ev.target = AP.Format then  begin
+        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.Format, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
+      end else begin
+        ev._property := None;
+      end;
+      if (R and 2) = 0 then begin
+        XSendEvent(dis, ev.requestor, False, 0, @ev);
+      end;
+    end;
+  end;
 
+  constructor TMyWin.Create;
   begin
     // Erstellt die Verbindung zum Server
     dis := XOpenDisplay(nil);
@@ -68,22 +135,17 @@ const
       Halt(1);
     end;
 
-    AP.XA_ATOM := XInternAtom(dis, 'ATOM', False);
-    AP.XA_STRING := XInternAtom(dis, 'STRING', False);
-
     AP.XA_TARGETS := XInternAtom(dis, 'TARGETS', False);
     AP.XA_TEXT := XInternAtom(dis, 'TEXT', False);
 
     AP.XA_CLIPBOARD := XInternAtom(dis, 'CLIPBOARD', False);
     AP.Format := XInternAtom(dis, 'UTF8_STRING', True);
     if AP.Format = 0 then begin
-      AP.Format := XInternAtom(dis, 'STRING', True);
+      AP.Format := XA_STRING;
     end;
 
     AP.XSEL_DATA := XInternAtom(dis, 'XSEL_DATA', False);
 
-    WriteLn(AP.XA_ATOM);
-    WriteLn(AP.XA_STRING);
     WriteLn(AP.XA_TARGETS);
     WriteLn(AP.XA_TEXT);
 
@@ -97,7 +159,18 @@ const
     gc := XCreateGC(dis, win, 0, nil);
     XSelectInput(dis, win, Mask);
     XMapWindow(dis, win);
+  end;
 
+  destructor TMyWin.Destroy;
+  begin
+    XDestroyWindow(dis, win);
+    XCloseDisplay(dis);
+
+    inherited Destroy;
+  end;
+
+  procedure TMyWin.Run;
+  begin
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
@@ -131,35 +204,9 @@ const
         end;
         // Wird ausgelöst, sobald Daten extern vom Clipboard verlangt werden.
         SelectionRequest: begin
-          //          wait;
-          WriteLn('SelectionRequest');
-          if event.xselectionrequest.selection = AP.XA_CLIPBOARD then begin
-            WriteLn('Daten stehen im Clipboard bereit');
-            xsr := @event.xselectionrequest;
-            ev._type := SelectionNotify;
-            ev.display := xsr^.display;
-            ev.requestor := xsr^.requestor;
-            ev.selection := xsr^.selection;
-            ev.time := xsr^.time;
-            ev.target := xsr^.target;
-            ev._property := xsr^._property;
-            ev.serial := 0;
-            ev.send_event := 0;
-            if ev.target = AP.XA_TARGETS then begin
-              R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_ATOM, 32, PropModeReplace, @AP.Format, 1);
-            end else if (ev.target = AP.XA_STRING) or (ev.target = AP.XA_TEXT) then begin
-              R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_STRING, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-            end else if ev.target = AP.Format then  begin
-              R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.Format, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-            end else begin
-              ev._property := None;
-            end;
-            if (R and 2) = 0 then begin
-              XSendEvent(dis, ev.requestor, 0, 0, @ev);
-            end;
-          end;
+          WriteClipboard;
         end;
-        // Wird ausgelöst, sobald eine andere App Daten fürs Chloboard hat.
+        // Wird ausgelöst, sobald eine andere App Daten fürs Clipboard hat.
         SelectionClear: begin
           WriteLn('Eine andere App hat Clipboard Daten');
           ClipboardString := '';
@@ -167,32 +214,17 @@ const
         // Daten vom Clipboard stehen bereit zur Abholung
         SelectionNotify: begin
           WriteLn('SelectionNotify');
-          Writeln('Clipboard auslesen');
-          if Event.xselection._property <> 0 then begin
-            with AP do begin
-              XGetWindowProperty(dis, win, XSEL_DATA, 0, MaxSIntValue, False, AnyPropertyType, @targetFormat, @resbits, @ressize, @restail, @res);
-              if Format = targetFormat then begin
-                WriteLn('io');
-              end else begin
-                WriteLn('error');
-              end;
-            end;
-            WriteLn('Buffer-Size: ', ressize);
-            WriteLn('------ Inhalt vom Clipboard ----------');
-            WriteLn(res);
-            WriteLn('--------------------------------------');
-            with Event.xselection do begin
-              XDeleteProperty(display, requestor, _property);
-            end;
-          end;
+          ReadClipboard;
         end;
       end;
     end;
-
-    XDestroyWindow(dis, win);
-    XCloseDisplay(dis);
   end;
 
+var
+  MyWindows: TMyWin;
+
 begin
-  Main;
+  MyWindows := TMyWin.Create;
+  MyWindows.Run;
+  MyWindows.Free;
 end.
