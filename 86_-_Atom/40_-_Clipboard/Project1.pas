@@ -144,7 +144,8 @@ var
       AP.Format := XA_STRING;
     end;
 
-    AP.XSEL_DATA := XInternAtom(dis, 'XSEL_DATA', False);
+//    AP.XSEL_DATA := XInternAtom(dis, 'XSEL_DATA', False);
+    AP.XSEL_DATA := AP.XA_CLIPBOARD;
 
     WriteLn(AP.XA_TARGETS);
     WriteLn(AP.XA_TEXT);
