@@ -18,12 +18,18 @@ uses
   xatom,
   x;
 
+type
+  TAtoms = array of TAtom;
+
 var
   dis: PDisplay;
   win, rootWin: TWindow;
   Event: TXEvent;
   scr: cint;
   XA_CLIPBOARD, XA_TARGETS, XA_XSEL_DATA, XA_UTF8_STRING, at: TAtom;
+  Target_List: TAtoms;
+  i: integer;
+  key: TKeySym;
 
   // https://www.wxwidgets.org/wxWidgets/src/x11/clipbrd.cpp
 
@@ -56,6 +62,8 @@ var
   //      }
   //  }
 
+
+
   function GetAtom(Name: PChar): TAtom;
   begin
     Result := XInternAtom(dis, Name, True);
@@ -64,7 +72,26 @@ var
     end;
   end;
 
-
+  function getTargetList(w: TWindow): TAtoms;
+  var
+    ret_type: TAtom;
+    ret_format: cint;
+    ret_items, ret_bytesleft: culong;
+    prop_return: PAtom;
+    i: integer;
+  begin
+    Result := nil;
+    XGetWindowProperty(dis, w, XA_CLIPBOARD, 0, 1024, False, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
+    if ret_type = 0 then begin
+      WriteLn(#10'Atom TARGETS nicht gefunden !');
+    end else if ret_type = XA_ATOM then begin
+      SetLength(Result, ret_items);
+      for i := 0 to ret_items - 1 do begin
+        Result[i] := prop_return[i];
+      end;
+    end;
+    XFree(prop_return);
+  end;
 
   function Read_Property(w: TWindow; a: TAtom): string;
   var
@@ -77,6 +104,7 @@ var
   begin
     Result := '';
     if a <> 0 then begin
+      XGetWindowProperty(dis, w, a, 0, 1024, False, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
       XGetWindowProperty(dis, w, a, 0, 1024, False, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
       if ret_type = 0 then begin
         WriteLn(#10'Unbekannt !');
@@ -113,7 +141,7 @@ var
             end;
           end;
           WriteLn();
-        end else if (ret_type = XA_UTF8_STRING) or (ret_type = XA_STRING) then  begin
+        end else if (ret_type = XA_UTF8_STRING) or (ret_type = XA_STRING) or (ret_type = GetAtom('text/plain')) then  begin
           for i := 0 to ret_items - 1 do begin
             ch := PChar(prop_return)[i];
             if (ch = #0) and (i <> ret_items - 1) then begin
@@ -123,7 +151,7 @@ var
             end;
           end;
           WriteLn('"');
-        end else if ret_type= GetAtom('MULTIPLE') then  begin
+        end else if ret_type = GetAtom('MULTIPLE') then  begin
           for i := 0 to ret_items - 1 do begin
             ch := PChar(prop_return)[i];
             if (ch = #0) and (i <> ret_items - 1) then begin
@@ -151,10 +179,10 @@ begin
 
   rootWin := RootWindow(dis, scr);
 
-  XA_CLIPBOARD := XInternAtom(dis, 'CLIPBOARD', False);
-  XA_TARGETS := XInternAtom(dis, 'TARGETS', False);
-  XA_XSEL_DATA := XInternAtom(dis, 'XSEL_DATA', False);
-  XA_UTF8_STRING := XInternAtom(dis, 'UTF8_STRING', False);
+  XA_CLIPBOARD := GetAtom('CLIPBOARD');
+  XA_TARGETS := GetAtom('TARGETS');
+  XA_XSEL_DATA := GetAtom('XSEL_DATA');
+  XA_UTF8_STRING := GetAtom('UTF8_STRING');
 
   win := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
@@ -173,20 +201,21 @@ begin
         if at = 0 then begin
           WriteLn('Ungültiges Atom !');
         end else begin
-          WriteLn('prop: ', Event.xselection.target, '  name: ', XGetAtomName(dis, at));
-          Read_Property(win, XA_CLIPBOARD);
-          if Event.xselection.target = XA_TARGETS then  begin
-            //          show_targets;
-          end else if Event.xselection.target = XA_STRING then  begin
-            //          paste_Clipboard;
+          if at = XA_TARGETS then  begin
+            Target_List := getTargetList(win);
+            for i := 0 to Length(Target_List) - 1 do begin
+              WriteLn('(', i+1, ') ', XGetAtomName(dis, Target_List[i]));
+            end;
           end else begin
-//            WriteLn('Unbekanntes Target: ', Event.xselection.target);
+            WriteLn('prop: ', Event.xselection.target, '  name: ', XGetAtomName(dis, at));
+            Read_Property(win, XA_CLIPBOARD);
           end;
         end;
       end;
       KeyPress: begin
         // Beendet das Programm bei [ESC]
-        case XLookupKeysym(@Event.xkey, 0) of
+        key := XLookupKeysym(@Event.xkey, 0);
+        case key of
           XK_Escape: begin
             Break;
           end;
@@ -197,7 +226,13 @@ begin
             XConvertSelection(dis, XA_CLIPBOARD, XA_STRING, XA_CLIPBOARD, win, CurrentTime);
           end;
           XK_m: begin
-            XConvertSelection(dis, XA_CLIPBOARD, GetAtom('MULTIPLE'), XA_CLIPBOARD, win, CurrentTime);
+            XConvertSelection(dis, XA_CLIPBOARD, GetAtom('text/plain'), XA_CLIPBOARD, win, CurrentTime);
+          end;
+          XK_1..XK_9: begin
+            i := key - XK_1;
+            if Length(Target_List)>i then
+            WriteLn(XGetAtomName(dis, Target_List[ i]));
+            XConvertSelection(dis, XA_CLIPBOARD, Target_List[ i], XA_CLIPBOARD, win, CurrentTime);
           end;
         end;
       end;
