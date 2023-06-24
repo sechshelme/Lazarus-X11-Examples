@@ -30,6 +30,7 @@ var
   Target_List: TAtoms;
   i: integer;
   key: TKeySym;
+  gc: TGC;
 
   // https://www.wxwidgets.org/wxWidgets/src/x11/clipbrd.cpp
 
@@ -95,38 +96,44 @@ var
     XFree(prop_return);
   end;
 
-procedure save(Data: PChar; len: SizeInt; path:String);
-var
-  Fout: file;
-  i: SizeInt;
-begin
-  WriteLn('Speichere...');
-  Assign(Fout, path);
-  Rewrite(Fout,1);
-   BlockWrite(Fout, Data[0],len);
-  Close(Fout);
-  WriteLn(len, ' Bytes gespeichert.');
-end;
+  procedure ShowBMP(Data: PChar; len: SizeInt);
+  // http://www.ece.ualberta.ca/~elliott/ee552/studentAppNotes/2003_w/misc/bmp_file_format/bmp_file_format.htm
+  var
+    size: PInt16;
+    x, y: int16;
+    headerSize, i: SizeInt;
+    col: culong;
+  begin
+    headerSize := PInt16(Data + $0E)^;
+    WriteLn('Header: ', headerSize);
+    x := PInt16(Data + $12)^;
+    WriteLn('Width: ', x);
+    y := PInt16(Data + $16)^;
+    WriteLn('Height: ', y);
+    for i := 0 to (x - 0) * (y - 0)-1 do begin
+      col := pculong(Data + i * 4 + headerSize)^;
+      XSetForeground(dis, gc, col);
+      WriteLn(col);
+      XDrawPoint(dis, win, gc, i mod x, i div y);
+    end;
 
-procedure save1(Data: PChar; len: SizeInt; path:String);
-var
-  Fout: file of char;
-  i: SizeInt;
-begin
-  WriteLn('Speichere...');
-  WriteLn('len: ', len);
-  Assign(Fout, path);
-  Rewrite(Fout);
 
-  for i := 0 to len - 1 do begin
-    Write(Fout, Data[i]);
+    WriteLn('Zeichen...');
+    WriteLn(len, ' Bytes gespeichert.');
   end;
 
-  //  Rewrite(Fout,1);
-  //  BlockWrite(Fout, data,len);
-
-  Close(Fout);
-end;
+  procedure save(Data: PChar; len: SizeInt; path: string);
+  var
+    Fout: file;
+    i: SizeInt;
+  begin
+    WriteLn('Speichere...');
+    Assign(Fout, path);
+    Rewrite(Fout, 1);
+    BlockWrite(Fout, Data[0], len);
+    Close(Fout);
+    WriteLn(len, ' Bytes gespeichert.');
+  end;
 
   function Read_Property(w: TWindow; a: TAtom): string;
   var
@@ -199,9 +206,10 @@ end;
           end;
           WriteLn('"');
         end else if ret_type = GetAtom('image/bmp') then  begin
-          save(PChar(prop_return), ret_items,'test.bmp');
+          ShowBMP(PChar(prop_return), ret_items);
+          save(PChar(prop_return), ret_items, 'test.bmp');
         end else if ret_type = GetAtom('image/png') then  begin
-          save(PChar(prop_return), ret_items,'test.png');
+          save(PChar(prop_return), ret_items, 'test.png');
         end else begin
           WriteLn('Unbekanntes Formt !  (', XGetAtomName(dis, ret_type), ')');
         end;
@@ -226,6 +234,8 @@ begin
   XA_UTF8_STRING := GetAtom('UTF8_STRING');
 
   win := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+
+  gc := XCreateGC(dis, win, 0, nil);
 
   XSelectInput(dis, win, KeyPressMask);
   XStoreName(dis, win, 'Mein Fenster');
