@@ -62,6 +62,8 @@ var
   //      }
   //  }
 
+  // https://groups.google.com/a/chromium.org/g/chromium-discuss/c/_el628cw_PM
+
 
 
   function GetAtom(Name: PChar): TAtom;
@@ -93,6 +95,39 @@ var
     XFree(prop_return);
   end;
 
+procedure save(Data: PChar; len: SizeInt; path:String);
+var
+  Fout: file;
+  i: SizeInt;
+begin
+  WriteLn('Speichere...');
+  Assign(Fout, path);
+  Rewrite(Fout,1);
+   BlockWrite(Fout, Data[0],len);
+  Close(Fout);
+  WriteLn(len, ' Bytes gespeichert.');
+end;
+
+procedure save1(Data: PChar; len: SizeInt; path:String);
+var
+  Fout: file of char;
+  i: SizeInt;
+begin
+  WriteLn('Speichere...');
+  WriteLn('len: ', len);
+  Assign(Fout, path);
+  Rewrite(Fout);
+
+  for i := 0 to len - 1 do begin
+    Write(Fout, Data[i]);
+  end;
+
+  //  Rewrite(Fout,1);
+  //  BlockWrite(Fout, data,len);
+
+  Close(Fout);
+end;
+
   function Read_Property(w: TWindow; a: TAtom): string;
   var
     ret_type: TAtom;
@@ -104,8 +139,7 @@ var
   begin
     Result := '';
     if a <> 0 then begin
-      XGetWindowProperty(dis, w, a, 0, 1024, False, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
-      XGetWindowProperty(dis, w, a, 0, 1024, False, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
+      XGetWindowProperty(dis, w, a, 0, MaxInt, False, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
       if ret_type = 0 then begin
         WriteLn(#10'Unbekannt !');
       end else begin
@@ -141,8 +175,11 @@ var
             end;
           end;
           WriteLn();
-        end else if (ret_type = XA_UTF8_STRING) or (ret_type = XA_STRING) or (ret_type = GetAtom('text/plain')) then  begin
+        end else if (ret_type = XA_UTF8_STRING) or (ret_type = XA_STRING) or (ret_type = GetAtom('text/plain')) or (ret_type = GetAtom('TEXT')) then  begin
           for i := 0 to ret_items - 1 do begin
+            if i = 0 then begin
+              Write('"');
+            end;
             ch := PChar(prop_return)[i];
             if (ch = #0) and (i <> ret_items - 1) then begin
               Write('", "');
@@ -161,6 +198,10 @@ var
             end;
           end;
           WriteLn('"');
+        end else if ret_type = GetAtom('image/bmp') then  begin
+          save(PChar(prop_return), ret_items,'test.bmp');
+        end else if ret_type = GetAtom('image/png') then  begin
+          save(PChar(prop_return), ret_items,'test.png');
         end else begin
           WriteLn('Unbekanntes Formt !  (', XGetAtomName(dis, ret_type), ')');
         end;
@@ -203,8 +244,13 @@ begin
         end else begin
           if at = XA_TARGETS then  begin
             Target_List := getTargetList(win);
+            WriteLn(#10);
             for i := 0 to Length(Target_List) - 1 do begin
-              WriteLn('(', i+1, ') ', XGetAtomName(dis, Target_List[i]));
+              if i <= 9 then begin
+                WriteLn('(', i, ') ', XGetAtomName(dis, Target_List[i]));
+              end else begin
+                WriteLn('(', char(i + 55 + 32), ') ', XGetAtomName(dis, Target_List[i]));
+              end;
             end;
           end else begin
             WriteLn('prop: ', Event.xselection.target, '  name: ', XGetAtomName(dis, at));
@@ -219,20 +265,28 @@ begin
           XK_Escape: begin
             Break;
           end;
-          XK_t: begin
+          XK_space: begin
             XConvertSelection(dis, XA_CLIPBOARD, XA_TARGETS, XA_CLIPBOARD, win, CurrentTime);
           end;
-          XK_v: begin
-            XConvertSelection(dis, XA_CLIPBOARD, XA_STRING, XA_CLIPBOARD, win, CurrentTime);
+          //XK_v: begin
+          //  XConvertSelection(dis, XA_CLIPBOARD, XA_STRING, XA_CLIPBOARD, win, CurrentTime);
+          //end;
+          //XK_m: begin
+          //  XConvertSelection(dis, XA_CLIPBOARD, GetAtom('text/plain'), XA_CLIPBOARD, win, CurrentTime);
+          //end;
+          XK_0..XK_9: begin
+            i := key - XK_0;
+            if Length(Target_List) > i then begin
+              WriteLn(XGetAtomName(dis, Target_List[i]));
+              XConvertSelection(dis, XA_CLIPBOARD, Target_List[i], XA_CLIPBOARD, win, CurrentTime);
+            end;
           end;
-          XK_m: begin
-            XConvertSelection(dis, XA_CLIPBOARD, GetAtom('text/plain'), XA_CLIPBOARD, win, CurrentTime);
-          end;
-          XK_1..XK_9: begin
-            i := key - XK_1;
-            if Length(Target_List)>i then
-            WriteLn(XGetAtomName(dis, Target_List[ i]));
-            XConvertSelection(dis, XA_CLIPBOARD, Target_List[ i], XA_CLIPBOARD, win, CurrentTime);
+          XK_a..XK_z: begin
+            i := key - XK_a + 10;
+            if Length(Target_List) > i then begin
+              WriteLn(XGetAtomName(dis, Target_List[i]));
+              XConvertSelection(dis, XA_CLIPBOARD, Target_List[i], XA_CLIPBOARD, win, CurrentTime);
+            end;
           end;
         end;
       end;
