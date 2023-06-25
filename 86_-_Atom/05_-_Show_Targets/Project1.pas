@@ -122,7 +122,7 @@ var
     headerSize, i: SizeInt;
     col: culong;
     x, y: integer;
-    ofs: smallint;
+    ofs: SizeInt;
 
     BMPHeader: TBMPHeader;
     BMPInfoHeader: TBMPInfoHeader;
@@ -147,41 +147,20 @@ var
     WriteLn('Important colors: ', BMPInfoHeader.Important_Colors);
     WriteLn();
 
+    w2:=BMPInfoHeader.Widht*3;
 
-    WriteLn('Header:');
-    WriteLn('Signature: ', Data[0], Data[1]);
-    WriteLn('FileSize: ', PUInt32(Data + $02)^);
-    headerSize := PInt16(Data + $0E)^;
-    WriteLn('Size: ', headerSize);
-
-    ofs := PInt32(Data + $0A)^;
-    WriteLn('Offset: ', ofs);
-    WriteLn('Offset: ', PInt32(Data + $0A)^);
-    w := PInt16(Data + $12)^;
-    WriteLn('Width: ', w);
-    h := PInt16(Data + $16)^;
-    WriteLn('Height: ', h);
-
-
-    w2 := w + (w mod 8) - 4;
-    //    w2:=w;
-    w2 := w + (w mod 3);
-
-    for x := 0 to w - 1 do begin
-      for y := 0 to h - 1 do begin
-        col := PUInt32(Data + (x + y * w2) * 3 + ofs)^;
+    ofs := 0;
+    for y := 0 to BMPInfoHeader.Height - 1 do begin
+      for x := 0 to BMPInfoHeader.Widht - 1 do begin
+//        WriteLn(x,'  ',y);
+//                col := PUInt32(Data + (x + y * w2) * 3 + BMPHeader.DataOffset)^;
+//       ofs :=ofs +w2;
+      ofs:=w2*y;
+        col := PUInt32(Data + (x*3) + ofs + BMPHeader.DataOffset)^;
         XSetForeground(dis, gc, col);
-        XDrawPoint(dis, win, gc, x, h - y);
+        XDrawPoint(dis, win, gc, x, BMPInfoHeader.Height - y);
       end;
     end;
-
-    //for i := 0 to (w - 1) * (h - 1) do begin
-    //  col := pculong(Data + i * 3 + headerSize)^;
-    //  XSetForeground(dis, gc, col);
-    //  WriteLn(col);
-    //  XDrawPoint(dis, win, gc, i mod w, i div h);
-    //end;
-
 
     WriteLn('Zeichen...');
     WriteLn(len, ' Bytes gespeichert.');
