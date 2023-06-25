@@ -98,17 +98,59 @@ var
 
   procedure ShowBMP(Data: PChar; len: SizeInt);
   // http://www.ece.ualberta.ca/~elliott/ee552/studentAppNotes/2003_w/misc/bmp_file_format/bmp_file_format.htm
+
+  type
+    PBMPHeader = ^TBMPHeader;
+
+    TBMPHeader = packed record
+    Signatur: array[0..1] of char;
+    FileSize, reserved, DataOffset: uint32;
+  end;
+
+    PBMPInfoHeader = ^TBMPInfoHeader;
+
+    TBMPInfoHeader = packed record
+    Size, Widht, Height: uint32;
+    Planes, Bits_per_Pixel: uint16;
+    Compression, ImageSize, XpixelsPerM, YpixelsPerM, Colors_Used, Important_Colors: uint32;
+  end;
+
+
   var
     size: PInt32;
-    w,w2, h: int32;
+    w, w2, h: int32;
     headerSize, i: SizeInt;
     col: culong;
-    x,y: Integer;
-    ofs: SmallInt;
+    x, y: integer;
+    ofs: smallint;
+
+    BMPHeader: TBMPHeader;
+    BMPInfoHeader: TBMPInfoHeader;
   begin
+    BMPHeader := PBMPHeader(Data + 0)^;
+    WriteLn('Signature: ', BMPHeader.Signatur);
+    WriteLn('FileSize: ', BMPHeader.FileSize);
+    WriteLn('reserved: ', BMPHeader.reserved);
+    WriteLn('DataOffset: ', BMPHeader.DataOffset);
+
+    BMPInfoHeader := PBMPInfoHeader(Data + $0E)^;
+    WriteLn('HeaderSize: ', BMPInfoHeader.Size);
+    WriteLn('Width: ', BMPInfoHeader.Widht);
+    WriteLn('Height: ', BMPInfoHeader.Height);
+    WriteLn('Planes: ', BMPInfoHeader.Planes);
+    WriteLn('Bits per pixel: ', BMPInfoHeader.Bits_per_Pixel);
+    WriteLn('Compression: ', BMPInfoHeader.Compression);
+    WriteLn('ImageSize: ', BMPInfoHeader.ImageSize);
+    WriteLn('XpixelsPerM: ', BMPInfoHeader.XpixelsPerM);
+    WriteLn('YpixelsPerM: ', BMPInfoHeader.YpixelsPerM);
+    WriteLn('Colors used: ', BMPInfoHeader.Colors_Used);
+    WriteLn('Important colors: ', BMPInfoHeader.Important_Colors);
+    WriteLn();
+
+
     WriteLn('Header:');
     WriteLn('Signature: ', Data[0], Data[1]);
-    WriteLn('FileSize: ', PUInt32( Data +$02)^);
+    WriteLn('FileSize: ', PUInt32(Data + $02)^);
     headerSize := PInt16(Data + $0E)^;
     WriteLn('Size: ', headerSize);
 
@@ -121,15 +163,15 @@ var
     WriteLn('Height: ', h);
 
 
-    w2:=w+(w mod 8)-4;
-//    w2:=w;
-    w2:=w+(w mod 3);
+    w2 := w + (w mod 8) - 4;
+    //    w2:=w;
+    w2 := w + (w mod 3);
 
     for x := 0 to w - 1 do begin
       for y := 0 to h - 1 do begin
-          col := PUInt32(Data + (x+y*w2) * 3 + ofs)^;
-            XSetForeground(dis, gc, col);
-         XDrawPoint(dis, win, gc, x, h-y);
+        col := PUInt32(Data + (x + y * w2) * 3 + ofs)^;
+        XSetForeground(dis, gc, col);
+        XDrawPoint(dis, win, gc, x, h - y);
       end;
     end;
 
@@ -231,6 +273,9 @@ var
         end else if ret_type = GetAtom('image/bmp') then  begin
           ShowBMP(PChar(prop_return), ret_items);
           save(PChar(prop_return), ret_items, 'test.bmp');
+        end else if ret_type = GetAtom('image/x-bmp') then  begin
+          ShowBMP(PChar(prop_return), ret_items);
+          save(PChar(prop_return), ret_items, 'test-x.bmp');
         end else if ret_type = GetAtom('image/png') then  begin
           save(PChar(prop_return), ret_items, 'test.png');
         end else begin
