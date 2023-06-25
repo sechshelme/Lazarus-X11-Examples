@@ -99,23 +99,46 @@ var
   procedure ShowBMP(Data: PChar; len: SizeInt);
   // http://www.ece.ualberta.ca/~elliott/ee552/studentAppNotes/2003_w/misc/bmp_file_format/bmp_file_format.htm
   var
-    size: PInt16;
-    x, y: int16;
+    size: PInt32;
+    w,w2, h: int32;
     headerSize, i: SizeInt;
     col: culong;
+    x,y: Integer;
+    ofs: SmallInt;
   begin
+    WriteLn('Header:');
+    WriteLn('Signature: ', Data[0], Data[1]);
+    WriteLn('FileSize: ', PUInt32( Data +$02)^);
     headerSize := PInt16(Data + $0E)^;
-    WriteLn('Header: ', headerSize);
-    x := PInt16(Data + $12)^;
-    WriteLn('Width: ', x);
-    y := PInt16(Data + $16)^;
-    WriteLn('Height: ', y);
-    for i := 0 to (x - 0) * (y - 0)-1 do begin
-      col := pculong(Data + i * 4 + headerSize)^;
-      XSetForeground(dis, gc, col);
-      WriteLn(col);
-      XDrawPoint(dis, win, gc, i mod x, i div y);
+    WriteLn('Size: ', headerSize);
+
+    ofs := PInt32(Data + $0A)^;
+    WriteLn('Offset: ', ofs);
+    WriteLn('Offset: ', PInt32(Data + $0A)^);
+    w := PInt16(Data + $12)^;
+    WriteLn('Width: ', w);
+    h := PInt16(Data + $16)^;
+    WriteLn('Height: ', h);
+
+
+    w2:=w+(w mod 8)-4;
+//    w2:=w;
+    w2:=w+(w mod 3);
+
+    for x := 0 to w - 1 do begin
+      for y := 0 to h - 1 do begin
+          col := PUInt32(Data + (x+y*w2) * 3 + ofs)^;
+            XSetForeground(dis, gc, col);
+         XDrawPoint(dis, win, gc, x, h-y);
+      end;
     end;
+
+    //for i := 0 to (w - 1) * (h - 1) do begin
+    //  col := pculong(Data + i * 3 + headerSize)^;
+    //  XSetForeground(dis, gc, col);
+    //  WriteLn(col);
+    //  XDrawPoint(dis, win, gc, i mod w, i div h);
+    //end;
 
 
     WriteLn('Zeichen...');
