@@ -32,8 +32,11 @@ var
   key: TKeySym;
   gc: TGC;
 
+  // https://stackoverflow.com/questions/27378318/c-get-string-from-clipboard-on-linux
+  // https://www.uninformativ.de/blog/postings/2017-04-02/0/POSTING-en.html
   // https://www.wxwidgets.org/wxWidgets/src/x11/clipbrd.cpp
-
+  // https://tronche.com/gui/x/icccm/sec-2.html
+  // https://groups.google.com/a/chromium.org/g/chromium-discuss/c/_el628cw_PM
 
   //
   //  static void InitX11Clipboard()
@@ -62,9 +65,6 @@ var
   //          isInitialised = true;
   //      }
   //  }
-
-  // https://groups.google.com/a/chromium.org/g/chromium-discuss/c/_el628cw_PM
-
 
 
   function GetAtom(Name: PChar): TAtom;
@@ -225,8 +225,6 @@ var
       if ret_type = 0 then begin
         WriteLn(#10'Unbekannt !');
       end else begin
-        //        WriteLn();
-        //      Write('Property: ', XGetAtomName(dis, targetAtom));
         Write('Property: ');
         WriteLn(' (', XGetAtomName(dis, ret_type), ', ', ret_format, ', ', ret_items, ') =');
 
@@ -234,15 +232,10 @@ var
           for i := 0 to ret_items - 1 do begin
             WriteLn('Nr: ', prop_return[i]: 5, '  Name: ', XGetAtomName(dis, prop_return[i]));
           end;
-          //end else if ret_type = GetAtom('TIMESTAMP' )then  begin
-          //  WriteLn('time:');
-          //  for i := 0 to ret_items - 1 do begin
-          //    Write(prop_return[i]);
-          //    if i <> ret_items - 1 then begin
-          //      Write(', ');
-          //    end;
-          //  end;
-          //  WriteLn();
+        end else if ret_type = GetAtom('INCR') then  begin
+          WriteLn('Buffer zu gross !');
+          WriteLn('Max Buffersize: ', prop_return[0]);
+          WriteLn();
         end else if (ret_type = XA_CARDINAL) or (ret_type = XA_INTEGER) then  begin
           for i := 0 to ret_items - 1 do begin
             WriteLn(targetAtom, '------------');
@@ -331,7 +324,7 @@ begin
 
   gc := XCreateGC(dis, win, 0, nil);
 
-  XSelectInput(dis, win, KeyPressMask);
+  XSelectInput(dis, win, KeyPressMask or PropertyChangeMask);
   XStoreName(dis, win, 'Mein Fenster');
   XMapWindow(dis, win);
 
@@ -363,6 +356,12 @@ begin
           end;
         end;
       end;
+      PropertyNotify: begin
+        //if Event.xproperty.atom = XA_CLIPBOARD then begin
+        //  if Event.xproperty.state <> PropertyNewValue then
+        //  WriteLn('------------ PropertyNotify ---------------------');
+        //end;
+      end;
       KeyPress: begin
         key := XLookupKeysym(@Event.xkey, 0);
         case key of
@@ -375,14 +374,14 @@ begin
           XK_0..XK_9: begin
             i := key - XK_0;
             if Length(Target_List) > i then begin
-              Write('Targets: ',XGetAtomName(dis, Target_List[i]));
+              Write('Targets: ', XGetAtomName(dis, Target_List[i]));
               XConvertSelection(dis, XA_CLIPBOARD, Target_List[i], XA_CLIPBOARD, win, CurrentTime);
             end;
           end;
           XK_a..XK_z: begin
             i := key - XK_a + 10;
             if Length(Target_List) > i then begin
-              Write('Targets: ',XGetAtomName(dis, Target_List[i]));
+              Write('Targets: ', XGetAtomName(dis, Target_List[i]));
               XConvertSelection(dis, XA_CLIPBOARD, Target_List[i], XA_CLIPBOARD, win, CurrentTime);
             end;
           end;
