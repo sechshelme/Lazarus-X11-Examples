@@ -26,7 +26,7 @@ var
   win, rootWin: TWindow;
   Event: TXEvent;
   scr: cint;
-  XA_CLIPBOARD, XA_TARGETS, XA_XSEL_DATA, XA_UTF8_STRING, at: TAtom;
+  XA_CLIPBOARD, XA_TARGETS, XA_XSEL_DATA, XA_UTF8_STRING, targetAtom: TAtom;
   Target_List: TAtoms;
   i: integer;
   key: TKeySym;
@@ -96,6 +96,33 @@ var
     XFree(prop_return);
   end;
 
+  procedure ShowPNG(Data: PChar; len: SizeInt);
+  // http://www-i4.informatik.rwth-aachen.de/content/teaching/proseminars/sub/2002_2003_ws_docs/png.pdf
+  // https://homepages.thm.de/~hg10013/Lehre/MMS/SS03/Freitag/text.htm
+
+  // https://progbook.org/png.html
+
+  type
+    PPNGHeader = ^TPNGHeader;
+
+    TPNGHeader = packed record
+    Signatur: array[0..7] of char;
+    Size,
+    typ,
+    Width, Height: uint32;
+  end;
+  var
+    PNGHeader: TPNGHeader;
+  begin
+    PNGHeader := PPNGHeader(Data + 0)^;
+    WriteLn('Signature: ', PNGHeader.Signatur);
+    WriteLn('Size: ', PNGHeader.Size);
+    WriteLn('type: ', PNGHeader.typ);
+    WriteLn('Width: ', PNGHeader.Width);
+    WriteLn('Height: ', PNGHeader.Height);
+  end;
+
+
   procedure ShowBMP(Data: PChar; len: SizeInt);
   // http://www.ece.ualberta.ca/~elliott/ee552/studentAppNotes/2003_w/misc/bmp_file_format/bmp_file_format.htm
 
@@ -110,7 +137,7 @@ var
     PBMPInfoHeader = ^TBMPInfoHeader;
 
     TBMPInfoHeader = packed record
-    Size, Widht, Height: uint32;
+    Size, Width, Height: uint32;
     Planes, Bits_per_Pixel: uint16;
     Compression, ImageSize, XpixelsPerM, YpixelsPerM, Colors_Used, Important_Colors: uint32;
   end;
@@ -126,6 +153,7 @@ var
 
     BMPHeader: TBMPHeader;
     BMPInfoHeader: TBMPInfoHeader;
+    m: uint32;
   begin
     BMPHeader := PBMPHeader(Data + 0)^;
     WriteLn('Signature: ', BMPHeader.Signatur);
@@ -135,7 +163,7 @@ var
 
     BMPInfoHeader := PBMPInfoHeader(Data + $0E)^;
     WriteLn('HeaderSize: ', BMPInfoHeader.Size);
-    WriteLn('Width: ', BMPInfoHeader.Widht);
+    WriteLn('Width: ', BMPInfoHeader.Width);
     WriteLn('Height: ', BMPInfoHeader.Height);
     WriteLn('Planes: ', BMPInfoHeader.Planes);
     WriteLn('Bits per pixel: ', BMPInfoHeader.Bits_per_Pixel);
@@ -147,19 +175,20 @@ var
     WriteLn('Important colors: ', BMPInfoHeader.Important_Colors);
     WriteLn();
 
-    w2:=BMPInfoHeader.Widht*3;
+    w2 := BMPInfoHeader.Width * 3;
+    m := BMPInfoHeader.Width mod 4;
+    if m > 0 then begin
+      Inc(w2, m);
+    end;
 
     ofs := 0;
     for y := 0 to BMPInfoHeader.Height - 1 do begin
-      for x := 0 to BMPInfoHeader.Widht - 1 do begin
-//        WriteLn(x,'  ',y);
-//                col := PUInt32(Data + (x + y * w2) * 3 + BMPHeader.DataOffset)^;
-//       ofs :=ofs +w2;
-      ofs:=w2*y;
-        col := PUInt32(Data + (x*3) + ofs + BMPHeader.DataOffset)^;
+      for x := 0 to BMPInfoHeader.Width - 1 do begin
+        col := PUInt32(Data + (x * 3) + ofs + BMPHeader.DataOffset)^;
         XSetForeground(dis, gc, col);
         XDrawPoint(dis, win, gc, x, BMPInfoHeader.Height - y);
       end;
+      Inc(ofs, w2);
     end;
 
     WriteLn('Zeichen...');
@@ -179,7 +208,7 @@ var
     WriteLn(len, ' Bytes gespeichert.');
   end;
 
-  function Read_Property(w: TWindow; a: TAtom): string;
+  function Read_Property(w: TWindow; targetAtom: TAtom): string;
   var
     ret_type: TAtom;
     ret_format: cint;
@@ -189,22 +218,39 @@ var
     ch: char;
   begin
     Result := '';
-    if a <> 0 then begin
-      XGetWindowProperty(dis, w, a, 0, MaxInt, False, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
+    WriteLn();
+    WriteLn('prop: ', targetAtom, '  name: ', XGetAtomName(dis, targetAtom));
+    if targetAtom <> 0 then begin
+      XGetWindowProperty(dis, w, XA_CLIPBOARD, 0, MaxInt, False, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
       if ret_type = 0 then begin
         WriteLn(#10'Unbekannt !');
       end else begin
-        WriteLn();
-        Write('Property: ', XGetAtomName(dis, a));
+        //        WriteLn();
+        //      Write('Property: ', XGetAtomName(dis, targetAtom));
+        Write('Property: ');
         WriteLn(' (', XGetAtomName(dis, ret_type), ', ', ret_format, ', ', ret_items, ') =');
 
         if ret_type = XA_ATOM then begin
           for i := 0 to ret_items - 1 do begin
             WriteLn('Nr: ', prop_return[i]: 5, '  Name: ', XGetAtomName(dis, prop_return[i]));
           end;
+          //end else if ret_type = GetAtom('TIMESTAMP' )then  begin
+          //  WriteLn('time:');
+          //  for i := 0 to ret_items - 1 do begin
+          //    Write(prop_return[i]);
+          //    if i <> ret_items - 1 then begin
+          //      Write(', ');
+          //    end;
+          //  end;
+          //  WriteLn();
         end else if (ret_type = XA_CARDINAL) or (ret_type = XA_INTEGER) then  begin
           for i := 0 to ret_items - 1 do begin
-            Write(prop_return[i]);
+            WriteLn(targetAtom, '------------');
+            if targetAtom = GetAtom('TIMESTAMP') then begin
+              Write('time: ', prop_return[i]);
+            end else begin
+              Write(prop_return[i]);
+            end;
             if i <> ret_items - 1 then begin
               Write(', ');
             end;
@@ -256,6 +302,7 @@ var
           ShowBMP(PChar(prop_return), ret_items);
           save(PChar(prop_return), ret_items, 'test-x.bmp');
         end else if ret_type = GetAtom('image/png') then  begin
+          ShowPNG(PChar(prop_return), ret_items);
           save(PChar(prop_return), ret_items, 'test.png');
         end else begin
           WriteLn('Unbekanntes Formt !  (', XGetAtomName(dis, ret_type), ')');
@@ -295,11 +342,11 @@ begin
     XNextEvent(dis, @Event);
     case Event._type of
       SelectionNotify: begin
-        at := Event.xselection.target;
-        if at = 0 then begin
+        targetAtom := Event.xselection.target;
+        if targetAtom = 0 then begin
           WriteLn('Ungültiges Atom !');
         end else begin
-          if at = XA_TARGETS then  begin
+          if targetAtom = XA_TARGETS then  begin
             Target_List := getTargetList(win);
             WriteLn(#10);
             for i := 0 to Length(Target_List) - 1 do begin
@@ -309,14 +356,14 @@ begin
                 WriteLn('(', char(i + 55 + 32), ') ', XGetAtomName(dis, Target_List[i]));
               end;
             end;
+            WriteLn(#10);
           end else begin
-            WriteLn('prop: ', Event.xselection.target, '  name: ', XGetAtomName(dis, at));
-            Read_Property(win, XA_CLIPBOARD);
+            //            Read_Property(win, XA_CLIPBOARD);
+            Read_Property(win, targetAtom);
           end;
         end;
       end;
       KeyPress: begin
-        // Beendet das Programm bei [ESC]
         key := XLookupKeysym(@Event.xkey, 0);
         case key of
           XK_Escape: begin
@@ -325,23 +372,17 @@ begin
           XK_space: begin
             XConvertSelection(dis, XA_CLIPBOARD, XA_TARGETS, XA_CLIPBOARD, win, CurrentTime);
           end;
-          //XK_v: begin
-          //  XConvertSelection(dis, XA_CLIPBOARD, XA_STRING, XA_CLIPBOARD, win, CurrentTime);
-          //end;
-          //XK_m: begin
-          //  XConvertSelection(dis, XA_CLIPBOARD, GetAtom('text/plain'), XA_CLIPBOARD, win, CurrentTime);
-          //end;
           XK_0..XK_9: begin
             i := key - XK_0;
             if Length(Target_List) > i then begin
-              WriteLn(XGetAtomName(dis, Target_List[i]));
+              Write('Targets: ',XGetAtomName(dis, Target_List[i]));
               XConvertSelection(dis, XA_CLIPBOARD, Target_List[i], XA_CLIPBOARD, win, CurrentTime);
             end;
           end;
           XK_a..XK_z: begin
             i := key - XK_a + 10;
             if Length(Target_List) > i then begin
-              WriteLn(XGetAtomName(dis, Target_List[i]));
+              Write('Targets: ',XGetAtomName(dis, Target_List[i]));
               XConvertSelection(dis, XA_CLIPBOARD, Target_List[i], XA_CLIPBOARD, win, CurrentTime);
             end;
           end;
