@@ -24,6 +24,7 @@ Bool PrintSelection(Display *display, Window window, const char *bufname, const 
   {
     XGetWindowProperty(display, window, propid, 0, LONG_MAX/4, True, AnyPropertyType,
       &fmtid, &resbits, &ressize, &restail, (unsigned char**)&result);
+
     if (fmtid != incrid)
       printf("%.*s", (int)ressize, result);
     XFree(result);
