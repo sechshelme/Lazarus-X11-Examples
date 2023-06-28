@@ -26,7 +26,7 @@ var
   win, rootWin: TWindow;
   Event: TXEvent;
   scr: cint;
-  XA_CLIPBOARD, XA_TARGETS, XA_XSEL_DATA, XA_UTF8_STRING, targetAtom: TAtom;
+  XA_CLIPBOARD, XA_TARGETS, XA_UTF8_STRING, targetAtom: TAtom;
   Target_List: TAtoms;
   i: integer;
   key: TKeySym;
@@ -208,6 +208,19 @@ var
     WriteLn(len, ' Bytes gespeichert.');
   end;
 
+  function RetInAtom(ret_type: TAtom; AtomList: array of PChar): boolean;
+  var
+    i: integer;
+  begin
+    Result := False;
+    for i := 0 to Length(AtomList) - 1 do begin
+      if GetAtom(AtomList[i]) = ret_type then begin
+        Result := True;
+        Exit;
+      end;
+    end;
+  end;
+
   function Read_Property(w: TWindow; targetAtom: TAtom): string;
   var
     ret_type: TAtom;
@@ -236,11 +249,12 @@ var
           WriteLn('Buffer zu gross !');
           WriteLn('Max Buffersize: ', prop_return[0]);
           WriteLn();
-        end else if (ret_type = XA_CARDINAL) or (ret_type = XA_INTEGER) then  begin
+        end else if RetInAtom(ret_type, ['CARDINAL', 'INTEGER']) then  begin
+//        end else if (ret_type = XA_CARDINAL) or (ret_type = XA_INTEGER) then  begin
           for i := 0 to ret_items - 1 do begin
             WriteLn(targetAtom, '------------');
             if targetAtom = GetAtom('TIMESTAMP') then begin
-              Write('time: ', prop_return[i]);
+              Write('TimeStamp: ', prop_return[i]);
             end else begin
               Write(prop_return[i]);
             end;
@@ -257,7 +271,7 @@ var
             end;
           end;
           WriteLn();
-        end else if (ret_type = XA_PIXMAP) or (ret_type = XA_CURSOR) or (ret_type = XA_COLORMAP) then  begin
+        end else if RetInAtom(ret_type, ['PIXMAP', 'CURSOR', 'COLORMAP']) then  begin
           for i := 0 to ret_items - 1 do begin
             Write('pixmap/cursor id # $', IntToHex(prop_return[i], 8), '  ');
             if i <> ret_items - 1 then begin
@@ -265,7 +279,7 @@ var
             end;
           end;
           WriteLn();
-        end else if (ret_type = XA_UTF8_STRING) or (ret_type = XA_STRING) or (ret_type = GetAtom('text/plain')) or (ret_type = GetAtom('TEXT')) then  begin
+        end else if RetInAtom(ret_type, ['STRING', 'UTF8_STRING', 'COMPOUND_TEXT','text/plain', 'TEXT']) then  begin
           for i := 0 to ret_items - 1 do begin
             if i = 0 then begin
               Write('"');
@@ -317,50 +331,49 @@ begin
 
   XA_CLIPBOARD := GetAtom('CLIPBOARD');
   XA_TARGETS := GetAtom('TARGETS');
-  XA_XSEL_DATA := GetAtom('XSEL_DATA');
   XA_UTF8_STRING := GetAtom('UTF8_STRING');
 
   win := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
   gc := XCreateGC(dis, win, 0, nil);
 
-  XSelectInput(dis, win, KeyPressMask or PropertyChangeMask);
+  XSelectInput(dis, win, KeyPressMask or PropertyChangeMask or ExposureMask);
   XStoreName(dis, win, 'Mein Fenster');
   XMapWindow(dis, win);
 
-  //  XConvertSelection(dis, XA_CLIPBOARD, XA_TARGETS, XA_XSEL_DATA, win, CurrentTime);
-
-  // Ereignisschleife
   while (True) do begin
     XNextEvent(dis, @Event);
     case Event._type of
+      Expose: begin
+        XDrawRectangle(dis,win,gc,10,10,100,100);
+        WriteLn('exposure');
+      end;
       SelectionNotify: begin
+//        WriteLn('------------ SelectionNotify ---------------------');
         targetAtom := Event.xselection.target;
         if targetAtom = 0 then begin
           WriteLn('Ungültiges Atom !');
-        end else begin
-          if targetAtom = XA_TARGETS then  begin
-            Target_List := getTargetList(win);
-            WriteLn(#10);
-            for i := 0 to Length(Target_List) - 1 do begin
-              if i <= 9 then begin
-                WriteLn('(', i, ') ', XGetAtomName(dis, Target_List[i]));
-              end else begin
-                WriteLn('(', char(i + 55 + 32), ') ', XGetAtomName(dis, Target_List[i]));
-              end;
+        end else if targetAtom = XA_TARGETS then  begin
+          Target_List := getTargetList(win);
+          WriteLn(#10);
+          for i := 0 to Length(Target_List) - 1 do begin
+            if i <= 9 then begin
+              WriteLn('(', i, ') ', XGetAtomName(dis, Target_List[i]));
+            end else begin
+              WriteLn('(', char(i + 55 + 32), ') ', XGetAtomName(dis, Target_List[i]));
             end;
-            WriteLn(#10);
-          end else begin
-            //            Read_Property(win, XA_CLIPBOARD);
-            Read_Property(win, targetAtom);
           end;
+          WriteLn(#10);
+        end else begin
+          Read_Property(win, targetAtom);
         end;
       end;
       PropertyNotify: begin
-        //if Event.xproperty.atom = XA_CLIPBOARD then begin
-        //  if Event.xproperty.state <> PropertyNewValue then
-        //  WriteLn('------------ PropertyNotify ---------------------');
-        //end;
+        if Event.xproperty.atom = XA_CLIPBOARD then begin
+          if Event.xproperty.state = PropertyNewValue then begin
+//            WriteLn('------------ PropertyNotify ---------------------');
+          end;
+        end;
       end;
       KeyPress: begin
         key := XLookupKeysym(@Event.xkey, 0);
@@ -390,10 +403,7 @@ begin
     end;
   end;
 
-  // Schliesst das Fenster
   XDestroyWindow(dis, win);
-
-  // Schliesst Verbindung zum Server
   XCloseDisplay(dis);
 end.
-//code-
+

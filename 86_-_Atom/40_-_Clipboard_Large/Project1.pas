@@ -89,17 +89,18 @@ var
       for x := 0 to BMPInfoHeader.Width - 1 do begin
         col := PUInt32(Data + (x * 3) + ofs + BMPHeader.DataOffset)^;
         if col = 0 then  begin
-          col := $ff;
-          Write('0000000000000000000000000 ');
+//          col :=col+ $ff;
+///          Write('0000000000000000000000000 ');
         end else begin
-          Write(col, ' ');
-          col:=$00ff;
+//          Write(col, ' ');
+//          col:= col +$00ff;
         end;
         XSetForeground(dis, gc, col);
         XDrawPoint(dis, win, gc, x, BMPInfoHeader.Height - y);
       end;
       Inc(ofs, w2);
     end;
+    XFlush(dis);
 
     WriteLn('Zeichen...');
     WriteLn(len, ' Bytes gezeichnet.');
@@ -120,13 +121,14 @@ var
     Result := nil;
     bufid := XInternAtom(dis, bufname, False);
     fmtid := XInternAtom(dis, fmtname, False);
-    propid := XInternAtom(dis, 'XSEL_DATA', False);
+//    propid := XInternAtom(dis, 'XSEL_DATA', False);
+    propid := XInternAtom(dis, 'CLIPBOARD', False);
     incid := XInternAtom(dis, 'INCR', False);
 
     XConvertSelection(dis, bufid, fmtid, propid, win, CurrentTime);
     repeat
       XNextEvent(dis, @Event);
-    until not ((Event._type <> SelectionNotify) or (Event.xselection.selection <> bufid));
+    until (Event._type = SelectionNotify) and (Event.xselection.selection = bufid);
 
     if Event.xselection._property <> 0 then begin
       XGetWindowProperty(dis, win, propid, 0, MaxSIntValue div 4, True, AnyPropertyType, @fmtid, @resbits, @ressize, @restail, @res);
@@ -148,7 +150,7 @@ var
         repeat
           repeat
             XNextEvent(dis, @Event);
-          until not ((Event._type <> PropertyNotify) or (Event.xproperty.atom <> propid) or (Event.xproperty.state <> PropertyNewValue));
+          until (Event._type = PropertyNotify) and (Event.xproperty.atom = propid) and (Event.xproperty.state = PropertyNewValue);
 
           WriteLn('incr');
           XGetWindowProperty(dis, win, propid, 0, MaxSIntValue div 4, True, AnyPropertyType, @fmtid, @resbits, @ressize, @restail, @res);
