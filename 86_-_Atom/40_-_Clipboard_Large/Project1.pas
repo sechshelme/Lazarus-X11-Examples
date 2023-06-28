@@ -88,6 +88,13 @@ var
     for y := 0 to BMPInfoHeader.Height - 1 do begin
       for x := 0 to BMPInfoHeader.Width - 1 do begin
         col := PUInt32(Data + (x * 3) + ofs + BMPHeader.DataOffset)^;
+        if col = 0 then  begin
+          col := $ff;
+          Write('0000000000000000000000000 ');
+        end else begin
+          Write(col, ' ');
+          col:=$00ff;
+        end;
         XSetForeground(dis, gc, col);
         XDrawPoint(dis, win, gc, x, BMPInfoHeader.Height - y);
       end;
@@ -95,7 +102,7 @@ var
     end;
 
     WriteLn('Zeichen...');
-    WriteLn(len, ' Bytes gespeichert.');
+    WriteLn(len, ' Bytes gezeichnet.');
   end;
 
 
@@ -107,7 +114,6 @@ var
     resbits: cint;
     ressize, restail: culong;
     res: PChar;
-    ba: array of PChar = nil;
     i: SizeInt;
     ofs: SizeInt = 0;
   begin
@@ -124,44 +130,45 @@ var
 
     if Event.xselection._property <> 0 then begin
       XGetWindowProperty(dis, win, propid, 0, MaxSIntValue div 4, True, AnyPropertyType, @fmtid, @resbits, @ressize, @restail, @res);
-    end;
-
-    if fmtid <> incid then begin
-      SetLength(Result, ressize);
-      WriteLn('len: ', ressize);
-      for i := 0 to ressize - 1 do begin
-        Result[i] := res[i];
-      end;
-      //      Write(res);
-      ofs := ressize;
-    end;
-    XFree(res);
-
-    if fmtid = incid then begin
-      repeat
-        repeat
-          XNextEvent(dis, @Event);
-        until not ((Event._type <> PropertyNotify) or (Event.xproperty.atom <> propid) or (Event.xproperty.state <> PropertyNewValue));
-
-        WriteLn('incr');
-        XGetWindowProperty(dis, win, propid, 0, MaxSIntValue div 4, True, AnyPropertyType, @fmtid, @resbits, @ressize, @restail, @res);
-        //        Write(res);
-
-        WriteLn('res: ', ressize);
-        SetLength(Result, ofs + ressize);
+      if fmtid <> incid then begin
+        WriteLn('len: ', ressize);
+        SetLength(Result, ressize);
         for i := 0 to ressize - 1 do begin
-          Result[ofs + i] := res[i];
+          Write(i, ' - ', byte(res[i]), ' + ');
+          Result[i] := res[i];
         end;
-
-        ofs := ofs + ressize;
+        //      Write(res);
+        ofs := ressize;
         XFree(res);
-        WriteLn('ofs: ', ofs);
+        WriteLn('-------- OHNE INCR -------------');
+      end;
 
-      until not (ressize > 0);
+      if fmtid = incid then begin
+        WriteLn('-------- INCR -------------');
+        repeat
+          repeat
+            XNextEvent(dis, @Event);
+          until not ((Event._type <> PropertyNotify) or (Event.xproperty.atom <> propid) or (Event.xproperty.state <> PropertyNewValue));
+
+          WriteLn('incr');
+          XGetWindowProperty(dis, win, propid, 0, MaxSIntValue div 4, True, AnyPropertyType, @fmtid, @resbits, @ressize, @restail, @res);
+          //        Write(res);
+
+          WriteLn('res: ', ressize);
+          SetLength(Result, ofs + ressize);
+          for i := 0 to ressize - 1 do begin
+            Result[ofs + i] := res[i];
+          end;
+
+          ofs := ofs + ressize;
+          XFree(res);
+          WriteLn('ofs: ', ofs);
+
+        until not (ressize > 0);
+      end;
     end else begin
       WriteLn('Ungültige Daten');
     end;
-
   end;
 
   procedure main;
@@ -170,18 +177,23 @@ var
     i: integer;
   begin
     dis := XOpenDisplay(nil);
-    win := XCreateSimpleWindow(dis, DefaultRootWindow(dis), 0, 0, 1280, 960, 0, $FFFFFF, $000000);
+    win := XCreateSimpleWindow(dis, DefaultRootWindow(dis), 0, 0, 1280, 960, 0, $000000, $FFFFFF);
     XSelectInput(dis, win, PropertyChangeMask or ExposureMask);
     gc := XCreateGC(dis, win, 0, nil);
     XMapWindow(dis, win);
 
     //ch := Printselection(dis, win, 'CLIPBOARD', 'STRING');
     ch := Printselection(dis, win, 'CLIPBOARD', 'image/bmp');
-    ShowBMP(PChar(ch), Length(ch));
-    //for i := 0 to Length(ch) - 1 do begin
-    for i := 0 to 100 do begin
-      Write(ch[i]);
+    WriteLn('len ch: ', Length(ch));
+    if ch <> nil then begin
+      ShowBMP(PChar(ch), Length(ch));
+    end else begin
+      WriteLn('nil');
     end;
+    //for i := 0 to Length(ch) - 1 do begin
+    //    for i := 0 to 100 do begin
+    //      Write(ch[i]);
+    //    end;
     WriteLn('len: ', Length(ch));
 
     ReadLn;
