@@ -32,7 +32,8 @@
 int xcverb = OSILENT;
 
 /* Table of event names from event numbers */
-const char *evtstr[LASTEvent] = {
+const char *evtstr[LASTEvent] =
+{
     "ProtocolError", "ProtocolReply", "KeyPress", "KeyRelease",
     "ButtonPress", "ButtonRelease", "MotionNotify", "EnterNotify",
     "LeaveNotify", "FocusIn", "FocusOut", "KeymapNotify", "Expose",
@@ -42,14 +43,16 @@ const char *evtstr[LASTEvent] = {
     "GravityNotify", "ResizeRequest", "CirculateNotify",
     "CirculateRequest", "PropertyNotify", "SelectionClear",
     "SelectionRequest", "SelectionNotify", "ColormapNotify",
-    "ClientMessage", "MappingNotify", "GenericEvent", };
+    "ClientMessage", "MappingNotify", "GenericEvent",
+};
 
 /* a memset function that won't be optimized away by compiler */
 void
 xcmemzero(void *ptr, size_t len)
 {
-    if (xcverb >= ODEBUG) {
-	fprintf(stderr, "xclip: debug: Zeroing memory buffer\n");
+    if (xcverb >= ODEBUG)
+    {
+        fprintf(stderr, "xclip: debug: Zeroing memory buffer\n");
     }
     memset_func(ptr, 0, len);
 }
@@ -59,7 +62,7 @@ void
 xcmemcheck(void *ptr)
 {
     if (ptr == NULL)
-	errmalloc();
+        errmalloc();
 }
 
 /* wrapper for malloc that checks for errors */
@@ -107,11 +110,11 @@ static size_t
 mach_itemsize(int format)
 {
     if (format == 8)
-	return sizeof(char);
+        return sizeof(char);
     if (format == 16)
-	return sizeof(short);
+        return sizeof(short);
     if (format == 32)
-	return sizeof(long);
+        return sizeof(long);
     return 0;
 }
 
@@ -156,168 +159,179 @@ xcout(Display * dpy,
     /* local buffer of text to return */
     unsigned char *ltxt = *txt;
 
-    if (!pty) {
-	pty = XInternAtom(dpy, "XCLIP_OUT", False);
+    if (!pty)
+    {
+        pty = XInternAtom(dpy, "XCLIP_OUT", False);
     }
 
-    if (!inc) {
-	inc = XInternAtom(dpy, "INCR", False);
+    if (!inc)
+    {
+        inc = XInternAtom(dpy, "INCR", False);
     }
 
-    switch (*context) {
-	/* there is no context, do an XConvertSelection() */
+    switch (*context)
+    {
+    /* there is no context, do an XConvertSelection() */
     case XCLIB_XCOUT_NONE:
-	/* initialise return length to 0 */
-	if (*len > 0) {
-	    free(*txt);
-	    *len = 0;
-	}
+        /* initialise return length to 0 */
+        if (*len > 0)
+        {
+            free(*txt);
+            *len = 0;
+        }
 
-	/* send a selection request */
-	XConvertSelection(dpy, sel, target, pty, win, CurrentTime);
-	*context = XCLIB_XCOUT_SENTCONVSEL;
-	return (0);
+        /* send a selection request */
+        XConvertSelection(dpy, sel, target, pty, win, CurrentTime);
+        *context = XCLIB_XCOUT_SENTCONVSEL;
+        return (0);
 
     case XCLIB_XCOUT_SENTCONVSEL:
-	if (evt.type != SelectionNotify)
-	    return (0);
+        if (evt.type != SelectionNotify)
+            return (0);
 
-	/* return failure when the current target failed */
-	if (evt.xselection.property == None) {
-	    *context = XCLIB_XCOUT_BAD_TARGET;
-	    return (0);
-	}
+        /* return failure when the current target failed */
+        if (evt.xselection.property == None)
+        {
+            *context = XCLIB_XCOUT_BAD_TARGET;
+            return (0);
+        }
 
-	/* find the size and format of the data in property */
-	XGetWindowProperty(dpy,
-			   win,
-			   pty,
-			   0,
-			   0,
-			   False,
-			   AnyPropertyType, type, &pty_format, &pty_items, &pty_size, &buffer);
-	XFree(buffer);
+        /* find the size and format of the data in property */
+        XGetWindowProperty(dpy,
+                           win,
+                           pty,
+                           0,
+                           0,
+                           False,
+                           AnyPropertyType, type, &pty_format, &pty_items, &pty_size, &buffer);
+        XFree(buffer);
 
-	if (*type == inc) {
-	    /* start INCR mechanism by deleting property */
-	    if (xcverb >= OVERBOSE) {
-		fprintf(stderr,
-			"xclib: debug: Starting INCR by deleting property\n");
-	    }
-	    XDeleteProperty(dpy, win, pty);
-	    XFlush(dpy);
-	    *context = XCLIB_XCOUT_INCR;
-	    return (0);
-	}
+        if (*type == inc)
+        {
+            /* start INCR mechanism by deleting property */
+            if (xcverb >= OVERBOSE)
+            {
+                fprintf(stderr,
+                        "xclib: debug: Starting INCR by deleting property\n");
+            }
+            XDeleteProperty(dpy, win, pty);
+            XFlush(dpy);
+            *context = XCLIB_XCOUT_INCR;
+            return (0);
+        }
 
-	/* not using INCR mechanism, just read the property */
-	XGetWindowProperty(dpy,
-			   win,
-			   pty,
-			   0,
-			   (long) pty_size,
-			   False,
-			   AnyPropertyType, type, &pty_format, &pty_items, &pty_size, &buffer);
+        /* not using INCR mechanism, just read the property */
+        XGetWindowProperty(dpy,
+                           win,
+                           pty,
+                           0,
+                           (long) pty_size,
+                           False,
+                           AnyPropertyType, type, &pty_format, &pty_items, &pty_size, &buffer);
 
-	/* finished with property, delete it */
-	XDeleteProperty(dpy, win, pty);
+        /* finished with property, delete it */
+        XDeleteProperty(dpy, win, pty);
 
-	/* compute the size of the data buffer we received */
-	pty_machsize = pty_items * mach_itemsize(pty_format);
+        /* compute the size of the data buffer we received */
+        pty_machsize = pty_items * mach_itemsize(pty_format);
 
-	/* copy the buffer to the pointer for returned data */
-	ltxt = (unsigned char *) xcmalloc(pty_machsize);
-	memcpy(ltxt, buffer, pty_machsize);
+        /* copy the buffer to the pointer for returned data */
+        ltxt = (unsigned char *) xcmalloc(pty_machsize);
+        memcpy(ltxt, buffer, pty_machsize);
 
-	/* set the length of the returned data */
-	*len = pty_machsize;
-	*txt = ltxt;
+        /* set the length of the returned data */
+        *len = pty_machsize;
+        *txt = ltxt;
 
-	/* free the buffer */
-	XFree(buffer);
+        /* free the buffer */
+        XFree(buffer);
 
-	*context = XCLIB_XCOUT_NONE;
+        *context = XCLIB_XCOUT_NONE;
 
-	/* complete contents of selection fetched, return 1 */
-	return (1);
+        /* complete contents of selection fetched, return 1 */
+        return (1);
 
     case XCLIB_XCOUT_INCR:
-	/* To use the INCR method, we basically delete the
-	 * property with the selection in it, wait for an
-	 * event indicating that the property has been created,
-	 * then read it, delete it, etc.
-	 */
+        /* To use the INCR method, we basically delete the
+         * property with the selection in it, wait for an
+         * event indicating that the property has been created,
+         * then read it, delete it, etc.
+         */
 
-	/* make sure that the event is relevant */
-	if (evt.type != PropertyNotify)
-	    return (0);
+        /* make sure that the event is relevant */
+        if (evt.type != PropertyNotify)
+            return (0);
 
-	/* skip unless the property has a new value */
-	if (evt.xproperty.state != PropertyNewValue)
-	    return (0);
+        /* skip unless the property has a new value */
+        if (evt.xproperty.state != PropertyNewValue)
+            return (0);
 
-	/* check size and format of the property */
-	XGetWindowProperty(dpy,
-			   win,
-			   pty,
-			   0,
-			   0,
-			   False,
-			   AnyPropertyType,
-			   type, &pty_format, &pty_items, &pty_size, (unsigned char **) &buffer);
+        /* check size and format of the property */
+        XGetWindowProperty(dpy,
+                           win,
+                           pty,
+                           0,
+                           0,
+                           False,
+                           AnyPropertyType,
+                           type, &pty_format, &pty_items, &pty_size, (unsigned char **) &buffer);
 
-	if (pty_size == 0) {
-	    /* no more data, exit from loop */
-	    if (xcverb >= ODEBUG) {
-		fprintf(stderr, "INCR transfer complete\n");
-	    }
-	    XFree(buffer);
-	    XDeleteProperty(dpy, win, pty);
-	    *context = XCLIB_XCOUT_NONE;
+        if (pty_size == 0)
+        {
+            /* no more data, exit from loop */
+            if (xcverb >= ODEBUG)
+            {
+                fprintf(stderr, "INCR transfer complete\n");
+            }
+            XFree(buffer);
+            XDeleteProperty(dpy, win, pty);
+            *context = XCLIB_XCOUT_NONE;
 
-	    /* this means that an INCR transfer is now
-	     * complete, return 1
-	     */
-	    return (1);
-	}
+            /* this means that an INCR transfer is now
+             * complete, return 1
+             */
+            return (1);
+        }
 
-	XFree(buffer);
+        XFree(buffer);
 
-	/* if we have come this far, the property contains
-	 * text, we know the size.
-	 */
-	XGetWindowProperty(dpy,
-			   win,
-			   pty,
-			   0,
-			   (long) pty_size,
-			   False,
-			   AnyPropertyType,
-			   type, &pty_format, &pty_items, &pty_size, (unsigned char **) &buffer);
+        /* if we have come this far, the property contains
+         * text, we know the size.
+         */
+        XGetWindowProperty(dpy,
+                           win,
+                           pty,
+                           0,
+                           (long) pty_size,
+                           False,
+                           AnyPropertyType,
+                           type, &pty_format, &pty_items, &pty_size, (unsigned char **) &buffer);
 
-	/* compute the size of the data buffer we received */
-	pty_machsize = pty_items * mach_itemsize(pty_format);
+        /* compute the size of the data buffer we received */
+        pty_machsize = pty_items * mach_itemsize(pty_format);
 
-	/* allocate memory to accommodate data in *txt */
-	if (*len == 0) {
-	    *len = pty_machsize;
-	    ltxt = (unsigned char *) xcmalloc(*len);
-	}
-	else {
-	    *len += pty_machsize;
-	    ltxt = (unsigned char *) xcrealloc(ltxt, *len);
-	}
+        /* allocate memory to accommodate data in *txt */
+        if (*len == 0)
+        {
+            *len = pty_machsize;
+            ltxt = (unsigned char *) xcmalloc(*len);
+        }
+        else
+        {
+            *len += pty_machsize;
+            ltxt = (unsigned char *) xcrealloc(ltxt, *len);
+        }
 
-	/* add data to ltxt */
-	memcpy(&ltxt[*len - pty_machsize], buffer, pty_machsize);
+        /* add data to ltxt */
+        memcpy(&ltxt[*len - pty_machsize], buffer, pty_machsize);
 
-	*txt = ltxt;
-	XFree(buffer);
+        *txt = ltxt;
+        XFree(buffer);
 
-	/* delete property to get the next item */
-	XDeleteProperty(dpy, win, pty);
-	XFlush(dpy);
-	return (0);
+        /* delete property to get the next item */
+        XDeleteProperty(dpy, win, pty);
+        XFlush(dpy);
+        return (0);
     }
 
     return (0);
@@ -363,215 +377,238 @@ xcin(Display * dpy,
     static Atom inc;
     static Atom targets;
 
-    if (!targets) {
-	targets = XInternAtom(dpy, "TARGETS", False);
+    if (!targets)
+    {
+        targets = XInternAtom(dpy, "TARGETS", False);
     }
 
-    if (!inc) {
-	inc = XInternAtom(dpy, "INCR", False);
+    if (!inc)
+    {
+        inc = XInternAtom(dpy, "INCR", False);
     }
 
     /* We consider selections larger than a quarter of the maximum
        request size to be "large". See ICCCM section 2.5 */
-    if (!(*chunk_size)) {
-	*chunk_size = XExtendedMaxRequestSize(dpy) / 4;
-	if (!(*chunk_size)) {
-	    *chunk_size = XMaxRequestSize(dpy) / 4;
-	}
-	if ( xcverb >= ODEBUG ) {
-	    fprintf(stderr,
-		    "xclib: debug: INCR chunk size is %ld\n", (*chunk_size));
-	}
+    if (!(*chunk_size))
+    {
+        *chunk_size = XExtendedMaxRequestSize(dpy) / 4;
+        if (!(*chunk_size))
+        {
+            *chunk_size = XMaxRequestSize(dpy) / 4;
+        }
+        if ( xcverb >= ODEBUG )
+        {
+            fprintf(stderr,
+                    "xclib: debug: INCR chunk size is %ld\n", (*chunk_size));
+        }
     }
 
-    switch (*context) {
+    switch (*context)
+    {
     case XCLIB_XCIN_NONE:
-	if ( xcverb >= ODEBUG )
-	    fprintf(stderr, "xclib: debug: context: XCLIB_XCIN_NONE\n");
+        if ( xcverb >= ODEBUG )
+            fprintf(stderr, "xclib: debug: context: XCLIB_XCIN_NONE\n");
 
-	if ( xcverb >= ODEBUG  &&  evt.xselectionrequest.target) {
-	    char *tempstr = XGetAtomName(dpy, evt.xselectionrequest.target);
-	    fprintf(stderr, "xclib: debug: target: %s\n", tempstr);
-	    XFree(tempstr);
-	}
+        if ( xcverb >= ODEBUG  &&  evt.xselectionrequest.target)
+        {
+            char *tempstr = XGetAtomName(dpy, evt.xselectionrequest.target);
+            fprintf(stderr, "xclib: debug: target: %s\n", tempstr);
+            XFree(tempstr);
+        }
 
-	if (evt.type != SelectionRequest) {
-	    if ( xcverb >= ODEBUG ) {
-		fprintf(stderr,
-			"xclib: debug: ignoring %s event (context is NONE)\n",
-			evtstr[evt.type]);
-	    }
-	    return (0);
-	}
-	/* set the window and property that is being used */
-	*win = evt.xselectionrequest.requestor;
-	*pty = evt.xselectionrequest.property;
+        if (evt.type != SelectionRequest)
+        {
+            if ( xcverb >= ODEBUG )
+            {
+                fprintf(stderr,
+                        "xclib: debug: ignoring %s event (context is NONE)\n",
+                        evtstr[evt.type]);
+            }
+            return (0);
+        }
+        /* set the window and property that is being used */
+        *win = evt.xselectionrequest.requestor;
+        *pty = evt.xselectionrequest.property;
 
-	/* reset position to 0 */
-	*pos = 0;
+        /* reset position to 0 */
+        *pos = 0;
 
-	/* put the data into a property */
-	if (evt.xselectionrequest.target == targets) {
-	    Atom types[2] = { targets, target };
+        /* put the data into a property */
+        if (evt.xselectionrequest.target == targets)
+        {
+            Atom types[2] = { targets, target };
 
-	    if ( xcverb >= ODEBUG ) {
-		fprintf(stderr, "xclib: debug: sending list of TARGETS\n");
-	    }
+            if ( xcverb >= ODEBUG )
+            {
+                fprintf(stderr, "xclib: debug: sending list of TARGETS\n");
+            }
 
-	    /* send data all at once (not using INCR) */
-	    XChangeProperty(dpy,
-			    *win,
-			    *pty,
-			    XA_ATOM,
-			    32, PropModeReplace, (unsigned char *) types,
-			    (int) (sizeof(types) / sizeof(Atom))
-		);
-	}
-	else if (len > *chunk_size) {
-	    /* send INCR response */
-	    if ( xcverb >= ODEBUG ) {
-		fprintf (stderr, "xclib: debug: Starting INCR response\n");
-	    }
-	    XChangeProperty(dpy, *win, *pty, inc, 32, PropModeReplace, 0, 0);
+            /* send data all at once (not using INCR) */
+            XChangeProperty(dpy,
+                            *win,
+                            *pty,
+                            XA_ATOM,
+                            32, PropModeReplace, (unsigned char *) types,
+                            (int) (sizeof(types) / sizeof(Atom))
+                           );
+        }
+        else if (len > *chunk_size)
+        {
+            /* send INCR response */
+            if ( xcverb >= ODEBUG )
+            {
+                fprintf (stderr, "xclib: debug: Starting INCR response\n");
+            }
+            XChangeProperty(dpy, *win, *pty, inc, 32, PropModeReplace, 0, 0);
 
-	    /* With the INCR mechanism, we need to know
-	     * when the requestor window changes (deletes)
-	     * its properties
-	     */
-	    XSelectInput(dpy, *win, PropertyChangeMask);
+            /* With the INCR mechanism, we need to know
+             * when the requestor window changes (deletes)
+             * its properties
+             */
+            XSelectInput(dpy, *win, PropertyChangeMask);
 
-	    *context = XCLIB_XCIN_INCR;
-	}
-	else {
-	    /* send data all at once (not using INCR) */
-	    if ( xcverb >= ODEBUG ) {
-		fprintf(stderr, "xclib: debug: Sending data all at once"
-			" (%d bytes)\n", (int) len);
-	    }
+            *context = XCLIB_XCIN_INCR;
+        }
+        else
+        {
+            /* send data all at once (not using INCR) */
+            if ( xcverb >= ODEBUG )
+            {
+                fprintf(stderr, "xclib: debug: Sending data all at once"
+                        " (%d bytes)\n", (int) len);
+            }
 
-	    XChangeProperty(dpy,
-			    *win,
-			    *pty,
-			    target,
-			    8, PropModeReplace, (unsigned char *) txt,
-			    (int) len);
-	}
+            XChangeProperty(dpy,
+                            *win,
+                            *pty,
+                            target,
+                            8, PropModeReplace, (unsigned char *) txt,
+                            (int) len);
+        }
 
-	/* Perhaps FIXME: According to ICCCM section 2.5, we should
-	   confirm that XChangeProperty succeeded without any Alloc
-	   errors before replying with SelectionNotify. However, doing
-	   so would require an error handler which modifies a global
-	   variable, plus doing XSync after each XChangeProperty. */
+        /* Perhaps FIXME: According to ICCCM section 2.5, we should
+           confirm that XChangeProperty succeeded without any Alloc
+           errors before replying with SelectionNotify. However, doing
+           so would require an error handler which modifies a global
+           variable, plus doing XSync after each XChangeProperty. */
 
-	/* set values for the response event */
-	res.xselection.property = *pty;
-	res.xselection.type = SelectionNotify;
-	res.xselection.display = evt.xselectionrequest.display;
-	res.xselection.requestor = *win;
-	res.xselection.selection = evt.xselectionrequest.selection;
-	res.xselection.target = evt.xselectionrequest.target;
-	res.xselection.time = evt.xselectionrequest.time;
+        /* set values for the response event */
+        res.xselection.property = *pty;
+        res.xselection.type = SelectionNotify;
+        res.xselection.display = evt.xselectionrequest.display;
+        res.xselection.requestor = *win;
+        res.xselection.selection = evt.xselectionrequest.selection;
+        res.xselection.target = evt.xselectionrequest.target;
+        res.xselection.time = evt.xselectionrequest.time;
 
-	/* send the response event */
-	XSendEvent(dpy, evt.xselectionrequest.requestor, 0, 0, &res);
-	XFlush(dpy);
+        /* send the response event */
+        XSendEvent(dpy, evt.xselectionrequest.requestor, 0, 0, &res);
+        XFlush(dpy);
 
-	/* don't treat TARGETS request as contents request */
-	if (evt.xselectionrequest.target == targets)
-	    return (1);		/* Finished with request */
+        /* don't treat TARGETS request as contents request */
+        if (evt.xselectionrequest.target == targets)
+            return (1);		/* Finished with request */
 
-	/* if len <= chunk_size, then the data was sent all at
-	 * once and the transfer is now complete, return 1
-	 */
-	if (len > *chunk_size)
-	    return (0);
-	else
-	    return (1);
+        /* if len <= chunk_size, then the data was sent all at
+         * once and the transfer is now complete, return 1
+         */
+        if (len > *chunk_size)
+            return (0);
+        else
+            return (1);
 
-	break;
+        break;
 
     case XCLIB_XCIN_INCR:
-	/* length of current chunk */
+        /* length of current chunk */
 
-	/* ignore non-property events */
-	if (evt.type != PropertyNotify)
-	    return (0);
+        /* ignore non-property events */
+        if (evt.type != PropertyNotify)
+            return (0);
 
-	/* ignore the event unless it's to report that the
-	 * property has been deleted
-	 */
-	if (evt.xproperty.state != PropertyDelete) {
-	    if ( xcverb >= ODEBUG ) {
-		if ( evt.xproperty.state == 0 )
-		    fprintf(stderr,
-			    "xclib: debug: ignoring PropertyNewValue\n");
-		else
-		    fprintf(stderr,
-			    "xclib: debug: ignoring state %d\n",
-			    evt.xproperty.state);
-	    }
-	    return (0);
-	}
+        /* ignore the event unless it's to report that the
+         * property has been deleted
+         */
+        if (evt.xproperty.state != PropertyDelete)
+        {
+            if ( xcverb >= ODEBUG )
+            {
+                if ( evt.xproperty.state == 0 )
+                    fprintf(stderr,
+                            "xclib: debug: ignoring PropertyNewValue\n");
+                else
+                    fprintf(stderr,
+                            "xclib: debug: ignoring state %d\n",
+                            evt.xproperty.state);
+            }
+            return (0);
+        }
 
-	/* set the chunk length to the maximum size */
-	chunk_len = *chunk_size;
+        /* set the chunk length to the maximum size */
+        chunk_len = *chunk_size;
 
-	/* if a chunk length of maximum size would extend
-	 * beyond the end of txt, set the length to be the
-	 * remaining length of txt
-	 */
-	if ((*pos + chunk_len) > len)
-	    chunk_len = len - *pos;
+        /* if a chunk length of maximum size would extend
+         * beyond the end of txt, set the length to be the
+         * remaining length of txt
+         */
+        if ((*pos + chunk_len) > len)
+            chunk_len = len - *pos;
 
-	/* if the start of the chunk is beyond the end of txt,
-	 * then we've already sent all the data, so set the
-	 * length to be zero
-	 */
-	if (*pos > len)
-	    chunk_len = 0;
+        /* if the start of the chunk is beyond the end of txt,
+         * then we've already sent all the data, so set the
+         * length to be zero
+         */
+        if (*pos > len)
+            chunk_len = 0;
 
-	if (chunk_len) {
-	    /* put the chunk into the property */
-	    if ( xcverb >= ODEBUG ) {
-		fprintf(stderr, "xclib: debug: Sending chunk of "
-			" %d bytes\n", (int) chunk_len);
-	    }
-	    XChangeProperty(dpy,
-			    *win,
-			    *pty,
-			    target,
-			    8, PropModeReplace, &txt[*pos],
-			    (int) chunk_len);
-	}
-	else {
-	    /* make an empty property to show we've
-	     * finished the transfer
-	     */
-	    if ( xcverb >= ODEBUG ) {
-		fprintf(stderr, "xclib: debug: Signalling end of INCR\n");
-	    }
-	    XChangeProperty(dpy, *win, *pty, target, 8, PropModeReplace, 0, 0);
-	}
-	XFlush(dpy);
+        if (chunk_len)
+        {
+            /* put the chunk into the property */
+            if ( xcverb >= ODEBUG )
+            {
+                fprintf(stderr, "xclib: debug: Sending chunk of "
+                        " %d bytes\n", (int) chunk_len);
+            }
+            XChangeProperty(dpy,
+                            *win,
+                            *pty,
+                            target,
+                            8, PropModeReplace, &txt[*pos],
+                            (int) chunk_len);
+        }
+        else
+        {
+            /* make an empty property to show we've
+             * finished the transfer
+             */
+            if ( xcverb >= ODEBUG )
+            {
+                fprintf(stderr, "xclib: debug: Signalling end of INCR\n");
+            }
+            XChangeProperty(dpy, *win, *pty, target, 8, PropModeReplace, 0, 0);
+        }
+        XFlush(dpy);
 
-	/* all data has been sent, break out of the loop */
-	if (!chunk_len) {
-	    if (xcverb >= ODEBUG) {
-		fprintf(stderr, "xclib: debug: Finished INCR transfer.\n");
-	    }
-	    *context = XCLIB_XCIN_NONE;
-	}
+        /* all data has been sent, break out of the loop */
+        if (!chunk_len)
+        {
+            if (xcverb >= ODEBUG)
+            {
+                fprintf(stderr, "xclib: debug: Finished INCR transfer.\n");
+            }
+            *context = XCLIB_XCIN_NONE;
+        }
 
-	*pos += *chunk_size;
+        *pos += *chunk_size;
 
-	/* if chunk_len == 0, we just finished the transfer,
-	 * return 1
-	 */
-	if (chunk_len > 0)
-	    return (0);
-	else
-	    return (1);
-	break;
+        /* if chunk_len == 0, we just finished the transfer,
+         * return 1
+         */
+        if (chunk_len > 0)
+            return (0);
+        else
+            return (1);
+        break;
     }
     return (0);
 }
@@ -584,25 +621,28 @@ xcin(Display * dpy,
  * [See also, xcnamestr() wrapper below.]
  */
 int
-xcfetchname(Display *display, Window w, char **namep) {
+xcfetchname(Display *display, Window w, char **namep)
+{
     *namep = NULL;
     if (w == None)
-	return 1;		/* No window, no name. */
+        return 1;		/* No window, no name. */
 
     XFetchName(display, w, namep);
     if (*namep)
-	return 0; 		/* Hurrah! It worked on the first try. */
+        return 0; 		/* Hurrah! It worked on the first try. */
 
     /* Otherwise, recursively try the parent windows */
     Window p = w;
     Window dummy, *dummyp;
     unsigned int n;
-    while (!*namep  &&  p != None) {
-	if (!XQueryTree(display, p, &dummy, &p, &dummyp, &n))
-	    break;
-	if (p != None) {
-	    XFetchName(display, p, namep);
-	}
+    while (!*namep  &&  p != None)
+    {
+        if (!XQueryTree(display, p, &dummy, &p, &dummyp, &n))
+            break;
+        if (p != None)
+        {
+            XFetchName(display, p, namep);
+        }
     }
     return (*namep == NULL);
 }
@@ -623,17 +663,20 @@ xcfetchname(Display *display, Window w, char **namep) {
  */
 char xcname[4096];
 char *
-xcnamestr(Display *display, Window w) {
+xcnamestr(Display *display, Window w)
+{
     char *window_name;
     xcfetchname(display, w, &window_name);
-    if (window_name && window_name[0]) {
-	snprintf( xcname, sizeof(xcname)-1, "'%s' (0x%lx)", window_name, w);
+    if (window_name && window_name[0])
+    {
+        snprintf( xcname, sizeof(xcname)-1, "'%s' (0x%lx)", window_name, w);
     }
-    else {
-	snprintf( xcname, sizeof(xcname)-1, "window id 0x%lx", w );
+    else
+    {
+        snprintf( xcname, sizeof(xcname)-1, "window id 0x%lx", w );
     }
     if (window_name)
-	XFree(window_name);
+        XFree(window_name);
 
     xcname[sizeof(xcname) - 1] = '\0'; /* Ensure NULL termination */
     return xcname;
@@ -644,30 +687,33 @@ xcnamestr(Display *display, Window w) {
 /* Usage: XSetErrorHandler(xchandler); */
 int xcerrflag = False;
 XErrorEvent xcerrevt;
-int xchandler(Display *dpy, XErrorEvent *evt) {
+int xchandler(Display *dpy, XErrorEvent *evt)
+{
     xcerrflag = True;
     xcerrevt = *evt;
 
     int len=255;
     char buf[len+1];
     XGetErrorText(dpy, evt->error_code, buf, len);
-    if (xcverb >= OVERBOSE) {
-	fprintf(stderr, "\tXErrorHandler: XError (type %d): %s\n",
-		evt->type, buf);
+    if (xcverb >= OVERBOSE)
+    {
+        fprintf(stderr, "\tXErrorHandler: XError (type %d): %s\n",
+                evt->type, buf);
     }
-    if (xcverb >= ODEBUG) {
-	fprintf(stderr,
-		"\t\tEvent Type: %d\n"
-		"\t\tResource ID: 0x%lx\n"
-		"\t\tSerial Num: %lu\n"
-		"\t\tError code: %u\n"
-		"\t\tRequest op code: %u major, %u minor\n",
-		evt->type,
-		evt->resourceid,
-		evt->serial,
-		evt->error_code,
-		evt->request_code,
-		evt->minor_code);
+    if (xcverb >= ODEBUG)
+    {
+        fprintf(stderr,
+                "\t\tEvent Type: %d\n"
+                "\t\tResource ID: 0x%lx\n"
+                "\t\tSerial Num: %lu\n"
+                "\t\tError code: %u\n"
+                "\t\tRequest op code: %u major, %u minor\n",
+                evt->type,
+                evt->resourceid,
+                evt->serial,
+                evt->error_code,
+                evt->request_code,
+                evt->minor_code);
     }
 
     return 0;

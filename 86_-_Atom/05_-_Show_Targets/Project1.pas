@@ -97,29 +97,87 @@ var
   end;
 
   procedure ShowPNG(Data: PChar; len: SizeInt);
+
   // http://www-i4.informatik.rwth-aachen.de/content/teaching/proseminars/sub/2002_2003_ws_docs/png.pdf
   // https://homepages.thm.de/~hg10013/Lehre/MMS/SS03/Freitag/text.htm
-
   // https://progbook.org/png.html
+  // https://www.w3.org/TR/PNG-Chunks.html#:~:text=A%20valid%20PNG%20image%20must,chunks%2C%20and%20an%20IEND%20chunk.
 
   type
     PPNGHeader = ^TPNGHeader;
 
     TPNGHeader = packed record
     Signatur: array[0..7] of char;
-    Size,
-    typ,
+    Size: uint32;
+    typ: array [0..3] of char;
     Width, Height: uint32;
   end;
   var
     PNGHeader: TPNGHeader;
+    Signatur: array[0..8] of char;
+    i, ofs: integer;
+    size,CRC: uint32;
+    typ: array [0..4] of char;
+    Width, Height: uint32;
   begin
+    Signatur[8]:=#0;
+    typ[4]:=#0;
+
+    for i := 0 to 7 do begin
+      Signatur[i] := Data[i];
+    end;
+    ofs := 8;
+    WriteLn('Signature: ', Signatur);
+
+    while ofs < len do begin
+      size := SwapEndian(PUInt32(Data + ofs)^);
+      WriteLn('Size: ', size);
+      Inc(ofs, 4);
+
+      for i := 0 to 3 do begin
+        typ[i] := Data[i + ofs];
+      end;
+      WriteLn('type: ', PChar(typ));
+      Inc(ofs, 4);
+
+      if typ = 'IHDR' then begin
+        Width := SwapEndian(PUInt32(Data + ofs)^);
+        WriteLn('Width: ', Width);
+        Height := SwapEndian(PUInt32(Data + ofs + 4)^);
+        WriteLn('Height: ', Height);
+      end;
+      Inc(ofs, size);
+
+      CRC := SwapEndian(PUInt32(Data + ofs)^);
+      WriteLn('CRC: $',IntToHex( CRC),8);
+      Inc(ofs, 4);
+
+      WriteLn();
+    end;
+
+    exit;
+
     PNGHeader := PPNGHeader(Data + 0)^;
     WriteLn('Signature: ', PNGHeader.Signatur);
-    WriteLn('Size: ', PNGHeader.Size);
-    WriteLn('type: ', PNGHeader.typ);
-    WriteLn('Width: ', PNGHeader.Width);
-    WriteLn('Height: ', PNGHeader.Height);
+    WriteLn('Size: ', SwapEndian(PNGHeader.Size));
+    WriteLn('type: ', PChar(PNGHeader.typ));
+    WriteLn('Width: ', SwapEndian(PNGHeader.Width));
+    WriteLn('Height: ', SwapEndian(PNGHeader.Height));
+    WriteLn();
+    PNGHeader := PPNGHeader(Data + 13 + 12)^;
+    //    WriteLn('Signature: ', PNGHeader.Signatur);
+    WriteLn('Size: ', SwapEndian(PNGHeader.Size));
+    WriteLn('type: ', PChar(PNGHeader.typ));
+    WriteLn('Width: ', SwapEndian(PNGHeader.Width));
+    WriteLn('Height: ', SwapEndian(PNGHeader.Height));
+    WriteLn();
+    PNGHeader := PPNGHeader(Data + 17 + 12 + 12)^;
+    //    WriteLn('Signature: ', PNGHeader.Signatur);
+    WriteLn('Size: ', SwapEndian(PNGHeader.Size));
+    WriteLn('type: ', PChar(PNGHeader.typ));
+    WriteLn('Width: ', SwapEndian(PNGHeader.Width));
+    WriteLn('Height: ', SwapEndian(PNGHeader.Height));
+    WriteLn();
   end;
 
 
@@ -250,7 +308,7 @@ var
           WriteLn('Max Buffersize: ', prop_return[0]);
           WriteLn();
         end else if RetInAtom(ret_type, ['CARDINAL', 'INTEGER']) then  begin
-//        end else if (ret_type = XA_CARDINAL) or (ret_type = XA_INTEGER) then  begin
+          //        end else if (ret_type = XA_CARDINAL) or (ret_type = XA_INTEGER) then  begin
           for i := 0 to ret_items - 1 do begin
             WriteLn(targetAtom, '------------');
             if targetAtom = GetAtom('TIMESTAMP') then begin
@@ -279,7 +337,7 @@ var
             end;
           end;
           WriteLn();
-        end else if RetInAtom(ret_type, ['STRING', 'UTF8_STRING', 'COMPOUND_TEXT','text/plain', 'TEXT']) then  begin
+        end else if RetInAtom(ret_type, ['STRING', 'UTF8_STRING', 'COMPOUND_TEXT', 'text/plain', 'TEXT']) then  begin
           for i := 0 to ret_items - 1 do begin
             if i = 0 then begin
               Write('"');
@@ -345,11 +403,11 @@ begin
     XNextEvent(dis, @Event);
     case Event._type of
       Expose: begin
-        XDrawRectangle(dis,win,gc,10,10,100,100);
+        XDrawRectangle(dis, win, gc, 10, 10, 100, 100);
         WriteLn('exposure');
       end;
       SelectionNotify: begin
-//        WriteLn('------------ SelectionNotify ---------------------');
+        //        WriteLn('------------ SelectionNotify ---------------------');
         targetAtom := Event.xselection.target;
         if targetAtom = 0 then begin
           WriteLn('Ungültiges Atom !');
@@ -371,7 +429,7 @@ begin
       PropertyNotify: begin
         if Event.xproperty.atom = XA_CLIPBOARD then begin
           if Event.xproperty.state = PropertyNewValue then begin
-//            WriteLn('------------ PropertyNotify ---------------------');
+            //            WriteLn('------------ PropertyNotify ---------------------');
           end;
         end;
       end;
@@ -406,4 +464,3 @@ begin
   XDestroyWindow(dis, win);
   XCloseDisplay(dis);
 end.
-
