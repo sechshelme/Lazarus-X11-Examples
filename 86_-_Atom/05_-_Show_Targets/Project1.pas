@@ -34,7 +34,8 @@ var
 
   ClipData: record
     INCR: boolean;
-    Data: array of PChar;
+    ofs: SizeInt;
+    Data: array of Char;
       end;
 
   // https://stackoverflow.com/questions/27378318/c-get-string-from-clipboard-on-linux
@@ -239,7 +240,6 @@ var
   procedure save(Data: PChar; len: SizeInt; path: string);
   var
     Fout: file;
-    i: SizeInt;
   begin
     WriteLn('Speichere...');
     Assign(Fout, path);
@@ -277,9 +277,23 @@ var
       WriteLn('prop: ', targetAtom, '  name: ', XGetAtomName(dis, targetAtom));
       //      XGetWindowProperty(dis, w, XA_CLIPBOARD, 0, MaxInt, False, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
       XGetWindowProperty(dis, w, XA_CLIPBOARD, 0, MaxInt, True, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
+
+      if ret_items <> 0 then begin
+        SetLength(ClipData.Data,ClipData.ofs+ret_items);
+        for i := 0 to ret_items - 1 do begin
+          ClipData.Data[ClipData.ofs + i] := PChar(prop_return)[i];
+        end;
+        Inc(ClipData.ofs,ret_items);
+      end else ClipData.INCR:=False;
+
+      WriteLn('ofs: ', ClipData.ofs);
+      WriteLn('len: ',Length(ClipData.Data));
+
+      writeln('--------------- ret:', ret_items);
+
       if ret_type = 0 then begin
         WriteLn(#10'Unbekannt !');
-      end else begin
+      end else if not ClipData.INCR then begin
         Write('Property: ');
         WriteLn(' (', XGetAtomName(dis, ret_type), ', ', ret_format, ', ', ret_items, ') =');
 
@@ -326,39 +340,51 @@ var
             if i = 0 then begin
               Write('"');
             end;
-            ch := PChar(prop_return)[i];
+//            ch := PChar(prop_return)[i];
+            ch := ClipData.Data[i];
             if (ch = #0) and (i <> ret_items - 1) then begin
               Write('", "');
             end else begin
-              Write(PChar(prop_return)[i]);
+//              Write(PChar(prop_return)[i]);
+              Write(ClipData.Data[i]);
             end;
           end;
           WriteLn('"');
         end else if ret_type = GetAtom('MULTIPLE') then  begin
           for i := 0 to ret_items - 1 do begin
-            ch := PChar(prop_return)[i];
+//            ch := PChar(prop_return)[i];
+            ch := ClipData.Data[i];
             if (ch = #0) and (i <> ret_items - 1) then begin
               Write('", "');
             end else begin
-              Write(PChar(prop_return)[i]);
+//              Write(PChar(prop_return)[i]);
+              Write(ClipData.Data[i]);
             end;
           end;
           WriteLn('"');
         end else if ret_type = GetAtom('image/bmp') then  begin
 //          ShowBMP(PChar(prop_return), ret_items);
 //          save(PChar(prop_return), ret_items, 'test.bmp');
+          save(PChar(ClipData.Data), Length(ClipData.Data), 'test.bmp');
+          ShowBMP(PChar( ClipData.Data), Length(ClipData.Data));
         end else if ret_type = GetAtom('image/x-bmp') then  begin
-          ShowBMP(PChar(prop_return), ret_items);
-          save(PChar(prop_return), ret_items, 'test-x.bmp');
+//          ShowBMP(PChar(prop_return), ret_items);
+  //        save(PChar(prop_return), ret_items, 'test-x.bmp');
+          save(PChar(ClipData.Data), Length(ClipData.Data), 'test-x.bmp');
+          ShowBMP(PChar( ClipData.Data), Length(ClipData.Data));
         end else if ret_type = GetAtom('image/png') then  begin
-          ShowPNG(PChar(prop_return), ret_items);
-          save(PChar(prop_return), ret_items, 'test.png');
+//          ShowPNG(PChar(prop_return), ret_items);
+//          save(PChar(prop_return), ret_items, 'test.png');
+          save(PChar(ClipData.Data), Length(ClipData.Data), 'test.png');
+          ShowPNG(PChar( ClipData.Data), Length(ClipData.Data));
         end else begin
           WriteLn('Unbekanntes Formt !  (', XGetAtomName(dis, ret_type), ')');
         end;
-        XFree(prop_return);
       end;
-      if ret_items=0 then ClipData.INCR:=False;
+      if ret_items = 0 then begin
+        ClipData.INCR := False;
+      end;
+      XFree(prop_return);
     end;
   end;
 
@@ -371,6 +397,7 @@ begin
 
   ClipData.INCR := False;
   ClipData.Data := nil;
+  ClipData.ofs := 0;
 
   scr := DefaultScreen(dis);
   rootWin := RootWindow(dis, scr);
@@ -410,6 +437,9 @@ begin
             end;
             WriteLn(#10);
           end else begin
+            ClipData.INCR := False;
+            ClipData.ofs := 0;
+            ClipData.Data := nil;
             Read_Property(win, Event.xselection.target);
           end;
         end;
@@ -420,7 +450,7 @@ begin
 
             if ClipData.INCR then  begin
               WriteLn('------------ PropertyNotify ---------------------');
-                          Read_Property(win, XA_STRING);
+              Read_Property(win, XA_STRING);
             end;
           end;
         end;
