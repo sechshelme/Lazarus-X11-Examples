@@ -26,11 +26,16 @@ var
   win, rootWin: TWindow;
   Event: TXEvent;
   scr: cint;
-  XA_CLIPBOARD, XA_TARGETS, XA_UTF8_STRING, targetAtom: TAtom;
+  XA_CLIPBOARD, XA_TARGETS: TAtom;
   Target_List: TAtoms;
   i: integer;
   key: TKeySym;
   gc: TGC;
+
+  ClipData: record
+    INCR: boolean;
+    Data: array of PChar;
+      end;
 
   // https://stackoverflow.com/questions/27378318/c-get-string-from-clipboard-on-linux
   // https://www.uninformativ.de/blog/postings/2017-04-02/0/POSTING-en.html
@@ -116,12 +121,12 @@ var
     PNGHeader: TPNGHeader;
     Signatur: array[0..8] of char;
     i, ofs: integer;
-    size,CRC: uint32;
+    size, CRC: uint32;
     typ: array [0..4] of char;
     Width, Height: uint32;
   begin
-    Signatur[8]:=#0;
-    typ[4]:=#0;
+    Signatur[8] := #0;
+    typ[4] := #0;
 
     for i := 0 to 7 do begin
       Signatur[i] := Data[i];
@@ -149,35 +154,13 @@ var
       Inc(ofs, size);
 
       CRC := SwapEndian(PUInt32(Data + ofs)^);
-      WriteLn('CRC: $',IntToHex( CRC),8);
+      WriteLn('CRC: $', IntToHex(CRC), 8);
       Inc(ofs, 4);
 
       WriteLn();
     end;
 
     exit;
-
-    PNGHeader := PPNGHeader(Data + 0)^;
-    WriteLn('Signature: ', PNGHeader.Signatur);
-    WriteLn('Size: ', SwapEndian(PNGHeader.Size));
-    WriteLn('type: ', PChar(PNGHeader.typ));
-    WriteLn('Width: ', SwapEndian(PNGHeader.Width));
-    WriteLn('Height: ', SwapEndian(PNGHeader.Height));
-    WriteLn();
-    PNGHeader := PPNGHeader(Data + 13 + 12)^;
-    //    WriteLn('Signature: ', PNGHeader.Signatur);
-    WriteLn('Size: ', SwapEndian(PNGHeader.Size));
-    WriteLn('type: ', PChar(PNGHeader.typ));
-    WriteLn('Width: ', SwapEndian(PNGHeader.Width));
-    WriteLn('Height: ', SwapEndian(PNGHeader.Height));
-    WriteLn();
-    PNGHeader := PPNGHeader(Data + 17 + 12 + 12)^;
-    //    WriteLn('Signature: ', PNGHeader.Signatur);
-    WriteLn('Size: ', SwapEndian(PNGHeader.Size));
-    WriteLn('type: ', PChar(PNGHeader.typ));
-    WriteLn('Width: ', SwapEndian(PNGHeader.Width));
-    WriteLn('Height: ', SwapEndian(PNGHeader.Height));
-    WriteLn();
   end;
 
 
@@ -290,9 +273,10 @@ var
   begin
     Result := '';
     WriteLn();
-    WriteLn('prop: ', targetAtom, '  name: ', XGetAtomName(dis, targetAtom));
     if targetAtom <> 0 then begin
-      XGetWindowProperty(dis, w, XA_CLIPBOARD, 0, MaxInt, False, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
+      WriteLn('prop: ', targetAtom, '  name: ', XGetAtomName(dis, targetAtom));
+      //      XGetWindowProperty(dis, w, XA_CLIPBOARD, 0, MaxInt, False, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
+      XGetWindowProperty(dis, w, XA_CLIPBOARD, 0, MaxInt, True, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
       if ret_type = 0 then begin
         WriteLn(#10'Unbekannt !');
       end else begin
@@ -304,11 +288,11 @@ var
             WriteLn('Nr: ', prop_return[i]: 5, '  Name: ', XGetAtomName(dis, prop_return[i]));
           end;
         end else if ret_type = GetAtom('INCR') then  begin
+          ClipData.INCR := True;
           WriteLn('Buffer zu gross !');
           WriteLn('Max Buffersize: ', prop_return[0]);
           WriteLn();
         end else if RetInAtom(ret_type, ['CARDINAL', 'INTEGER']) then  begin
-          //        end else if (ret_type = XA_CARDINAL) or (ret_type = XA_INTEGER) then  begin
           for i := 0 to ret_items - 1 do begin
             WriteLn(targetAtom, '------------');
             if targetAtom = GetAtom('TIMESTAMP') then begin
@@ -361,8 +345,8 @@ var
           end;
           WriteLn('"');
         end else if ret_type = GetAtom('image/bmp') then  begin
-          ShowBMP(PChar(prop_return), ret_items);
-          save(PChar(prop_return), ret_items, 'test.bmp');
+//          ShowBMP(PChar(prop_return), ret_items);
+//          save(PChar(prop_return), ret_items, 'test.bmp');
         end else if ret_type = GetAtom('image/x-bmp') then  begin
           ShowBMP(PChar(prop_return), ret_items);
           save(PChar(prop_return), ret_items, 'test-x.bmp');
@@ -374,6 +358,7 @@ var
         end;
         XFree(prop_return);
       end;
+      if ret_items=0 then ClipData.INCR:=False;
     end;
   end;
 
@@ -383,16 +368,17 @@ begin
     WriteLn('Kann nicht das Display öffnen');
     Halt(1);
   end;
-  scr := DefaultScreen(dis);
 
+  ClipData.INCR := False;
+  ClipData.Data := nil;
+
+  scr := DefaultScreen(dis);
   rootWin := RootWindow(dis, scr);
 
   XA_CLIPBOARD := GetAtom('CLIPBOARD');
   XA_TARGETS := GetAtom('TARGETS');
-  XA_UTF8_STRING := GetAtom('UTF8_STRING');
 
   win := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-
   gc := XCreateGC(dis, win, 0, nil);
 
   XSelectInput(dis, win, KeyPressMask or PropertyChangeMask or ExposureMask);
@@ -407,29 +393,35 @@ begin
         WriteLn('exposure');
       end;
       SelectionNotify: begin
-        //        WriteLn('------------ SelectionNotify ---------------------');
-        targetAtom := Event.xselection.target;
-        if targetAtom = 0 then begin
-          WriteLn('Ungültiges Atom !');
-        end else if targetAtom = XA_TARGETS then  begin
-          Target_List := getTargetList(win);
-          WriteLn(#10);
-          for i := 0 to Length(Target_List) - 1 do begin
-            if i <= 9 then begin
-              WriteLn('(', i, ') ', XGetAtomName(dis, Target_List[i]));
-            end else begin
-              WriteLn('(', char(i + 55 + 32), ') ', XGetAtomName(dis, Target_List[i]));
+        if Event.xselection.selection = XA_CLIPBOARD then begin
+          WriteLn('------------ SelectionNotify ---------------------');
+          //          targetAtom := Event.xselection.target;
+          if Event.xselection.target = 0 then begin
+            WriteLn('Ungültiges Atom !');
+          end else if Event.xselection.target = XA_TARGETS then  begin
+            Target_List := getTargetList(win);
+            WriteLn(#10);
+            for i := 0 to Length(Target_List) - 1 do begin
+              if i <= 9 then begin
+                WriteLn('(', i, ') ', XGetAtomName(dis, Target_List[i]));
+              end else begin
+                WriteLn('(', char(i + 55 + 32), ') ', XGetAtomName(dis, Target_List[i]));
+              end;
             end;
+            WriteLn(#10);
+          end else begin
+            Read_Property(win, Event.xselection.target);
           end;
-          WriteLn(#10);
-        end else begin
-          Read_Property(win, targetAtom);
         end;
       end;
       PropertyNotify: begin
         if Event.xproperty.atom = XA_CLIPBOARD then begin
           if Event.xproperty.state = PropertyNewValue then begin
-            //            WriteLn('------------ PropertyNotify ---------------------');
+
+            if ClipData.INCR then  begin
+              WriteLn('------------ PropertyNotify ---------------------');
+                          Read_Property(win, XA_STRING);
+            end;
           end;
         end;
       end;

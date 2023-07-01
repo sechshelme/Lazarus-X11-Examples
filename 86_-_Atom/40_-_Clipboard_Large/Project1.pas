@@ -128,6 +128,7 @@ var
     XConvertSelection(dis, bufid, fmtid, propid, win, CurrentTime);
     repeat
       XNextEvent(dis, @Event);
+      WriteLn('ev: ',Event._type);
     until (Event._type = SelectionNotify) and (Event.xselection.selection = bufid);
 
     if Event.xselection._property <> 0 then begin
@@ -150,6 +151,7 @@ var
         repeat
           repeat
             XNextEvent(dis, @Event);
+            WriteLn('ev: ',Event._type);
           until (Event._type = PropertyNotify) and (Event.xproperty.atom = propid) and (Event.xproperty.state = PropertyNewValue);
 
           WriteLn('incr');
