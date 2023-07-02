@@ -24,7 +24,8 @@ uses
 
 type
   TAtomPara = record
-    XA_CLIPBOARD, Format, XSEL_DATA,
+      UTF8,
+    XA_CLIPBOARD, XSEL_DATA,
     XA_TARGETS, XA_TEXT: TAtom;
   end;
 
@@ -75,15 +76,15 @@ var
     Writeln('Clipboard auslesen');
     if Event.xselection._property <> 0 then begin
       XGetWindowProperty(dis, win, AP.XSEL_DATA, 0, MaxSIntValue, False, AnyPropertyType, @targetFormat, @resbits, @ressize, @restail, @res);
-      if AP.Format = targetFormat then begin
-        WriteLn('io');
+      if targetFormat = AP.UTF8 then begin
+        WriteLn('UTF-8 io');
       end else begin
-        WriteLn('error');
+        WriteLn('error:', XGetAtomName(dis, targetFormat));
       end;
-      WriteLn('Buffer-Size: ', ressize);
       WriteLn('------ Inhalt vom Clipboard ----------');
       WriteLn(res);
       WriteLn('--------------------------------------');
+      WriteLn('Buffer-Size: ', ressize);
       with Event.xselection do begin
         XDeleteProperty(display, requestor, _property);
       end;
@@ -112,11 +113,12 @@ var
       ev.serial := 0;
       ev.send_event := 0;
       if ev.target = AP.XA_TARGETS then begin
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AP.Format, 1);
+        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AP.UTF8, 1);
       end else if (ev.target = XA_STRING) or (ev.target = AP.XA_TEXT) then begin
         R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_STRING, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-      end else if ev.target = AP.Format then  begin
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.Format, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
+      end else if ev.target = AP.UTF8 then  begin
+        WriteLn('--- Schreibe  ---');
+        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
       end else begin
         ev._property := None;
       end;
@@ -139,19 +141,17 @@ var
     AP.XA_TEXT := XInternAtom(dis, 'TEXT', False);
 
     AP.XA_CLIPBOARD := XInternAtom(dis, 'CLIPBOARD', False);
-    AP.Format := XInternAtom(dis, 'UTF8_STRING', True);
-    if AP.Format = 0 then begin
-      AP.Format := XA_STRING;
-    end;
 
-//    AP.XSEL_DATA := XInternAtom(dis, 'XSEL_DATA', False);
+    AP.UTF8 := XInternAtom(dis, 'UTF8_STRING', False);
+
+    //    AP.XSEL_DATA := XInternAtom(dis, 'XSEL_DATA', False);
     AP.XSEL_DATA := AP.XA_CLIPBOARD;
 
     WriteLn(AP.XA_TARGETS);
     WriteLn(AP.XA_TEXT);
 
     WriteLn(AP.XA_CLIPBOARD);
-    WriteLn(AP.Format);
+    WriteLn(AP.UTF8);
     WriteLn(AP.XSEL_DATA);
 
     scr := DefaultScreen(dis);
@@ -171,6 +171,10 @@ var
   end;
 
   procedure TMyWin.Run;
+  const
+    L = 1000 *1000 ;
+  var
+    i: Integer;
   begin
     // Ereignisschleife
     while (True) do begin
@@ -186,9 +190,21 @@ var
               Break;
             end;
             XK_v: begin
-              WriteLn('Auslesen einleiten');
+              WriteLn('Auslesen UTGF8 einleiten');
               with AP do begin
-                XConvertSelection(dis, XA_CLIPBOARD, Format, XSEL_DATA, win, CurrentTime);
+                XConvertSelection(dis, XA_CLIPBOARD, UTF8, XSEL_DATA, win, CurrentTime);
+              end;
+            end;
+            XK_t: begin
+              WriteLn('Generiere Test String');
+              SetLength(ClipboardString, L);
+              for i := 1 to L do begin
+                ClipboardString[i] := char(Random(26) + 65);
+              end;
+
+              XSetSelectionOwner(dis, AP.XA_CLIPBOARD, win, CurrentTime);
+              if XGetSelectionOwner(dis, AP.XA_CLIPBOARD) <> win then begin
+                WriteLn('Fehler: Falsches Window');
               end;
             end;
             XK_c: begin

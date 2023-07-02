@@ -5,6 +5,10 @@ Die macht es übersichtlicher und ausbaufähiger.
 *)
 //lineal
 //code+
+
+// https://github.com/ssato/misc/tree/master/ssmack
+// https://github.com/ssato/misc/blob/master/ssmack/xsendevent.c
+
 program Project1;
 
 uses
@@ -20,6 +24,7 @@ type
   private
     dis: PDisplay;
     scr: cint;
+    rootWin,
     win1, win2: TWindow;
   public
     constructor Create;
@@ -40,8 +45,9 @@ type
     scr := DefaultScreen(dis);
 
     // Erstellt das Fenster
-    win1 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-    win2 := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    rootWin := RootWindow(dis, scr);
+    win1 := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+    win2 := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
 
     // Wählt die gewünschten Ereignisse aus
     // Es wird nur das Tastendrückereigniss <b>KeyPressMask</b> gebraucht.
@@ -69,13 +75,17 @@ type
     Event: TXEvent;
     e: TXEvent;
     status: TStatus;
+    sEvent: TXKeyEvent;
+    k: PChar;
+    i: integer;
+    ch:array[0..1] of Char;
   const
     myEvent = 37;
   begin
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
-      WriteLn('Event: ', Event._type);
+//      WriteLn('Event: ', Event._type);
 
       case Event._type of
         Expose: begin
@@ -83,20 +93,45 @@ type
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]
-          case XLookupKeysym(@Event.xkey, 0) of
+          case XLookupKeysym(@Event.xany, 0) of
             XK_Escape: begin
               Break;
             end;
+            XK_a..XK_z:Write(Event.xkey.keycode,' ');
+            //XK_b: begin
+            //  WriteLn('B gedrückt !');
+            //end;
+            //XK_k: begin
+            //  WriteLn('K gedrückt !');
+            //end;
             XK_space: begin
               WriteLn('space');
-              e._type := Expose;
-              e.xkey.window := win1;
-
-              //              XSendEvent(dis, win1, False, myEvent, @e);
-              status := XSendEvent(dis, win1, True, Expose, @e);
-              if status = 0 then begin
-                WriteLn('fehler');
+              sEvent.display := dis;
+              sEvent.window := win1;
+              sEvent.root := rootWin;
+              sEvent.subwindow := 0;
+              sEvent.time := CurrentTime;
+              sEvent.x := 1;
+              sEvent.y := 1;
+              sEvent.x_root := 1;
+              sEvent.y_root := 1;
+              sEvent.same_screen := 1;
+              sEvent._type := KeyPress;
+              for i := 0 to 65 do begin
+                ch[0]:=char(i+ 65);
+                ch[1]:=#0     ;
+                sEvent.keycode := XKeysymToKeycode(dis, XStringToKeysym(ch ));
+                status := XSendEvent(dis, win1, 1, KeyPressMask, @sEvent);
+                if status = 0 then begin
+                  WriteLn('fehler');
+                end;
               end;
+
+              //sEvent.keycode := XKeysymToKeycode(dis, XStringToKeysym('k'));
+              //status := XSendEvent(dis, win1, 1, KeyPressMask, @sEvent);
+              //if status = 0 then begin
+              //  WriteLn('fehler');
+              //end;
 
             end;
           end;
