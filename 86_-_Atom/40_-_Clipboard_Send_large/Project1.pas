@@ -159,24 +159,49 @@ var
         WriteLn('--- Schreibe INCR ---');
         //        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
         large := True;
+        WriteLn('larga treu');
         R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AP.XA_INCR, 1);
       end else begin
         ev._property := None;
       end;
       //      if (R and 2) = 0 then begin
-      WriteLn('sendevent: ', R);
+      //      WriteLn('sendevent: ', R);
       XSendEvent(dis, ev.requestor, False, 0, @ev);
 
       if large then begin
-           R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
+        WriteLn('larga 1');
+        ClipboardString[1]:='1';
+        ClipboardString[2]:='1';
+        ClipboardString[3]:='1';
+        ClipboardString[4]:='1';
+        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
+        WriteLn('larga 2');
 
-           XSetSelectionOwner(dis, AP.XA_CLIPBOARD, win, CurrentTime);
-                 XNextEvent(dis, @Event);
+        ev._type := PropertyNotify;
+        XSendEvent(dis, ev.requestor, False, 0, @ev);
+        XNextEvent(dis, @Event);
 
 
-           ev._type := PropertyNotify;
-           XSendEvent(dis, ev.requestor, False, 0, @ev);
-           large:=False;
+        WriteLn('larga 3');
+        ClipboardString[1]:='2';
+        ClipboardString[2]:='2';
+        ClipboardString[3]:='2';
+        ClipboardString[4]:='2';
+        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
+        WriteLn('larga 4');
+
+        ev._type := PropertyNotify;
+        XSendEvent(dis, ev.requestor, False, 0, @ev);
+
+
+
+        //WriteLn('larga 5');
+        //R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, nil, 0);
+        //WriteLn('larga 6');
+        //
+        //
+
+        large := False;
       end;
 
 
@@ -231,7 +256,8 @@ var
 
   procedure TMyWin.Run;
   const
-    L = 1000 * 1000;
+    //    L = 1000 * 1000;
+    L = 1000;
   var
     i: integer;
   begin
@@ -258,9 +284,16 @@ var
               WriteLn('Generiere Test String');
               SetLength(ClipboardString, L);
               for i := 1 to L do begin
-                ClipboardString[i] := char(Random(26) + 65);
+                if i mod 80 = 0 then begin
+                  ClipboardString[i] := #10;
+                end else if i mod 8 = 0 then begin
+                  ClipboardString[i] := ' ';
+                end else begin
+                  ClipboardString[i] := char(Random(26) + 65);
+                end;
               end;
-
+              ClipboardString[Length(ClipboardString)]:=#10;
+              ClipboardString[Length(ClipboardString)-1]:=#10;
               XSetSelectionOwner(dis, AP.XA_CLIPBOARD, win, CurrentTime);
               if XGetSelectionOwner(dis, AP.XA_CLIPBOARD) <> win then begin
                 WriteLn('Fehler: Falsches Window');

@@ -8,6 +8,7 @@ Die macht es übersichtlicher und ausbaufähiger.
 
 // https://github.com/ssato/misc/tree/master/ssmack
 // https://github.com/ssato/misc/blob/master/ssmack/xsendevent.c
+// https://gist.github.com/javiercantero/7753445
 
 program Project1;
 
