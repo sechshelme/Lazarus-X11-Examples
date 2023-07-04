@@ -179,27 +179,31 @@ var
 
         ev._type := PropertyNotify;
         XSendEvent(dis, ev.requestor, False, 0, @ev);
-        XNextEvent(dis, @Event);
 
+        WriteLn('larga 22');
 
-        WriteLn('larga 3');
-        ClipboardString[1]:='2';
-        ClipboardString[2]:='2';
-        ClipboardString[3]:='2';
-        ClipboardString[4]:='2';
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-        WriteLn('larga 4');
-
-        ev._type := PropertyNotify;
-        XSendEvent(dis, ev.requestor, False, 0, @ev);
-
-
-
-        //WriteLn('larga 5');
-        //R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, nil, 0);
-        //WriteLn('larga 6');
-        //
-        //
+//        wait;
+//        XNextEvent(dis, @Event);
+//
+//
+//        WriteLn('larga 3');
+//        ClipboardString[1]:='2';
+//        ClipboardString[2]:='2';
+//        ClipboardString[3]:='2';
+//        ClipboardString[4]:='2';
+//        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
+//        WriteLn('larga 4');
+//
+//        ev._type := PropertyNotify;
+//        XSendEvent(dis, ev.requestor, False, 0, @ev);
+//
+//
+//
+//        //WriteLn('larga 5');
+//        //R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, nil, 0);
+//        //WriteLn('larga 6');
+//        //
+//        //
 
         large := False;
       end;
