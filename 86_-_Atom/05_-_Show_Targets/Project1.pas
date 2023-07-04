@@ -27,6 +27,7 @@ var
   Event: TXEvent;
   scr: cint;
   XA_CLIPBOARD, XA_TARGETS: TAtom;
+  SelectTargetAtom: TAtom=0;
   Target_List: TAtoms;
   i: integer;
   key: TKeySym;
@@ -35,7 +36,7 @@ var
   ClipData: record
     INCR: boolean;
     ofs: SizeInt;
-    Data: array of Char;
+    Data: array of char;
       end;
 
   // https://stackoverflow.com/questions/27378318/c-get-string-from-clipboard-on-linux
@@ -270,6 +271,8 @@ var
     prop_return: PAtom;
     i: integer;
     ch: char;
+  const
+    INCR_Count:SizeInt=0;
   begin
     Result := '';
     WriteLn();
@@ -278,12 +281,16 @@ var
       XGetWindowProperty(dis, w, XA_CLIPBOARD, 0, MaxInt, True, 0, @ret_type, @ret_format, @ret_items, @ret_bytesleft, @prop_return);
 
       if ret_items <> 0 then begin
-        SetLength(ClipData.Data,ClipData.ofs+ret_items);
+        SetLength(ClipData.Data, ClipData.ofs + ret_items);
         for i := 0 to ret_items - 1 do begin
           ClipData.Data[ClipData.ofs + i] := PChar(prop_return)[i];
         end;
-        Inc(ClipData.ofs,ret_items);
-      end else ClipData.INCR:=False;
+        Inc(ClipData.ofs, ret_items);
+      end else begin
+        ClipData.INCR := False;
+      end;
+
+      Inc(INCR_Count);
 
       if ret_type = 0 then begin
         WriteLn(#10'Unbekannt !');
@@ -296,6 +303,7 @@ var
             WriteLn('Nr: ', prop_return[i]: 5, '  Name: ', XGetAtomName(dis, prop_return[i]));
           end;
         end else if ret_type = GetAtom('INCR') then  begin
+          INCR_Count:=0;
           ClipData.INCR := True;
           WriteLn('Buffer zu gross !');
           WriteLn('Max Buffersize: ', prop_return[0]);
@@ -330,7 +338,7 @@ var
           end;
           WriteLn();
         end else if RetInAtom(ret_type, ['STRING', 'UTF8_STRING', 'COMPOUND_TEXT', 'text/plain', 'TEXT']) then  begin
-          for i := 0 to ret_items - 1 do begin
+          for i := 0 to Length(ClipData.Data) - 1 do begin
             if i = 0 then begin
               Write('"');
             end;
@@ -354,20 +362,22 @@ var
           WriteLn('"');
         end else if ret_type = GetAtom('image/bmp') then  begin
           save(PChar(ClipData.Data), Length(ClipData.Data), 'test.bmp');
-          ShowBMP(PChar( ClipData.Data), Length(ClipData.Data));
+          ShowBMP(PChar(ClipData.Data), Length(ClipData.Data));
         end else if ret_type = GetAtom('image/x-bmp') then  begin
           save(PChar(ClipData.Data), Length(ClipData.Data), 'test-x.bmp');
-          ShowBMP(PChar( ClipData.Data), Length(ClipData.Data));
+          ShowBMP(PChar(ClipData.Data), Length(ClipData.Data));
         end else if ret_type = GetAtom('image/png') then  begin
           save(PChar(ClipData.Data), Length(ClipData.Data), 'test.png');
-          ShowPNG(PChar( ClipData.Data), Length(ClipData.Data));
+          ShowPNG(PChar(ClipData.Data), Length(ClipData.Data));
         end else begin
           WriteLn('Unbekanntes Formt !  (', XGetAtomName(dis, ret_type), ')');
         end;
       end;
       if ret_items = 0 then begin
         ClipData.INCR := False;
-      end;
+        WriteLn('INCR_Count: ', INCR_Count);
+        WriteLn('Data_Count: ', Length(ClipData.Data));
+      end ;
       XFree(prop_return);
     end;
   end;
@@ -405,11 +415,12 @@ begin
       end;
       SelectionNotify: begin
         if Event.xselection.selection = XA_CLIPBOARD then begin
+          SelectTargetAtom:=   Event.xselection.target;
           WriteLn('------------ SelectionNotify ---------------------');
-          //          targetAtom := Event.xselection.target;
-          if Event.xselection.target = 0 then begin
+          //          SelectTargetAtom := Event.xselection.target;
+          if SelectTargetAtom = 0 then begin
             WriteLn('Ungültiges Atom !');
-          end else if Event.xselection.target = XA_TARGETS then  begin
+          end else if SelectTargetAtom = XA_TARGETS then  begin
             Target_List := getTargetList(win);
             WriteLn(#10);
             for i := 0 to Length(Target_List) - 1 do begin
@@ -424,10 +435,10 @@ begin
             ClipData.INCR := False;
             ClipData.ofs := 0;
             ClipData.Data := nil;
-            Read_Property(win, Event.xselection.target);
-//            ClipData.INCR := False;
+            Read_Property(win, SelectTargetAtom);
+            //            ClipData.INCR := False;
             ClipData.ofs := 0;
-             ClipData.Data := nil;
+            ClipData.Data := nil;
           end;
         end;
       end;
@@ -437,7 +448,7 @@ begin
 
             if ClipData.INCR then  begin
               WriteLn('------------ PropertyNotify ---------------------');
-              Read_Property(win, XA_STRING);
+              Read_Property(win, SelectTargetAtom);
             end;
           end;
         end;
