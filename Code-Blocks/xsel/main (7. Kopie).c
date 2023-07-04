@@ -151,16 +151,6 @@ static void become_daemon (void)
     free (cachedir);
 }
 
-/*
- * get_timestamp ()
- *
- * Get the current X server time.
- *
- * This is done by doing a zero-length append to a random property of the
- * window, and checking the time on the subsequent PropertyNotify event.
- *
- * PRECONDITION: the window must have PropertyChangeMask set.
- */
 static Time
 get_timestamp (void)
 {
@@ -1019,6 +1009,8 @@ int main(int argc, char *argv[])
     int s=0;
     unsigned char * new_sel = NULL;
     char * display_name = NULL;
+
+#define OPT(s) (strcmp (argv[i], (s)) == 0)
 
 
         if (fstat (0, &in_statbuf) == -1)

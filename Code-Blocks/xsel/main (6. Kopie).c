@@ -1,3 +1,4 @@
+#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -46,11 +47,19 @@ static Bool do_zeroflush = False;
 /* do_follow: Follow mode for output */
 static Bool do_follow = False;
 
+/* nodaemon: Disable daemon mode if True. */
+static Bool no_daemon = False;
+
+/* logfile: name of file to log error messages to when detached */
+static char logfile[MAXFNAME];
+
 /* fstat() on stdin and stdout */
 static struct stat in_statbuf;
 
 static int total_input = 0;
 static int current_alloc = 0;
+
+static struct itimerval timer;
 
 #define USEC_PER_SEC 1000000
 
@@ -60,7 +69,21 @@ xs_malloc (size_t size)
     void * ret;
 
     if (size == 0) size = 1;
-    ret = malloc (size);
+    if ((ret = malloc (size)) == NULL)
+    {
+        //exit_err ("malloc error");
+    }
+
+    return ret;
+}
+
+#define xs_strdup(s) ((unsigned char *) _xs_strdup ((const char *)s))
+static char * _xs_strdup (const char * s)
+{
+    char * ret;
+
+    if (s == NULL) return NULL;
+    ret = strdup(s);
 
     return ret;
 }
@@ -74,15 +97,17 @@ get_xdg_cache_home (void)
 
     if ((cachedir = getenv ("XDG_CACHE_HOME")) == NULL)
     {
-        homedir = getenv ("HOME");
-
+        if ((homedir = getenv ("HOME")) == NULL)
+        {
+//      exit_err ("no HOME directory");
+        }
         cachedir = xs_malloc (strlen (homedir) + strlen (slashbasename) + 1);
         strcpy (cachedir, homedir);
         strcat (cachedir, slashbasename);
     }
     else
     {
-        cachedir = strdup (cachedir);
+        cachedir = _xs_strdup (cachedir);
     }
 
     mkdir (cachedir, S_IRWXU|S_IRGRP|S_IXGRP);
@@ -90,13 +115,75 @@ get_xdg_cache_home (void)
     return cachedir;
 }
 
-static void become_daemon (void)
+static sigjmp_buf env_alrm;
+
+/*
+ * alarm_handler (sig)
+ *
+ * Signal handler for catching SIGALRM.
+ */
+static void
+alarm_handler (int sig)
+{
+    siglongjmp (env_alrm, 1);
+}
+
+static void
+set_daemon_timeout (void)
+{
+    if (signal (SIGALRM, alarm_handler) == SIG_ERR)
+    {
+//    exit_err ("error setting timeout handler");
+    }
+
+    if (sigsetjmp (env_alrm, 0) == 0)
+    {
+        setitimer (ITIMER_REAL, &timer, (struct itimerval *)0);
+    }
+    else
+    {
+//    print_debug (D_INFO, "daemon exiting after %d ms", timeout / 1000);
+        exit (0);
+    }
+}
+
+
+/*
+ * become_daemon ()
+ *
+ * Perform the required procedure to become a daemon process, as
+ * outlined in the Unix programming FAQ:
+ * http://www.steve.org.uk/Reference/Unix/faq_2.html#SEC16
+ * and open a logfile.
+ */
+static void
+become_daemon (void)
 {
     pid_t pid;
-    int null_r_fd, null_w_fd;
+    int null_r_fd, null_w_fd, log_fd;
     char * cachedir;
 
-        cachedir = get_xdg_cache_home();
+    if (no_daemon)
+    {
+        /* If the user has specified a timeout, enforce it even if we don't
+         * actually daemonize */
+        set_daemon_timeout ();
+        return;
+    }
+
+    cachedir = get_xdg_cache_home();
+
+    /* Check that we can open a logfile before continuing */
+
+    /* If the user has specified a --logfile, use that ... */
+    if (logfile[0] == '\0')
+    {
+        /* ... otherwise use the default logfile */
+        snprintf (logfile, MAXFNAME, "%s/xsel.log", cachedir);
+    }
+
+    /* Make sure to create the logfile with sane permissions */
+    log_fd = open (logfile, O_WRONLY|O_APPEND|O_CREAT, 0600);
 
     if ((pid = fork()) == -1)
     {
@@ -147,6 +234,14 @@ static void become_daemon (void)
     {
 //    exit_err ("error duplicating /dev/null on stdout");
     }
+
+    /* dup2 logfile on stderr */
+    if (dup2 (log_fd, 2) == -1)
+    {
+//    exit_err ("error duplicating logfile %s on stderr", logfile);
+    }
+
+    set_daemon_timeout ();
 
     free (cachedir);
 }
@@ -1019,6 +1114,8 @@ int main(int argc, char *argv[])
     int s=0;
     unsigned char * new_sel = NULL;
     char * display_name = NULL;
+
+#define OPT(s) (strcmp (argv[i], (s)) == 0)
 
 
         if (fstat (0, &in_statbuf) == -1)
