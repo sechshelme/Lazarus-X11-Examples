@@ -67,8 +67,45 @@ static int total_input = 0;
 static int current_alloc = 0;
 
 static struct itimerval timer;
+static struct itimerval zerot;
 
 #define USEC_PER_SEC 1000000
+
+static int saved_argc;
+static char ** saved_argv;
+
+static char * get_atom_name (Atom atom)
+{
+    char * ret;
+    static char atom_name[MAXLINE+2];  /* unused extra char to avoid
+                                        string-op-truncation warning */
+
+    if (atom == None) return "None";
+    if (atom == XA_STRING) return "STRING";
+    if (atom == XA_PRIMARY) return "PRIMARY";
+    if (atom == XA_SECONDARY) return "SECONDARY";
+    if (atom == timestamp_atom) return "TIMESTAMP";
+    if (atom == multiple_atom) return "MULTIPLE";
+    if (atom == targets_atom) return "TARGETS";
+    if (atom == delete_atom) return "DELETE";
+    if (atom == incr_atom) return "INCR";
+    if (atom == null_atom) return "NULL";
+    if (atom == text_atom) return "TEXT";
+    if (atom == utf8_atom) return "UTF8_STRING";
+
+    ret = XGetAtomName (display, atom);
+    strncpy (atom_name, ret, MAXLINE+1);
+    if (atom_name[MAXLINE] != '\0')
+    {
+        atom_name[MAXLINE-3] = '.';
+        atom_name[MAXLINE-2] = '.';
+        atom_name[MAXLINE-1] = '.';
+        atom_name[MAXLINE] = '\0';
+    }
+    XFree (ret);
+
+    return atom_name;
+}
 
 static void *
 xs_malloc (size_t size)
@@ -105,7 +142,23 @@ static char * _xs_strdup (const char * s)
  *
  * strncpy wrapper for unsigned char *
  */
+#define xs_strncpy(dest,s,n) (_xs_strncpy ((char *)dest, (const char *)s, n))
+static char *
+_xs_strncpy (char * dest, const char * src, size_t n)
+{
+    if (n > 0)
+    {
+        strncpy (dest, src, n-1);
+        dest[n-1] = '\0';
+    }
+    return dest;
+}
 
+/*
+ * get_xdg_cache_home ()
+ *
+ * Get the user's cache directory
+ */
 static char *
 get_xdg_cache_home (void)
 {
@@ -291,6 +344,220 @@ get_timestamp (void)
     }
 }
 
+/*
+ * SELECTION RETRIEVAL
+ * ===================
+ *
+ * The following functions implement retrieval of an X selection,
+ * optionally within a user-specified timeout.
+ *
+ *
+ * Selection timeout handling.
+ * ---------------------------
+ *
+ * The selection retrieval can time out if no response is received within
+ * a user-specified time limit. In order to ensure we time the entire
+ * selection retrieval, we use an interval timer and catch SIGALRM.
+ * [Calling select() on the XConnectionNumber would only provide a timeout
+ * to the first XEvent.]
+ */
+
+/*
+ * get_append_property ()
+ *
+ * Get a window property and append its data to a buffer at a given offset
+ * pointed to by *offset. 'offset' is modified by this routine to point to
+ * the end of the data.
+ *
+ * Returns True if more data is available for receipt.
+ *
+ * If an error is encountered, the buffer is free'd.
+ */
+static Bool
+get_append_property (XSelectionEvent * xsl, unsigned char ** buffer,
+                     unsigned long * offset, unsigned long * alloc)
+{
+    unsigned char * ptr;
+    Atom target;
+    int format;
+    unsigned long bytesafter, length;
+    unsigned char * value;
+
+    XGetWindowProperty (xsl->display, xsl->requestor, xsl->property,
+                        0L, 1000000, True, (Atom)AnyPropertyType,
+                        &target, &format, &length, &bytesafter, &value);
+
+    if (target != XA_STRING && target != utf8_atom &&
+            target != compound_text_atom)
+    {
+        free (*buffer);
+        *buffer = NULL;
+        return False;
+    }
+    else if (length == 0)
+    {
+        /* A length of 0 indicates the end of the transfer */
+        return False;
+    }
+    else if (format == 8)
+    {
+        if (*offset + length + 1 > *alloc)
+        {
+            *alloc = *offset + length + 1;
+            if ((*buffer = realloc (*buffer, *alloc)) == NULL)
+            {
+//        exit_err ("realloc error");
+            }
+        }
+        ptr = *buffer + *offset;
+        memcpy (ptr, value, length);
+        ptr[length] = '\0';
+        *offset += length;
+    }
+
+    return True;
+}
+
+
+/*
+ * wait_incr_selection (selection)
+ *
+ * Retrieve a property of target type INCR. Perform incremental retrieval
+ * and return the resulting data.
+ */
+static unsigned char *
+wait_incr_selection (Atom selection, XSelectionEvent * xsl, int init_alloc)
+{
+    XEvent event;
+    unsigned char * incr_base = NULL, * incr_ptr = NULL;
+    unsigned long incr_alloc = 0, incr_xfer = 0;
+    Bool wait_prop = True;
+
+    XSelectInput (xsl->display, xsl->requestor, PropertyChangeMask);
+
+    incr_alloc = init_alloc;
+    incr_base = xs_malloc (incr_alloc);
+    incr_ptr = incr_base;
+
+    XDeleteProperty (xsl->display, xsl->requestor, xsl->property);
+
+    while (wait_prop)
+    {
+        XNextEvent (xsl->display, &event);
+
+        switch (event.type)
+        {
+        case PropertyNotify:
+            if (event.xproperty.state != PropertyNewValue) break;
+
+            wait_prop = get_append_property (xsl, &incr_base, &incr_xfer,
+                                             &incr_alloc);
+            break;
+        default:
+            break;
+        }
+    }
+
+    /* when zero length found, finish up & delete last */
+    XDeleteProperty (xsl->display, xsl->requestor, xsl->property);
+
+    return incr_base;
+}
+
+/*
+ * wait_selection (selection, request_target)
+ *
+ * Block until we receive a SelectionNotify event, and return its
+ * contents; or NULL in the case of a deletion or error. This assumes we
+ * have already called XConvertSelection, requesting a string (explicitly
+ * XA_STRING) or deletion (delete_atom).
+ */
+static unsigned char *
+wait_selection (Atom selection, Atom request_target)
+{
+    XEvent event;
+    Atom target;
+    int format;
+    unsigned long bytesafter, length;
+    unsigned char * value, * retval = NULL;
+    Bool keep_waiting = True;
+
+    while (keep_waiting)
+    {
+        XNextEvent (display, &event);
+
+        switch (event.type)
+        {
+        case SelectionNotify:
+            if (event.xselection.selection != selection) break;
+
+            if (event.xselection.property == None)
+            {
+                value = NULL;
+                keep_waiting = False;
+            }
+            else if (event.xselection.property == null_atom &&
+                     request_target == delete_atom)
+            {
+            }
+            else
+            {
+                XGetWindowProperty (event.xselection.display,
+                                    event.xselection.requestor,
+                                    event.xselection.property, 0L, 1000000,
+                                    False, (Atom)AnyPropertyType, &target,
+                                    &format, &length, &bytesafter, &value);
+
+                if (request_target == delete_atom && value == NULL)
+                {
+                    keep_waiting = False;
+                }
+                else if (target == incr_atom)
+                {
+                    /* Handle INCR transfers */
+                    retval = wait_incr_selection (selection, &event.xselection,
+                                                  *(long *)value);
+                    keep_waiting = False;
+                }
+                else if (target != utf8_atom && target != XA_STRING &&
+                         target != compound_text_atom &&
+                         request_target != delete_atom)
+                {
+                    /* Report non-TEXT atoms */
+                    free (retval);
+                    retval = NULL;
+                    keep_waiting = False;
+                }
+                else
+                {
+                    retval = xs_strdup (value);
+                    XFree (value);
+                    keep_waiting = False;
+                }
+
+                XDeleteProperty (event.xselection.display,
+                                 event.xselection.requestor,
+                                 event.xselection.property);
+
+            }
+            break;
+        default:
+            break;
+        }
+    }
+
+    return retval;
+}
+
+/*
+ * get_selection (selection, request_target)
+ *
+ * Retrieves the specified selection and returns its value.
+ *
+ * If a non-zero timeout is specified then set a virtual interval
+ * timer. Return NULL and print an error message if the timeout
+ * expires before the selection has been retrieved.
+ */
 static unsigned char *
 get_selection (Atom selection, Atom request_target)
 {
@@ -305,6 +572,19 @@ get_selection (Atom selection, Atom request_target)
     return retval;
 }
 
+/*
+ * get_selection_text (Atom selection)
+ *
+ * Retrieve a text selection. First attempt to retrieve it as UTF_STRING,
+ * and if that fails attempt to retrieve it as a plain XA_STRING.
+ *
+ * NB. Before implementing this, an attempt was made to query TARGETS and
+ * request UTF8_STRING only if listed there, as described in:
+ * http://www.pps.jussieu.fr/~jch/software/UTF8_STRING/UTF8_STRING.text
+ * However, that did not seem to work reliably when tested against various
+ * applications (eg. Mozilla Firefox). This method is of course more
+ * reliable.
+ */
 static unsigned char *
 get_selection_text (Atom selection)
 {
@@ -316,6 +596,47 @@ get_selection_text (Atom selection)
     return retval;
 }
 
+
+/*
+ * SELECTION SETTING
+ * =================
+ *
+ * The following functions allow a given selection to be set, appended to
+ * or cleared, or to exchange the primary and secondary selections.
+ */
+
+/*
+ * copy_sel (s)
+ *
+ * Copy a string into a new selection buffer, and intitialise
+ * current_alloc and total_input to exactly its length.
+ */
+static unsigned char *
+copy_sel (unsigned char * s)
+{
+    if (s)
+    {
+        current_alloc = total_input = xs_strlen (s);
+        return xs_strdup (s);
+    }
+    current_alloc = total_input = 0;
+    return NULL;
+}
+
+/*
+ * read_input (read_buffer, do_select)
+ *
+ * Read input from stdin into the specified read_buffer.
+ *
+ * read_buffer must have been dynamically allocated before calling this
+ * function, or be NULL. Input is read until end-of-file is reached, and
+ * read_buffer will be reallocated to accomodate the entire contents of
+ * the input. read_buffer, which may have been reallocated, is returned
+ * upon completion.
+ *
+ * If 'do_select' is True, this function will first check if any data
+ * is available for reading, and return immediately if not.
+ */
 static unsigned char *
 read_input (unsigned char * read_buffer, Bool do_select)
 {
@@ -400,7 +721,14 @@ try_read:
     return read_buffer;
 }
 
-
+/*
+ * initialise_read (read_buffer)
+ *
+ * Initialises the read_buffer and the state variable current_alloc.
+ * read_buffer is reallocated to accomodate either the entire input
+ * if stdin is a regular file, or at least one block of input otherwise.
+ * If the supplied read_buffer is NULL, a new buffer will be allocated.
+ */
 static unsigned char *
 initialise_read (unsigned char * read_buffer)
 {
@@ -426,7 +754,39 @@ initialise_read (unsigned char * read_buffer)
     return read_buffer;
 }
 
-static void clear_selection (Atom selection)
+/* Forward declaration of refuse_all_incr () */
+static void
+refuse_all_incr (void);
+
+/*
+ * handle_x_errors ()
+ *
+ * XError handler.
+ */
+static int
+handle_x_errors (Display * display, XErrorEvent * eev)
+{
+    char err_buf[MAXLINE];
+
+    /* Make sure to send a refusal to all waiting INCR requests
+     * and delete the corresponding properties. */
+    if (eev->error_code == BadAlloc) refuse_all_incr ();
+
+    XGetErrorText (display, eev->error_code, err_buf, MAXLINE);
+
+    return 0;
+}
+
+/*
+ * clear_selection (selection)
+ *
+ * Clears the specified X selection 'selection'. This requests that no
+ * process should own 'selection'; thus the X server will respond to
+ * SelectionRequests with an empty property and we don't need to leave
+ * a daemon hanging around to service this selection.
+ */
+static void
+clear_selection (Atom selection)
 {
     XSetSelectionOwner (display, selection, None, timestamp);
     /* Call XSync to ensure this operation completes before program
@@ -434,8 +794,14 @@ static void clear_selection (Atom selection)
     XSync (display, False);
 }
 
-
-static Bool own_selection (Atom selection)
+/*
+ * own_selection (selection)
+ *
+ * Requests ownership of the X selection. Returns True if ownership was
+ * granted, and False otherwise.
+ */
+static Bool
+own_selection (Atom selection)
 {
     Window owner;
 
@@ -449,6 +815,7 @@ static Bool own_selection (Atom selection)
     }
     else
     {
+        XSetErrorHandler (handle_x_errors);
         return True;
     }
 }
@@ -456,7 +823,13 @@ static Bool own_selection (Atom selection)
 
 static IncrTrack * incrtrack_list = NULL;
 
-static void add_incrtrack (IncrTrack * it)
+/*
+ * add_incrtrack (it)
+ *
+ * Add 'it' to the head of incrtrack_list.
+ */
+static void
+add_incrtrack (IncrTrack * it)
 {
     if (incrtrack_list)
     {
@@ -575,7 +948,33 @@ notify_incr (IncrTrack * it, HandleResult hr)
                 (unsigned long)NULL, (XEvent *)&ev);
 }
 
+/*
+ * refuse_all_incr ()
+ *
+ * Refuse all INCR transfers in progress. ASSUMES that this is called in
+ * response to an error, and that the program is about to bail out;
+ * ie. incr_track is not cleaned out.
+ */
+static void
+refuse_all_incr (void)
+{
+    IncrTrack * it;
 
+    for (it = incrtrack_list; it; it = it->next)
+    {
+        XDeleteProperty (it->display, it->requestor, it->property);
+        notify_incr (it, HANDLE_ERR);
+        /* Don't bother trashing and list-removing these; we are about to
+         * bail out anyway. */
+    }
+}
+
+/*
+ * complete_incr (it)
+ *
+ * Finish off an INCR retrieval. If it was part of a multiple, continue
+ * that; otherwise, send confirmation that this completed.
+ */
 static void
 complete_incr (IncrTrack * it, HandleResult hr)
 {
@@ -1197,15 +1596,249 @@ set_selection__daemon (Atom selection, unsigned char * sel)
     set_selection (selection, sel);
 }
 
+/*
+ * set_selection_pair (sel_p, sel_s)
+ *
+ * Handles SelectionClear and SelectionRequest events for both the
+ * primary and secondary selections. Returns once SelectionClear events
+ * have been received for both selections. Responds to SelectionRequest
+ * events for the primary selection with text 'sel_p' and for the
+ * secondary selection with text 'sel_s'.
+ */
+static void
+set_selection_pair (unsigned char * sel_p, unsigned char * sel_s)
+{
+    XEvent event;
+    IncrTrack * it;
+
+    if (sel_p)
+    {
+        if (own_selection (XA_PRIMARY) == False)
+            free_string (sel_p);
+    }
+    else
+    {
+        clear_selection (XA_PRIMARY);
+    }
+
+    if (sel_s)
+    {
+        if (own_selection (XA_SECONDARY) == False)
+            free_string (sel_s);
+    }
+    else
+    {
+        clear_selection (XA_SECONDARY);
+    }
+
+    for (;;)
+    {
+        /* Flush before unblocking signals so we send replies before exiting */
+        XFlush (display);
+        XNextEvent (display, &event);
+
+        switch (event.type)
+        {
+        case SelectionClear:
+            if (event.xselectionclear.selection == XA_PRIMARY)
+            {
+                free_string (sel_p);
+                if (sel_s == NULL) return;
+            }
+            else if (event.xselectionclear.selection == XA_SECONDARY)
+            {
+                free_string (sel_s);
+                if (sel_p == NULL) return;
+            }
+            break;
+        case SelectionRequest:
+            if (event.xselectionrequest.selection == XA_PRIMARY)
+            {
+                if (!handle_selection_request (event, sel_p))
+                {
+                    free_string (sel_p);
+                    if (sel_s == NULL) return;
+                }
+            }
+            else if (event.xselectionrequest.selection == XA_SECONDARY)
+            {
+                if (!handle_selection_request (event, sel_s))
+                {
+                    free_string (sel_s);
+                    if (sel_p == NULL) return;
+                }
+            }
+            break;
+        case PropertyNotify:
+            if (event.xproperty.state != PropertyDelete) break;
+
+            it = find_incrtrack (event.xproperty.atom);
+
+            if (it != NULL)
+            {
+                continue_incr (it);
+            }
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+/*
+ * set_selection_pair__daemon (sel_p, sel_s)
+ *
+ * Creates a daemon process to handle selection requests for both the
+ * primary and secondary selections with texts 'sel_p' and 'sel_s'
+ * respectively.
+ *
+ * If both 'sel_p' and 'sel_s' are empty strings (NULL or "") then no
+ * daemon process is created, and both selections are cleared instead.
+ */
+static void
+set_selection_pair__daemon (unsigned char * sel_p, unsigned char * sel_s)
+{
+    if (empty_string (sel_p) && empty_string (sel_s))
+    {
+        clear_selection (XA_PRIMARY);
+        clear_selection (XA_SECONDARY);
+        return;
+    }
+
+    become_daemon ();
+
+    set_selection_pair (sel_p, sel_s);
+}
+
+/*
+ * keep_selections ()
+ *
+ * Takes ownership of both the primary and secondary selections. The current
+ * selection texts are retrieved and a new daemon process is created to
+ * handle both selections unmodified.
+ */
+static void
+keep_selections (void)
+{
+    unsigned char * text1, * text2;
+
+    text1 = get_selection_text (XA_PRIMARY);
+    text2 = get_selection_text (XA_SECONDARY);
+
+    set_selection_pair__daemon (text1, text2);
+}
+
+/*
+ * exchange_selections ()
+ *
+ * Exchanges the primary and secondary selections. The current selection
+ * texts are retrieved and a new daemon process is created to handle both
+ * selections with their texts exchanged.
+ */
+static void
+exchange_selections (void)
+{
+    unsigned char * text1, * text2;
+
+    text1 = get_selection_text (XA_PRIMARY);
+    text2 = get_selection_text (XA_SECONDARY);
+
+    set_selection_pair__daemon (text2, text1);
+}
+
+/*
+ * free_saved_argv ()
+ *
+ * atexit function for freeing argv, after it has been relocated to the
+ * heap.
+ */
+static void
+free_saved_argv (void)
+{
+    int i;
+
+    for (i=0; i < saved_argc; i++)
+    {
+        free (saved_argv[i]);
+    }
+    free (saved_argv);
+}
+
+/*
+ * expand_argv (&argc, &argv)
+ *
+ * Explodes single letter options so that the argument parser can see
+ * all of them. Relocates argv and all arguments to the heap.
+ */
+static void
+expand_argv(int * argc, char **argv[])
+{
+    int i, new_i, arglen, new_argc = *argc;
+    char ** new_argv;
+    char * arg;
+
+    /* Calculate new argc */
+    for (i = 0; i < *argc; i++)
+    {
+        arglen = strlen((*argv)[i]);
+        /* An option we need to expand? */
+        if ((arglen > 2) && (*argv)[i][0] == '-' && (*argv)[i][1] != '-')
+            new_argc += arglen-2;
+    }
+
+    /* Allocate new_argv */
+    new_argv = xs_malloc (new_argc * sizeof(char *));
+
+    /* Copy args into new argv */
+    for (i = 0, new_i = 0; i < *argc; i++)
+    {
+        arglen = strlen((*argv)[i]);
+
+        /* An option we need to expand? */
+        if ((arglen > 2)
+                && (*argv)[i][0] == '-' && (*argv)[i][1] != '-')
+        {
+            /* Make each letter a new argument. */
+
+            char * c = ((*argv)[i] + 1);
+
+            while (*c != '\0')
+            {
+                arg = xs_malloc(sizeof(char) * 3);
+                arg[0] = '-';
+                arg[1] = *c;
+                arg[2] = '\0';
+                new_argv[new_i++] = arg;
+                c++;
+            }
+        }
+        else
+        {
+            /* Simply copy the argument pointer to new_argv */
+            new_argv[new_i++] = _xs_strdup ((*argv)[i]);
+        }
+    }
+
+    /* Set the expected return values */
+    *argc = new_argc;
+    *argv = new_argv;
+
+    /* Save the new argc, argv values and free them on exit */
+    saved_argc = new_argc;
+    saved_argv = new_argv;
+    atexit (free_saved_argv);
+}
+
 int main(int argc, char *argv[])
 {
     Bool do_input = False, do_output = False;
     Bool force_input = False, force_output = False;
     Window root;
-    Atom selection = XA_PRIMARY;
-    int s=0;
-    unsigned char * new_sel = NULL;
+    Atom selection = XA_PRIMARY, test_atom;
+    int i, s=0;
+    unsigned char * old_sel = NULL, * new_sel = NULL;
     char * display_name = NULL;
+    long timeout_ms = 0L;
 
 #define OPT(s) (strcmp (argv[i], (s)) == 0)
 
@@ -1217,9 +1850,11 @@ int main(int argc, char *argv[])
     {
         if (fstat (0, &in_statbuf) == -1)
         {
+            //exit_err ("fstat error on stdin");
         }
         if (S_ISDIR(in_statbuf.st_mode))
         {
+//      exit_err ("-: Is a directory\n");
         }
     }
 
@@ -1227,14 +1862,17 @@ int main(int argc, char *argv[])
     {
         if (fstat (1, &out_statbuf) == -1)
         {
+//      exit_err ("fstat error on stdout");
         }
         if (S_ISDIR(out_statbuf.st_mode))
         {
+//      exit_err ("stdout: Is a directory\n");
         }
     }
 
     display = XOpenDisplay (display_name);
     root = XDefaultRootWindow (display);
+
     window = XCreateSimpleWindow (display, root, 0, 0, 1, 1, 0, 0, 0);
 
 
@@ -1243,6 +1881,10 @@ int main(int argc, char *argv[])
     timestamp = get_timestamp ();
 
     max_req = 4000;
+
+    /* Consistency check */
+    test_atom = XInternAtom (display, "PRIMARY", False);
+    test_atom = XInternAtom (display, "SECONDARY", False);
 
     NUM_TARGETS=0;
 
@@ -1297,7 +1939,7 @@ int main(int argc, char *argv[])
     if (do_output || force_output)
     {
         /* Get the current selection */
-        get_selection_text (selection);
+        old_sel = get_selection_text (selection);
     }
 
     /* handle input and clear modes */
