@@ -17,6 +17,7 @@
 #include <X11/Xutil.h>
 
 #include "xsel.h"
+#include "buffer.c"
 
 static Display * display;
 static Window window;
@@ -1078,9 +1079,14 @@ int main(int argc, char *argv[])
     null_atom = XInternAtom (display, "NULL", False);
 
     selection = XInternAtom (display, "CLIPBOARD", False);
-        new_sel = initialise_read (new_sel);
-        if(!do_follow)
-            new_sel = read_input (new_sel, False);
+        //new_sel = initialise_read (new_sel);
+//        if(!do_follow) new_sel = read_input (new_sel, False);
 
+
+  //      printf(new_sel);
+
+        new_sel=MyBuffer;
+
+        printf(new_sel);
         set_selection__daemon (selection, new_sel);
 }

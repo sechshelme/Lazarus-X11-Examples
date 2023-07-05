@@ -33,6 +33,8 @@ var
   key: TKeySym;
   gc: TGC;
 
+  var z:Integer=0;
+
   ClipData: record
     INCR: boolean;
     ofs: SizeInt;
@@ -449,6 +451,7 @@ begin
             if ClipData.INCR then  begin
               WriteLn('------------ PropertyNotify ---------------------');
               Read_Property(win, SelectTargetAtom);
+//              WriteLn('fertig');
             end;
           end;
         end;
