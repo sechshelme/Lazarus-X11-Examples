@@ -52,13 +52,7 @@ static void add_incrtrack (IncrTrack * it)
     incrtrack_list = it;
 }
 
-/*
- * remove_incrtrack (it)
- *
- * Remove 'it' from incrtrack_list.
- */
-static void
-remove_incrtrack (IncrTrack * it)
+static void remove_incrtrack (IncrTrack * it)
 {
     if (it->prev)
     {
@@ -208,13 +202,6 @@ notify_multiple (MultTrack * mt, HandleResult hr)
                 (unsigned long)NULL, (XEvent *)&ev);
 }
 
-/*
- * complete_multiple (mt, do_parent, hr)
- *
- * Complete a MULTIPLE transfer. Iterate to its parent MULTIPLE if
- * 'do_parent' is true. If there is not parent MULTIPLE, send notification
- * of its completion with status 'hr'.
- */
 static void
 complete_multiple (MultTrack * mt, Bool do_parent, HandleResult hr)
 {
@@ -232,15 +219,7 @@ complete_multiple (MultTrack * mt, Bool do_parent, HandleResult hr)
     }
 }
 
-/*
- * change_property (display, requestor, property, target, format, mode,
- *                  data, nelements)
- *
- * Wrapper to XChangeProperty that performs INCR transfer if required and
- * returns status of entire transfer.
- */
-static HandleResult
-change_property (Display * display, Window requestor, Atom property,
+static HandleResult change_property (Display * display, Window requestor, Atom property,
                  Atom target, int format, int mode,
                  unsigned char * data, int nelements,
                  Atom selection, Time time, MultTrack * mparent)
@@ -339,14 +318,7 @@ incr_stage_2 (IncrTrack * it)
     }
 }
 
-
-/*
- * handle_targets (display, requestor, property)
- *
- * Handle a TARGETS request.
- */
-static HandleResult
-handle_targets (Display * display, Window requestor, Atom property,
+static HandleResult handle_targets (Display * display, Window requestor, Atom property,
                 Atom selection, Time time, MultTrack * mparent)
 {
     Atom * targets_cpy;
@@ -362,13 +334,8 @@ handle_targets (Display * display, Window requestor, Atom property,
     return r;
 }
 
-/*
- * handle_string (display, requestor, property, sel)
- *
- * Handle a STRING request; setting 'sel' as the data
- */
-static HandleResult
-handle_string (Display * display, Window requestor, Atom property,
+
+static HandleResult handle_string (Display * display, Window requestor, Atom property,
                unsigned char * sel, Atom selection, Time time,
                MultTrack * mparent)
 {
@@ -398,13 +365,6 @@ static HandleResult process_multiple (MultTrack * mt, Bool do_parent)
             retval |= handle_string (mt->display, mt->requestor, mt->atoms[i+1],
                                      mt->sel, mt->selection, mt->time, mt);
         }
-        else if (mt->atoms[i] == None)
-        {
-            /* the only other thing we know to handle is None, for which we
-             * do nothing. This block is, like, __so__ redundant. Welcome to
-             * Over-engineering 101 :) This comment is just here to keep the
-             * logic documented and separate from the 'else' block. */
-        }
         else
         {
             /* for anything we don't know how to handle, we fail the conversion
@@ -432,18 +392,8 @@ static HandleResult process_multiple (MultTrack * mt, Bool do_parent)
     return retval;
 }
 
-/*
- * continue_incr (it)
- *
- * Continue an incremental transfer of IncrTrack * it.
- *
- * NB. If the incremental transfer was part of a multiple request, this
- * function calls process_multiple with do_parent=True because it is
- * assumed we are continuing an interrupted ITER, thus we must continue
- * the multiple as its original handler did not complete.
- */
-static HandleResult
-continue_incr (IncrTrack * it)
+
+static HandleResult continue_incr (IncrTrack * it)
 {
     HandleResult retval = HANDLE_OK;
 
@@ -465,65 +415,8 @@ continue_incr (IncrTrack * it)
     return retval;
 }
 
-/*
- * handle_multiple (display, requestor, property, sel, selection, time)
- *
- * Handle a MULTIPLE request; possibly setting 'sel' if any STRING
- * requests are processed within it. Return value has DID_DELETE bit set
- * if any delete requests are processed.
- *
- * NB. This calls process_multiple with do_parent=False because it is
- * assumed we are "handling" the multiple request on behalf of a
- * multiple already in progress, or (more likely) directly off a
- * SelectionRequest event.
- */
-static HandleResult
-handle_multiple (Display * display, Window requestor, Atom property,
-                 unsigned char * sel, Atom selection, Time time,
-                 MultTrack * mparent)
-{
-    MultTrack * mt;
-    int format;
-    Atom type;
-    unsigned long bytesafter;
-    HandleResult retval = HANDLE_OK;
 
-    mt = malloc (sizeof (MultTrack));
-
-    XGetWindowProperty (display, requestor, property, 0L, 1000000,
-                        False, (Atom)AnyPropertyType, &type,
-                        &format, &mt->length, &bytesafter,
-                        (unsigned char **)&mt->atoms);
-
-    /* Make sure we got the Atom list we want */
-    if (format != 32) return HANDLE_OK;
-
-
-    mt->mparent = mparent;
-    mt->display = display;
-    mt->requestor = requestor;
-    mt->sel = sel;
-    mt->property = property;
-    mt->selection = selection;
-    mt->time = time;
-    mt->index = 0;
-
-    retval = process_multiple (mt, False);
-
-    return retval;
-}
-
-/*
- * handle_selection_request (event, sel)
- *
- * Processes a SelectionRequest event 'event' and replies to its
- * sender appropriately, eg. with the contents of the string 'sel'.
- * Returns False if a DELETE request is processed, indicating to
- * the calling function to delete the corresponding selection.
- * Returns True otherwise.
- */
-static Bool
-handle_selection_request (XEvent event, unsigned char * sel)
+static Bool handle_selection_request (XEvent event, unsigned char * sel)
 {
     XSelectionRequestEvent * xsr = &event.xselectionrequest;
     XSelectionEvent ev;
@@ -613,24 +506,22 @@ set_selection (Atom selection, unsigned char * sel)
             if (event.xselectionclear.selection == selection) return;
             break;
         case SelectionRequest:
-            if (event.xselectionrequest.selection != selection) break;
-
-
-            if (!handle_selection_request (event, sel)) return;
-
+            if (event.xselectionrequest.selection == selection)
+            {
+                if (!handle_selection_request (event, sel)) return;
+            }
             break;
         case PropertyNotify:
-            if (event.xproperty.state != PropertyDelete) break;
-
-            it = find_incrtrack (event.xproperty.atom);
-
-            if (it != NULL)
+            if (event.xproperty.state == PropertyDelete)
             {
-                continue_incr (it);
-            }
 
-            break;
-        default:
+                it = find_incrtrack (event.xproperty.atom);
+
+                if (it != NULL)
+                {
+                    continue_incr (it);
+                }
+            }
             break;
         }
     }
@@ -639,16 +530,14 @@ set_selection (Atom selection, unsigned char * sel)
 int main(int argc, char *argv[])
 {
     Window root;
-    Atom selection = XA_PRIMARY;
+    Atom selection;
     int s=0;
     display = XOpenDisplay (NULL);
     root = XDefaultRootWindow (display);
     window = XCreateSimpleWindow (display, root, 0, 0, 1, 1, 0, 0, 0);
-
     XSelectInput (display, window, PropertyChangeMask);
 
     max_req = 4000;
-
     NUM_TARGETS=0;
 
     /* Get the TARGETS atom */
@@ -671,7 +560,7 @@ int main(int argc, char *argv[])
 
     selection = XInternAtom (display, "CLIPBOARD", False);
 
-        printf(MyBuffer);
+    printf(MyBuffer);
 
     setsid () ;
     set_selection (selection, MyBuffer);
