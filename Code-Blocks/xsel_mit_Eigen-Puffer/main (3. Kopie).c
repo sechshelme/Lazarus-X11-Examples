@@ -1,6 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
+#include <errno.h>
+#include <unistd.h>
 #include <string.h>
+#include <pwd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <fcntl.h>
+#include <sys/time.h>
+#include <setjmp.h>
+#include <signal.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
@@ -14,6 +25,7 @@ static Window window;
 /* Maxmimum request size supported by this X server */
 static long max_req;
 
+static Atom multiple_atom; /* The MULTIPLE atom */
 static Atom targets_atom; /* The TARGETS atom */
 static Atom incr_atom; /* The INCR atom */
 static Atom text_atom; /* The TEXT atom */
@@ -21,6 +33,115 @@ static Atom text_atom; /* The TEXT atom */
 #define MAX_NUM_TARGETS 9
 static int NUM_TARGETS;
 static Atom supported_targets[MAX_NUM_TARGETS];
+
+/* do_zeroflush: Use only last zero-separated part of input.
+ * All previous parts are discarded */
+static Bool do_zeroflush = False;
+
+/* do_follow: Follow mode for output */
+static Bool do_follow = False;
+
+/* fstat() on stdin and stdout */
+static struct stat in_statbuf;
+
+static int total_input = 0;
+static int current_alloc = 0;
+
+static void *
+xs_malloc (size_t size)
+{
+    void * ret;
+
+    if (size == 0) size = 1;
+    ret = malloc (size);
+
+    return ret;
+}
+
+static unsigned char *
+read_input (unsigned char * read_buffer, Bool do_select)
+{
+    int insize = in_statbuf.st_blksize;
+    unsigned char * new_buffer = NULL;
+    int d, fatal = 0, nfd;
+    ssize_t n;
+    fd_set fds;
+    struct timeval select_timeout;
+
+    do
+    {
+
+        if (do_select)
+        {
+try_read:
+            /* Check if data is available for reading -- if not, return immediately */
+            FD_ZERO (&fds);
+            FD_SET (0, &fds);
+
+            select_timeout.tv_sec = (time_t)0;
+            select_timeout.tv_usec = (time_t)0;
+
+            nfd = select (1, &fds, NULL, NULL, &select_timeout);
+            if (nfd == -1)
+            {
+                if (errno == EINTR) goto try_read;
+//        else exit_err ("select error");
+            }
+            else if (nfd == 0)
+            {
+                break;
+            }
+        }
+
+        /* check if buffer is full */
+        if (current_alloc == total_input)
+        {
+            if ((d = (current_alloc % insize)) != 0) current_alloc += (insize-d);
+            current_alloc *= 2;
+            new_buffer = realloc (read_buffer, current_alloc);
+            read_buffer = new_buffer;
+        }
+
+        /* read the remaining data, up to the optimal block length */
+        n = read (0, &read_buffer[total_input],
+                  MIN(current_alloc - total_input, insize));
+        if (n == -1)
+        {
+            switch (errno)
+            {
+            case EAGAIN:
+            case EINTR:
+                break;
+            default:
+                perror ("read error");
+                fatal = 1;
+                break;
+            }
+        }
+        total_input += n;
+    }
+    while (n != 0 && !fatal);
+
+    read_buffer[total_input] = '\0';
+
+    if(do_zeroflush && total_input > 0)
+    {
+        int i;
+        for(i=total_input-1; i>=0; i--)
+        {
+            if(read_buffer[i] == '\0')
+            {
+                memmove(&read_buffer[0], &read_buffer[i+1], total_input - i);
+                total_input = total_input - i - 1;
+                read_buffer[total_input] = '\0';
+                break;
+            }
+        }
+    }
+
+    return read_buffer;
+}
+
 
 static Bool own_selection (Atom selection)
 {
@@ -85,7 +206,7 @@ fresh_incrtrack (void)
 {
     IncrTrack * it;
 
-    it = malloc (sizeof (IncrTrack));
+    it = xs_malloc (sizeof (IncrTrack));
     add_incrtrack (it);
 
     return it;
@@ -199,7 +320,7 @@ notify_multiple (MultTrack * mt, HandleResult hr)
     ev.requestor = mt->requestor;
     ev.selection = mt->selection;
     ev.time = mt->time;
-    ev.target = 0;
+    ev.target = multiple_atom;
 
     if (hr & HANDLE_ERR) ev.property = None;
     else ev.property = mt->property;
@@ -393,6 +514,11 @@ static HandleResult process_multiple (MultTrack * mt, Bool do_parent)
             retval |= handle_targets (mt->display, mt->requestor, mt->atoms[i+1],
                                       mt->selection, mt->time, mt);
         }
+        else if (mt->atoms[i] == multiple_atom)
+        {
+            retval |= handle_multiple (mt->display, mt->requestor, mt->atoms[i+1],
+                                       mt->sel, mt->selection, mt->time, mt);
+        }
         else if (mt->atoms[i] == XA_STRING || mt->atoms[i] == text_atom)
         {
             retval |= handle_string (mt->display, mt->requestor, mt->atoms[i+1],
@@ -488,7 +614,7 @@ handle_multiple (Display * display, Window requestor, Atom property,
     unsigned long bytesafter;
     HandleResult retval = HANDLE_OK;
 
-    mt = malloc (sizeof (MultTrack));
+    mt = xs_malloc (sizeof (MultTrack));
 
     XGetWindowProperty (display, requestor, property, 0L, 1000000,
                         False, (Atom)AnyPropertyType, &type,
@@ -537,12 +663,32 @@ handle_selection_request (XEvent event, unsigned char * sel)
     ev.time = xsr->time;
     ev.target = xsr->target;
 
+    if (xsr->property == None && ev.target != multiple_atom)
+    {
+        /* Obsolete requestor */
+        xsr->property = xsr->target;
+    }
+
     if (ev.target == targets_atom)
     {
         /* Return a list of supported targets (TARGETS)*/
         ev.property = xsr->property;
         hr = handle_targets (ev.display, ev.requestor, ev.property,
                              ev.selection, ev.time, NULL);
+    }
+    else if (ev.target == multiple_atom)
+    {
+        if (xsr->property == None)   /* Invalid MULTIPLE request */
+        {
+            ev.property = None;
+        }
+        else
+        {
+            /* Handle MULTIPLE request */
+            ev.property = xsr->property;
+            hr = handle_multiple (ev.display, ev.requestor, ev.property, sel,
+                                  ev.selection, ev.time, NULL);
+        }
     }
     else if (ev.target == XA_STRING || ev.target == text_atom)
     {
@@ -600,11 +746,8 @@ set_selection (Atom selection, unsigned char * sel)
 
     for (;;)
     {
-
-
         /* Flush before unblocking signals so we send replies before exiting */
         XFlush (display);
-
         XNextEvent (display, &event);
 
         switch (event.type)
@@ -615,6 +758,8 @@ set_selection (Atom selection, unsigned char * sel)
         case SelectionRequest:
             if (event.xselectionrequest.selection != selection) break;
 
+            if (do_follow)
+                sel = read_input (sel, True);
 
             if (!handle_selection_request (event, sel)) return;
 
@@ -636,20 +781,48 @@ set_selection (Atom selection, unsigned char * sel)
     }
 }
 
+/*
+ * set_selection__daemon (selection, sel)
+ *
+ * Creates a daemon process to handle selection requests for the
+ * specified selection 'selection', to respond with selection text 'sel'.
+ * If 'sel' is an empty string (NULL or "") then no daemon process is
+ * created and the specified selection is cleared instead.
+ */
+static void
+set_selection__daemon (Atom selection, unsigned char * sel)
+{
+//    if (empty_string (sel) && !do_follow)
+
+    setsid () ;
+
+    set_selection (selection, sel);
+}
+
 int main(int argc, char *argv[])
 {
     Window root;
     Atom selection = XA_PRIMARY;
     int s=0;
-    display = XOpenDisplay (NULL);
+    unsigned char * new_sel = NULL;
+    char * display_name = NULL;
+
+    display = XOpenDisplay (display_name);
     root = XDefaultRootWindow (display);
     window = XCreateSimpleWindow (display, root, 0, 0, 1, 1, 0, 0, 0);
 
+
+    /* Get a timestamp */
     XSelectInput (display, window, PropertyChangeMask);
 
     max_req = 4000;
 
     NUM_TARGETS=0;
+
+    /* Get the MULTIPLE atom */
+    multiple_atom = XInternAtom (display, "MULTIPLE", False);
+    supported_targets[s++] = multiple_atom;
+    NUM_TARGETS++;
 
     /* Get the TARGETS atom */
     targets_atom = XInternAtom (display, "TARGETS", False);
@@ -669,10 +842,16 @@ int main(int argc, char *argv[])
     supported_targets[s++] = XA_STRING;
     NUM_TARGETS++;
 
+    /* Get the NULL atom */
     selection = XInternAtom (display, "CLIPBOARD", False);
+        //new_sel = initialise_read (new_sel);
+//        if(!do_follow) new_sel = read_input (new_sel, False);
 
-        printf(MyBuffer);
 
-    setsid () ;
-    set_selection (selection, MyBuffer);
+  //      printf(new_sel);
+
+        new_sel=MyBuffer;
+
+        printf(new_sel);
+        set_selection__daemon (selection, MyBuffer);
 }

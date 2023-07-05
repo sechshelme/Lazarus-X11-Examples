@@ -32,23 +32,24 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
-  s:String;
-  i, j: Integer;
+  s: string;
+  i, j: integer;
 begin
   Memo1.Lines.Clear;
-
-    for j := 1 to 100000 do begin s:='';
-  for i := 1 to 70 do begin
-if i mod 8 = 0 then begin
-      s:=s+ ' ';
-    end else begin
-      s :=s+ char(Random(26) + 65);
+  Memo1.Lines.Add('static char * MyBuffer = "\');
+  for j := 1 to 100000 do begin
+    s := '';
+    for i := 1 to 70 do begin
+      if i mod 8 = 0 then begin
+        s := s + ' ';
+      end else begin
+        s := s + char(Random(26) + 65);
+      end;
     end;
+    Memo1.Lines.Add(IntToStr(j) + ': ' + s + '\n\');
+
   end;
-  Memo1.Lines.Add(IntToStr(j)+': '+ s+'\n\');
-
-    end;
+  Memo1.Lines.Add('\0";');
 end;
 
 end.
-

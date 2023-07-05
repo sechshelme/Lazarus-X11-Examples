@@ -8,6 +8,8 @@ Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.
 // https://stackoverflow.com/questions/27378318/c-get-string-from-clipboard-on-linux
 // https://www.uninformativ.de/blog/postings/2017-04-02/0/POSTING-en.html
 
+// https://stackoverflow.com/questions/67813915/xlib-how-to-correctly-cancel-the-process-of-incremental-data-transfer
+
 program Project1;
 
 uses
@@ -169,41 +171,43 @@ var
       XSendEvent(dis, ev.requestor, False, 0, @ev);
 
       if large then begin
-        WriteLn('larga 1');
+        WriteLn('large 1');
         ClipboardString[1]:='1';
         ClipboardString[2]:='1';
         ClipboardString[3]:='1';
         ClipboardString[4]:='1';
         R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-        WriteLn('larga 2');
+        WriteLn('large 2');
 
         ev._type := PropertyNotify;
         XSendEvent(dis, ev.requestor, False, 0, @ev);
 
-        WriteLn('larga 22');
+        WriteLn('large 22');
 
 //        wait;
 //        XNextEvent(dis, @Event);
-//
-//
-//        WriteLn('larga 3');
-//        ClipboardString[1]:='2';
-//        ClipboardString[2]:='2';
-//        ClipboardString[3]:='2';
-//        ClipboardString[4]:='2';
-//        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-//        WriteLn('larga 4');
-//
-//        ev._type := PropertyNotify;
-//        XSendEvent(dis, ev.requestor, False, 0, @ev);
-//
-//
-//
-//        //WriteLn('larga 5');
-//        //R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, nil, 0);
-//        //WriteLn('larga 6');
-//        //
-//        //
+XDeleteProperty(ev.display,ev.requestor,AP.XA_UTF8);
+
+
+
+        WriteLn('large 3');
+        ClipboardString[1]:='2';
+        ClipboardString[2]:='2';
+        ClipboardString[3]:='2';
+        ClipboardString[4]:='2';
+        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
+        WriteLn('large 4');
+
+        ev._type := PropertyNotify;
+        XSendEvent(dis, ev.requestor, False, 0, @ev);
+
+
+
+        //WriteLn('larga 5');
+        //R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, nil, 0);
+        //WriteLn('larga 6');
+        //
+        //
 
         large := False;
       end;
@@ -338,6 +342,7 @@ var
   MyWindows: TMyWin;
 
 begin
+  Randomize;
   MyWindows := TMyWin.Create;
   MyWindows.Run;
   MyWindows.Free;

@@ -607,6 +607,14 @@ set_selection (Atom selection, unsigned char * sel)
 
         XNextEvent (display, &event);
 
+     if (event.type != 28 ) {
+
+    printf("vorher\n");
+    printf("%i\n",event.type);
+    }
+
+
+
         switch (event.type)
         {
         case SelectionClear:
@@ -627,6 +635,7 @@ set_selection (Atom selection, unsigned char * sel)
             if (it != NULL)
             {
                 continue_incr (it);
+//                exit(0);
             }
 
             break;
@@ -645,6 +654,8 @@ int main(int argc, char *argv[])
     root = XDefaultRootWindow (display);
     window = XCreateSimpleWindow (display, root, 0, 0, 1, 1, 0, 0, 0);
 
+
+    /* Get a timestamp */
     XSelectInput (display, window, PropertyChangeMask);
 
     max_req = 4000;
@@ -669,10 +680,12 @@ int main(int argc, char *argv[])
     supported_targets[s++] = XA_STRING;
     NUM_TARGETS++;
 
+    /* Get the NULL atom */
     selection = XInternAtom (display, "CLIPBOARD", False);
-
         printf(MyBuffer);
+//        set_selection__daemon (selection, MyBuffer);
 
     setsid () ;
     set_selection (selection, MyBuffer);
+
 }

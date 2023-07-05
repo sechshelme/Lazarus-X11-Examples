@@ -14,6 +14,7 @@ static Window window;
 /* Maxmimum request size supported by this X server */
 static long max_req;
 
+static Atom multiple_atom; /* The MULTIPLE atom */
 static Atom targets_atom; /* The TARGETS atom */
 static Atom incr_atom; /* The INCR atom */
 static Atom text_atom; /* The TEXT atom */
@@ -199,7 +200,7 @@ notify_multiple (MultTrack * mt, HandleResult hr)
     ev.requestor = mt->requestor;
     ev.selection = mt->selection;
     ev.time = mt->time;
-    ev.target = 0;
+    ev.target = multiple_atom;
 
     if (hr & HANDLE_ERR) ev.property = None;
     else ev.property = mt->property;
@@ -393,6 +394,11 @@ static HandleResult process_multiple (MultTrack * mt, Bool do_parent)
             retval |= handle_targets (mt->display, mt->requestor, mt->atoms[i+1],
                                       mt->selection, mt->time, mt);
         }
+        else if (mt->atoms[i] == multiple_atom)
+        {
+            retval |= handle_multiple (mt->display, mt->requestor, mt->atoms[i+1],
+                                       mt->sel, mt->selection, mt->time, mt);
+        }
         else if (mt->atoms[i] == XA_STRING || mt->atoms[i] == text_atom)
         {
             retval |= handle_string (mt->display, mt->requestor, mt->atoms[i+1],
@@ -537,12 +543,32 @@ handle_selection_request (XEvent event, unsigned char * sel)
     ev.time = xsr->time;
     ev.target = xsr->target;
 
+    if (xsr->property == None && ev.target != multiple_atom)
+    {
+        /* Obsolete requestor */
+        xsr->property = xsr->target;
+    }
+
     if (ev.target == targets_atom)
     {
         /* Return a list of supported targets (TARGETS)*/
         ev.property = xsr->property;
         hr = handle_targets (ev.display, ev.requestor, ev.property,
                              ev.selection, ev.time, NULL);
+    }
+    else if (ev.target == multiple_atom)
+    {
+        if (xsr->property == None)   /* Invalid MULTIPLE request */
+        {
+            ev.property = None;
+        }
+        else
+        {
+            /* Handle MULTIPLE request */
+            ev.property = xsr->property;
+            hr = handle_multiple (ev.display, ev.requestor, ev.property, sel,
+                                  ev.selection, ev.time, NULL);
+        }
     }
     else if (ev.target == XA_STRING || ev.target == text_atom)
     {
@@ -607,6 +633,14 @@ set_selection (Atom selection, unsigned char * sel)
 
         XNextEvent (display, &event);
 
+     if (event.type != 28 ) {
+
+    printf("vorher\n");
+    printf("%i\n",event.type);
+    }
+
+
+
         switch (event.type)
         {
         case SelectionClear:
@@ -627,6 +661,7 @@ set_selection (Atom selection, unsigned char * sel)
             if (it != NULL)
             {
                 continue_incr (it);
+//                exit(0);
             }
 
             break;
@@ -645,11 +680,18 @@ int main(int argc, char *argv[])
     root = XDefaultRootWindow (display);
     window = XCreateSimpleWindow (display, root, 0, 0, 1, 1, 0, 0, 0);
 
+
+    /* Get a timestamp */
     XSelectInput (display, window, PropertyChangeMask);
 
     max_req = 4000;
 
     NUM_TARGETS=0;
+
+    /* Get the MULTIPLE atom */
+    multiple_atom = XInternAtom (display, "MULTIPLE", False);
+    supported_targets[s++] = multiple_atom;
+    NUM_TARGETS++;
 
     /* Get the TARGETS atom */
     targets_atom = XInternAtom (display, "TARGETS", False);
@@ -669,10 +711,12 @@ int main(int argc, char *argv[])
     supported_targets[s++] = XA_STRING;
     NUM_TARGETS++;
 
+    /* Get the NULL atom */
     selection = XInternAtom (display, "CLIPBOARD", False);
-
         printf(MyBuffer);
+//        set_selection__daemon (selection, MyBuffer);
 
     setsid () ;
     set_selection (selection, MyBuffer);
+
 }

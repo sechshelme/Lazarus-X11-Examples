@@ -378,6 +378,7 @@ var
       if ret_items = 0 then begin
         ClipData.INCR := False;
         WriteLn('INCR_Count: ', INCR_Count);
+        INCR_Count:=0;
         WriteLn('Data_Count: ', Length(ClipData.Data));
       end ;
       XFree(prop_return);
