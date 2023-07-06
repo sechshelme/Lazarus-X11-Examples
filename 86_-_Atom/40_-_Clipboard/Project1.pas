@@ -23,13 +23,16 @@ uses
   x;
 
 type
-  TAtomPara = record
-      XA_UTF8,
-      XA_STRING,
-      XA_TARGETS,
-      XA_TEXT,
+  TTargetAtoms = record
+    XA_UTF8,
+    XA_STRING,
+    XA_TARGETS,
+    XA_TEXT: TAtom;
+  end;
 
-    XA_CLIPBOARD, XSEL_DATA    : TAtom;
+  TAtomPara = record
+    Targets: TTargetAtoms;
+    XA_CLIPBOARD, XSEL_DATA: TAtom;
   end;
 
 type
@@ -79,7 +82,7 @@ var
     Writeln('Clipboard auslesen');
     if Event.xselection._property <> 0 then begin
       XGetWindowProperty(dis, win, AP.XSEL_DATA, 0, MaxSIntValue, False, AnyPropertyType, @targetFormat, @resbits, @ressize, @restail, @res);
-      if targetFormat = AP.XA_UTF8 then begin
+      if targetFormat = AP.Targets.XA_UTF8 then begin
         WriteLn('UTF-8 io');
       end else begin
         WriteLn('error:', XGetAtomName(dis, targetFormat));
@@ -100,6 +103,15 @@ var
     ev: TXSelectionEvent;
     xsr: PXSelectionRequestEvent;
     R: cint;
+
+    procedure PrintName(Titel: string; w: TWindow);
+    var
+      prop: TXTextProperty;
+    begin
+      XGetWMName(dis, ev.requestor, @prop);
+      WriteLn('--- Schreibe: ', Titel, ' ---  Nr: 0x', IntToHex(w, 8), ' Name: ', PChar(prop.Value));
+    end;
+
   begin
     //          wait;
     WriteLn('SelectionRequest');
@@ -115,24 +127,24 @@ var
       ev._property := xsr^._property;
       ev.serial := 0;
       ev.send_event := 0;
-      if ev.target = AP.XA_TARGETS then begin
-        WriteLn('--- Schreibe  TARGETS ---  ',ev.requestor);
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AP.XA_UTF8, 4);
+      if ev.target = AP.Targets.XA_TARGETS then begin
+        PrintName('--- Schreibe  TARGETS ---  ', ev.requestor);
+        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AP.Targets, SizeOf(TTargetAtoms) div SizeOf(TAtom));
 
       end else if ev.target = XA_STRING then begin
-        WriteLn('--- Schreibe  STRING ---  ',ev.requestor);
-        ClipboardString:='-- STRING --'+ClipboardString;
+        PrintName('--- Schreibe  STRING ---  ', ev.requestor);
+        ClipboardString := '-- STRING --' + ClipboardString;
         R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_STRING, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
 
-      end else if ev.target = AP.XA_TEXT then  begin
-        WriteLn('--- Schreibe  TEXT ---  ',ev.requestor);
-        ClipboardString:='-- TEXT --'+ClipboardString;
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_TEXT, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
+      end else if ev.target = AP.Targets.XA_TEXT then  begin
+        PrintName('--- Schreibe  TEXT ---  ', ev.requestor);
+        ClipboardString := '-- TEXT --' + ClipboardString;
+        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.Targets.XA_TEXT, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
 
-      end else if ev.target = AP.XA_UTF8 then  begin
-        WriteLn('--- Schreibe  UTF8 ---  ',ev.requestor);
-        ClipboardString:='-- UTF-8 --'+ClipboardString;
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
+      end else if ev.target = AP.Targets.XA_UTF8 then  begin
+        PrintName('--- Schreibe  UTF8 ---  ', ev.requestor);
+        ClipboardString := '-- UTF-8 --' + ClipboardString;
+        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.Targets.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
 
       end else begin
         ev._property := None;
@@ -152,10 +164,10 @@ var
       Halt(1);
     end;
 
-    AP.XA_TARGETS := XInternAtom(dis, 'TARGETS', False);
-    AP.XA_UTF8 := XInternAtom(dis, 'UTF8_STRING', False);
-    AP.XA_TEXT :=  XInternAtom(dis, 'TEXT', False);
-    AP.XA_STRING := XA_STRING;
+    AP.Targets.XA_TARGETS := XInternAtom(dis, 'TARGETS', False);
+    AP.Targets.XA_UTF8 := XInternAtom(dis, 'UTF8_STRING', False);
+    AP.Targets.XA_TEXT := XInternAtom(dis, 'TEXT', False);
+    AP.Targets.XA_STRING := XA_STRING;
 
     AP.XA_CLIPBOARD := XInternAtom(dis, 'CLIPBOARD', False);
 
@@ -163,11 +175,11 @@ var
     //    AP.XSEL_DATA := XInternAtom(dis, 'XSEL_DATA', False);
     AP.XSEL_DATA := AP.XA_CLIPBOARD;
 
-    WriteLn(AP.XA_TARGETS);
-    WriteLn(AP.XA_TEXT);
+    WriteLn(AP.Targets.XA_TARGETS);
+    WriteLn(AP.Targets.XA_TEXT);
 
     WriteLn(AP.XA_CLIPBOARD);
-    WriteLn(AP.XA_UTF8);
+    WriteLn(AP.Targets.XA_UTF8);
     WriteLn(AP.XSEL_DATA);
 
     scr := DefaultScreen(dis);
@@ -188,10 +200,10 @@ var
 
   procedure TMyWin.Run;
   const
-//    L = 1000 *1000 ;
-    L = 100 ;
+    //    L = 1000 *1000 ;
+    L = 100;
   var
-    i: Integer;
+    i: integer;
   begin
     // Ereignisschleife
     while (True) do begin
@@ -209,7 +221,7 @@ var
             XK_v: begin
               WriteLn('Auslesen UTGF8 einleiten');
               with AP do begin
-                XConvertSelection(dis, XA_CLIPBOARD, XA_UTF8, XSEL_DATA, win, CurrentTime);
+                XConvertSelection(dis, XA_CLIPBOARD, Targets.XA_UTF8, XSEL_DATA, win, CurrentTime);
               end;
             end;
             XK_t: begin

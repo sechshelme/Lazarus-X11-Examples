@@ -406,7 +406,7 @@ begin
   gc := XCreateGC(dis, win, 0, nil);
 
   XSelectInput(dis, win, KeyPressMask or PropertyChangeMask or ExposureMask);
-  XStoreName(dis, win, 'Mein Fenster');
+  XStoreName(dis, win, 'Show Targets and Data');
   XMapWindow(dis, win);
 
   while (True) do begin
