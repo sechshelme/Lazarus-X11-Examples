@@ -108,7 +108,7 @@ var
     var
       prop: TXTextProperty;
     begin
-      XGetWMName(dis, ev.requestor, @prop);
+      XGetWMName(dis, w, @prop);
       WriteLn('--- Schreibe: ', Titel, ' ---  Nr: 0x', IntToHex(w, 8), ' Name: ', PChar(prop.Value));
     end;
 

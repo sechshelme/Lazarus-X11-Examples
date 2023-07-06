@@ -27,14 +27,13 @@ var
   Event: TXEvent;
   scr: cint;
   XA_CLIPBOARD, XA_TARGETS: TAtom;
-  SelectTargetAtom: TAtom=0;
+  SelectTargetAtom: TAtom = 0;
   Target_List: TAtoms;
   i: integer;
   key: TKeySym;
   gc: TGC;
 
-  var z:Integer=0;
-
+var
   ClipData: record
     INCR: boolean;
     ofs: SizeInt;
@@ -74,6 +73,19 @@ var
   //          isInitialised = true;
   //      }
   //  }
+
+  const TextAtoms:TStringArray=(
+  'STRING',
+  'UTF8_STRING',
+  'COMPOUND_TEXT',
+  'text/plain',
+  'text/plain;charset=utf-8',
+  'text/html',
+  'text/uri-list',
+  'text/rtf',
+  'text/richtext',
+
+  'TEXT');
 
 
   function GetAtom(Name: PChar): TAtom;
@@ -121,8 +133,8 @@ var
     typ: array [0..3] of char;
     Width, Height: uint32;
   end;
+
   var
-    PNGHeader: TPNGHeader;
     Signatur: array[0..8] of char;
     i, ofs: integer;
     size, CRC: uint32;
@@ -189,9 +201,7 @@ var
 
 
   var
-    size: PInt32;
-    w, w2, h: int32;
-    headerSize, i: SizeInt;
+    w2: int32;
     col: culong;
     x, y: integer;
     ofs: SizeInt;
@@ -252,13 +262,13 @@ var
     WriteLn(len, ' Bytes gespeichert.');
   end;
 
-  function RetInAtom(ret_type: TAtom; AtomList: array of PChar): boolean;
+  function RetInAtom(ret_type: TAtom; AtomList: TStringArray): boolean;
   var
     i: integer;
   begin
     Result := False;
     for i := 0 to Length(AtomList) - 1 do begin
-      if GetAtom(AtomList[i]) = ret_type then begin
+      if GetAtom( PChar( AtomList[i])) = ret_type then begin
         Result := True;
         Exit;
       end;
@@ -266,6 +276,7 @@ var
   end;
 
   function Read_Property(w: TWindow; targetAtom: TAtom): string;
+
   var
     ret_type: TAtom;
     ret_format: cint;
@@ -274,7 +285,7 @@ var
     i: integer;
     ch: char;
   const
-    INCR_Count:SizeInt=0;
+    INCR_Count: SizeInt = 0;
   begin
     Result := '';
     WriteLn();
@@ -305,7 +316,7 @@ var
             WriteLn('Nr: ', prop_return[i]: 5, '  Name: ', XGetAtomName(dis, prop_return[i]));
           end;
         end else if ret_type = GetAtom('INCR') then  begin
-          INCR_Count:=0;
+          INCR_Count := 0;
           ClipData.INCR := True;
           WriteLn('Buffer zu gross !');
           WriteLn('Max Buffersize: ', prop_return[0]);
@@ -339,7 +350,7 @@ var
             end;
           end;
           WriteLn();
-        end else if RetInAtom(ret_type, ['STRING', 'UTF8_STRING', 'COMPOUND_TEXT', 'text/plain', 'TEXT']) then  begin
+        end else if RetInAtom(ret_type, TextAtoms) then  begin
           for i := 0 to Length(ClipData.Data) - 1 do begin
             if i = 0 then begin
               Write('"');
@@ -378,12 +389,23 @@ var
       if ret_items = 0 then begin
         ClipData.INCR := False;
         WriteLn('INCR_Count: ', INCR_Count);
-        INCR_Count:=0;
+        INCR_Count := 0;
         WriteLn('Data_Count: ', Length(ClipData.Data));
-      end ;
+      end;
+
       XFree(prop_return);
     end;
   end;
+
+procedure PrintName(w: TWindow);
+var
+  prop: TXTextProperty;
+begin
+  XGetWMName(dis, w, @prop);
+  WriteLn('--- Empfange Daten von Win. Nr: 0x', IntToHex(w, 8), ' Name: ', PChar(prop.Value));
+end;
+
+
 
 begin
   dis := XOpenDisplay(nil);
@@ -418,9 +440,8 @@ begin
       end;
       SelectionNotify: begin
         if Event.xselection.selection = XA_CLIPBOARD then begin
-          SelectTargetAtom:=   Event.xselection.target;
+          SelectTargetAtom := Event.xselection.target;
           WriteLn('------------ SelectionNotify ---------------------');
-          //          SelectTargetAtom := Event.xselection.target;
           if SelectTargetAtom = 0 then begin
             WriteLn('Ungültiges Atom !');
           end else if SelectTargetAtom = XA_TARGETS then  begin
@@ -452,7 +473,7 @@ begin
             if ClipData.INCR then  begin
               WriteLn('------------ PropertyNotify ---------------------');
               Read_Property(win, SelectTargetAtom);
-//              WriteLn('fertig');
+              //              WriteLn('fertig');
             end;
           end;
         end;
@@ -482,6 +503,18 @@ begin
           end;
         end;
       end;
+//      // Wird ausgelöst, sobald Daten extern vom Clipboard verlangt werden.
+//      SelectionRequest: begin
+//        WriteLn('SelectionRequest');
+//        PrintName(Event.xselectionrequest.requestor);
+////        WriteClipboard;
+//      end;
+//      // Wird ausgelöst, sobald eine andere App Daten fürs Clipboard hat.
+//      SelectionClear: begin
+//        WriteLn('SelectionClear');
+//        PrintName(Event.xselectionclear.window);
+////      WriteLn('Eine andere App hat Clipboard Daten');
+//      end;
     end;
   end;
 
