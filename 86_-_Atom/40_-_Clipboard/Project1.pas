@@ -8,6 +8,8 @@ Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.
 // https://stackoverflow.com/questions/27378318/c-get-string-from-clipboard-on-linux
 // https://www.uninformativ.de/blog/postings/2017-04-02/0/POSTING-en.html
 
+// https://github.com/dacap/clip/blob/main/clip_x11.cpp
+
 program Project1;
 
 uses
