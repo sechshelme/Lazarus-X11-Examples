@@ -29,7 +29,8 @@ type
     XA_UTF8,
     XA_STRING,
     XA_TARGETS,
-    XA_TEXT: TAtom;
+    XA_TEXT,
+    XA_GTK_TEXT_BUFFER_CONTENTS: TAtom;
   end;
 
   TAtomPara = record
@@ -148,7 +149,13 @@ var
         ClipboardString := '-- UTF-8 --' + ClipboardString;
         R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.Targets.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
 
+      end else if ev.target = AP.Targets.XA_GTK_TEXT_BUFFER_CONTENTS then  begin
+        PrintName('--- Schreibe  GTK_TEXT_BUFFER_CONTENTS ---  ', ev.requestor);
+        ClipboardString := '-- GTK_TEXT_BUFFER_CONTENTS --' + ClipboardString;
+        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.Targets.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
+
       end else begin
+        WriteLn('Unbekanntest Target: ',XGetAtomName(dis,ev.target));
         ev._property := None;
       end;
       if (R and 2) = 0 then begin
@@ -169,6 +176,7 @@ var
     AP.Targets.XA_TARGETS := XInternAtom(dis, 'TARGETS', False);
     AP.Targets.XA_UTF8 := XInternAtom(dis, 'UTF8_STRING', False);
     AP.Targets.XA_TEXT := XInternAtom(dis, 'TEXT', False);
+    AP.Targets.XA_GTK_TEXT_BUFFER_CONTENTS := XInternAtom(dis, 'GTK_TEXT_BUFFER_CONTENTS', False);
     AP.Targets.XA_STRING := XA_STRING;
 
     AP.XA_CLIPBOARD := XInternAtom(dis, 'CLIPBOARD', False);
