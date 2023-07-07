@@ -83,6 +83,7 @@ var
   'text/html',
   'text/uri-list',
   'text/rtf',
+  'text/ico',
   'text/richtext',
 
   'TEXT');

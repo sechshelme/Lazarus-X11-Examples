@@ -22,6 +22,8 @@ uses
   xatom,
   x;
 
+function XmuClientWindow(ADisplay: PDisplay; AWindow: TWindow): TWindow; cdecl; external 'Xmu';
+
 type
   TTargetAtoms = record
     XA_UTF8,
@@ -104,7 +106,7 @@ var
     xsr: PXSelectionRequestEvent;
     R: cint;
 
-    procedure PrintName(Titel: string; w: TWindow);
+    procedure PrintName(const Titel: string; w: TWindow);
     var
       prop: TXTextProperty;
     begin
