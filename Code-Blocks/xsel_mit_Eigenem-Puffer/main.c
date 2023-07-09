@@ -21,12 +21,10 @@ static Atom UTF_8_atom;
 static int NUM_TARGETS;
 static Atom supported_targets[MAX_NUM_TARGETS];
 
-static Bool own_selection (Atom selection)
+void own_selection (Atom selection)
 {
     XSetSelectionOwner (display, selection, window, 0);
     XGetSelectionOwner (display, selection);
-
-    return True;
 }
 
 
@@ -200,7 +198,7 @@ static HandleResult continue_incr (IncrTrack * it)
 }
 
 
-static Bool handle_selection_request (XEvent event, unsigned char * sel)
+void handle_selection_request (XEvent event, unsigned char * sel)
 {
     XSelectionRequestEvent * xsr = &event.xselectionrequest;
     XSelectionEvent ev;
@@ -231,7 +229,7 @@ static Bool handle_selection_request (XEvent event, unsigned char * sel)
         ev.property = None;
     }
 
-    retval = (hr & DID_DELETE) ? False : True;
+    //(retval = (hr & DID_DELETE) ? False : True;
 
     if ((hr & HANDLE_INCOMPLETE) == 0)
     {
@@ -240,8 +238,6 @@ static Bool handle_selection_request (XEvent event, unsigned char * sel)
 
         if (!retval) XSync (display, False);
     }
-
-    return retval;
 }
 
 static void set_selection (Atom selection, unsigned char * sel)
@@ -249,7 +245,7 @@ static void set_selection (Atom selection, unsigned char * sel)
     XEvent event;
     IncrTrack * it;
 
-    if (own_selection (selection) == False) return;
+    own_selection (selection);
 
     for (;;)
     {
@@ -267,7 +263,7 @@ static void set_selection (Atom selection, unsigned char * sel)
             printf("SelectionRequest\n");
             if (event.xselectionrequest.selection == selection)
             {
-                if (!handle_selection_request (event, sel)) return;
+                handle_selection_request (event, sel);
             }
             break;
         case PropertyNotify:
@@ -287,8 +283,8 @@ static void set_selection (Atom selection, unsigned char * sel)
 int main(int argc, char *argv[])
 {
     Window root;
-    Atom selection;
-    int s=0;
+    Atom clip_atom;
+    //int s=0;
     display = XOpenDisplay (NULL);
     root = XDefaultRootWindow (display);
     window = XCreateSimpleWindow (display, root, 0, 0, 1, 1, 0, 0, 0);
@@ -297,28 +293,17 @@ int main(int argc, char *argv[])
     max_req = 4000;
     NUM_TARGETS=0;
 
-    /* Get the TARGETS atom */
     targets_atom = XInternAtom (display, "TARGETS", False);
-    supported_targets[s++] = targets_atom;
-    NUM_TARGETS++;
-
-    /* Get the INCR atom */
     incr_atom = XInternAtom (display, "INCR", False);
-    supported_targets[s++] = incr_atom;
-    NUM_TARGETS++;
-
-    /* Get the TEXT atom */
     UTF_8_atom = XInternAtom (display, "UTF8_STRING", False);
-    supported_targets[s++] = UTF_8_atom;
-    NUM_TARGETS++;
+    clip_atom = XInternAtom (display, "CLIPBOARD", False);
 
-    supported_targets[s++] = XA_STRING;
-    NUM_TARGETS++;
+    supported_targets[NUM_TARGETS++] = UTF_8_atom;
+    supported_targets[NUM_TARGETS++] = XA_STRING;
 
-    selection = XInternAtom (display, "CLIPBOARD", False);
 
     //printf(MyBuffer);
 
     setsid () ;
-    set_selection (selection, MyBuffer);
+    set_selection (clip_atom, MyBuffer);
 }
