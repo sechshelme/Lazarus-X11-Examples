@@ -24,19 +24,14 @@ uses
   xatom,
   x;
 
-function XmuClientWindow(ADisplay: PDisplay; AWindow: TWindow): TWindow; cdecl; external 'Xmu';
+const
+  //  TargetsString: array of PChar = ('TARGETS', 'UTF8_STRING', 'STRING', 'TEXT', 'GTK_TEXT_BUFFER_CONTENTS');
+  TargetsString: array of PChar = ('TARGETS', 'UTF8_STRING', 'STRING', 'TEXT', 'text/plain');
+var
+  TargetList: array of TAtom = nil;
 
 type
-  TTargetAtoms = record
-    XA_UTF8,
-    XA_STRING,
-    XA_TARGETS,
-    XA_TEXT,
-    XA_GTK_TEXT_BUFFER_CONTENTS: TAtom;
-  end;
-
   TAtomPara = record
-    Targets: TTargetAtoms;
     XA_CLIPBOARD, XSEL_DATA: TAtom;
   end;
 
@@ -61,6 +56,38 @@ type
     procedure Run;
   end;
 
+const
+  clBlack = 30;
+  clRed = 31;
+  clGreen = 32;
+  clYellow = 33;
+  clBlurw = 34;
+  clMagenta = 35;
+  clCyan = 36;
+  clWhite = 37;
+  clBrightBlack = 90;
+  clBrightRed = 91;
+  clBrightGree = 92;
+  clBrightYellow = 93;
+  clBrightBlue = 94;
+  clBrightMagenta = 95;
+  clBrightCyan = 96;
+  clBrightWhite =97;
+
+procedure SetFGColor(c: byte);
+begin
+  Write(#27'[', Ord(c), 'm');
+end;
+
+procedure SetBGColor(c: byte);
+begin
+  Write(#27'[', Ord(c+10), 'm');
+end;
+
+procedure SetFGNormalColor;
+begin
+  Write(#27'[0m');
+end;
 
 const
   Mask = KeyPressMask or ExposureMask;
@@ -77,6 +104,14 @@ var
     fpNanoSleep(@Req, @rem);
   end;
 
+  function MyErrorProc(para1: PDisplay; para2: PXErrorEvent): cint; cdecl;
+  begin
+    SetFGColor(clBrightRed);
+    WriteLn('Error Handle');
+    Result := 0;
+    SetFGNormalColor;
+  end;
+
   procedure TMyWin.ReadClipboard;
   var
     targetFormat: TAtom;
@@ -87,13 +122,15 @@ var
     Writeln('Clipboard auslesen');
     if Event.xselection._property <> 0 then begin
       XGetWindowProperty(dis, win, AP.XSEL_DATA, 0, MaxSIntValue, False, AnyPropertyType, @targetFormat, @resbits, @ressize, @restail, @res);
-      if targetFormat = AP.Targets.XA_UTF8 then begin
-        WriteLn('UTF-8 io');
-      end else begin
-        WriteLn('error:', XGetAtomName(dis, targetFormat));
-      end;
+      //if targetFormat = AP.Targets.XA_UTF8 then begin
+      //  WriteLn('UTF-8 io');
+      //end else begin
+      //  WriteLn('error:', XGetAtomName(dis, targetFormat));
+      //end;
       WriteLn('------ Inhalt vom Clipboard ----------');
+      SetFGColor(clCyan);
       WriteLn(res);
+      SetFGNormalColor;
       WriteLn('--------------------------------------');
       WriteLn('Buffer-Size: ', ressize);
       with Event.xselection do begin
@@ -105,9 +142,11 @@ var
 
   procedure TMyWin.WriteClipboard;
   var
+    cs: string;
     ev: TXSelectionEvent;
     xsr: PXSelectionRequestEvent;
-    R: cint;
+    R, i: cint;
+    io: boolean = False;
 
     procedure PrintName(const Titel: string; w: TWindow);
     var
@@ -132,34 +171,29 @@ var
       ev._property := xsr^._property;
       ev.serial := 0;
       ev.send_event := 0;
-      if ev.target = AP.Targets.XA_TARGETS then begin
+      if ev.target = TargetList[0] then begin
         PrintName('--- Schreibe  TARGETS ---  ', ev.requestor);
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AP.Targets, SizeOf(TTargetAtoms) div SizeOf(TAtom));
-
-      end else if ev.target = XA_STRING then begin
-        PrintName('--- Schreibe  STRING ---  ', ev.requestor);
-        ClipboardString := '-- STRING --' + ClipboardString;
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_STRING, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-
-      end else if ev.target = AP.Targets.XA_TEXT then  begin
-        PrintName('--- Schreibe  TEXT ---  ', ev.requestor);
-        ClipboardString := '-- TEXT --' + ClipboardString;
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.Targets.XA_TEXT, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-
-      end else if ev.target = AP.Targets.XA_UTF8 then  begin
-        PrintName('--- Schreibe  UTF8 ---  ', ev.requestor);
-        ClipboardString := '-- UTF-8 --' + ClipboardString;
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.Targets.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-
-      end else if ev.target = AP.Targets.XA_GTK_TEXT_BUFFER_CONTENTS then  begin
-        PrintName('--- Schreibe  GTK_TEXT_BUFFER_CONTENTS ---  ', ev.requestor);
-        ClipboardString := '-- GTK_TEXT_BUFFER_CONTENTS --' + ClipboardString;
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.Targets.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
+        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, pbyte(TargetList), Length(TargetList));
 
       end else begin
-        WriteLn('Unbekanntest Target: ',XGetAtomName(dis,ev.target));
-        ev._property := None;
+        i := 1;
+        while (i < Length(TargetList)) and not io do begin
+          if ev.target = TargetList[i] then begin
+            PrintName('--- Schreibe  ' + XGetAtomName(dis, ev.target) + ' ---  ', ev.requestor);
+            cs := '-- ' + XGetAtomName(dis, ev.target) + ' --'#10 + ClipboardString;
+            R := XChangeProperty(ev.display, ev.requestor, ev._property, ev.target, 8, PropModeReplace, pbyte(cs), Length(cs));
+            io := True;
+          end;
+          Inc(i);
+        end;
+        if not io then begin
+          R := XChangeProperty(ev.display, ev.requestor, ev._property, 0, 8, PropModeReplace, nil, 0);
+          R := 0;
+          WriteLn('Unbekanntest Target: ', XGetAtomName(dis, ev.target));
+          ev._property := None;
+        end;
       end;
+
       if (R and 2) = 0 then begin
         XSendEvent(dis, ev.requestor, False, 0, @ev);
       end;
@@ -167,6 +201,8 @@ var
   end;
 
   constructor TMyWin.Create;
+  var
+    i: integer;
   begin
     // Erstellt die Verbindung zum Server
     dis := XOpenDisplay(nil);
@@ -175,24 +211,26 @@ var
       Halt(1);
     end;
 
-    AP.Targets.XA_TARGETS := XInternAtom(dis, 'TARGETS', False);
-    AP.Targets.XA_UTF8 := XInternAtom(dis, 'UTF8_STRING', False);
-    AP.Targets.XA_TEXT := XInternAtom(dis, 'TEXT', False);
-    AP.Targets.XA_GTK_TEXT_BUFFER_CONTENTS := XInternAtom(dis, 'GTK_TEXT_BUFFER_CONTENTS', False);
-    AP.Targets.XA_STRING := XA_STRING;
+    XSetErrorHandler(@MyErrorProc);
 
     AP.XA_CLIPBOARD := XInternAtom(dis, 'CLIPBOARD', False);
+
+
+
+
+    SetLength(TargetList, Length(TargetsString));
+    for i := 0 to Length(TargetList) - 1 do begin
+      TargetList[i] := XInternAtom(dis, TargetsString[i], False);
+    end;
+
+    WriteLn('len:', Length(TargetList));
+
+
 
 
     //    AP.XSEL_DATA := XInternAtom(dis, 'XSEL_DATA', False);
     AP.XSEL_DATA := AP.XA_CLIPBOARD;
 
-    WriteLn(AP.Targets.XA_TARGETS);
-    WriteLn(AP.Targets.XA_TEXT);
-
-    WriteLn(AP.XA_CLIPBOARD);
-    WriteLn(AP.Targets.XA_UTF8);
-    WriteLn(AP.XSEL_DATA);
 
     scr := DefaultScreen(dis);
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
@@ -233,7 +271,7 @@ var
             XK_v: begin
               WriteLn('Auslesen UTGF8 einleiten');
               with AP do begin
-                XConvertSelection(dis, XA_CLIPBOARD, Targets.XA_UTF8, XSEL_DATA, win, CurrentTime);
+                XConvertSelection(dis, XA_CLIPBOARD, XA_STRING, XSEL_DATA, win, CurrentTime);
               end;
             end;
             XK_t: begin
@@ -242,6 +280,7 @@ var
               for i := 1 to L do begin
                 ClipboardString[i] := char(Random(26) + 65);
               end;
+              ClipboardString := ClipboardString + #10;
 
               XSetSelectionOwner(dis, AP.XA_CLIPBOARD, win, CurrentTime);
               if XGetSelectionOwner(dis, AP.XA_CLIPBOARD) <> win then begin
@@ -251,7 +290,7 @@ var
             XK_c: begin
               Writeln('Daten ready für Clipboard');
               // Ein Pseudoinhalt fürs Clipboard
-              WriteStr(ClipboardString, 'Hello World !'#10'Hallo Welt !'#10, DateTimeToStr(Now));
+              WriteStr(ClipboardString, 'Hello World !'#10'Hallo Welt !'#10, DateTimeToStr(Now), #10#10);
 
               XSetSelectionOwner(dis, AP.XA_CLIPBOARD, win, CurrentTime);
               if XGetSelectionOwner(dis, AP.XA_CLIPBOARD) <> win then begin
@@ -262,16 +301,24 @@ var
         end;
         // Wird ausgelöst, sobald Daten extern vom Clipboard verlangt werden.
         SelectionRequest: begin
+          SetFGColor(clGreen);
+          WriteLn('SelectionRequest');
+          SetFGNormalColor;
           WriteClipboard;
         end;
         // Wird ausgelöst, sobald eine andere App Daten fürs Clipboard hat.
         SelectionClear: begin
+          SetFGColor(clGreen);
+          WriteLn('SelectionClear');
+          SetFGNormalColor;
           WriteLn('Eine andere App hat Clipboard Daten');
           ClipboardString := '';
         end;
         // Daten vom Clipboard stehen bereit zur Abholung
         SelectionNotify: begin
+          SetFGColor(clGreen);
           WriteLn('SelectionNotify');
+          SetFGNormalColor;
           ReadClipboard;
         end;
       end;

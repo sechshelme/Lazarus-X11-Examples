@@ -11,12 +11,11 @@
 static Display * display;
 static Window window;
 
-/* Maxmimum request size supported by this X server */
 static long max_req;
 
-static Atom targets_atom; /* The TARGETS atom */
-static Atom incr_atom; /* The INCR atom */
-static Atom text_atom; /* The TEXT atom */
+static Atom targets_atom;
+static Atom incr_atom;
+static Atom UTF_8_atom;
 
 #define MAX_NUM_TARGETS 9
 static int NUM_TARGETS;
@@ -24,18 +23,10 @@ static Atom supported_targets[MAX_NUM_TARGETS];
 
 static Bool own_selection (Atom selection)
 {
-    Window owner;
-
     XSetSelectionOwner (display, selection, window, 0);
-    owner = XGetSelectionOwner (display, selection);
-    if (owner != window)
-    {
-        return False;
-    }
-    else
-    {
-        return True;
-    }
+    XGetSelectionOwner (display, selection);
+
+    return True;
 }
 
 
@@ -69,13 +60,7 @@ static void remove_incrtrack (IncrTrack * it)
     }
 }
 
-/*
- * fresh_incrtrack ()
- *
- * Create a new incrtrack, and add it to incrtrack_list.
- */
-static IncrTrack *
-fresh_incrtrack (void)
+static IncrTrack * fresh_incrtrack (void)
 {
     IncrTrack * it;
 
@@ -85,24 +70,13 @@ fresh_incrtrack (void)
     return it;
 }
 
-/*
- * trash_incrtrack (it)
- *
- * Remove 'it' from incrtrack_list, and free it.
- */
-static void
-trash_incrtrack (IncrTrack * it)
+
+static void trash_incrtrack (IncrTrack * it)
 {
     remove_incrtrack (it);
     free (it);
 }
 
-/*
- * find_incrtrack (atom)
- *
- * Find the IncrTrack structure within incrtrack_list pertaining to 'atom',
- * if it exists.
- */
 static IncrTrack *
 find_incrtrack (Atom atom)
 {
@@ -116,28 +90,12 @@ find_incrtrack (Atom atom)
     return NULL;
 }
 
-/* Forward declaration of handle_multiple() */
-static HandleResult
-handle_multiple (Display * display, Window requestor, Atom property,
-                 unsigned char * sel, Atom selection, Time time,
-                 MultTrack * mparent);
 
-/* Forward declaration of process_multiple() */
-static HandleResult
-process_multiple (MultTrack * mt, Bool do_parent);
-
-/*
- * confirm_incr (it)
- *
- * Confirm the selection request of ITER tracked by 'it'.
- */
 static void
 notify_incr (IncrTrack * it, HandleResult hr)
 {
     XSelectionEvent ev;
 
-    /* Call XSync here to make sure any BadAlloc errors are caught before
-     * confirming the conversion. */
     XSync (it->display, False);
 
     ev.type = SelectionNotify;
@@ -147,82 +105,15 @@ notify_incr (IncrTrack * it, HandleResult hr)
     ev.time = it->time;
     ev.target = it->target;
 
-    if (hr & HANDLE_ERR) ev.property = None;
-    else ev.property = it->property;
+    ev.property = it->property;
 
-    XSendEvent (display, ev.requestor, False,
-                (unsigned long)NULL, (XEvent *)&ev);
-}
-
-
-static void
-complete_incr (IncrTrack * it, HandleResult hr)
-{
-    MultTrack * mparent = it->mparent;
-
-    if (mparent)
-    {
-        trash_incrtrack (it);
-        process_multiple (mparent, True);
-    }
-    else
-    {
-        notify_incr (it, hr);
-        trash_incrtrack (it);
-    }
-}
-
-/*
- * notify_multiple (mt, hr)
- *
- * Confirm the selection request initiated with MULTIPLE tracked by 'mt'.
- */
-static void
-notify_multiple (MultTrack * mt, HandleResult hr)
-{
-    XSelectionEvent ev;
-
-    /* Call XSync here to make sure any BadAlloc errors are caught before
-     * confirming the conversion. */
-    XSync (mt->display, False);
-
-    /* Prepare a SelectionNotify event to send, placing the selection in the
-     * requested property. */
-    ev.type = SelectionNotify;
-    ev.display = mt->display;
-    ev.requestor = mt->requestor;
-    ev.selection = mt->selection;
-    ev.time = mt->time;
-    ev.target = 0;
-
-    if (hr & HANDLE_ERR) ev.property = None;
-    else ev.property = mt->property;
-
-    XSendEvent (display, ev.requestor, False,
-                (unsigned long)NULL, (XEvent *)&ev);
-}
-
-static void
-complete_multiple (MultTrack * mt, Bool do_parent, HandleResult hr)
-{
-    MultTrack * mparent = mt->mparent;
-
-    if (mparent)
-    {
-        free (mt);
-        if (do_parent) process_multiple (mparent, True);
-    }
-    else
-    {
-        notify_multiple (mt, hr);
-        free (mt);
-    }
+    XSendEvent (display, ev.requestor, False, (unsigned long)NULL, (XEvent *)&ev);
 }
 
 static HandleResult change_property (Display * display, Window requestor, Atom property,
-                 Atom target, int format, int mode,
-                 unsigned char * data, int nelements,
-                 Atom selection, Time time, MultTrack * mparent)
+                                     Atom target, int format, int mode,
+                                     unsigned char * data, int nelements,
+                                     Atom selection, Time time, MultTrack * mparent)
 {
     XSelectionEvent ev;
     long nr_bytes;
@@ -282,13 +173,10 @@ static HandleResult change_property (Display * display, Window requestor, Atom p
 static HandleResult
 incr_stage_1 (IncrTrack * it)
 {
-    /* First pass: PropModeReplace, from data, size chunk */
     XChangeProperty (it->display, it->requestor, it->property, it->target,
                      it->format, PropModeReplace, it->data, it->chunk);
 
     it->offset += it->chunk;
-
-    /* wait for PropertyNotify events */
     it->state = S_INCR_2;
 
     return HANDLE_INCOMPLETE;
@@ -301,8 +189,6 @@ incr_stage_2 (IncrTrack * it)
 
     if (it->chunk <= 0)
     {
-
-        /* Now write zero-length data to the property */
         XChangeProperty (it->display, it->requestor, it->property, it->target,
                          it->format, PropModeAppend, NULL, 0);
         it->state = S_NULL;
@@ -319,7 +205,7 @@ incr_stage_2 (IncrTrack * it)
 }
 
 static HandleResult handle_targets (Display * display, Window requestor, Atom property,
-                Atom selection, Time time, MultTrack * mparent)
+                                    Atom selection, Time time, MultTrack * mparent)
 {
     Atom * targets_cpy;
     HandleResult r;
@@ -327,17 +213,15 @@ static HandleResult handle_targets (Display * display, Window requestor, Atom pr
     targets_cpy = malloc (sizeof (supported_targets));
     memcpy (targets_cpy, supported_targets, sizeof (supported_targets));
 
-    r = change_property (display, requestor, property, XA_ATOM, 32,
-                         PropModeReplace, (unsigned char *)targets_cpy,
-                         NUM_TARGETS, selection, time, mparent);
+    r = change_property (display, requestor, property, XA_ATOM, 32, PropModeReplace, (unsigned char *)targets_cpy, NUM_TARGETS, selection, time, mparent);
     free(targets_cpy);
     return r;
 }
 
 
 static HandleResult handle_string (Display * display, Window requestor, Atom property,
-               unsigned char * sel, Atom selection, Time time,
-               MultTrack * mparent)
+                                   unsigned char * sel, Atom selection, Time time,
+                                   MultTrack * mparent)
 {
     return
         change_property (display, requestor, property, XA_STRING, 8,
@@ -345,7 +229,7 @@ static HandleResult handle_string (Display * display, Window requestor, Atom pro
                          selection, time, mparent);
 }
 
-static HandleResult process_multiple (MultTrack * mt, Bool do_parent)
+HandleResult process_multiple (MultTrack * mt, Bool do_parent)
 {
     HandleResult retval = HANDLE_OK;
     unsigned long i;
@@ -360,33 +244,15 @@ static HandleResult process_multiple (MultTrack * mt, Bool do_parent)
             retval |= handle_targets (mt->display, mt->requestor, mt->atoms[i+1],
                                       mt->selection, mt->time, mt);
         }
-        else if (mt->atoms[i] == XA_STRING || mt->atoms[i] == text_atom)
+        else if (mt->atoms[i] == XA_STRING || mt->atoms[i] == UTF_8_atom)
         {
             retval |= handle_string (mt->display, mt->requestor, mt->atoms[i+1],
                                      mt->sel, mt->selection, mt->time, mt);
         }
         else
         {
-            /* for anything we don't know how to handle, we fail the conversion
-             * by setting this: */
             mt->atoms[i] = None;
         }
-
-        /* If any of the conversions failed, signify this by setting that
-         * atom to None ...*/
-        if (retval & HANDLE_ERR)
-        {
-            mt->atoms[i] = None;
-        }
-        /* ... but don't propogate HANDLE_ERR */
-        retval &= (~HANDLE_ERR);
-
-        if (retval & HANDLE_INCOMPLETE) break;
-    }
-
-    if ((retval & HANDLE_INCOMPLETE) == 0)
-    {
-        complete_multiple (mt, do_parent, retval);
     }
 
     return retval;
@@ -404,12 +270,6 @@ static HandleResult continue_incr (IncrTrack * it)
     else if (it->state == S_INCR_2)
     {
         retval = incr_stage_2 (it);
-    }
-
-    /* If that completed the INCR, deal with completion */
-    if ((retval & HANDLE_INCOMPLETE) == 0)
-    {
-        complete_incr (it, retval);
     }
 
     return retval;
@@ -432,59 +292,35 @@ static Bool handle_selection_request (XEvent event, unsigned char * sel)
 
     if (ev.target == targets_atom)
     {
-        /* Return a list of supported targets (TARGETS)*/
         ev.property = xsr->property;
         hr = handle_targets (ev.display, ev.requestor, ev.property,
                              ev.selection, ev.time, NULL);
     }
-    else if (ev.target == XA_STRING || ev.target == text_atom)
+    else if (ev.target == XA_STRING || ev.target == UTF_8_atom)
     {
-        /* Received STRING or TEXT request */
         ev.property = xsr->property;
         hr = handle_string (ev.display, ev.requestor, ev.property, sel,
                             ev.selection, ev.time, NULL);
     }
     else
     {
-        /* Cannot convert to requested target. This includes most non-string
-         * datatypes, and INSERT_SELECTION, INSERT_PROPERTY */
         ev.property = None;
     }
 
-    /* Return False if a DELETE was processed */
     retval = (hr & DID_DELETE) ? False : True;
-
-    /* If there was an error in the transfer, it should be refused */
-    if (hr & HANDLE_ERR)
-    {
-        ev.property = None;
-    }
 
     if ((hr & HANDLE_INCOMPLETE) == 0)
     {
         XSendEvent (display, ev.requestor, False,
                     (unsigned long)NULL, (XEvent *)&ev);
 
-        /* If we return False here, we may quit immediately, so sync out the
-         * X queue. */
         if (!retval) XSync (display, False);
     }
 
     return retval;
 }
 
-/*
- * set_selection (selection, sel)
- *
- * Takes ownership of the selection 'selection', then loops waiting for
- * its SelectionClear or SelectionRequest events.
- *
- * Handles SelectionRequest events, first checking for additional
- * input if the user has specified 'follow' mode. Returns when a
- * SelectionClear event is received for the specified selection.
- */
-static void
-set_selection (Atom selection, unsigned char * sel)
+static void set_selection (Atom selection, unsigned char * sel)
 {
     XEvent event;
     IncrTrack * it;
@@ -493,9 +329,6 @@ set_selection (Atom selection, unsigned char * sel)
 
     for (;;)
     {
-
-
-        /* Flush before unblocking signals so we send replies before exiting */
         XFlush (display);
 
         XNextEvent (display, &event);
@@ -503,24 +336,24 @@ set_selection (Atom selection, unsigned char * sel)
         switch (event.type)
         {
         case SelectionClear:
+            printf("SelectionClear\n");
             if (event.xselectionclear.selection == selection) return;
             break;
         case SelectionRequest:
+            printf("SelectionRequest\n");
             if (event.xselectionrequest.selection == selection)
             {
                 if (!handle_selection_request (event, sel)) return;
             }
             break;
         case PropertyNotify:
+            printf("PropertyNotify\n");
+
             if (event.xproperty.state == PropertyDelete)
             {
-
                 it = find_incrtrack (event.xproperty.atom);
 
-                if (it != NULL)
-                {
-                    continue_incr (it);
-                }
+                if (it != NULL) continue_incr (it);
             }
             break;
         }
@@ -551,8 +384,8 @@ int main(int argc, char *argv[])
     NUM_TARGETS++;
 
     /* Get the TEXT atom */
-    text_atom = XInternAtom (display, "TEXT", False);
-    supported_targets[s++] = text_atom;
+    UTF_8_atom = XInternAtom (display, "UTF8_STRING", False);
+    supported_targets[s++] = UTF_8_atom;
     NUM_TARGETS++;
 
     supported_targets[s++] = XA_STRING;
@@ -560,7 +393,7 @@ int main(int argc, char *argv[])
 
     selection = XInternAtom (display, "CLIPBOARD", False);
 
-    printf(MyBuffer);
+    //printf(MyBuffer);
 
     setsid () ;
     set_selection (selection, MyBuffer);

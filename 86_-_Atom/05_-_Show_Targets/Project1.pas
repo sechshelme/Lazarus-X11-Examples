@@ -6,6 +6,9 @@ Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.
 *)
 //lineal
 //code+
+
+
+
 program Project1;
 
 uses
@@ -17,6 +20,41 @@ uses
   keysym,
   xatom,
   x;
+
+const
+  clBlack = 30;
+  clRed = 31;
+  clGreen = 32;
+  clYellow = 33;
+  clBlurw = 34;
+  clMagenta = 35;
+  clCyan = 36;
+  clWhite = 37;
+  clBrightBlack = 90;
+  clBrightRed = 91;
+  clBrightGree = 92;
+  clBrightYellow = 93;
+  clBrightBlue = 94;
+  clBrightMagenta = 95;
+  clBrightCyan = 96;
+  clBrightWhite =97;
+
+procedure SetFGColor(c: byte);
+begin
+  Write(#27'[', Ord(c), 'm');
+end;
+
+procedure SetBGColor(c: byte);
+begin
+  Write(#27'[', Ord(c+10), 'm');
+end;
+
+procedure SetFGNormalColor;
+begin
+  Write(#27'[0m');
+//  SetFGColor(clBrightWhite);
+end;
+
 
 type
   TAtoms = array of TAtom;
@@ -46,35 +84,7 @@ var
   // https://tronche.com/gui/x/icccm/sec-2.html
   // https://groups.google.com/a/chromium.org/g/chromium-discuss/c/_el628cw_PM
 
-  //
-  //  static void InitX11Clipboard()
-  //  {
-  //      static bool isInitialised = false;
-  //      if ( !isInitialised )
-  //      {
-  //          Display* xdisplay = wxGlobalDisplay();
-  //
-  //          // Get the clipboard atom
-  //          XA_CLIPBOARD = XInternAtom(xdisplay, "CLIPBOARD", True);
-  //          // Get UTF-8 string atom
-  //          XA_UTF8_STRING = XInternAtom(xdisplay, "UTF8_STRING", True);
-  //          // Get TAEGETS atom
-  //          XA_TARGETS = XInternAtom(xdisplay, "TARGETS", True);
-  //          XA_MULTIPLE = XInternAtom(xdisplay, "MULTIPLE", True);
-  //          XA_IMAGE_BMP = XInternAtom(xdisplay, "image/bmp", True);
-  //          XA_IMAGE_JPG = XInternAtom(xdisplay, "image/jpeg", True);
-  //          XA_IMAGE_TIFF = XInternAtom(xdisplay, "image/tiff", True);
-  //          XA_IMAGE_PNG = XInternAtom(xdisplay, "image/png", True);
-  //          XA_TEXT_URI_LIST = XInternAtom(xdisplay, "text/uri-list", True);
-  //          XA_TEXT_URI= XInternAtom(xdisplay, "text/uri", True);
-  //          XA_TEXT_PLAIN = XInternAtom(xdisplay, "text/plain", True);
-  //          XA_TEXT = XInternAtom(xdisplay, "Text", True);
-  //          // already initialised
-  //          isInitialised = true;
-  //      }
-  //  }
-
-  const TextAtoms:TStringArray=(
+  const StringAtoms:TStringArray=(
   'STRING',
   'UTF8_STRING',
   'COMPOUND_TEXT',
@@ -85,7 +95,6 @@ var
   'text/rtf',
   'text/ico',
   'text/richtext',
-
   'TEXT');
 
 
@@ -351,7 +360,8 @@ var
             end;
           end;
           WriteLn();
-        end else if RetInAtom(ret_type, TextAtoms) then  begin
+        end else if RetInAtom(ret_type, StringAtoms) then  begin
+            SetFGColor(clCyan);
           for i := 0 to Length(ClipData.Data) - 1 do begin
             if i = 0 then begin
               Write('"');
@@ -364,6 +374,7 @@ var
             end;
           end;
           WriteLn('"');
+          SetFGNormalColor;
         end else if ret_type = GetAtom('MULTIPLE') then  begin
           for i := 0 to ret_items - 1 do begin
             ch := ClipData.Data[i];
@@ -449,11 +460,13 @@ begin
             Target_List := getTargetList(win);
             WriteLn(#10);
             for i := 0 to Length(Target_List) - 1 do begin
+              SetFGColor(clBrightYellow);
               if i <= 9 then begin
                 WriteLn('(', i, ') ', XGetAtomName(dis, Target_List[i]));
               end else begin
                 WriteLn('(', char(i + 55 + 32), ') ', XGetAtomName(dis, Target_List[i]));
               end;
+              SetFGNormalColor;
             end;
             WriteLn(#10);
           end else begin
