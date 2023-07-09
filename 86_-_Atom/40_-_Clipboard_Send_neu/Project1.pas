@@ -42,6 +42,7 @@ type
   end;
 
   THandleResult = cint;
+
   PMultiTrack = ^TMultiTrack;
 
   TMultiTrack = record
@@ -52,6 +53,31 @@ type
     time: TTime;
     _length, index: culong;
     sel: PChar;
+  end;
+
+const
+  S_NULL = 0;
+  S_INCR_1 = 1;
+  S_INCR_2 = 2;
+
+  max_req = 4000;
+
+type
+
+  PIncrTrack = ^TIncrTrack;
+
+  TIncrTrack = record
+    mparen: TMultiTrack;
+    prev, nect: PIncrTrack;
+    state: integer;
+    display: PDisplay;
+    requestor: TWindow;
+    _property, selction: TAtom;
+    time: TTime;
+    target: TAtom;
+    format: cint;
+    date: PChar;
+    nelemts, offset, chunk, max_elements: cint;
   end;
 
 var
@@ -71,12 +97,9 @@ type
     Event: TXEvent;
   private
     procedure ReadClipboard;
-    procedure WriteClipboard;
-    procedure WriteClipboardLarge;
     procedure handle_selection_request(Aevent: TXEvent; sel: PChar);
-    function handle_targets(display: PDisplay; requestor: TWindow;
-      _property: TAtom; selction: TAtom; time: TTime; mparent: PMultiTrack
-      ): THandleResult;
+    function handle_targets(display: PDisplay; requestor: TWindow; _property: TAtom; selction: TAtom; time: TTime; mparent: PMultiTrack): THandleResult;
+    function handle_string(display: PDisplay; requestor: TWindow; _property: TAtom; sel: PChar; time: TTime; mparent: PMultiTrack): THandleResult;
     function change_property(display: PDisplay; requestor: TWindow; _property, target: TAtom; format, mode: cint; Data: PChar; nelemts: cint; selction: TAtom; time: TTime; mparent: PMultiTrack): THandleResult;
   public
     constructor Create;
@@ -126,128 +149,6 @@ var
     end;
   end;
 
-  procedure TMyWin.WriteClipboard;
-  var
-    ev: TXSelectionEvent;
-    xsr: PXSelectionRequestEvent;
-    R: cint;
-  begin
-    //          wait;
-    WriteLn('SelectionRequest');
-    if Event.xselectionrequest.selection = AP.XA_CLIPBOARD then begin
-      WriteLn('Daten stehen im Clipboard bereit');
-      xsr := @Event.xselectionrequest;
-      ev._type := SelectionNotify;
-      ev.display := xsr^.display;
-      ev.requestor := xsr^.requestor;
-      ev.selection := xsr^.selection;
-      ev.time := xsr^.time;
-      ev.target := xsr^.target;
-      ev._property := xsr^._property;
-      ev.serial := 0;
-      ev.send_event := 0;
-      if ev.target = AP.XA_TARGETS then begin
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AP.XA_UTF8, 1);
-      end else if ev.target = XA_STRING then begin
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_STRING, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-      end else if ev.target = AP.XA_UTF8 then  begin
-        WriteLn('--- Schreibe  ---');
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-      end else begin
-        ev._property := None;
-      end;
-      if (R and 2) = 0 then begin
-        XSendEvent(dis, ev.requestor, False, 0, @ev);
-      end;
-    end;
-  end;
-
-  procedure TMyWin.WriteClipboardLarge;
-  var
-    ev: TXSelectionEvent;
-    xsr: PXSelectionRequestEvent;
-    R: cint;
-    large: boolean = False;
-
-  begin
-    //          wait;
-    WriteLn('SelectionRequest');
-    if Event.xselectionrequest.selection = AP.XA_CLIPBOARD then begin
-      WriteLn('Daten stehen im Clipboard bereit');
-      xsr := @Event.xselectionrequest;
-      ev._type := SelectionNotify;
-      ev.display := xsr^.display;
-      ev.requestor := xsr^.requestor;
-      ev.selection := xsr^.selection;
-      ev.time := xsr^.time;
-      ev.target := xsr^.target;
-      ev._property := xsr^._property;
-      ev.serial := 0;
-      ev.send_event := 0;
-      if ev.target = AP.XA_TARGETS then begin
-        WriteLn('--- Schreibe Targets ---');
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AP.XA_UTF8, 1);
-      end else if ev.target = AP.XA_UTF8 then  begin
-        WriteLn('--- Schreibe INCR ---');
-        //        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-        large := True;
-        WriteLn('larga treu');
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AP.XA_INCR, 1);
-      end else begin
-        ev._property := None;
-      end;
-      //      if (R and 2) = 0 then begin
-      //      WriteLn('sendevent: ', R);
-      XSendEvent(dis, ev.requestor, False, 0, @ev);
-
-      if large then begin
-        WriteLn('large 1');
-        ClipboardString[1] := '1';
-        ClipboardString[2] := '1';
-        ClipboardString[3] := '1';
-        ClipboardString[4] := '1';
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-        WriteLn('large 2');
-
-        ev._type := PropertyNotify;
-        XSendEvent(dis, ev.requestor, False, 0, @ev);
-
-        WriteLn('large 22');
-
-        //        wait;
-        //        XNextEvent(dis, @Event);
-        XDeleteProperty(ev.display, ev.requestor, AP.XA_UTF8);
-
-
-
-        WriteLn('large 3');
-        ClipboardString[1] := '2';
-        ClipboardString[2] := '2';
-        ClipboardString[3] := '2';
-        ClipboardString[4] := '2';
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-        WriteLn('large 4');
-
-        ev._type := PropertyNotify;
-        XSendEvent(dis, ev.requestor, False, 0, @ev);
-
-
-
-        //WriteLn('larga 5');
-        //R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, nil, 0);
-        //WriteLn('larga 6');
-        //
-        //
-
-        large := False;
-      end;
-
-
-      //      end;
-    end;
-
-  end;
-
   procedure TMyWin.handle_selection_request(Aevent: TXEvent; sel: PChar);
   var
     xsr: PXSelectionRequestEvent;
@@ -263,32 +164,56 @@ var
       ev.selection := xsr^.selection;
       ev.time := xsr^.time;
       ev.target := xsr^.target;
-      //      ev._property := xsr^._property;
-      //      ev.serial := 0;
-      //    ev.send_event := 0;
+
       if ev.target = AP.XA_TARGETS then begin
         WriteLn('--- Schreibe Targets ---');
         ev._property := xsr^._property;
-        hr := XChangeProperty(ev.display, ev.requestor, ev._property, ev.selection, 32, PropModeReplace, @AP.XA_UTF8, 1);
-      end else if ev.target = AP.XA_UTF8 then  begin
-        WriteLn('--- Schreibe INCR ---');
-        //        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-        //        large := True;
-        WriteLn('larga treu');
-        //        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AP.XA_INCR, 1);
+        hr := handle_targets(ev.display, ev.requestor, ev._property, ev.selection, ev.time, nil);
+      end else if (ev.target = AP.XA_UTF8) or (ev.target = XA_STRING) then  begin
+        WriteLn('--- Schreibe String ---');
+        ev._property := xsr^._property;
+        hr := handle_string(ev.display, ev.requestor, ev._property, sel, ev.time, nil);
       end else begin
         ev._property := None;
       end;
-      //      if (R and 2) = 0 then begin
-      //      WriteLn('sendevent: ', R);
-      XSendEvent(dis, ev.requestor, False, 0, @ev);
+
+      if (hr and HANDLE_INCOMPLETE) = 0 then begin
+        XSendEvent(dis, ev.requestor, False, 0, @ev);
+        XSync(dis, False);
+      end;
 
     end;
   end;
 
   function TMyWin.change_property(display: PDisplay; requestor: TWindow; _property, target: TAtom; format, mode: cint; Data: PChar; nelemts: cint; selction: TAtom; time: TTime; mparent: PMultiTrack): THandleResult;
+  var
+    ev: TXSelectionEvent;
+    nr_bytes: clong;
+    it: TIncrTrack;
   begin
-    ///////////////////7
+    nr_bytes := nelemts * format div 8;
+    if nr_bytes <= max_req then begin
+      XChangeProperty(display, requestor, _property, target, format, mode, pbyte(Data), nelemts);
+      Result := HANDLE_OK;
+      Exit;
+    end;
+
+    ev._type := SelectionNotify;
+    ev.display := display;
+    ev.requestor := requestor;
+    ev.selection := selction;
+    ev.time := time;
+    ev.target := target;
+    ev._property := _property;
+
+    //    XSelectInput();
+
+    XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_INCR, 32, PropModePrepend, pbyte(nr_bytes), 1);
+
+    XSendEvent(display, requestor, False, 0, @ev);
+
+    ///////////////////////7777
+
   end;
 
   function TMyWin.handle_targets(display: PDisplay; requestor: TWindow; _property: TAtom; selction: TAtom; time: TTime; mparent: PMultiTrack): THandleResult;
@@ -303,7 +228,14 @@ var
     end;
     r := change_property(dis, requestor, _property, XA_ATOM, 32, PropModeReplace, PChar(targets_cpy), Length(support_targets), selction, time, mparent);
     Freemem(targets_cpy);
-    Result:=r;
+    Result := r;
+  end;
+
+  function TMyWin.handle_string(display: PDisplay; requestor: TWindow;
+    _property: TAtom; sel: PChar; time: TTime; mparent: PMultiTrack
+    ): THandleResult;
+  begin
+    ///////////////////////////
   end;
 
   constructor TMyWin.Create;
@@ -323,6 +255,9 @@ var
     AP.XA_UTF8 := XInternAtom(dis, 'UTF8_STRING', False);
 
     //    AP.XSEL_DATA := XInternAtom(dis, 'XSEL_DATA', False);
+
+    support_targets[0] := XA_STRING;
+    support_targets[1] := AP.XA_UTF8;
 
     WriteLn(AP.XA_INCR);
     WriteLn(AP.XA_TARGETS);

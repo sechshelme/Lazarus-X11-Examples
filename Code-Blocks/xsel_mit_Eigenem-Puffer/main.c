@@ -203,7 +203,7 @@ void handle_selection_request (XEvent event, unsigned char * sel)
     XSelectionRequestEvent * xsr = &event.xselectionrequest;
     XSelectionEvent ev;
     HandleResult hr = HANDLE_OK;
-    Bool retval = True;
+    //Bool retval = True;
 
     ev.type = SelectionNotify;
     ev.display = xsr->display;
@@ -236,7 +236,7 @@ void handle_selection_request (XEvent event, unsigned char * sel)
         XSendEvent (display, ev.requestor, False,
                     (unsigned long)NULL, (XEvent *)&ev);
 
-        if (!retval) XSync (display, False);
+         XSync (display, False);
     }
 }
 
