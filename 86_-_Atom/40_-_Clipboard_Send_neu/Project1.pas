@@ -24,13 +24,13 @@ uses
   xatom,
   x;
 
-procedure setsid; cdecl; external 'c';
+  procedure setsid; cdecl; external 'c';
 
 const
- HANDLE_OK      =   0;
- HANDLE_ERR     =   1 shl 0;
- HANDLE_INCOMPLETE= 1 shl 1 ;
- DID_DELETE      =  1 shl 2  ;
+  HANDLE_OK = 0;
+  HANDLE_ERR = 1 shl 0;
+  HANDLE_INCOMPLETE = 1 shl 1;
+  DID_DELETE = 1 shl 2;
 
 
 type
@@ -38,12 +38,24 @@ type
     XA_TARGETS,
     XA_INCR,
     XA_UTF8,
-    XA_CLIPBOARD:TAtom
+    XA_CLIPBOARD: TAtom
   end;
 
-  THandleResult=cint;
+  THandleResult = cint;
+  PMultiTrack = ^TMultiTrack;
 
-var support_targets:array[0..1]of TAtom;
+  TMultiTrack = record
+    mparent: PMultiTrack;
+    dis: PDisplay;
+    requestor: TWindow;
+    _property, selection: TAtom;
+    time: TTime;
+    _length, index: culong;
+    sel: PChar;
+  end;
+
+var
+  support_targets: array[0..1] of TAtom;
 
 type
 
@@ -62,6 +74,10 @@ type
     procedure WriteClipboard;
     procedure WriteClipboardLarge;
     procedure handle_selection_request(Aevent: TXEvent; sel: PChar);
+    function handle_targets(display: PDisplay; requestor: TWindow;
+      _property: TAtom; selction: TAtom; time: TTime; mparent: PMultiTrack
+      ): THandleResult;
+    function change_property(display: PDisplay; requestor: TWindow; _property, target: TAtom; format, mode: cint; Data: PChar; nelemts: cint; selction: TAtom; time: TTime; mparent: PMultiTrack): THandleResult;
   public
     constructor Create;
     destructor Destroy; override;
@@ -186,10 +202,10 @@ var
 
       if large then begin
         WriteLn('large 1');
-        ClipboardString[1]:='1';
-        ClipboardString[2]:='1';
-        ClipboardString[3]:='1';
-        ClipboardString[4]:='1';
+        ClipboardString[1] := '1';
+        ClipboardString[2] := '1';
+        ClipboardString[3] := '1';
+        ClipboardString[4] := '1';
         R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
         WriteLn('large 2');
 
@@ -198,17 +214,17 @@ var
 
         WriteLn('large 22');
 
-//        wait;
-//        XNextEvent(dis, @Event);
-XDeleteProperty(ev.display,ev.requestor,AP.XA_UTF8);
+        //        wait;
+        //        XNextEvent(dis, @Event);
+        XDeleteProperty(ev.display, ev.requestor, AP.XA_UTF8);
 
 
 
         WriteLn('large 3');
-        ClipboardString[1]:='2';
-        ClipboardString[2]:='2';
-        ClipboardString[3]:='2';
-        ClipboardString[4]:='2';
+        ClipboardString[1] := '2';
+        ClipboardString[2] := '2';
+        ClipboardString[3] := '2';
+        ClipboardString[4] := '2';
         R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
         WriteLn('large 4');
 
@@ -232,11 +248,11 @@ XDeleteProperty(ev.display,ev.requestor,AP.XA_UTF8);
 
   end;
 
-procedure TMyWin.handle_selection_request(Aevent: TXEvent; sel: PChar);
+  procedure TMyWin.handle_selection_request(Aevent: TXEvent; sel: PChar);
   var
     xsr: PXSelectionRequestEvent;
-    ev:TXSelectionEvent;
-    hr:THandleResult=  HANDLE_OK;
+    ev: TXSelectionEvent;
+    hr: THandleResult = HANDLE_OK;
   begin
     if Event.xselectionrequest.selection = AP.XA_CLIPBOARD then begin
       WriteLn('Daten stehen im Clipboard bereit');
@@ -247,18 +263,19 @@ procedure TMyWin.handle_selection_request(Aevent: TXEvent; sel: PChar);
       ev.selection := xsr^.selection;
       ev.time := xsr^.time;
       ev.target := xsr^.target;
-      ev._property := xsr^._property;
-      ev.serial := 0;
-      ev.send_event := 0;
+      //      ev._property := xsr^._property;
+      //      ev.serial := 0;
+      //    ev.send_event := 0;
       if ev.target = AP.XA_TARGETS then begin
         WriteLn('--- Schreibe Targets ---');
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AP.XA_UTF8, 1);
+        ev._property := xsr^._property;
+        hr := XChangeProperty(ev.display, ev.requestor, ev._property, ev.selection, 32, PropModeReplace, @AP.XA_UTF8, 1);
       end else if ev.target = AP.XA_UTF8 then  begin
         WriteLn('--- Schreibe INCR ---');
         //        R := XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_UTF8, 8, PropModeReplace, pbyte(ClipboardString), Length(ClipboardString));
-        large := True;
+        //        large := True;
         WriteLn('larga treu');
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AP.XA_INCR, 1);
+        //        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, @AP.XA_INCR, 1);
       end else begin
         ev._property := None;
       end;
@@ -266,7 +283,27 @@ procedure TMyWin.handle_selection_request(Aevent: TXEvent; sel: PChar);
       //      WriteLn('sendevent: ', R);
       XSendEvent(dis, ev.requestor, False, 0, @ev);
 
+    end;
+  end;
 
+  function TMyWin.change_property(display: PDisplay; requestor: TWindow; _property, target: TAtom; format, mode: cint; Data: PChar; nelemts: cint; selction: TAtom; time: TTime; mparent: PMultiTrack): THandleResult;
+  begin
+    ///////////////////7
+  end;
+
+  function TMyWin.handle_targets(display: PDisplay; requestor: TWindow; _property: TAtom; selction: TAtom; time: TTime; mparent: PMultiTrack): THandleResult;
+  var
+    targets_cpy: PAtom;
+    i: integer;
+    r: THandleResult;
+  begin
+    Getmem(targets_cpy, SizeOf(support_targets));
+    for i := 0 to Length(support_targets) - 1 do begin
+      targets_cpy[i] := support_targets[i];
+    end;
+    r := change_property(dis, requestor, _property, XA_ATOM, 32, PropModeReplace, PChar(targets_cpy), Length(support_targets), selction, time, mparent);
+    Freemem(targets_cpy);
+    Result:=r;
   end;
 
   constructor TMyWin.Create;
@@ -315,7 +352,7 @@ procedure TMyWin.handle_selection_request(Aevent: TXEvent; sel: PChar);
   const
     //    L = 1000 * 1000;
     L = 1000;
-    sel:PChar='Hello World';
+    sel: PChar = 'Hello World';
   var
     i: integer;
   begin
@@ -350,8 +387,8 @@ procedure TMyWin.handle_selection_request(Aevent: TXEvent; sel: PChar);
                   ClipboardString[i] := char(Random(26) + 65);
                 end;
               end;
-              ClipboardString[Length(ClipboardString)]:=#10;
-              ClipboardString[Length(ClipboardString)-1]:=#10;
+              ClipboardString[Length(ClipboardString)] := #10;
+              ClipboardString[Length(ClipboardString) - 1] := #10;
               XSetSelectionOwner(dis, AP.XA_CLIPBOARD, win, CurrentTime);
               if XGetSelectionOwner(dis, AP.XA_CLIPBOARD) <> win then begin
                 WriteLn('Fehler: Falsches Window');
@@ -378,15 +415,17 @@ procedure TMyWin.handle_selection_request(Aevent: TXEvent; sel: PChar);
         // Wird ausgelöst, sobald Daten extern vom Clipboard verlangt werden.
         SelectionRequest: begin
           WriteLn('SelectionRequest');
-          if Event.xselectionrequest.selection=AP.XA_CLIPBOARD then handle_selection_request(Event,sel);
+          if Event.xselectionrequest.selection = AP.XA_CLIPBOARD then begin
+            handle_selection_request(Event, sel);
+          end;
 
           //          WriteClipboard;
-//          WriteClipboardLarge;
+          //          WriteClipboardLarge;
         end;
         PropertyNotify: begin
           WriteLn('PropertyNotify');
           //          WriteClipboard;
-//          WriteClipboardLarge;
+          //          WriteClipboardLarge;
         end;
         // Daten vom Clipboard stehen bereit zur Abholung
         SelectionNotify: begin
