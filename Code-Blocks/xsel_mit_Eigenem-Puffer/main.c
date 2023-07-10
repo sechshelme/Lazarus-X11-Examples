@@ -167,16 +167,16 @@ static HandleResult handle_targets (Display * display, Window requestor, Atom pr
     r = change_property (display, requestor, property, XA_ATOM, 32, PropModeReplace, (unsigned char *)targets_cpy, NUM_TARGETS, selection, time, mparent);
     free(targets_cpy);
     return r;
-}
+}Hello World !
+Hallo Welt !
+10-7-23 17:14:04
 
 
 static HandleResult handle_string (Display * display, Window requestor, Atom property,
                                    unsigned char * sel, Atom selection, Time time,
                                    MultTrack * mparent)
 {
-    return
-        change_property (display, requestor, property, XA_STRING, 8,
-                         PropModeReplace, sel, strlen(sel),
+    return  odeReplace, sel, strlen(sel),
                          selection, time, mparent);
 }
 
@@ -229,8 +229,6 @@ void handle_selection_request (XEvent event, unsigned char * sel)
         ev.property = None;
     }
 
-    //(retval = (hr & DID_DELETE) ? False : True;
-
     if ((hr & HANDLE_INCOMPLETE) == 0)
     {
         XSendEvent (display, ev.requestor, False,
@@ -273,7 +271,7 @@ static void set_selection (Atom selection, unsigned char * sel)
             {
                 it = find_incrtrack (event.xproperty.atom);
 
-                if (it != NULL) continue_incr (it);
+               if (it != NULL) continue_incr (it);
             }
             break;
         }
