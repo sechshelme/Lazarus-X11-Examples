@@ -216,7 +216,6 @@ var
       ev._property := None;
     end;
 
-
     if (hr and HANDLE_INCOMPLETE) = 0 then begin
       XSendEvent(dis, ev.requestor, False, 0, @ev);
       XSync(dis, False);
@@ -244,11 +243,8 @@ var
     ev.target := target;
     ev._property := _property;
 
-    //    XSelectInput();
-
-
     WriteLn('Schreibe Stringlänge: ', nr_bytes);
-    XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_INCR, 32, PropModePrepend, pbyte(@nr_bytes), 1);
+    XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_INCR, 32, PropModePrepend, PByte(@nr_bytes), 1);
 
     XSendEvent(display, requestor, False, 0, @ev);
 
@@ -351,6 +347,7 @@ var
     // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
+      WriteLn(Event._type);
       case Event._type of
         Expose: begin
           WriteLn('Expose');
@@ -427,7 +424,7 @@ var
         PropertyNotify: begin
           WriteLn('PropertyNotify');
           if Event.xproperty.state = PropertyDelete then begin
-            WriteLn('------------------------------------------------PropertyDelete');
+            WriteLn('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx--------------------------PropertyDelete');
             //            it:=find_i
           end;
 

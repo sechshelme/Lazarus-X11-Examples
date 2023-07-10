@@ -167,17 +167,17 @@ static HandleResult handle_targets (Display * display, Window requestor, Atom pr
     r = change_property (display, requestor, property, XA_ATOM, 32, PropModeReplace, (unsigned char *)targets_cpy, NUM_TARGETS, selection, time, mparent);
     free(targets_cpy);
     return r;
-}Hello World !
-Hallo Welt !
-10-7-23 17:14:04
+}
 
 
 static HandleResult handle_string (Display * display, Window requestor, Atom property,
                                    unsigned char * sel, Atom selection, Time time,
                                    MultTrack * mparent)
 {
-    return  odeReplace, sel, strlen(sel),
+  return  change_property (display, requestor, property, XA_STRING, 8,
+                         PropModeReplace, sel, strlen(sel),
                          selection, time, mparent);
+
 }
 
 
