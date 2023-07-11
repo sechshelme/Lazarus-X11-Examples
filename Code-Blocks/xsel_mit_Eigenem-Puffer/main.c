@@ -1,3 +1,7 @@
+
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -196,6 +200,8 @@ static HandleResult continue_incr (IncrTrack * it)
 
     return retval;
 }
+
+
 
 
 void handle_selection_request (XEvent event, unsigned char * sel)

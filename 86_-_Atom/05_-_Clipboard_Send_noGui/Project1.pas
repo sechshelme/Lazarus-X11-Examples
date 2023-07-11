@@ -11,8 +11,8 @@ uses
 
   {$i buffer.inc}
 
-  function cmalloc(size: SizeInt): Pointer; cdecl; external 'c' name 'malloc';
-  procedure cfree(ptr: Pointer); cdecl; external 'c' name 'free';
+  function cmalloc(size: SizeInt): Pointer; cdecl; external 'c' Name 'malloc';
+  procedure cfree(ptr: Pointer); cdecl; external 'c' Name 'free';
 
 const
   MyBuffer2 = 'Hello World'#10'Hallo Welt'#10;
@@ -85,7 +85,6 @@ var
   supported_targets: array[0..1] of TAtom;
   incrtrack_list: PIncrTrack = nil;
 
-
 var
   display: PDisplay;
   window: TWindow;
@@ -105,10 +104,25 @@ var
   var
     it: PIncrTrack;
   begin
-    Getmem(it, SizeOf(TIncrTrack));
+    it:=cmalloc(SizeOf(TIncrTrack));
     add_incrtrack(it);
 
     Result := it;
+  end;
+
+  function find_incrtrack(atom: TAtom): PIncrTrack;
+  var
+    iti: PIncrTrack;
+  begin
+    iti := incrtrack_list;
+    while iti <> nil do begin
+      if atom = iti^._property then begin
+        Result:=iti;
+        Exit;
+      end;
+      iti := iti^.Next;
+    end;
+    Result := nil;
   end;
 
   function change_property(display: PDisplay; requestor: TWindow; _property, target: TAtom; format, mode: cint; Data: PChar; nelements: cint; selction: TAtom; time: TTime; mparent: PMultTrack): THandleResult;
@@ -132,10 +146,9 @@ var
     ev.target := target;
     ev._property := _property;
 
-    XSelectInput(ev.display, ev.requestor, PropertyChangeMask);
-
-
     WriteLn('Schreibe Stringlänge: ', nr_bytes);
+
+    XSelectInput(ev.display, ev.requestor, PropertyChangeMask);
     XChangeProperty(ev.display, ev.requestor, ev._property, incr_atom, 32, PropModePrepend, pbyte(@nr_bytes), 1);
 
     XSendEvent(display, requestor, False, 0, @ev);
@@ -160,6 +173,33 @@ var
     Result := HANDLE_INCOMPLETE;
   end;
 
+  function incr_stage_1(it: PIncrTrack): THandleResult;
+  begin
+    WriteLn('-----------        incr 1');
+    XChangeProperty(it^.display, it^.requestor, it^._property, it^.target, it^.format, PropModeReplace, pbyte(it^.Data), it^.chunk);
+    it^.offset += it^.chunk;
+    it^.state := S_INCR_2;
+    Result := HANDLE_INCOMPLETE;
+  end;
+
+  function incr_stage_2(it: PIncrTrack): THandleResult;
+  begin
+    WriteLn('-----------        incr 2');
+    it^.chunk := min(it^.max_elements, it^.nelements - it^.offset);
+
+    if it^.chunk <= 0 then begin
+      XChangeProperty(it^.display, it^.requestor, it^._property, it^.target, it^.format, PropModeAppend, nil, 0);
+      WriteLn('comlett');
+      it^.state := S_NULL;
+      Result := HANDLE_OK;
+    end else begin
+      XChangeProperty(it^.display, it^.requestor, it^._property, it^.target, it^.format, PropModeReplace, pbyte(it^.Data + it^.offset), it^.chunk);
+      WriteLn('incomplett  ');
+      it^.offset += it^.chunk;
+      Result := HANDLE_INCOMPLETE;
+    end;
+  end;
+
   function handle_targets(display: PDisplay; requestor: TWindow; _property: TAtom; selction: TAtom; time: TTime; mparent: PMultTrack): THandleResult;
   var
     targets_cpy: PAtom;
@@ -182,6 +222,17 @@ var
     Result := change_property(display, requestor, _property, XA_STRING, 8, PropModeReplace, sel, StrLen(sel), selection, time, mparent);
   end;
 
+  function continue_incr(it: PIncrTrack): THandleResult;
+  var
+    retval: THandleResult = HANDLE_OK;
+  begin
+    if it^.state = S_INCR_1 then begin
+      retval := incr_stage_1(it);
+    end else if it^.state = S_INCR_2 then begin
+      retval := incr_stage_2(it);
+    end;
+    Result := retval;
+  end;
 
 
   procedure handle_selection_request(event: TXEvent; sel: PChar);
@@ -226,6 +277,7 @@ var
   procedure set_selection(selection: TAtom; sel: PChar);
   var
     event: TXEvent;
+    it: PIncrTrack;
   begin
     own_selection(selection);
     repeat
@@ -245,7 +297,14 @@ var
           end;
         end;
         PropertyNotify: begin
-          WriteLn('PropertyNotify');
+          WriteLn('PropertyNotify 1');
+          if event.xproperty.state = PropertyDelete then begin
+            WriteLn('PropertyNotify 2');
+            it := find_incrtrack(event.xproperty.atom);
+            if it <> nil then  begin
+              continue_incr(it);
+            end;
+          end;
           ///////////////////////////7777
         end;
       end;
