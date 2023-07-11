@@ -41,3 +41,5 @@ Window information utility for X
 xwd Dumps an image of an X window
 xwud Displays dumped image for X
 Use the man command to display information about these clients a
+
+
