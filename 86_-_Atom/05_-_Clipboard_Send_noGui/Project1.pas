@@ -9,12 +9,13 @@ uses
   xatom,
   x;
 
-
-  procedure setsid; cdecl; external 'c';
-
   {$i buffer.inc}
 
-  const MyBuffer2='Hello World'#10'Hallo Welt'#10;
+  function cmalloc(size: SizeInt): Pointer; cdecl; external 'c' name 'malloc';
+  procedure cfree(ptr: Pointer); cdecl; external 'c' name 'free';
+
+const
+  MyBuffer2 = 'Hello World'#10'Hallo Welt'#10;
 
 const
   HANDLE_OK = 0;
@@ -33,10 +34,10 @@ type
 
   THandleResult = cint;
 
-  PMultiTrack = ^TMultiTrack;
+  PMultTrack = ^TMultTrack;
 
-  TMultiTrack = record
-    mparent: PMultiTrack;
+  TMultTrack = record
+    mparent: PMultTrack;
     dis: PDisplay;
     requestor: TWindow;
     _property, selection: TAtom;
@@ -66,7 +67,7 @@ type
   PIncrTrack = ^TIncrTrack;
 
   TIncrTrack = record
-    mparent: PMultiTrack;
+    mparent: PMultTrack;
     prev, Next: PIncrTrack;
     state: integer;
     display: PDisplay;
@@ -110,7 +111,7 @@ var
     Result := it;
   end;
 
-  function change_property(display: PDisplay; requestor: TWindow; _property, target: TAtom; format, mode: cint; Data: PChar; nelements: cint; selction: TAtom; time: TTime; mparent: PMultiTrack): THandleResult;
+  function change_property(display: PDisplay; requestor: TWindow; _property, target: TAtom; format, mode: cint; Data: PChar; nelements: cint; selction: TAtom; time: TTime; mparent: PMultTrack): THandleResult;
   var
     ev: TXSelectionEvent;
     nr_bytes: clong;
@@ -130,6 +131,9 @@ var
     ev.time := time;
     ev.target := target;
     ev._property := _property;
+
+    XSelectInput(ev.display, ev.requestor, PropertyChangeMask);
+
 
     WriteLn('Schreibe Stringlänge: ', nr_bytes);
     XChangeProperty(ev.display, ev.requestor, ev._property, incr_atom, 32, PropModePrepend, pbyte(@nr_bytes), 1);
@@ -156,35 +160,37 @@ var
     Result := HANDLE_INCOMPLETE;
   end;
 
-  function handle_targets(display: PDisplay; requestor: TWindow; _property: TAtom; selction: TAtom; time: TTime; mparent: PMultiTrack): THandleResult;
+  function handle_targets(display: PDisplay; requestor: TWindow; _property: TAtom; selction: TAtom; time: TTime; mparent: PMultTrack): THandleResult;
   var
     targets_cpy: PAtom;
     i: integer;
     r: THandleResult;
   begin
-    Getmem(targets_cpy, SizeOf(supported_targets));
+    //    Getmem(targets_cpy, SizeOf(supported_targets));
+    targets_cpy := cmalloc(SizeOf(supported_targets));
     for i := 0 to Length(supported_targets) - 1 do begin
       targets_cpy[i] := supported_targets[i];
     end;
     r := change_property(display, requestor, _property, XA_ATOM, 32, PropModeReplace, PChar(targets_cpy), Length(supported_targets), selction, time, mparent);
-    Freemem(targets_cpy);
+    //    Freemem(targets_cpy);
+    cfree(targets_cpy);
     Result := r;
   end;
 
-  function handle_string(display: PDisplay; requestor: TWindow; _property: TAtom; sel: PChar; selection: TAtom; time: TTime; mparent: PMultiTrack): THandleResult;
+  function handle_string(display: PDisplay; requestor: TWindow; _property: TAtom; sel: PChar; selection: TAtom; time: TTime; mparent: PMultTrack): THandleResult;
   begin
     Result := change_property(display, requestor, _property, XA_STRING, 8, PropModeReplace, sel, StrLen(sel), selection, time, mparent);
   end;
 
 
 
-  procedure handle_selection_request(Aevent: TXEvent; sel: PChar);
+  procedure handle_selection_request(event: TXEvent; sel: PChar);
   var
     xsr: PXSelectionRequestEvent;
     ev: TXSelectionEvent;
     hr: THandleResult = HANDLE_OK;
   begin
-    xsr := @AEvent.xselectionrequest;
+    xsr := @event.xselectionrequest;
     ev._type := SelectionNotify;
     ev.display := xsr^.display;
     ev.requestor := xsr^.requestor;
@@ -211,10 +217,10 @@ var
   end;
 
 
-  procedure own_selection(selction: TAtom);
+  procedure own_selection(selection: TAtom);
   begin
-    XSetSelectionOwner(display, selction, window, 0);
-    XGetSelectionOwner(display, selction);
+    XSetSelectionOwner(display, selection, window, 0);
+    XGetSelectionOwner(display, selection);
   end;
 
   procedure set_selection(selection: TAtom; sel: PChar);
@@ -235,7 +241,7 @@ var
         SelectionRequest: begin
           WriteLn('SelectionRequest');
           if event.xselectionrequest.selection = selection then begin
-            handle_selection_request(event,sel);
+            handle_selection_request(event, sel);
           end;
         end;
         PropertyNotify: begin
@@ -255,7 +261,7 @@ var
   begin
     display := XOpenDisplay(nil);
     root := XDefaultRootWindow(display);
-    window := XCreateSimpleWindow(display, root, 10, 10, 320, 240, 1, 0, $FFFFFF);
+    window := XCreateSimpleWindow(display, root, 10, 10, 320, 240, 0, 0, $FFFFFF);
     XSelectInput(display, window, PropertyChangeMask);
 
     targets_atom := XInternAtom(display, 'TARGETS', False);
@@ -265,8 +271,6 @@ var
 
     supported_targets[0] := UTF_8_atom;
     supported_targets[1] := XA_STRING;
-
-    setsid;
 
     set_selection(clip_atom, MyBuffer);
   end;

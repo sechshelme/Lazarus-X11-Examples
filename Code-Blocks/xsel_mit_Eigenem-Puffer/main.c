@@ -302,6 +302,6 @@ int main(int argc, char *argv[])
 
     //printf(MyBuffer);
 
-    setsid () ;
+    //setsid () ;
     set_selection (clip_atom, MyBuffer);
 }

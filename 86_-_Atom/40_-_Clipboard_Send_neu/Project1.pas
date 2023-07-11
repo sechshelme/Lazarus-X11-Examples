@@ -244,6 +244,9 @@ var
     ev._property := _property;
 
     WriteLn('Schreibe Stringlänge: ', nr_bytes);
+
+    XSelectInput(ev.display,ev.requestor,PropertyChangeMask);
+
     XChangeProperty(ev.display, ev.requestor, ev._property, AP.XA_INCR, 32, PropModePrepend, PByte(@nr_bytes), 1);
 
     XSendEvent(display, requestor, False, 0, @ev);
