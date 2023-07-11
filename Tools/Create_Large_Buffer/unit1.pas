@@ -60,6 +60,7 @@ begin
 
   end;
   Memo1.Lines.Add('\0";');
+  Memo1.Lines.SaveToFile('buffer.c');
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
