@@ -28,7 +28,7 @@ type
 var
   Form1: TForm1;
 
-  {$i buffer.inc}
+//  {$i buffer.inc}
 
 implementation
 
@@ -71,7 +71,7 @@ begin
   Memo1.Lines.Add('const MyBuffer : PChar =');
   for j := 1 to Count do begin
     s := '';
-    for i := 1 to 7000 do begin
+    for i := 1 to 70 do begin
       if i mod 8 = 0 then begin
         s := s + ' ';
       end else begin
