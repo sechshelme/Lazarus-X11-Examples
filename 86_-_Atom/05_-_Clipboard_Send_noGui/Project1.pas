@@ -13,8 +13,6 @@ uses
 
   {$i buffer.inc}
 
-  procedure setsid; cdecl; external 'c';
-
 const
   MyBuffer2 = 'Hello World'#10'Hallo Welt'#10;
 
@@ -47,7 +45,7 @@ type
 var
   XA_TARGETS, XA_INCR, XA_UTF8_STRING, XA_CLIPBOARD: TAtom;
   supported_targets: array[0..1] of TAtom;
-  incrtrack_list: TIncrTrack;
+  il: TIncrTrack;
 
 var
   display: PDisplay;
@@ -80,47 +78,42 @@ var
 
     XSendEvent(display, requestor, False, 0, @ev);
 
-    incrtrack_list.state := S_INCR_1;
-    incrtrack_list.display := display;
-    incrtrack_list.requestor := requestor;
-    incrtrack_list._property := _property;
-    incrtrack_list.selection := selection;
-    incrtrack_list.target := target;
-    incrtrack_list.format := format;
-    incrtrack_list.Data := Data;
-    incrtrack_list.nelements := nelements;
-    incrtrack_list.offset := 0;
-    incrtrack_list.max_elements := max_req * 8 div format;
-    incrtrack_list.chunk := min(incrtrack_list.max_elements, incrtrack_list.nelements - incrtrack_list.offset);
+    il.state := S_INCR_1;
+    il.display := display;
+    il.requestor := requestor;
+    il._property := _property;
+    il.selection := selection;
+    il.target := target;
+    il.format := format;
+    il.Data := Data;
+    il.nelements := nelements;
+    il.offset := 0;
+    il.max_elements := max_req * 8 div format;
+    il.chunk := min(il.max_elements, il.nelements - il.offset);
 
     Result := HANDLE_INCOMPLETE;
   end;
 
   function continue_incr: THandleResult;
   begin
-    Result:=HANDLE_OK;
-    if incrtrack_list.state = S_INCR_1 then begin
-      XChangeProperty(incrtrack_list.display, incrtrack_list.requestor, incrtrack_list._property, incrtrack_list.target, incrtrack_list.format, PropModeReplace, pbyte(incrtrack_list.Data), incrtrack_list.chunk);
-      incrtrack_list.offset += incrtrack_list.chunk;
-      incrtrack_list.state := S_INCR_2;
+    Result := HANDLE_OK;
+    if il.state = S_INCR_1 then begin
+      XChangeProperty(il.display, il.requestor, il._property, il.target, il.format, PropModeReplace, pbyte(il.Data), il.chunk);
+      il.offset += il.chunk;
+      il.state := S_INCR_2;
       Result := HANDLE_INCOMPLETE;
-    end else if incrtrack_list.state = S_INCR_2 then begin
-      incrtrack_list.chunk := min(incrtrack_list.max_elements, incrtrack_list.nelements - incrtrack_list.offset);
-      if incrtrack_list.chunk <= 0 then begin
-        XChangeProperty(incrtrack_list.display, incrtrack_list.requestor, incrtrack_list._property, incrtrack_list.target, incrtrack_list.format, PropModeAppend, nil, 0);
-        incrtrack_list.state := S_NULL;
+    end else if il.state = S_INCR_2 then begin
+      il.chunk := min(il.max_elements, il.nelements - il.offset);
+      if il.chunk <= 0 then begin
+        XChangeProperty(il.display, il.requestor, il._property, il.target, il.format, PropModeAppend, nil, 0);
+        il.state := S_NULL;
         Result := HANDLE_OK;
       end else begin
-        XChangeProperty(incrtrack_list.display, incrtrack_list.requestor, incrtrack_list._property, incrtrack_list.target, incrtrack_list.format, PropModeAppend, pbyte(incrtrack_list.Data + incrtrack_list.offset), incrtrack_list.chunk);
-        incrtrack_list.offset += incrtrack_list.chunk;
+        XChangeProperty(il.display, il.requestor, il._property, il.target, il.format, PropModeAppend, pbyte(il.Data + il.offset), il.chunk);
+        il.offset += il.chunk;
         Result := HANDLE_INCOMPLETE;
       end;
     end;
-  end;
-
-  function handle_targets(display: PDisplay; requestor: TWindow; _property: TAtom; selction: TAtom): THandleResult;
-  begin
-    Result := change_property(display, requestor, _property, XA_ATOM, 32, PropModeReplace, PChar(@supported_targets), Length(supported_targets), selction);
   end;
 
   function handle_string(display: PDisplay; requestor: TWindow; _property: TAtom; sel: PChar; selection: TAtom): THandleResult;
@@ -129,7 +122,7 @@ var
   end;
 
 
-  procedure handle_selection_request(event: TXEvent; sel: PChar);
+  procedure handle_selection_request(const event: TXEvent; sel: PChar);
   var
     xsr: PXSelectionRequestEvent;
     ev: TXSelectionEvent;
@@ -145,7 +138,8 @@ var
 
     if ev.target = XA_TARGETS then begin
       ev._property := xsr^._property;
-      hr := handle_targets(ev.display, ev.requestor, ev._property, ev.selection);
+      hr := HANDLE_OK;
+      XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, pbyte(@supported_targets), Length(supported_targets));
     end else if (ev.target = XA_UTF8_STRING) or (ev.target = XA_STRING) then  begin
       ev._property := xsr^._property;
       hr := handle_string(ev.display, ev.requestor, ev._property, sel, ev.selection);
@@ -159,47 +153,10 @@ var
     end;
   end;
 
-  procedure own_selection(selection: TAtom);
-  begin
-    XSetSelectionOwner(display, selection, window, 0);
-    XGetSelectionOwner(display, selection);
-  end;
-
-  procedure set_selection(selection: TAtom; sel: PChar);
-  var
-    event: TXEvent;
-  begin
-    own_selection(selection);
-    repeat
-      XFlush(display);
-      XNextEvent(display, @event);
-      case event._type of
-        SelectionClear: begin
-          WriteLn('SelectionClear');
-          if event.xselectionclear.selection = selection then begin
-            Exit;
-          end;
-        end;
-        SelectionRequest: begin
-          WriteLn('SelectionRequest');
-          if event.xselectionrequest.selection = selection then begin
-            handle_selection_request(event, sel);
-          end;
-        end;
-        PropertyNotify: begin
-          WriteLn('PropertyNotify 1');
-          if event.xproperty.state = PropertyDelete then begin
-            WriteLn('PropertyNotify 2');
-              continue_incr;
-          end;
-        end;
-      end;
-    until False;
-  end;
-
   procedure main;
   var
     root: TWindow;
+    event: TXEvent;
   begin
     display := XOpenDisplay(nil);
     root := XDefaultRootWindow(display);
@@ -214,8 +171,33 @@ var
     supported_targets[0] := XA_UTF8_STRING;
     supported_targets[1] := XA_STRING;
 
-    setsid;
-    set_selection(XA_CLIPBOARD, MyBuffer);
+    XSetSelectionOwner(display, XA_CLIPBOARD, window, 0);
+    XGetSelectionOwner(display, XA_CLIPBOARD);
+    repeat
+      XFlush(display);
+      XNextEvent(display, @event);
+      case event._type of
+        SelectionClear: begin
+          WriteLn('SelectionClear');
+          if event.xselectionclear.selection = XA_CLIPBOARD then begin
+            Exit;
+          end;
+        end;
+        SelectionRequest: begin
+          WriteLn('SelectionRequest');
+          if event.xselectionrequest.selection = XA_CLIPBOARD then begin
+            handle_selection_request(event, MyBuffer);
+          end;
+        end;
+        PropertyNotify: begin
+          WriteLn('PropertyNotify 1');
+          if event.xproperty.state = PropertyDelete then begin
+            WriteLn('PropertyNotify 2');
+            continue_incr;
+          end;
+        end;
+      end;
+    until False;
   end;
 
 begin
