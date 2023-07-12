@@ -1,6 +1,7 @@
 program project1;
 
 uses
+  BaseUnix,
   ctypes;
 
   procedure setsid; cdecl; external 'c';
@@ -25,30 +26,18 @@ uses
   end;
 
 begin
-  WriteLn('begin');
-  fork;
-  WriteLn(1);
-  setsid;
+  //WriteLn('begin');
+  //fork;
+  //WriteLn(1);
+  //setsid;
+  //
+  //fork;
+  //WriteLn(2);
+  //setsid;
+  //
+  //
+  //WriteLn('end');
+  //
 
-  fork;
-  WriteLn(2);
-  setsid;
-
-
-  WriteLn('end');
-
-//
-//  WriteLn('begin');
-//  WriteLn('1: ',fork);
-//  setsid;
-//  WriteLn('2: ',fork);
-//  setsid;
-//  WriteLn('3: ',fork);
-//  setsid;
-//  WriteLn('4: ',fork);
-//  setsid;
-//  WriteLn('end');
-//
-
-//  main;
+  main;
 end.

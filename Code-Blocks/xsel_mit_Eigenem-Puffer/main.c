@@ -1,7 +1,3 @@
-
-
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,15 +11,13 @@
 static Display * display;
 static Window window;
 
-static long max_req;
+static long max_req = 4000;
 
 static Atom targets_atom;
 static Atom incr_atom;
 static Atom UTF_8_atom;
 
-#define MAX_NUM_TARGETS 9
-static int NUM_TARGETS;
-static Atom supported_targets[MAX_NUM_TARGETS];
+static Atom supported_targets[2];
 
 void own_selection (Atom selection)
 {
@@ -117,11 +111,7 @@ static HandleResult change_property (Display * display, Window requestor, Atom p
     it->data = data;
     it->nelements = nelements;
     it->offset = 0;
-
-    /* Maximum nr. of elements that can be transferred in one go */
     it->max_elements = max_req * 8 / format;
-
-    /* Nr. of elements to transfer in this instance */
     it->chunk = MIN (it->max_elements, it->nelements - it->offset);
 
     return HANDLE_INCOMPLETE;
@@ -168,7 +158,7 @@ static HandleResult handle_targets (Display * display, Window requestor, Atom pr
     targets_cpy = malloc (sizeof (supported_targets));
     memcpy (targets_cpy, supported_targets, sizeof (supported_targets));
 
-    r = change_property (display, requestor, property, XA_ATOM, 32, PropModeReplace, (unsigned char *)targets_cpy, NUM_TARGETS, selection, time, mparent);
+    r = change_property (display, requestor, property, XA_ATOM, 32, PropModeReplace, (unsigned char *)targets_cpy, 2, selection, time, mparent);
     free(targets_cpy);
     return r;
 }
@@ -209,7 +199,6 @@ void handle_selection_request (XEvent event, unsigned char * sel)
     XSelectionRequestEvent * xsr = &event.xselectionrequest;
     XSelectionEvent ev;
     HandleResult hr = HANDLE_OK;
-    //Bool retval = True;
 
     ev.type = SelectionNotify;
     ev.display = xsr->display;
@@ -294,20 +283,17 @@ int main(int argc, char *argv[])
     window = XCreateSimpleWindow (display, root, 0, 0, 1, 1, 0, 0, 0);
     XSelectInput (display, window, PropertyChangeMask);
 
-    max_req = 4000;
-    NUM_TARGETS=0;
-
     targets_atom = XInternAtom (display, "TARGETS", False);
     incr_atom = XInternAtom (display, "INCR", False);
     UTF_8_atom = XInternAtom (display, "UTF8_STRING", False);
     clip_atom = XInternAtom (display, "CLIPBOARD", False);
 
-    supported_targets[NUM_TARGETS++] = UTF_8_atom;
-    supported_targets[NUM_TARGETS++] = XA_STRING;
+    supported_targets[0] = UTF_8_atom;
+    supported_targets[1] = XA_STRING;
 
 
     //printf(MyBuffer);
 
-    //setsid () ;
+    setsid () ;
     set_selection (clip_atom, MyBuffer);
 }

@@ -1,6 +1,7 @@
 program Project1;
 
 uses
+  BaseUnix,
   unixtype,
   ctypes,
   xlib,
@@ -13,6 +14,8 @@ uses
 
   function cmalloc(size: SizeInt): Pointer; cdecl; external 'c' Name 'malloc';
   procedure cfree(ptr: Pointer); cdecl; external 'c' Name 'free';
+    procedure setsid; cdecl; external 'c';
+
 
 const
   MyBuffer2 = 'Hello World'#10'Hallo Welt'#10;
@@ -149,7 +152,7 @@ var
     WriteLn('Schreibe Stringlänge: ', nr_bytes);
 
     XSelectInput(ev.display, ev.requestor, PropertyChangeMask);
-    XChangeProperty(ev.display, ev.requestor, ev._property, incr_atom, 32, PropModePrepend, pbyte(@nr_bytes), 1);
+    XChangeProperty(ev.display, ev.requestor, ev._property, incr_atom, 32, PropModeReplace, pbyte(@nr_bytes), 1);
 
     XSendEvent(display, requestor, False, 0, @ev);
 
@@ -189,12 +192,10 @@ var
 
     if it^.chunk <= 0 then begin
       XChangeProperty(it^.display, it^.requestor, it^._property, it^.target, it^.format, PropModeAppend, nil, 0);
-      WriteLn('comlett');
       it^.state := S_NULL;
       Result := HANDLE_OK;
     end else begin
-      XChangeProperty(it^.display, it^.requestor, it^._property, it^.target, it^.format, PropModeReplace, pbyte(it^.Data + it^.offset), it^.chunk);
-      WriteLn('incomplett  ');
+      XChangeProperty(it^.display, it^.requestor, it^._property, it^.target, it^.format, PropModeAppend, pbyte(it^.Data + it^.offset), it^.chunk);
       it^.offset += it^.chunk;
       Result := HANDLE_INCOMPLETE;
     end;
@@ -305,13 +306,9 @@ var
               continue_incr(it);
             end;
           end;
-          ///////////////////////////7777
         end;
       end;
-
-
     until False;
-    //////////////////77
   end;
 
   procedure main;
@@ -331,12 +328,14 @@ var
     supported_targets[0] := UTF_8_atom;
     supported_targets[1] := XA_STRING;
 
+    FpSetsid;
+//    setsid;
     set_selection(clip_atom, MyBuffer);
   end;
 
 begin
   main;
 
-  XDestroyWindow(display, window);
-  XCloseDisplay(display);
+//  XDestroyWindow(display, window);
+//  XCloseDisplay(display);
 end.
