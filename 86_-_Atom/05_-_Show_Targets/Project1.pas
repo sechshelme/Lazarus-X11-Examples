@@ -37,23 +37,23 @@ const
   clBrightBlue = 94;
   clBrightMagenta = 95;
   clBrightCyan = 96;
-  clBrightWhite =97;
+  clBrightWhite = 97;
 
-procedure SetFGColor(c: byte);
-begin
-  Write(#27'[', Ord(c), 'm');
-end;
+  procedure SetFGColor(c: byte);
+  begin
+    Write(#27'[', Ord(c), 'm');
+  end;
 
-procedure SetBGColor(c: byte);
-begin
-  Write(#27'[', Ord(c+10), 'm');
-end;
+  procedure SetBGColor(c: byte);
+  begin
+    Write(#27'[', Ord(c + 10), 'm');
+  end;
 
-procedure SetFGNormalColor;
-begin
-  Write(#27'[0m');
-//  SetFGColor(clBrightWhite);
-end;
+  procedure SetFGNormalColor;
+  begin
+    Write(#27'[0m');
+    //  SetFGColor(clBrightWhite);
+  end;
 
 
 type
@@ -84,18 +84,19 @@ var
   // https://tronche.com/gui/x/icccm/sec-2.html
   // https://groups.google.com/a/chromium.org/g/chromium-discuss/c/_el628cw_PM
 
-  const StringAtoms:TStringArray=(
-  'STRING',
-  'UTF8_STRING',
-  'COMPOUND_TEXT',
-  'text/plain',
-  'text/plain;charset=utf-8',
-  'text/html',
-  'text/uri-list',
-  'text/rtf',
-  'text/ico',
-  'text/richtext',
-  'TEXT');
+const
+  StringAtoms: TStringArray = (
+    'STRING',
+    'UTF8_STRING',
+    'COMPOUND_TEXT',
+    'text/plain',
+    'text/plain;charset=utf-8',
+    'text/html',
+    'text/uri-list',
+    'text/rtf',
+    'text/ico',
+    'text/richtext',
+    'TEXT');
 
 
   function GetAtom(Name: PChar): TAtom;
@@ -278,7 +279,7 @@ var
   begin
     Result := False;
     for i := 0 to Length(AtomList) - 1 do begin
-      if GetAtom( PChar( AtomList[i])) = ret_type then begin
+      if GetAtom(PChar(AtomList[i])) = ret_type then begin
         Result := True;
         Exit;
       end;
@@ -321,9 +322,12 @@ var
         Write('Property: ');
         WriteLn(' (', XGetAtomName(dis, ret_type), ', ', ret_format, ', ', ret_items, ') =');
 
-        if ret_type = XA_ATOM then begin
+        if RetInAtom(ret_type, ['ATOM', 'ATOM_PAIR']) then begin
           for i := 0 to ret_items - 1 do begin
-            WriteLn('Nr: ', prop_return[i]: 5, '  Name: ', XGetAtomName(dis, prop_return[i]));
+            Write('Nr: ', prop_return[i]: 5);
+            if prop_return[i] <> 0 then  begin
+              WriteLn('  Name: ', XGetAtomName(dis, prop_return[i]));
+            end else WriteLn();
           end;
         end else if ret_type = GetAtom('INCR') then  begin
           INCR_Count := 0;
@@ -361,7 +365,7 @@ var
           end;
           WriteLn();
         end else if RetInAtom(ret_type, StringAtoms) then  begin
-            SetFGColor(clCyan);
+          SetFGColor(clCyan);
           for i := 0 to Length(ClipData.Data) - 1 do begin
             if i = 0 then begin
               Write('"');
@@ -409,13 +413,13 @@ var
     end;
   end;
 
-procedure PrintName(w: TWindow);
-var
-  prop: TXTextProperty;
-begin
-  XGetWMName(dis, w, @prop);
-  WriteLn('--- Empfange Daten von Win. Nr: 0x', IntToHex(w, 8), ' Name: ', PChar(prop.Value));
-end;
+  procedure PrintName(w: TWindow);
+  var
+    prop: TXTextProperty;
+  begin
+    XGetWMName(dis, w, @prop);
+    WriteLn('--- Empfange Daten von Win. Nr: 0x', IntToHex(w, 8), ' Name: ', PChar(prop.Value));
+  end;
 
 
 
@@ -517,18 +521,18 @@ begin
           end;
         end;
       end;
-//      // Wird ausgelöst, sobald Daten extern vom Clipboard verlangt werden.
-//      SelectionRequest: begin
-//        WriteLn('SelectionRequest');
-//        PrintName(Event.xselectionrequest.requestor);
-////        WriteClipboard;
-//      end;
-//      // Wird ausgelöst, sobald eine andere App Daten fürs Clipboard hat.
-//      SelectionClear: begin
-//        WriteLn('SelectionClear');
-//        PrintName(Event.xselectionclear.window);
-////      WriteLn('Eine andere App hat Clipboard Daten');
-//      end;
+      //      // Wird ausgelöst, sobald Daten extern vom Clipboard verlangt werden.
+      //      SelectionRequest: begin
+      //        WriteLn('SelectionRequest');
+      //        PrintName(Event.xselectionrequest.requestor);
+      ////        WriteClipboard;
+      //      end;
+      //      // Wird ausgelöst, sobald eine andere App Daten fürs Clipboard hat.
+      //      SelectionClear: begin
+      //        WriteLn('SelectionClear');
+      //        PrintName(Event.xselectionclear.window);
+      ////      WriteLn('Eine andere App hat Clipboard Daten');
+      //      end;
     end;
   end;
 

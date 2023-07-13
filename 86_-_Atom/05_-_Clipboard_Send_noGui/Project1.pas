@@ -69,7 +69,7 @@ type
 
 var
   XA_TARGETS, XA_INCR, XA_UTF8_STRING, XA_CLIPBOARD: TAtom;
-  supported_targets: array[0..1] of TAtom;
+  supported_targets: array[0..3] of TAtom;
   it: TIncrTrack;
 
 var
@@ -158,6 +158,8 @@ var
     ev.target := event.xselectionrequest.target;
     ev._property := event.xselectionrequest._property;
 
+    WriteLn('Atom: ',XGetAtomName(ev.display,ev.target));
+
     if ev.target = XA_TARGETS then begin
       hr := HANDLE_OK;
       XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, pbyte(@supported_targets), Length(supported_targets));
@@ -185,12 +187,14 @@ var
 
     XA_TARGETS := XInternAtom(display, 'TARGETS', False);
     XA_INCR := XInternAtom(display, 'INCR', False);
-//    XA_UTF8_STRING := XInternAtom(display, 'UTF8_STRING', False);
-    XA_UTF8_STRING := XInternAtom(display, 'text/plain', False);
+    XA_UTF8_STRING := XInternAtom(display, 'UTF8_STRING', False);
+//    XA_UTF8_STRING := XInternAtom(display, 'text/plain', False);
     XA_CLIPBOARD := XInternAtom(display, 'CLIPBOARD', False);
 
-    supported_targets[0] := XA_UTF8_STRING;
-    supported_targets[1] := XA_STRING;
+    supported_targets[0] := XA_TARGETS;
+    supported_targets[1] := XA_INCR;
+    supported_targets[2] := XA_STRING;
+    supported_targets[3] := XA_UTF8_STRING;
 
     XSetSelectionOwner(display, XA_CLIPBOARD, window, 0);
     XGetSelectionOwner(display, XA_CLIPBOARD);
@@ -207,13 +211,13 @@ var
         SelectionRequest: begin
           WriteLn('SelectionRequest');
           if event.xselectionrequest.selection = XA_CLIPBOARD then begin
-            //            it.Data := PChar(MyBuffer);
-            it.Data := PChar(CreatBuffer);
+//                        it.Data := PChar(MyBuffer2);
+          it.Data := PChar(CreatBuffer);
             handle_selection_request(event);
           end;
         end;
         PropertyNotify: begin
-          WriteLn('PropertyNotify 1');
+//          WriteLn('PropertyNotify 1');
           if event.xproperty.state = PropertyDelete then begin
             WriteLn('PropertyNotify 2');
             continue_incr;
