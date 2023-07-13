@@ -84,20 +84,6 @@ var
   // https://tronche.com/gui/x/icccm/sec-2.html
   // https://groups.google.com/a/chromium.org/g/chromium-discuss/c/_el628cw_PM
 
-const
-  StringAtoms: TStringArray = (
-    'STRING',
-    'UTF8_STRING',
-    'COMPOUND_TEXT',
-    'text/plain',
-    'text/plain;charset=utf-8',
-    'text/html',
-    'text/uri-list',
-    'text/rtf',
-    'text/ico',
-    'text/richtext',
-    'TEXT');
-
 
   function GetAtom(Name: PChar): TAtom;
   begin
@@ -261,6 +247,31 @@ const
     WriteLn(len, ' Bytes gespeichert.');
   end;
 
+  procedure ShowHTML(Data: PChar; len: SizeInt);
+  var
+    ch: char;
+    noPrint: integer = 0;
+  begin
+    SetFGColor(clBrightBlue);
+    Write('"');
+    for i := 0 to len - 1 do begin
+      ch := Data[i];
+      if ch = '<' then begin
+        Inc(noPrint);
+      end;
+      if noPrint = 0 then  begin
+        Write(ch);
+      end;
+      if ch = '>' then begin
+        Dec(noPrint);
+      end;
+//      Write(noPrint,'  ');
+    end;
+    WriteLn('"');
+    SetFGNormalColor;
+  end;
+
+
   procedure save(Data: PChar; len: SizeInt; path: string);
   var
     Fout: file;
@@ -283,6 +294,28 @@ const
         Result := True;
         Exit;
       end;
+    end;
+  end;
+
+  function StringInAtom(ret_type: TAtom): boolean;
+  const
+    StringAtoms: TStringArray = (
+      'STRING',
+      'UTF8_STRING',
+      'COMPOUND_TEXT',
+      'TEXT');
+  var
+    i: integer;
+  begin
+    Result := False;
+    for i := 0 to Length(StringAtoms) - 1 do begin
+      if GetAtom(PChar(StringAtoms[i])) = ret_type then begin
+        Result := True;
+        Exit;
+      end;
+    end;
+    if pos('text/', XGetAtomName(dis, ret_type)) = 1 then begin
+      Result := True;
     end;
   end;
 
@@ -327,7 +360,9 @@ const
             Write('Nr: ', prop_return[i]: 5);
             if prop_return[i] <> 0 then  begin
               WriteLn('  Name: ', XGetAtomName(dis, prop_return[i]));
-            end else WriteLn();
+            end else begin
+              WriteLn();
+            end;
           end;
         end else if ret_type = GetAtom('INCR') then  begin
           INCR_Count := 0;
@@ -364,7 +399,9 @@ const
             end;
           end;
           WriteLn();
-        end else if RetInAtom(ret_type, StringAtoms) then  begin
+        end else if RetInAtom(ret_type, ['text/html']) then  begin
+          ShowHTML(PChar(ClipData.Data), Length(ClipData.Data));
+        end else if StringInAtom(ret_type) then  begin
           SetFGColor(clCyan);
           for i := 0 to Length(ClipData.Data) - 1 do begin
             if i = 0 then begin
