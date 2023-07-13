@@ -11,10 +11,32 @@ uses
   xatom,
   x;
 
-  {$i buffer.inc}
+  //  {$i buffer.inc}
+
+
+  function CreatBuffer: string;
+  const
+    size: SizeInt = 1000 * 1000 * 10 - 1;
+//    size: SizeInt = 1000;
+  var
+    i: integer;
+  begin
+    SetLength(Result, size);
+    for i := 1 to size do begin
+      if i mod 90 = 0 then begin
+        Result[i] := #10;
+      end else if i mod 9 = 0 then begin
+        Result[i] := '-';
+      end else begin
+        Result[i] := char(Random(10) + 48);
+      end;
+    end;
+  end;
 
 const
   MyBuffer2 = 'Hello World'#10'Hallo Welt'#10;
+var
+  StringData: PChar;
 
 const
   HANDLE_OK = 0;
@@ -28,10 +50,13 @@ const
   S_INCR_1 = 1;
   S_INCR_2 = 2;
 
-  max_req = 4000;
+//  max_req = 4000;
+  max_req = 1000*1000;
 
 type
   TIncrTrack = record
+    incr_counter:cint;
+
     state: integer;
     display: PDisplay;
     requestor: TWindow;
@@ -45,7 +70,7 @@ type
 var
   XA_TARGETS, XA_INCR, XA_UTF8_STRING, XA_CLIPBOARD: TAtom;
   supported_targets: array[0..1] of TAtom;
-  il: TIncrTrack;
+  it: TIncrTrack;
 
 var
   display: PDisplay;
@@ -78,71 +103,66 @@ var
 
     XSendEvent(display, requestor, False, 0, @ev);
 
-    il.state := S_INCR_1;
-    il.display := display;
-    il.requestor := requestor;
-    il._property := _property;
-    il.selection := selection;
-    il.target := target;
-    il.format := format;
-    il.Data := Data;
-    il.nelements := nelements;
-    il.offset := 0;
-    il.max_elements := max_req * 8 div format;
-    il.chunk := min(il.max_elements, il.nelements - il.offset);
+    it.incr_counter:=0;
+
+    it.state := S_INCR_1;
+    it.display := display;
+    it.requestor := requestor;
+    it._property := _property;
+    it.selection := selection;
+    it.target := target;
+    it.format := format;
+    it.Data := Data;
+    it.nelements := nelements;
+    it.offset := 0;
+    it.max_elements := max_req * 8 div format;
+    it.chunk := min(it.max_elements, it.nelements - it.offset);
 
     Result := HANDLE_INCOMPLETE;
   end;
 
   function continue_incr: THandleResult;
   begin
+    Inc(it.incr_counter);
+    WriteLn('INCR-Count: ',it.incr_counter);
     Result := HANDLE_OK;
-    if il.state = S_INCR_1 then begin
-      XChangeProperty(il.display, il.requestor, il._property, il.target, il.format, PropModeReplace, pbyte(il.Data), il.chunk);
-      il.offset += il.chunk;
-      il.state := S_INCR_2;
+    if it.state = S_INCR_1 then begin
+      XChangeProperty(it.display, it.requestor, it._property, it.target, it.format, PropModeReplace, pbyte(it.Data), it.chunk);
+      it.offset += it.chunk;
+      it.state := S_INCR_2;
       Result := HANDLE_INCOMPLETE;
-    end else if il.state = S_INCR_2 then begin
-      il.chunk := min(il.max_elements, il.nelements - il.offset);
-      if il.chunk <= 0 then begin
-        XChangeProperty(il.display, il.requestor, il._property, il.target, il.format, PropModeAppend, nil, 0);
-        il.state := S_NULL;
+    end else if it.state = S_INCR_2 then begin
+      it.chunk := min(it.max_elements, it.nelements - it.offset);
+      if it.chunk <= 0 then begin
+        XChangeProperty(it.display, it.requestor, it._property, it.target, it.format, PropModeAppend, nil, 0);
+        it.state := S_NULL;
         Result := HANDLE_OK;
       end else begin
-        XChangeProperty(il.display, il.requestor, il._property, il.target, il.format, PropModeAppend, pbyte(il.Data + il.offset), il.chunk);
-        il.offset += il.chunk;
+        XChangeProperty(it.display, it.requestor, it._property, it.target, it.format, PropModeAppend, pbyte(it.Data + it.offset), it.chunk);
+        it.offset += it.chunk;
         Result := HANDLE_INCOMPLETE;
       end;
     end;
   end;
 
-  function handle_string(display: PDisplay; requestor: TWindow; _property: TAtom; sel: PChar; selection: TAtom): THandleResult;
-  begin
-    Result := change_property(display, requestor, _property, XA_STRING, 8, PropModeReplace, sel, StrLen(sel), selection);
-  end;
-
-
-  procedure handle_selection_request(const event: TXEvent; sel: PChar);
+  procedure handle_selection_request(const event: TXEvent);
   var
-    xsr: PXSelectionRequestEvent;
     ev: TXSelectionEvent;
     hr: THandleResult = HANDLE_OK;
   begin
-    xsr := @event.xselectionrequest;
     ev._type := SelectionNotify;
-    ev.display := xsr^.display;
-    ev.requestor := xsr^.requestor;
-    ev.selection := xsr^.selection;
-    ev.time := xsr^.time;
-    ev.target := xsr^.target;
+    ev.display := event.xselectionrequest.display;
+    ev.requestor := event.xselectionrequest.requestor;
+    ev.selection := event.xselectionrequest.selection;
+    ev.time := event.xselectionrequest.time;
+    ev.target := event.xselectionrequest.target;
+    ev._property := event.xselectionrequest._property;
 
     if ev.target = XA_TARGETS then begin
-      ev._property := xsr^._property;
       hr := HANDLE_OK;
       XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, pbyte(@supported_targets), Length(supported_targets));
     end else if (ev.target = XA_UTF8_STRING) or (ev.target = XA_STRING) then  begin
-      ev._property := xsr^._property;
-      hr := handle_string(ev.display, ev.requestor, ev._property, sel, ev.selection);
+      hr := change_property(display, ev.requestor, ev._property, XA_STRING, 8, PropModeReplace, it.Data, StrLen(it.Data), ev.selection);
     end else begin
       ev._property := None;
     end;
@@ -165,7 +185,8 @@ var
 
     XA_TARGETS := XInternAtom(display, 'TARGETS', False);
     XA_INCR := XInternAtom(display, 'INCR', False);
-    XA_UTF8_STRING := XInternAtom(display, 'UTF8_STRING', False);
+//    XA_UTF8_STRING := XInternAtom(display, 'UTF8_STRING', False);
+    XA_UTF8_STRING := XInternAtom(display, 'text/plain', False);
     XA_CLIPBOARD := XInternAtom(display, 'CLIPBOARD', False);
 
     supported_targets[0] := XA_UTF8_STRING;
@@ -186,7 +207,9 @@ var
         SelectionRequest: begin
           WriteLn('SelectionRequest');
           if event.xselectionrequest.selection = XA_CLIPBOARD then begin
-            handle_selection_request(event, MyBuffer);
+            //            it.Data := PChar(MyBuffer);
+            it.Data := PChar(CreatBuffer);
+            handle_selection_request(event);
           end;
         end;
         PropertyNotify: begin
