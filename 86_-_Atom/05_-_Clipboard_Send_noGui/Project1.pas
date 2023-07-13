@@ -45,11 +45,11 @@ const
 type
   THandleResult = cint;
 
+type TINCR_State=(
+  S_NULL = 0,
+  S_INCR_1 = 1,
+  S_INCR_2 = 2);
 const
-  S_NULL = 0;
-  S_INCR_1 = 1;
-  S_INCR_2 = 2;
-
 //  max_req = 4000;
   max_req = 1000*1000;
 
@@ -57,7 +57,7 @@ type
   TIncrTrack = record
     incr_counter:cint;
 
-    state: integer;
+    state: TINCR_State;
     display: PDisplay;
     requestor: TWindow;
     _property, selection: TAtom;
@@ -124,7 +124,7 @@ var
   function continue_incr: THandleResult;
   begin
     Inc(it.incr_counter);
-    WriteLn('INCR-Count: ',it.incr_counter);
+    WriteLn('INCR-Count: ',it.incr_counter,'  State: ',it.state);
     Result := HANDLE_OK;
     if it.state = S_INCR_1 then begin
       XChangeProperty(it.display, it.requestor, it._property, it.target, it.format, PropModeReplace, pbyte(it.Data), it.chunk);
