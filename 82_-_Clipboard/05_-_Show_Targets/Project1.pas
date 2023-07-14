@@ -55,7 +55,7 @@ var
   scr: cint;
   XA_CLIPBOARD, XA_TARGETS: TAtom;
   SelectTargetAtom: TAtom = 0;
-  Target_List: TAtoms;
+  Target_List: TAtoms=nil;
   i: integer;
   key: TKeySym;
   gc: TGC;

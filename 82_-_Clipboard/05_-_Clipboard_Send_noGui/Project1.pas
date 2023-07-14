@@ -17,7 +17,7 @@ uses
   function CreatBuffer: string;
   const
     size: SizeInt = 1000 * 1000 * 10 - 1;
-    //    size: SizeInt = 1000;
+//        size: SizeInt = 1000;
   var
     i: integer;
   begin
@@ -68,12 +68,11 @@ type
 
 var
   XA_TARGETS, XA_INCR, XA_UTF8_STRING, XA_TextPlain, XA_CLIPBOARD: TAtom;
-  supported_targets: array[0..4] of TAtom;
+  supported_targets: array of TAtom = nil;
   it: TIncrTrack;
 
 var
   display: PDisplay;
-  window: TWindow;
 
   function change_property(display: PDisplay; requestor: TWindow; _property, target: TAtom; format, mode: cint; Data: PChar; nelements: cint; selection: TAtom): THandleResult;
   var
@@ -161,9 +160,9 @@ var
 
     if ev.target = XA_TARGETS then begin
       hr := HANDLE_OK;
-      XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, pbyte(@supported_targets), Length(supported_targets));
-    end else if (ev.target = XA_UTF8_STRING) or (ev.target = XA_STRING) then  begin
-      hr := change_property(display, ev.requestor, ev._property, XA_STRING, 8, PropModeReplace, it.Data, StrLen(it.Data), ev.selection);
+      XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, pbyte(supported_targets), Length(supported_targets));
+    end else if (ev.target = XA_UTF8_STRING) or (ev.target = XA_STRING) or (ev.target = XA_TextPlain) then  begin
+      hr := change_property(ev.display, ev.requestor, ev._property, XA_STRING, 8, PropModeReplace, it.Data, StrLen(it.Data), ev.selection);
     end else begin
       ev._property := None;
     end;
@@ -177,6 +176,7 @@ var
   procedure main;
   var
     root: TWindow;
+    window: TWindow;
     event: TXEvent;
   begin
     display := XOpenDisplay(nil);
@@ -190,11 +190,7 @@ var
     XA_TextPlain := XInternAtom(display, 'text/plain', False);
     XA_CLIPBOARD := XInternAtom(display, 'CLIPBOARD', False);
 
-    supported_targets[0] := XA_TARGETS;
-    supported_targets[1] := XA_INCR;
-    supported_targets[2] := XA_STRING;
-    supported_targets[3] := XA_UTF8_STRING;
-    supported_targets[4] := XA_TextPlain;
+    supported_targets := [XA_TARGETS, XA_INCR, XA_STRING, XA_UTF8_STRING, XA_TextPlain];
 
     XSetSelectionOwner(display, XA_CLIPBOARD, window, 0);
     XGetSelectionOwner(display, XA_CLIPBOARD);
