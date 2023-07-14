@@ -1,10 +1,5 @@
 //image image.png
 (*
-Es ist möglich ein Fenster innerhalb eine anderen zu erzeugen.
-Bei GUI-Anwendungen ist dies in der Regel der Fall.
-Jedes **Panel**, **Button**, etc. sind eigene Fenster.
-Dies ist auch rekursiv möglich. ZB. Ein Button in einem Panel und dieses dann im Hauptfenster.
-Dafür muss man bei **XCreateSimpleWindow** anstelle des Rootwindow, das Parent-Fenster angeben.
 *)
 //lineal
 //code+

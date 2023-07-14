@@ -1,14 +1,3 @@
-//image image.png
-(*
-Erstes Fenster mit <b>X11</b> wird erstellt.
-Es wird nur ein einziges Eregniss gebraucht.
-Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.
-*)
-//lineal
-//code+
-
-
-
 program Project1;
 
 uses

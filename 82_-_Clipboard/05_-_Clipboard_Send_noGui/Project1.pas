@@ -11,13 +11,13 @@ uses
   xatom,
   x;
 
-  //  {$i buffer.inc}
-
+  procedure setsid; cdecl; external 'c';
+  function fork: cint; cdecl; external 'c';
 
   function CreatBuffer: string;
   const
     size: SizeInt = 1000 * 1000 * 10 - 1;
-//    size: SizeInt = 1000;
+    //    size: SizeInt = 1000;
   var
     i: integer;
   begin
@@ -35,8 +35,6 @@ uses
 
 const
   MyBuffer2 = 'Hello World'#10'Hallo Welt'#10;
-var
-  StringData: PChar;
 
 const
   HANDLE_OK = 0;
@@ -45,17 +43,18 @@ const
 type
   THandleResult = cint;
 
-type TINCR_State=(
-  S_NULL = 0,
-  S_INCR_1 = 1,
-  S_INCR_2 = 2);
+type
+  TINCR_State = (
+    S_NULL = 0,
+    S_INCR_1 = 1,
+    S_INCR_2 = 2);
 const
-//  max_req = 4000;
-  max_req = 1000*1000;
+  //  max_req = 4000;
+  max_req = 1000 * 1000;
 
 type
   TIncrTrack = record
-    incr_counter:cint;
+    incr_counter: cint;
 
     state: TINCR_State;
     display: PDisplay;
@@ -68,8 +67,8 @@ type
   end;
 
 var
-  XA_TARGETS, XA_INCR, XA_UTF8_STRING, XA_CLIPBOARD: TAtom;
-  supported_targets: array[0..3] of TAtom;
+  XA_TARGETS, XA_INCR, XA_UTF8_STRING, XA_TextPlain, XA_CLIPBOARD: TAtom;
+  supported_targets: array[0..4] of TAtom;
   it: TIncrTrack;
 
 var
@@ -103,7 +102,7 @@ var
 
     XSendEvent(display, requestor, False, 0, @ev);
 
-    it.incr_counter:=0;
+    it.incr_counter := 0;
 
     it.state := S_INCR_1;
     it.display := display;
@@ -124,7 +123,7 @@ var
   function continue_incr: THandleResult;
   begin
     Inc(it.incr_counter);
-    WriteLn('INCR-Count: ',it.incr_counter,'  State: ',it.state);
+    WriteLn('INCR-Count: ', it.incr_counter, '  State: ', it.state);
     Result := HANDLE_OK;
     if it.state = S_INCR_1 then begin
       XChangeProperty(it.display, it.requestor, it._property, it.target, it.format, PropModeReplace, pbyte(it.Data), it.chunk);
@@ -158,7 +157,7 @@ var
     ev.target := event.xselectionrequest.target;
     ev._property := event.xselectionrequest._property;
 
-    WriteLn('Atom: ',XGetAtomName(ev.display,ev.target));
+    WriteLn('Atom: ', XGetAtomName(ev.display, ev.target));
 
     if ev.target = XA_TARGETS then begin
       hr := HANDLE_OK;
@@ -188,13 +187,14 @@ var
     XA_TARGETS := XInternAtom(display, 'TARGETS', False);
     XA_INCR := XInternAtom(display, 'INCR', False);
     XA_UTF8_STRING := XInternAtom(display, 'UTF8_STRING', False);
-//    XA_UTF8_STRING := XInternAtom(display, 'text/plain', False);
+    XA_TextPlain := XInternAtom(display, 'text/plain', False);
     XA_CLIPBOARD := XInternAtom(display, 'CLIPBOARD', False);
 
     supported_targets[0] := XA_TARGETS;
     supported_targets[1] := XA_INCR;
     supported_targets[2] := XA_STRING;
     supported_targets[3] := XA_UTF8_STRING;
+    supported_targets[4] := XA_TextPlain;
 
     XSetSelectionOwner(display, XA_CLIPBOARD, window, 0);
     XGetSelectionOwner(display, XA_CLIPBOARD);
@@ -205,19 +205,21 @@ var
         SelectionClear: begin
           WriteLn('SelectionClear');
           if event.xselectionclear.selection = XA_CLIPBOARD then begin
+            XDestroyWindow(display, window);
+            XCloseDisplay(display);
+            WriteLn('Hintergrundprozesse beendet !');
             Exit;
           end;
         end;
         SelectionRequest: begin
           WriteLn('SelectionRequest');
           if event.xselectionrequest.selection = XA_CLIPBOARD then begin
-//                        it.Data := PChar(MyBuffer2);
-          it.Data := PChar(CreatBuffer);
+            it.Data := PChar(CreatBuffer);
             handle_selection_request(event);
           end;
         end;
         PropertyNotify: begin
-//          WriteLn('PropertyNotify 1');
+          //          WriteLn('PropertyNotify 1');
           if event.xproperty.state = PropertyDelete then begin
             WriteLn('PropertyNotify 2');
             continue_incr;
@@ -228,8 +230,11 @@ var
   end;
 
 begin
-  main;
-
-  //  XDestroyWindow(display, window);
-  //  XCloseDisplay(display);
+  if fork <> 0 then begin
+    setsid;
+    WriteLn('Hauptprozess beendet');
+    Halt;
+  end else begin
+    main;
+  end;
 end.
