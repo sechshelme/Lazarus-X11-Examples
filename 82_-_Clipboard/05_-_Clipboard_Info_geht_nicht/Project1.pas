@@ -51,12 +51,13 @@ type
 
 var
   dis: PDisplay;
+  winCopy, winPaste,
   win, rootWin: TWindow;
   Event: TXEvent;
   scr: cint;
   XA_CLIPBOARD, XA_TARGETS: TAtom;
   SelectTargetAtom: TAtom = 0;
-  Target_List: TAtoms=nil;
+  Target_List: TAtoms = nil;
   i: integer;
   key: TKeySym;
   gc: TGC;
@@ -310,7 +311,6 @@ var
   end;
 
   function Read_Property(w: TWindow; targetAtom: TAtom): string;
-
   var
     ret_type: TAtom;
     ret_format: cint;
@@ -479,8 +479,8 @@ type
   TINCR_State = (S_NULL = 0, S_INCR_1 = 1, S_INCR_2 = 2);
 
 const
-    max_req = 4000;
-//  max_req = 1000 * 1000;
+  max_req = 4000;
+  //  max_req = 1000 * 1000;
 
 type
   TIncrTrack = record
@@ -620,19 +620,23 @@ begin
   XA_TARGETS := GetAtom('TARGETS');
 
   // --- senden ---
-//  XA_TARGETS := XInternAtom(display, 'TARGETS', False);
+  //  XA_TARGETS := XInternAtom(display, 'TARGETS', False);
   XA_INCR := XInternAtom(dis, 'INCR', False);
   XA_UTF8_STRING := XInternAtom(dis, 'UTF8_STRING', False);
   XA_TextPlain := XInternAtom(dis, 'text/plain', False);
-//  XA_CLIPBOARD := XInternAtom(display, 'CLIPBOARD', False);
+  //  XA_CLIPBOARD := XInternAtom(display, 'CLIPBOARD', False);
 
-supported_targets := [XA_TARGETS, XA_INCR, XA_STRING, XA_UTF8_STRING, XA_TextPlain];
+  supported_targets := [XA_TARGETS, XA_INCR, XA_STRING, XA_UTF8_STRING, XA_TextPlain];
 
 
   win := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
+  winCopy := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 240, 1, 0, 0);
+  winPaste := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 240, 1, 0, 0);
   gc := XCreateGC(dis, win, 0, nil);
 
-  XSelectInput(dis, win, KeyPressMask or PropertyChangeMask or ExposureMask);
+  XSelectInput(dis, win, KeyPressMask or ExposureMask);
+  XSelectInput(dis, winCopy, PropertyChangeMask);
+  XSelectInput(dis, winPaste, PropertyChangeMask);
   XStoreName(dis, win, 'Show Targets and Data');
   XMapWindow(dis, win);
 
@@ -640,93 +644,114 @@ supported_targets := [XA_TARGETS, XA_INCR, XA_STRING, XA_UTF8_STRING, XA_TextPla
     XNextEvent(dis, @Event);
     case Event._type of
       Expose: begin
-        XDrawRectangle(dis, win, gc, 10, 10, 100, 100);
-        WriteLn('exposure');
+        if Event.xexpose.window = win then begin
+          XDrawRectangle(dis, win, gc, 10, 10, 100, 100);
+          WriteLn('exposure');
+        end;
       end;
       KeyPress: begin
-        key := XLookupKeysym(@Event.xkey, 0);
-        case key of
-          XK_Escape: begin
-            Break;
-          end;
-          XK_space: begin
-            XConvertSelection(dis, XA_CLIPBOARD, XA_TARGETS, XA_CLIPBOARD, win, CurrentTime);
-          end;
-          XK_Return: begin
-            XSetSelectionOwner(dis, XA_CLIPBOARD, win, 0);
-            XGetSelectionOwner(dis, XA_CLIPBOARD);
-          end;
-          XK_0..XK_9: begin
-            i := key - XK_0;
-            if Length(Target_List) > i then begin
-              Write('Targets: ', XGetAtomName(dis, Target_List[i]));
-              XConvertSelection(dis, XA_CLIPBOARD, Target_List[i], XA_CLIPBOARD, win, CurrentTime);
+        if Event.xkey.window = win then begin
+          key := XLookupKeysym(@Event.xkey, 0);
+          case key of
+            XK_Escape: begin
+              Break;
             end;
-          end;
-          XK_a..XK_z: begin
-            i := key - XK_a + 10;
-            if Length(Target_List) > i then begin
-              Write('Targets: ', XGetAtomName(dis, Target_List[i]));
-              XConvertSelection(dis, XA_CLIPBOARD, Target_List[i], XA_CLIPBOARD, win, CurrentTime);
+            XK_space: begin
+              XConvertSelection(dis, XA_CLIPBOARD, XA_TARGETS, XA_CLIPBOARD, winPaste, CurrentTime);
+            end;
+            XK_Return: begin
+              XSetSelectionOwner(dis, XA_CLIPBOARD, winCopy, 0);
+              XGetSelectionOwner(dis, XA_CLIPBOARD);
+            end;
+            XK_0..XK_9: begin
+              i := key - XK_0;
+              if Length(Target_List) > i then begin
+                Write('Targets: ', XGetAtomName(dis, Target_List[i]));
+                XConvertSelection(dis, XA_CLIPBOARD, Target_List[i], XA_CLIPBOARD, winPaste, CurrentTime);
+              end;
+            end;
+            XK_a..XK_z: begin
+              i := key - XK_a + 10;
+              if Length(Target_List) > i then begin
+                Write('Targets: ', XGetAtomName(dis, Target_List[i]));
+                XConvertSelection(dis, XA_CLIPBOARD, Target_List[i], XA_CLIPBOARD, winPaste, CurrentTime);
+              end;
             end;
           end;
         end;
       end;
       SelectionNotify: begin
-        if Event.xselection.selection = XA_CLIPBOARD then begin
-          SelectTargetAtom := Event.xselection.target;
-          WriteLn('------------ SelectionNotify ---------------------');
-          if SelectTargetAtom = 0 then begin
-            WriteLn('Ungültiges Atom [NULL] !');
-          end else if SelectTargetAtom = XA_TARGETS then  begin
-            Target_List := getTargetList(win);
-            WriteLn(#10);
-            for i := 0 to Length(Target_List) - 1 do begin
-              SetFGColor(clBrightYellow);
-              if i <= 9 then begin
-                WriteLn('(', i, ') ', XGetAtomName(dis, Target_List[i]));
-              end else begin
-                WriteLn('(', char(i + 55 + 32), ') ', XGetAtomName(dis, Target_List[i]));
+        if Event.xselection.requestor = winPaste then begin
+          if Event.xselection.selection = XA_CLIPBOARD then begin
+            SelectTargetAtom := Event.xselection.target;
+            WriteLn('------------ SelectionNotify ---------------------');
+            if SelectTargetAtom = 0 then begin
+              WriteLn('Ungültiges Atom [NULL] !');
+            end else if SelectTargetAtom = XA_TARGETS then  begin
+              Target_List := getTargetList(winPaste);
+              WriteLn(#10);
+              for i := 0 to Length(Target_List) - 1 do begin
+                SetFGColor(clBrightYellow);
+                if i <= 9 then begin
+                  WriteLn('(', i, ') ', XGetAtomName(dis, Target_List[i]));
+                end else begin
+                  WriteLn('(', char(i + 55 + 32), ') ', XGetAtomName(dis, Target_List[i]));
+                end;
+                SetFGNormalColor;
               end;
-              SetFGNormalColor;
+              WriteLn(#10);
+            end else begin
+              ClipData.INCR := False;
+              ClipData.ofs := 0;
+              ClipData.Data := nil;
+              Read_Property(winPaste, SelectTargetAtom);
+              ClipData.ofs := 0;
+              ClipData.Data := nil;
             end;
-            WriteLn(#10);
-          end else begin
-            ClipData.INCR := False;
-            ClipData.ofs := 0;
-            ClipData.Data := nil;
-            Read_Property(win, SelectTargetAtom);
-            //            ClipData.INCR := False;
-            ClipData.ofs := 0;
-            ClipData.Data := nil;
           end;
         end;
       end;
       PropertyNotify: begin
-        if Event.xproperty.atom = XA_CLIPBOARD then begin
-          if Event.xproperty.state = PropertyNewValue then begin
+        if Event.xproperty.window = winPaste then  begin
+          if Event.xproperty.atom = XA_CLIPBOARD then begin
+            if Event.xproperty.state = PropertyNewValue then begin
 
-      //  --- empfangen ---
-            if ClipData.INCR then  begin
-              WriteLn('------------ PropertyNotify ---------------------');
-              Read_Property(win, SelectTargetAtom);
-              //              WriteLn('fertig');
+              //  --- empfangen ---
+              if ClipData.INCR then  begin
+                WriteLn('------------ PropertyNotify ---------------------');
+                Read_Property(winPaste, SelectTargetAtom);
+                //              WriteLn('fertig');
+              end;
             end;
           end;
-//  --- senden ---
-          if event.xproperty.state = PropertyDelete then begin
-            WriteLn('PropertyNotify 2');
-            if it.state=S_NULL then            continue_incr;
+        end else if Event.xproperty.window = winCopy then  begin
+          if Event.xproperty.atom = XA_CLIPBOARD then begin
+            //  --- senden ---
+            if event.xproperty.state = PropertyDelete then begin
+              WriteLn('PropertyNotify 2');
+              if it.state = S_NULL then  begin
+                continue_incr;
+              end;
+            end;
           end;
         end;
       end;
-      //      // Wird ausgelöst, sobald Daten extern vom Clipboard verlangt werden.
+      // Wird ausgelöst, sobald Daten extern vom Clipboard verlangt werden.
       SelectionRequest: begin
+        WriteLn(Event.xselectionrequest.requestor);
+        WriteLn(Event.xselectionrequest.owner);
+        WriteLn(win);
+        WriteLn(winPaste);
+        WriteLn(winCopy);
+        WriteLn();
+
+                if Event.xselectionrequest.owner = winCopy then begin
         WriteLn('SelectionRequest');
         if event.xselectionrequest.selection = XA_CLIPBOARD then begin
           it.Data := PChar(CreatBuffer);
           handle_selection_request(event);
         end;
+                end;
       end;
       //      // Wird ausgelöst, sobald eine andere App Daten fürs Clipboard hat.
       SelectionClear: begin
