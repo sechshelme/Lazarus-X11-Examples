@@ -450,17 +450,26 @@ var
 
   // -------------- Senden ----------------
 
-  function CreatBuffer: string;
+  function CreateBuffer: string;
   const
-    size: SizeInt = 1000 * 1000 * 10 - 1;
-    //    size: SizeInt = 1000;
+    LineSize = 90;
+    size: SizeInt = 1000 * 1000 * 10 - 10;
+    //            size: SizeInt = 1000-10;
   var
-    i: integer;
+    i, j: integer;
+    s: string[9];
   begin
     SetLength(Result, size);
     for i := 1 to size do begin
-      if i mod 90 = 0 then begin
+      if i mod LineSize = 0 then begin
         Result[i] := #10;
+        s := IntToStr(i div LineSize);
+        for j := Length(s) + 1 to 9 do begin
+          s[j] := '-';
+        end;
+        for j := 1 to 9 do begin
+          Result[i - LineSize + j] := s[j];
+        end;
       end else if i mod 9 = 0 then begin
         Result[i] := '-';
       end else begin
@@ -468,6 +477,7 @@ var
       end;
     end;
   end;
+
 
 const
   HANDLE_OK = 0;
@@ -640,6 +650,8 @@ begin
   XStoreName(dis, win, 'Show Targets and Data');
   XMapWindow(dis, win);
 
+  it.Data:=nil;
+
   while (True) do begin
     XNextEvent(dis, @Event);
     case Event._type of
@@ -660,6 +672,8 @@ begin
               XConvertSelection(dis, XA_CLIPBOARD, XA_TARGETS, XA_CLIPBOARD, winPaste, CurrentTime);
             end;
             XK_Return: begin
+              it.Data := PChar(CreateBuffer);
+              WriteLn('---- Buffer wird angelegt----------------------------');
               XSetSelectionOwner(dis, XA_CLIPBOARD, winCopy, 0);
               XGetSelectionOwner(dis, XA_CLIPBOARD);
             end;
@@ -711,7 +725,26 @@ begin
           end;
         end;
       end;
+      // Wird ausgelöst, sobald Daten extern vom Clipboard verlangt werden.
+      SelectionRequest: begin
+        WriteLn('SelectionRequest');
+        WriteLn(Event.xselectionrequest.requestor);
+        WriteLn(Event.xselectionrequest.owner);
+        WriteLn(win);
+        WriteLn(winPaste);
+        WriteLn(winCopy);
+        WriteLn();
+
+        if Event.xselectionrequest.owner = winCopy then begin
+          if event.xselectionrequest.selection = XA_CLIPBOARD then begin
+            handle_selection_request(event);
+          end;
+        end;
+      end;
       PropertyNotify: begin
+        WriteLn('PropertyNotify');
+        WriteLn('it.requestor: ', it.requestor);
+        WriteLn();
         if Event.xproperty.window = winPaste then  begin
           if Event.xproperty.atom = XA_CLIPBOARD then begin
             if Event.xproperty.state = PropertyNewValue then begin
@@ -724,34 +757,13 @@ begin
               end;
             end;
           end;
-        end else if Event.xproperty.window = winCopy then  begin
-          if Event.xproperty.atom = XA_CLIPBOARD then begin
-            //  --- senden ---
-            if event.xproperty.state = PropertyDelete then begin
-              WriteLn('PropertyNotify 2');
-              if it.state = S_NULL then  begin
-                continue_incr;
-              end;
-            end;
+        end else if Event.xproperty.window = it.requestor then  begin
+          //  --- senden ---
+          if event.xproperty.state = PropertyDelete then begin
+            WriteLn('PropertyNotify 2');
+            continue_incr;
           end;
         end;
-      end;
-      // Wird ausgelöst, sobald Daten extern vom Clipboard verlangt werden.
-      SelectionRequest: begin
-        WriteLn(Event.xselectionrequest.requestor);
-        WriteLn(Event.xselectionrequest.owner);
-        WriteLn(win);
-        WriteLn(winPaste);
-        WriteLn(winCopy);
-        WriteLn();
-
-                if Event.xselectionrequest.owner = winCopy then begin
-        WriteLn('SelectionRequest');
-        if event.xselectionrequest.selection = XA_CLIPBOARD then begin
-          it.Data := PChar(CreatBuffer);
-          handle_selection_request(event);
-        end;
-                end;
       end;
       //      // Wird ausgelöst, sobald eine andere App Daten fürs Clipboard hat.
       SelectionClear: begin

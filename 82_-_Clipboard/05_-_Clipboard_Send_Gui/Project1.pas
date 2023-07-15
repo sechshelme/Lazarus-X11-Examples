@@ -187,7 +187,7 @@ var
   var
     root: TWindow;
     win,
-    CopyWin: TWindow;
+    CopyWin:TWindow; requestWin: TWindow=0;
     event: TXEvent;
     scr: cint;
   begin
@@ -211,10 +211,7 @@ var
 
     supported_targets := [XA_TARGETS, XA_INCR, XA_STRING, XA_UTF8_STRING, XA_TextPlain];
 
-    XSetSelectionOwner(display, XA_CLIPBOARD, CopyWin, 0);
-    XGetSelectionOwner(display, XA_CLIPBOARD);
-
-    it.Data := PChar(CreatBuffer);
+    it.Data := nil;
     // it.Data := MyBuffer2;
 
     repeat
@@ -232,6 +229,11 @@ var
             XK_Escape: begin
               Halt(0);
             end;
+            XK_c: begin
+              it.Data := PChar(CreatBuffer);
+              XSetSelectionOwner(display, XA_CLIPBOARD, CopyWin, 0);
+              XGetSelectionOwner(display, XA_CLIPBOARD);
+            end;
           end;
         end;
         SelectionClear: begin
@@ -246,21 +248,27 @@ var
           end;
         end;
         SelectionRequest: begin
+          WriteLn('SelectionRequest');
+          WriteLn('win:     ', Win);
+          WriteLn('copywin: ',CopyWin);
+          WriteLn('owner:   ',event.xselectionrequest.owner);
+          WriteLn('reque:   ',event.xselectionrequest.requestor, '  0x',IntToHex(event.xselectionrequest.requestor,8));
+          WriteLn();
           if event.xselectionrequest.owner = CopyWin then begin
-            WriteLn('SelectionRequest');
             if event.xselectionrequest.selection = XA_CLIPBOARD then begin
+              requestWin:=event.xselectionrequest.requestor;
               handle_selection_request(event);
             end;
           end;
         end;
         PropertyNotify: begin
-          WriteLn(Win);
-          WriteLn(CopyWin);
-          WriteLn(event.xproperty.window);
+          WriteLn('PropertyNotify' );
+          WriteLn('win:     ', Win);
+          WriteLn('copywin: ',CopyWin);
+          WriteLn('event:   ',event.xproperty.window, '  0x',IntToHex(event.xproperty.window,8));
           WriteLn();
 
-          if event.xproperty.window = CopyWin then begin
-            //          WriteLn('PropertyNotify 1');
+          if event.xproperty.window = requestWin then begin
             if event.xproperty.state = PropertyDelete then begin
               WriteLn('PropertyNotify 2');
               continue_incr;
