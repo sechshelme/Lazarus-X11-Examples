@@ -291,6 +291,7 @@ var
     StringAtoms: TStringArray = (
       'STRING',
       'UTF8_STRING',
+      'UTF-8',
       'COMPOUND_TEXT',
       'TEXT');
   var

@@ -186,13 +186,22 @@ var
   procedure main;
   var
     root: TWindow;
-    window: TWindow;
+    win,
+    CopyWin: TWindow;
     event: TXEvent;
+    scr: cint;
   begin
     display := XOpenDisplay(nil);
     root := XDefaultRootWindow(display);
-    window := XCreateSimpleWindow(display, root, 10, 10, 320, 240, 0, 0, $FFFFFF);
-    XSelectInput(display, window, PropertyChangeMask);
+
+    scr := DefaultScreen(display);
+
+    win := XCreateSimpleWindow(display, root, 10, 10, 320, 240, 0, 0, $FFFFFF);
+    XSelectInput(display, win, ExposureMask or KeyPressMask);
+    XMapWindow(display, win);
+
+    CopyWin := XCreateSimpleWindow(display, root, 10, 10, 320, 240, 0, 0, $FFFFFF);
+    XSelectInput(display, CopyWin, PropertyChangeMask);
 
     XA_TARGETS := XInternAtom(display, 'TARGETS', False);
     XA_INCR := XInternAtom(display, 'INCR', False);
@@ -202,36 +211,60 @@ var
 
     supported_targets := [XA_TARGETS, XA_INCR, XA_STRING, XA_UTF8_STRING, XA_TextPlain];
 
-    XSetSelectionOwner(display, XA_CLIPBOARD, window, 0);
+    XSetSelectionOwner(display, XA_CLIPBOARD, CopyWin, 0);
     XGetSelectionOwner(display, XA_CLIPBOARD);
 
-//    it.Data := PChar(CreatBuffer);
-    it.Data := MyBuffer2;
+    it.Data := PChar(CreatBuffer);
+    // it.Data := MyBuffer2;
 
     repeat
       XFlush(display);
       XNextEvent(display, @event);
       case event._type of
+        Expose: begin
+          if event.xexpose.window = win then begin
+            XDrawRectangle(display, win, DefaultGC(display, scr), 20, 20, 200, 200);
+          end;
+        end;
+        KeyPress: begin
+          // Beendet das Programm bei [ESC]
+          case XLookupKeysym(@Event.xkey, 0) of
+            XK_Escape: begin
+              Halt(0);
+            end;
+          end;
+        end;
         SelectionClear: begin
-          WriteLn('SelectionClear');
-          if event.xselectionclear.selection = XA_CLIPBOARD then begin
-            XDestroyWindow(display, window);
-            XCloseDisplay(display);
-            WriteLn('Hintergrundprozesse beendet !');
-            Exit;
+          if event.xselectionclear.window = CopyWin then begin
+            WriteLn('SelectionClear');
+            if event.xselectionclear.selection = XA_CLIPBOARD then begin
+              XDestroyWindow(display, CopyWin);
+              XCloseDisplay(display);
+              WriteLn('Hintergrundprozesse beendet !');
+              Exit;
+            end;
           end;
         end;
         SelectionRequest: begin
-          WriteLn('SelectionRequest');
-          if event.xselectionrequest.selection = XA_CLIPBOARD then begin
-            handle_selection_request(event);
+          if event.xselectionrequest.owner = CopyWin then begin
+            WriteLn('SelectionRequest');
+            if event.xselectionrequest.selection = XA_CLIPBOARD then begin
+              handle_selection_request(event);
+            end;
           end;
         end;
         PropertyNotify: begin
-          //          WriteLn('PropertyNotify 1');
-          if event.xproperty.state = PropertyDelete then begin
-            WriteLn('PropertyNotify 2');
-            continue_incr;
+          WriteLn(Win);
+          WriteLn(CopyWin);
+          WriteLn(event.xproperty.window);
+          WriteLn();
+
+          if event.xproperty.window = CopyWin then begin
+            //          WriteLn('PropertyNotify 1');
+            if event.xproperty.state = PropertyDelete then begin
+              WriteLn('PropertyNotify 2');
+              continue_incr;
+            end;
           end;
         end;
       end;
@@ -239,11 +272,11 @@ var
   end;
 
 begin
-  if fork <> 0 then begin
-    setsid;
-    WriteLn('Hauptprozess beendet');
-    Halt;
-  end else begin
-    main;
-  end;
+  //if fork <> 0 then begin
+  //  setsid;
+  //  WriteLn('Hauptprozess beendet');
+  //  Halt;
+  //end else begin
+  main;
+  // end;
 end.
