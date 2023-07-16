@@ -124,7 +124,6 @@ var
     it.nelements := nelements;
     it.offset := 0;
     it.max_elements := max_req * 8 div format;
-    //    it.chunk := min(it.max_elements, it.nelements - it.offset);
 
     Result := HANDLE_INCOMPLETE;
   end;
@@ -233,7 +232,6 @@ var
           end;
         end;
         PropertyNotify: begin
-          //          WriteLn('PropertyNotify 1');
           if event.xproperty.state = PropertyDelete then if it.state<>S_NULL then begin
             WriteLn('PropertyNotify 2');
             continue_incr;
