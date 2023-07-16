@@ -18,8 +18,8 @@ uses
   function CreatBuffer: string;
   const
     LineSize = 90;
-    size: SizeInt = 1000 * 1000 * 10 - 10;
-    //            size: SizeInt = 1000-10;
+    //    size: SizeInt = 1000 * 1000 * 10 - 10;
+    size: SizeInt = 1000 * 10 * 10 - 10;
   var
     i, j: integer;
     s: string[9];
@@ -59,8 +59,8 @@ type
     S_INCR_1 = 1,
     S_INCR_2 = 2);
 const
-  //  max_req = 4000;
-  max_req = 1000 * 1000;
+  max_req = 43;
+  // max_req = 1000 * 1000;
 
 type
   TIncrTrack = record
@@ -124,7 +124,7 @@ var
     it.nelements := nelements;
     it.offset := 0;
     it.max_elements := max_req * 8 div format;
-    it.chunk := min(it.max_elements, it.nelements - it.offset);
+    //    it.chunk := min(it.max_elements, it.nelements - it.offset);
 
     Result := HANDLE_INCOMPLETE;
   end;
@@ -133,24 +133,21 @@ var
   begin
     Inc(it.incr_counter);
     WriteLn('INCR-Count: ', it.incr_counter, '  State: ', it.state);
-    Result := HANDLE_OK;
+    Result := HANDLE_INCOMPLETE;
+    it.chunk := min(it.max_elements, it.nelements - it.offset);
     if it.state = S_INCR_1 then begin
       XChangeProperty(it.display, it.requestor, it._property, it.target, it.format, PropModeReplace, pbyte(it.Data), it.chunk);
-      it.offset += it.chunk;
       it.state := S_INCR_2;
-      Result := HANDLE_INCOMPLETE;
     end else if it.state = S_INCR_2 then begin
-      it.chunk := min(it.max_elements, it.nelements - it.offset);
       if it.chunk <= 0 then begin
         XChangeProperty(it.display, it.requestor, it._property, it.target, it.format, PropModeAppend, nil, 0);
         it.state := S_NULL;
         Result := HANDLE_OK;
       end else begin
         XChangeProperty(it.display, it.requestor, it._property, it.target, it.format, PropModeAppend, pbyte(it.Data + it.offset), it.chunk);
-        it.offset += it.chunk;
-        Result := HANDLE_INCOMPLETE;
       end;
     end;
+    it.offset += it.chunk;
   end;
 
   procedure handle_selection_request(const event: TXEvent);
@@ -183,6 +180,11 @@ var
     end;
   end;
 
+  function MyHandle(para1: PDisplay; para2: PXErrorEvent): cint; cdecl;
+  begin
+    WriteLn('ERROR: ',para2^.error_code);
+  end;
+
   procedure main;
   var
     root: TWindow;
@@ -190,6 +192,9 @@ var
     event: TXEvent;
   begin
     display := XOpenDisplay(nil);
+
+    XSetErrorHandler(@MyHandle);
+
     root := XDefaultRootWindow(display);
     window := XCreateSimpleWindow(display, root, 10, 10, 320, 240, 0, 0, $FFFFFF);
     XSelectInput(display, window, PropertyChangeMask);
@@ -205,8 +210,8 @@ var
     XSetSelectionOwner(display, XA_CLIPBOARD, window, 0);
     XGetSelectionOwner(display, XA_CLIPBOARD);
 
-//    it.Data := PChar(CreatBuffer);
-    it.Data := MyBuffer2;
+    it.Data := PChar(CreatBuffer);
+    //    it.Data := MyBuffer2;
 
     repeat
       XFlush(display);
@@ -229,7 +234,7 @@ var
         end;
         PropertyNotify: begin
           //          WriteLn('PropertyNotify 1');
-          if event.xproperty.state = PropertyDelete then begin
+          if event.xproperty.state = PropertyDelete then if it.state<>S_NULL then begin
             WriteLn('PropertyNotify 2');
             continue_incr;
           end;

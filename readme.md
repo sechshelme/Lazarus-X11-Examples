@@ -14,7 +14,10 @@ Diese sind alle in C/C++
 ## Hintergrundwissen von X11
 - [Das X Window System](https://www.linux-praxis.de/das-x-window-system) (DE)
 - [X Window System](http://x11.gweb.info/index.html) (EN)
-- [The X Window system](https://tronche.com/gui/x) (EN)
+- [freedesktop specifikation](https://specifications.freedesktop.org/) (EN)
+  - [The X Window system](https://tronche.com/gui/x) (EN)
+
+- [XEmbed Protocol Specification](https://specifications.freedesktop.org/xembed-spec/0.5/index.html) (EN)
 
 ## Tool für X, welche vonrinstalliert sind
 - [Tools von Linux/X11](xtool.md)
