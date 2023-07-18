@@ -11,6 +11,8 @@ uses
   randr,
   Xrandr;
 
+  // https://gitlab.freedesktop.org/xorg/lib/libxrandr/-/blob/master/src/XrrCrtc.c
+
 var
   dis: PDisplay;
   win, root_win: TWindow;
