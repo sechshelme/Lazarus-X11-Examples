@@ -1,0 +1,43 @@
+Mousealert
+----------
+
+1 Legal
+2 Compiling and Installing
+3 What does it do
+4 The author
+
+
+1 License
+---------
+
+This is Distributed under the GPL version 2.1 or at your option a later version.
+To find this license go to:
+
+www.gnu.org/copyleft/gpl.html
+
+The code is Copyright by Edward Rosten 2004
+
+
+
+2 Compiling and Installing
+--------------------------
+
+Type make, and copy the resulting binary (mousealert) to your favourite
+directory for such things.
+
+
+3 What does it do
+-----------------
+
+Briefly displays concentric circles around the mouse so you can find it easily.
+To make this program useful, trigger it from a hotkey in your window manager.
+
+
+
+4 The Author
+------------
+
+Edward Rosten
+
+er258 (at) cam (dot) ac (dot) uk
+

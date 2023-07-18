@@ -7,17 +7,6 @@ uses x, xlib,
   xrender,
   randr;
 
-{
-  Automatically converted by H2Pas 1.0.0 from Xrandr.h
-  The following command line parameters were used:
-    -p
-    -T
-    -d
-    -c
-    -e
-    Xrandr.h
-}
-
 {$IFDEF FPC}
 {$PACKRECORDS C}
 {$ENDIF}
@@ -25,8 +14,8 @@ uses x, xlib,
 const
   libXrandr = 'Xrandr';
 
-
-// Eigene Typen von einer aktuellen xrender.h:
+// Eigene Typen von einer aktuellen xrender.h
+// Die von FPC ist veraltet
 
 type
   PXFixed = ^TXFixed;
@@ -68,10 +57,7 @@ type
  * Author:  Jim Gettys, HP Labs, Hewlett-Packard, Inc.
  *      Keith Packard, Intel Corporation
   }
-//{$include <X11/extensions/randr.h>}
-//{$include <X11/extensions/Xrender.h>}
-//{$include <X11/Xfuncproto.h>}
-{_XFUNCPROTOBEGIN }
+
 type
   PRROutput = ^TRROutput;
   TRROutput = TXID;
@@ -517,6 +503,5 @@ procedure XRRDeleteMonitor(dpy: PDisplay; window: TWindow; Name: TAtom); cdecl; 
 procedure XRRFreeMonitors(monitors: PXRRMonitorInfo); cdecl; external libXrandr;
 
 implementation
-
 
 end.

@@ -1,0 +1,123 @@
+Greasymouse v1.0
+----------------
+
+1 Legal
+2 Compiling and Installing
+3 What does it do?
+4 Why could I possibly want this?
+5 Command line options
+6 Bugs
+7 Todo
+8 Ports
+9 The author
+
+
+1 Legal
+-------
+
+This program is distributed under the terms on the GNU general public license. 
+See www.gnu.org.
+
+
+
+2 Compiling and Installing
+--------------------------
+
+V1.0 of the program is very simple. 
+
+make greasymouse
+	creates the greasymouse binary.
+
+
+I don't have an Imakefile, so if anyone wants to send me one, I would really
+appreciate it.
+
+It has been compiled on Linux, Solaris and Irix (several versions of each) with
+no problems.
+
+
+
+3 What does it do?
+------------------
+
+Greasy mouse does just that. It greases your mouse - it makes it slide around 
+the screen and bounce off the edges. It was supposed to serve no useful purpose
+whatsoever, but unfortunately I came across a computer with a very bad mouse 
+that moved very slowly. Increasing the speed setting made it move with very low
+resolution, so I ran greasymouse and it worked fine.
+
+Esentially, it calculates the speed of the mouse and keeps moving the mouse at 
+that speed. It also divides the speed by a `greasyness' factor each iteration, 
+so it usually slows down, unless you set the greasyness to less than unity.
+
+
+
+4 Why could I possibly want this?
+---------------------------------
+
+Erm... for fun. It's quite amusing to run it on an unsuspecting victim's 
+computer and watch them gawp as the mouse starts bouncing around the screen. 
+It also makes small buttons *very* hard to click on but makes the mouse very 
+smooth to use, and afterwards it seems very jerky.
+
+
+
+5 Command line options
+----------------------
+
+gm [grease factor]
+gm --help
+
+Grease factor is any floating point number thet the speed is divided by each 
+iteration.
+1.031 	is the default
+1 	the mouse just keeps on going
+>4	almost no noticable effect
+<1 	*CAREFUL* the mouse accfelerates continuously and eventually gets stuck.
+	If you have pointer focus on then it can be very difficult to kill if
+	you don't have virtual terminals or another computer to rlogin from.
+
+
+
+6 Bugs
+------
+
+None, really. Except it eventually gets stuck in a corner with negative damping.
+But that's not a bug.
+
+
+
+
+7 Todo
+------
+
+Ooooh, loads of things:
+*	Proper command line options
+*	`Focal lines' if you were to have an attractive focal line along the
+	bottom of the screen that would be like having gravity affecting the
+	mouse.
+*	Focal points. Have you ever wondered how a charged mouse would 
+	respond in an arcane physics experiment?
+*	Bouncing relative to a non root window. This will make paint packages
+	much more fun.
+
+
+8 Ports
+-------
+
+Because it's so simple, it should compile on almost C compiler with X11 libs. If
+you want it ported to MacOS / BeOS / Windows / RiscOS etc, then make sure you
+have a large desk, and grease it!
+
+
+9 The author
+------------
+
+It's me, Edward Rosten.
+If you need to, then contact me at:
+
+er 258 (at) cam . ac . uk
+
+Although, for this program, you probably won't need to.
+
+
