@@ -417,13 +417,13 @@ var
           end;
           WriteLn('"');
         end else if ret_type = GetAtom('image/bmp') then  begin
-          save(PChar(ClipData.Data), Length(ClipData.Data), 'test.bmp');
+//          save(PChar(ClipData.Data), Length(ClipData.Data), 'test.bmp');
           ShowBMP(PChar(ClipData.Data), Length(ClipData.Data));
         end else if ret_type = GetAtom('image/x-bmp') then  begin
-          save(PChar(ClipData.Data), Length(ClipData.Data), 'test-x.bmp');
+//          save(PChar(ClipData.Data), Length(ClipData.Data), 'test-x.bmp');
           ShowBMP(PChar(ClipData.Data), Length(ClipData.Data));
         end else if ret_type = GetAtom('image/png') then  begin
-          save(PChar(ClipData.Data), Length(ClipData.Data), 'test.png');
+//          save(PChar(ClipData.Data), Length(ClipData.Data), 'test.png');
           ShowPNG(PChar(ClipData.Data), Length(ClipData.Data));
         end else begin
           WriteLn('Unbekanntes Formt !  (', XGetAtomName(dis, ret_type), ')');
