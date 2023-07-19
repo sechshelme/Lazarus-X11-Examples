@@ -14,6 +14,8 @@ uses x, xlib,
 const
   libXrandr = 'Xrandr';
 
+// -------------------------------------------------
+
 // Eigene Typen von einer aktuellen xrender.h
 // Die von FPC ist veraltet
 
@@ -30,6 +32,9 @@ type
 type
   PXRRScreenConfiguration = ^TXRRScreenConfiguration;
   TXRRScreenConfiguration = Pointer;
+
+  // -------------------------------------------------
+
 {
  * Copyright © 2000 Compaq Computer Corporation, Inc.
  * Copyright © 2002 Hewlett-Packard Company, Inc.

@@ -12,6 +12,7 @@ uses
   Xrandr;
 
   // https://gitlab.freedesktop.org/xorg/lib/libxrandr/-/blob/master/src/XrrCrtc.c
+  // https://github.com/OpenICC/xcalib/blob/master/xcalib.c
 
 var
   dis: PDisplay;
@@ -20,6 +21,7 @@ var
   scr: cint;
   sa: TStringArray = nil;
   gc: TGC;
+  gamma: cfloat = $FFFF;
 
   procedure Paint;
   var
@@ -30,7 +32,7 @@ var
     end;
   end;
 
-  procedure SetGamma(g:cint);
+  procedure SetGamma(g: cint);
   var
     crtcxid: TRRCrtc;
     res: PXRRScreenResources;
@@ -38,6 +40,7 @@ var
     size: cint;
     crtc_gamma: PXRRCrtcGamma;
   begin
+    WriteLn('gamma:',g);
     res := XRRGetScreenResourcesCurrent(dis, root_win);
     WriteLn(res^.ncrtc);
 
@@ -45,7 +48,7 @@ var
       crtcxid := res^.crtcs[c];
       size := XRRGetCrtcGammaSize(dis, crtcxid);
       crtc_gamma := XRRAllocGamma(size);
-      WriteLn(size);
+      WriteLn('size: ', size);
       for i := 0 to size - 1 do begin
         crtc_gamma^.red[i] := g div size * i;
         crtc_gamma^.green[i] := g div size * i;
@@ -53,7 +56,31 @@ var
       end;
       XRRSetCrtcGamma(dis, crtcxid, crtc_gamma);
     end;
-    XFree(crtc_gamma);
+    XRRFreeGamma(crtc_gamma);
+  end;
+
+  procedure PrintGamma;
+  var
+    crtcxid: TRRCrtc;
+    res: PXRRScreenResources;
+    c, i: integer;
+    size: cint;
+    crtc_gamma: PXRRCrtcGamma;
+    //  crtc_gamma: PXRRCrtcGamma;
+  begin
+    res := XRRGetScreenResourcesCurrent(dis, root_win);
+    WriteLn(res^.ncrtc);
+
+    for c := 0 to res^.ncrtc - 1 do begin
+      crtcxid := res^.crtcs[c];
+      size := XRRGetCrtcGammaSize(dis, crtcxid);
+      crtc_gamma := XRRGetCrtcGamma(dis, crtcxid);
+      WriteLn('size: ', size);
+      for i := 0 to size - 1 do begin
+        WriteLn(i: 5, '  red: ', crtc_gamma^.red[i], '  green: ', crtc_gamma^.green[i], '  blue: ', crtc_gamma^.blue[i]);
+      end;
+    end;
+    XRRFreeGamma(crtc_gamma);
   end;
 
 begin
@@ -81,13 +108,28 @@ begin
       KeyPress: begin
         case XLookupKeysym(@Event.xkey, 0) of
           XK_Escape: begin
+            gamma:=$FFFF;
+            SetGamma(Round( gamma));
             Break;
           end;
-          xk_g: begin
-            SetGamma($8FFF);
-          end;
           XK_space: begin
-            SetGamma($FFFF);
+            PrintGamma();
+          end;
+          XK_0: begin
+            gamma := gamma*-1;
+            SetGamma(Round( gamma));
+          end;
+          XK_p: begin
+            gamma := gamma*2;
+            SetGamma(Round( gamma));
+          end;
+          XK_m: begin
+            gamma:=gamma / 2;
+            SetGamma(Round( gamma));
+          end;
+          XK_BackSpace: begin
+            gamma:=$FFFF;
+            SetGamma(Round( gamma));
           end;
         end;
       end;
