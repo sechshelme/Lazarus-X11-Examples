@@ -2,8 +2,11 @@
 #include <X11/Xlib.h>
 #include <X11/Xlibint.h>
 #include <X11/Xproto.h>
+#include <X11/Xatom.h>
 #include <X11/extensions/Xrandr.h>
 #include <X11/extensions/Xrender.h>	/* we share subpixel information */
+#include <strings.h>
+#include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <inttypes.h>
@@ -56,10 +59,15 @@ typedef struct _output	output_t;
 struct _crtc
 {
     name_t	    crtc;
+    Bool	    changing;
     XRRCrtcInfo	    *crtc_info;
 
     XRRModeInfo	    *mode_info;
+    XRRPanning      *panning_info;
+    int		    x;
+    int		    y;
     output_t	    **outputs;
+    int		    noutput;
 };
 
 struct _output
@@ -77,10 +85,22 @@ struct _output
     crtc_t	    *current_crtc_info;
 
     name_t	    mode;
+    double	    refresh;
     XRRModeInfo	    *mode_info;
 
+    name_t	    addmode;
+
+    char	    *relative_to;
+
     int		    x, y;
+
+    XRRPanning      panning;
+
+    Bool    	    automatic;
+    int     	    scale_from_w, scale_from_h;
+
     Bool	    primary;
+
     Bool	    found;
 };
 
@@ -102,8 +122,6 @@ static int	minWidth, maxWidth, minHeight, maxHeight;
 static double
 mode_refresh (const XRRModeInfo *mode_info)
 {
-    return 0;
-
     double rate;
     double vTotal = mode_info->vTotal;
 
@@ -154,6 +172,24 @@ set_name_index (name_t *name, int idx)
 {
     name->kind |= name_index;
     name->index = idx;
+}
+
+static void
+set_name_preferred (name_t *name)
+{
+    name->kind |= name_preferred;
+}
+
+static void
+set_name_all (name_t *name, name_t *old)
+{
+    if (old->kind & name_xid)
+        name->xid = old->xid;
+    if (old->kind & name_string)
+        name->string = old->string;
+    if (old->kind & name_index)
+        name->index = old->index;
+    name->kind |= old->kind;
 }
 
 static output_t *
@@ -263,6 +299,88 @@ find_mode_by_xid (RRMode mode)
     return find_mode (&mode_name, 0);
 }
 
+#if 0
+static XRRModeInfo *
+find_mode_by_name (char *name)
+{
+    name_t  mode_name;
+    init_name (&mode_name);
+    set_name_string (&mode_name, name);
+    return find_mode (&mode_name, 0);
+}
+#endif
+
+static
+XRRModeInfo *
+find_mode_for_output (output_t *output, name_t *name)
+{
+    XRROutputInfo   *output_info = output->output_info;
+    XRRModeInfo	    *best = NULL;
+    double	    bestDist = 0;
+
+    for (int m = 0; m < output_info->nmode; m++)
+    {
+        XRRModeInfo	    *mode;
+
+        mode = find_mode_by_xid (output_info->modes[m]);
+        if (!mode) continue;
+        if ((name->kind & name_xid) && name->xid == mode->id)
+        {
+            best = mode;
+            break;
+        }
+        if ((name->kind & name_string) && !strcmp (name->string, mode->name))
+        {
+            double   dist;
+
+            /* Stay away from doublescan modes unless refresh rate is specified. */
+            if (!output->refresh && (mode->modeFlags & RR_DoubleScan))
+                continue;
+
+            if (output->refresh)
+                dist = fabs (mode_refresh (mode) - output->refresh);
+            else
+                dist = 0;
+            if (!best || dist < bestDist)
+            {
+                bestDist = dist;
+                best = mode;
+            }
+        }
+    }
+    return best;
+}
+
+static XRRModeInfo *
+preferred_mode (output_t *output)
+{
+    XRROutputInfo   *output_info = output->output_info;
+    XRRModeInfo	    *best = NULL;
+    int		    bestDist = 0;
+
+    for (int m = 0; m < output_info->nmode; m++)
+    {
+        XRRModeInfo *mode_info = find_mode_by_xid (output_info->modes[m]);
+        int	    dist;
+
+        if (m < output_info->npreferred)
+            dist = 0;
+        else if (output_info->mm_height)
+            dist = (1000 * DisplayHeight(dpy, screen) / DisplayHeightMM(dpy, screen) -
+                    1000 * mode_info->height / output_info->mm_height);
+        else
+            dist = DisplayHeight(dpy, screen) - mode_info->height;
+
+        if (dist < 0) dist = -dist;
+        if (!best || dist < bestDist)
+        {
+            best = mode_info;
+            bestDist = dist;
+        }
+    }
+    return best;
+}
+
 static Bool
 output_can_use_crtc (output_t *output, crtc_t *crtc)
 {
@@ -337,7 +455,10 @@ set_output_info (output_t *output, RROutput xid, XRROutputInfo *output_info)
         output->mode_info = NULL;
     else
     {
-        output->mode_info = 0;
+        if (output->mode.kind == name_preferred)
+            output->mode_info = preferred_mode (output);
+        else
+            output->mode_info = find_mode_for_output (output, &output->mode);
         if (!output->mode_info)
         {
             if (output->mode.kind & name_preferred)exit(0);
@@ -386,14 +507,27 @@ get_crtcs (void)
     for (int c = 0; c < res->ncrtc; c++)
     {
         XRRCrtcInfo *crtc_info = XRRGetCrtcInfo (dpy, res, res->crtcs[c]);
+        XRRPanning  *panning_info = NULL;
+        XRRPanning zero;
+        memset(&zero, 0, sizeof(zero));
+        panning_info = XRRGetPanning  (dpy, res, res->crtcs[c]);
+        zero.timestamp = panning_info->timestamp;
+        if (!memcmp(panning_info, &zero, sizeof(zero)))
+        {
+            Xfree(panning_info);
+            panning_info = NULL;
+        }
 
         set_name_xid (&crtcs[c].crtc, res->crtcs[c]);
         set_name_index (&crtcs[c].crtc, c);
         if (!crtc_info) exit(0);
         crtcs[c].crtc_info = crtc_info;
+        crtcs[c].panning_info = panning_info;
         if (crtc_info->mode == None)
         {
             crtcs[c].mode_info = NULL;
+            crtcs[c].x = 0;
+            crtcs[c].y = 0;
         }
     }
 }
@@ -413,8 +547,44 @@ get_outputs (void)
         set_name_index (&output_name, o);
         set_name_string (&output_name, output_info->name);
         output = find_output (&output_name);
-        output = add_output ();
+        if (!output)
+        {
+            output = add_output ();
+            set_name_all (&output->output, &output_name);
+            /*
+             * When global --automatic mode is set, turn on connected but off
+             * outputs, turn off disconnected but on outputs
+             */
+        }
         output->found = True;
+
+        /*
+         * Automatic mode -- track connection state and enable/disable outputs
+         * as necessary
+         */
+        if (output->automatic)
+        {
+            switch (output_info->connection)
+            {
+            case RR_Connected:
+            case RR_UnknownConnection:
+                if ((!(output->changes & changes_mode)))
+                {
+                    set_name_preferred (&output->mode);
+                    output->changes |= changes_mode;
+                }
+                break;
+            case RR_Disconnected:
+                if ((!(output->changes & changes_mode)))
+                {
+                    set_name_xid (&output->mode, None);
+                    set_name_xid (&output->crtc, None);
+                    output->changes |= changes_mode;
+                    output->changes |= changes_crtc;
+                }
+                break;
+            }
+        }
 
         set_output_info (output, res->outputs[o], output_info);
     }

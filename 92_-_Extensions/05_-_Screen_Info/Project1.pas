@@ -62,6 +62,8 @@ var
       WriteLn('Nr: ', i, '  Widht: ', mi[i].Width, '  Height: ', mi[i].Height);
     end;
 
+    scr := DefaultScreen(dis);
+    WriteLn('scr:', scr);
 
 
     XRRQueryVersion(dis, @major_v, @minor_v);
@@ -92,6 +94,7 @@ begin
     Halt(1);
   end;
   scr := DefaultScreen(dis);
+  WriteLn('scr:', scr);
 
   root_win := XRootWindow(dis, 0);
   win := XCreateSimpleWindow(dis, root_win, 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
