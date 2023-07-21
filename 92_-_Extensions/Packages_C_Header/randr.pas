@@ -5,17 +5,6 @@ interface
 uses
   ctypes;
 
-{
-  Automatically converted by H2Pas 1.0.0 from randr.h
-  The following command line parameters were used:
-    -p
-    -T
-    -d
-    -c
-    -e
-    randr.h
-}
-
 {$IFDEF FPC}
 {$PACKRECORDS C}
 {$ENDIF}

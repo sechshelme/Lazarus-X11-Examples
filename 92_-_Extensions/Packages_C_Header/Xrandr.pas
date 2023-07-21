@@ -7,17 +7,16 @@ uses x, xlib,
   xrender,
   randr;
 
-{$IFDEF FPC}
-{$PACKRECORDS C}
-{$ENDIF}
+  {$LinkLib Xrandr}
 
-const
-  libXrandr = 'Xrandr';
+  {$IFDEF FPC}
+  {$PACKRECORDS C}
+  {$ENDIF}
 
-// -------------------------------------------------
+  // -------------------------------------------------
 
-// Eigene Typen von einer aktuellen xrender.h
-// Die von FPC ist veraltet
+  // Eigene Typen von einer aktuellen xrender.h
+  // Die von FPC ist veraltet
 
 type
   PXFixed = ^TXFixed;
@@ -209,9 +208,9 @@ type
 
 
 function XRRQueryExtension(dpy: PDisplay; event_base_return: Pcint; error_base_return: Pcint): TBool; cdecl; external;
-function XRRQueryVersion(dpy: PDisplay; major_version_return: Pcint; minor_version_return: Pcint): TStatus; cdecl; external libXrandr;
-function XRRGetScreenInfo(dpy: PDisplay; window: TWindow): PXRRScreenConfiguration; cdecl; external libXrandr;
-procedure XRRFreeScreenConfigInfo(config: PXRRScreenConfiguration); cdecl; external libXrandr;
+function XRRQueryVersion(dpy: PDisplay; major_version_return: Pcint; minor_version_return: Pcint): TStatus; cdecl; external;
+function XRRGetScreenInfo(dpy: PDisplay; window: TWindow): PXRRScreenConfiguration; cdecl; external;
+procedure XRRFreeScreenConfigInfo(config: PXRRScreenConfiguration); cdecl; external;
 {
  * Note that screen configuration changes are only permitted if the client can
  * prove it has up to date configuration information.  We are trying to
@@ -220,17 +219,17 @@ procedure XRRFreeScreenConfigInfo(config: PXRRScreenConfiguration); cdecl; exter
  * changes.
   }
 function XRRSetScreenConfig(dpy: PDisplay; config: PXRRScreenConfiguration; draw: TDrawable; size_index: cint; rotation: TRotation;
-  timestamp: TTime): TStatus; cdecl; external libXrandr;
+  timestamp: TTime): TStatus; cdecl; external;
 { added in v1.1, sorry for the lame name  }
 function XRRSetScreenConfigAndRate(dpy: PDisplay; config: PXRRScreenConfiguration; draw: TDrawable; size_index: cint; rotation: TRotation;
-  rate: cshort; timestamp: TTime): TStatus; cdecl; external libXrandr;
-function XRRConfigRotations(config: PXRRScreenConfiguration; current_rotation: PRotation): TRotation; cdecl; external libXrandr;
-function XRRConfigTimes(config: PXRRScreenConfiguration; config_timestamp: PTime): TTime; cdecl; external libXrandr;
-function XRRConfigSizes(config: PXRRScreenConfiguration; nsizes: Pcint): PXRRScreenSize; cdecl; external libXrandr;
-function XRRConfigRates(config: PXRRScreenConfiguration; sizeID: cint; nrates: Pcint): Pcshort; cdecl; external libXrandr;
-function XRRConfigCurrentConfiguration(config: PXRRScreenConfiguration; rotation: PRotation): TSizeID; cdecl; external libXrandr;
-function XRRConfigCurrentRate(config: PXRRScreenConfiguration): cshort; cdecl; external libXrandr;
-function XRRRootToScreen(dpy: PDisplay; root: TWindow): cint; cdecl; external libXrandr;
+  rate: cshort; timestamp: TTime): TStatus; cdecl; external;
+function XRRConfigRotations(config: PXRRScreenConfiguration; current_rotation: PRotation): TRotation; cdecl; external;
+function XRRConfigTimes(config: PXRRScreenConfiguration; config_timestamp: PTime): TTime; cdecl; external;
+function XRRConfigSizes(config: PXRRScreenConfiguration; nsizes: Pcint): PXRRScreenSize; cdecl; external;
+function XRRConfigRates(config: PXRRScreenConfiguration; sizeID: cint; nrates: Pcint): Pcshort; cdecl; external;
+function XRRConfigCurrentConfiguration(config: PXRRScreenConfiguration; rotation: PRotation): TSizeID; cdecl; external;
+function XRRConfigCurrentRate(config: PXRRScreenConfiguration): cshort; cdecl; external;
+function XRRRootToScreen(dpy: PDisplay; root: TWindow): cint; cdecl; external;
 {
  * returns the screen configuration for the specified screen; does a lazy
  * evalution to delay getting the information, and caches the result.
@@ -238,21 +237,21 @@ function XRRRootToScreen(dpy: PDisplay; root: TWindow): cint; cdecl; external li
  * to avoid unneeded round trips to the X server.  These are new
  * in protocol version 0.1.
   }
-procedure XRRSelectInput(dpy: PDisplay; window: TWindow; mask: cint); cdecl; external libXrandr;
+procedure XRRSelectInput(dpy: PDisplay; window: TWindow; mask: cint); cdecl; external;
 {
  * the following are always safe to call, even if RandR is not implemented
  * on a screen
   }
-function XRRRotations(dpy: PDisplay; screen: cint; current_rotation: PRotation): TRotation; cdecl; external libXrandr;
-function XRRSizes(dpy: PDisplay; screen: cint; nsizes: Pcint): PXRRScreenSize; cdecl; external libXrandr;
-function XRRRates(dpy: PDisplay; screen: cint; sizeID: cint; nrates: Pcint): Pcshort; cdecl; external libXrandr;
-function XRRTimes(dpy: PDisplay; screen: cint; config_timestamp: PTime): TTime; cdecl; external libXrandr;
+function XRRRotations(dpy: PDisplay; screen: cint; current_rotation: PRotation): TRotation; cdecl; external;
+function XRRSizes(dpy: PDisplay; screen: cint; nsizes: Pcint): PXRRScreenSize; cdecl; external;
+function XRRRates(dpy: PDisplay; screen: cint; sizeID: cint; nrates: Pcint): Pcshort; cdecl; external;
+function XRRTimes(dpy: PDisplay; screen: cint; config_timestamp: PTime): TTime; cdecl; external;
 { Version 1.2 additions  }
 { despite returning a Status, this returns 1 for success  }
 function XRRGetScreenSizeRange(dpy: PDisplay; window: TWindow; minWidth: Pcint; minHeight: Pcint; maxWidth: Pcint;
-  maxHeight: Pcint): TStatus; cdecl; external libXrandr;
+  maxHeight: Pcint): TStatus; cdecl; external;
 procedure XRRSetScreenSize(dpy: PDisplay; window: TWindow; Width: cint; Height: cint; mmWidth: cint;
-  mmHeight: cint); cdecl; external libXrandr;
+  mmHeight: cint); cdecl; external;
 
 type
   PXRRModeFlags = ^TXRRModeFlags;
@@ -290,8 +289,8 @@ type
     modes: PXRRModeInfo;
   end;
 
-function XRRGetScreenResources(dpy: PDisplay; window: TWindow): PXRRScreenResources; cdecl; external libXrandr;
-procedure XRRFreeScreenResources(resources: PXRRScreenResources); cdecl; external libXrandr;
+function XRRGetScreenResources(dpy: PDisplay; window: TWindow): PXRRScreenResources; cdecl; external;
+procedure XRRFreeScreenResources(resources: PXRRScreenResources); cdecl; external;
 
 type
   PXRROutputInfo = ^TXRROutputInfo;
@@ -314,9 +313,9 @@ type
     modes: PRRMode;
   end;
 
-function XRRGetOutputInfo(dpy: PDisplay; resources: PXRRScreenResources; output: TRROutput): PXRROutputInfo; cdecl; external libXrandr;
-procedure XRRFreeOutputInfo(outputInfo: PXRROutputInfo); cdecl; external libXrandr;
-function XRRListOutputProperties(dpy: PDisplay; output: TRROutput; nprop: Pcint): PAtom; cdecl; external libXrandr;
+function XRRGetOutputInfo(dpy: PDisplay; resources: PXRRScreenResources; output: TRROutput): PXRROutputInfo; cdecl; external;
+procedure XRRFreeOutputInfo(outputInfo: PXRROutputInfo); cdecl; external;
+function XRRListOutputProperties(dpy: PDisplay; output: TRROutput; nprop: Pcint): PAtom; cdecl; external;
 
 type
   PXRRPropertyInfo = ^TXRRPropertyInfo;
@@ -329,21 +328,21 @@ type
     values: pclong;
   end;
 
-function XRRQueryOutputProperty(dpy: PDisplay; output: TRROutput; _property: TAtom): PXRRPropertyInfo; cdecl; external libXrandr;
+function XRRQueryOutputProperty(dpy: PDisplay; output: TRROutput; _property: TAtom): PXRRPropertyInfo; cdecl; external;
 procedure XRRConfigureOutputProperty(dpy: PDisplay; output: TRROutput; _property: TAtom; pending: TBool; range: TBool;
-  num_values: cint; values: Pcint); cdecl; external libXrandr;
+  num_values: cint; values: Pcint); cdecl; external;
 procedure XRRChangeOutputProperty(dpy: PDisplay; output: TRROutput; _property: TAtom; _type: TAtom; format: cint;
-  mode: cint; Data: pbyte; nelements: cint); cdecl; external libXrandr;
-procedure XRRDeleteOutputProperty(dpy: PDisplay; output: TRROutput; _property: TAtom); cdecl; external libXrandr;
+  mode: cint; Data: pbyte; nelements: cint); cdecl; external;
+procedure XRRDeleteOutputProperty(dpy: PDisplay; output: TRROutput; _property: TAtom); cdecl; external;
 function XRRGetOutputProperty(dpy: PDisplay; output: TRROutput; _property: TAtom; offset: clong; length: clong;
   _delete: TBool; pending: TBool; req_type: TAtom; actual_type: PAtom; actual_format: Pcint;
-  nitems: pculong; bytes_after: pculong; prop: PPbyte): cint; cdecl; external libXrandr;
-function XRRAllocModeInfo(Name: PChar; nameLength: cint): PXRRModeInfo; cdecl; external libXrandr;
-function XRRCreateMode(dpy: PDisplay; window: TWindow; modeInfo: PXRRModeInfo): TRRMode; cdecl; external libXrandr;
-procedure XRRDestroyMode(dpy: PDisplay; mode: TRRMode); cdecl; external libXrandr;
-procedure XRRAddOutputMode(dpy: PDisplay; output: TRROutput; mode: TRRMode); cdecl; external libXrandr;
-procedure XRRDeleteOutputMode(dpy: PDisplay; output: TRROutput; mode: TRRMode); cdecl; external libXrandr;
-procedure XRRFreeModeInfo(modeInfo: PXRRModeInfo); cdecl; external libXrandr;
+  nitems: pculong; bytes_after: pculong; prop: PPbyte): cint; cdecl; external;
+function XRRAllocModeInfo(Name: PChar; nameLength: cint): PXRRModeInfo; cdecl; external;
+function XRRCreateMode(dpy: PDisplay; window: TWindow; modeInfo: PXRRModeInfo): TRRMode; cdecl; external;
+procedure XRRDestroyMode(dpy: PDisplay; mode: TRRMode); cdecl; external;
+procedure XRRAddOutputMode(dpy: PDisplay; output: TRROutput; mode: TRRMode); cdecl; external;
+procedure XRRDeleteOutputMode(dpy: PDisplay; output: TRROutput; mode: TRRMode); cdecl; external;
+procedure XRRFreeModeInfo(modeInfo: PXRRModeInfo); cdecl; external;
 
 type
   PXRRCrtcInfo = ^TXRRCrtcInfo;
@@ -363,11 +362,11 @@ type
     possible: PRROutput;
   end;
 
-function XRRGetCrtcInfo(dpy: PDisplay; resources: PXRRScreenResources; crtc: TRRCrtc): PXRRCrtcInfo; cdecl; external libXrandr;
-procedure XRRFreeCrtcInfo(crtcInfo: PXRRCrtcInfo); cdecl; external libXrandr;
+function XRRGetCrtcInfo(dpy: PDisplay; resources: PXRRScreenResources; crtc: TRRCrtc): PXRRCrtcInfo; cdecl; external;
+procedure XRRFreeCrtcInfo(crtcInfo: PXRRCrtcInfo); cdecl; external;
 function XRRSetCrtcConfig(dpy: PDisplay; resources: PXRRScreenResources; crtc: TRRCrtc; timestamp: TTime; x: cint;
-  y: cint; mode: TRRMode; rotation: TRotation; outputs: PRROutput; noutputs: cint): TStatus; cdecl; external libXrandr;
-function XRRGetCrtcGammaSize(dpy: PDisplay; crtc: TRRCrtc): cint; cdecl; external libXrandr;
+  y: cint; mode: TRRMode; rotation: TRotation; outputs: PRROutput; noutputs: cint): TStatus; cdecl; external;
+function XRRGetCrtcGammaSize(dpy: PDisplay; crtc: TRRCrtc): cint; cdecl; external;
 
 type
   PXRRCrtcGamma = ^TXRRCrtcGamma;
@@ -379,14 +378,14 @@ type
     blue: pcushort;
   end;
 
-function XRRGetCrtcGamma(dpy: PDisplay; crtc: TRRCrtc): PXRRCrtcGamma; cdecl; external libXrandr;
-function XRRAllocGamma(size: cint): PXRRCrtcGamma; cdecl; external libXrandr;
-procedure XRRSetCrtcGamma(dpy: PDisplay; crtc: TRRCrtc; gamma: PXRRCrtcGamma); cdecl; external libXrandr;
-procedure XRRFreeGamma(gamma: PXRRCrtcGamma); cdecl; external libXrandr;
+function XRRGetCrtcGamma(dpy: PDisplay; crtc: TRRCrtc): PXRRCrtcGamma; cdecl; external;
+function XRRAllocGamma(size: cint): PXRRCrtcGamma; cdecl; external;
+procedure XRRSetCrtcGamma(dpy: PDisplay; crtc: TRRCrtc; gamma: PXRRCrtcGamma); cdecl; external;
+procedure XRRFreeGamma(gamma: PXRRCrtcGamma); cdecl; external;
 { Version 1.3 additions  }
-function XRRGetScreenResourcesCurrent(dpy: PDisplay; window: TWindow): PXRRScreenResources; cdecl; external libXrandr;
+function XRRGetScreenResourcesCurrent(dpy: PDisplay; window: TWindow): PXRRScreenResources; cdecl; external;
 procedure XRRSetCrtcTransform(dpy: PDisplay; crtc: TRRCrtc; transform: PXTransform; filter: PChar; params: PXFixed;
-  nparams: cint); cdecl; external libXrandr;
+  nparams: cint); cdecl; external;
 
 type
   PPXRRCrtcTransformAttributes = ^PXRRCrtcTransformAttributes;
@@ -408,13 +407,13 @@ type
  * Pass *attributes to XFree to free
   }
 
-function XRRGetCrtcTransform(dpy: PDisplay; crtc: TRRCrtc; attributes: PPXRRCrtcTransformAttributes): TStatus; cdecl; external libXrandr;
+function XRRGetCrtcTransform(dpy: PDisplay; crtc: TRRCrtc; attributes: PPXRRCrtcTransformAttributes): TStatus; cdecl; external;
 {
  * intended to take RRScreenChangeNotify,  or
  * ConfigureNotify (on the root window)
  * returns 1 if it is an event type it understands, 0 if not
   }
-function XRRUpdateConfiguration(event: PXEvent): cint; cdecl; external libXrandr;
+function XRRUpdateConfiguration(event: PXEvent): cint; cdecl; external;
 
 type
   PXRRPanning = ^TXRRPanning;
@@ -435,11 +434,11 @@ type
     border_bottom: cint;
   end;
 
-function XRRGetPanning(dpy: PDisplay; resources: PXRRScreenResources; crtc: TRRCrtc): PXRRPanning; cdecl; external libXrandr;
-procedure XRRFreePanning(panning: PXRRPanning); cdecl; external libXrandr;
-function XRRSetPanning(dpy: PDisplay; resources: PXRRScreenResources; crtc: TRRCrtc; panning: PXRRPanning): TStatus; cdecl; external libXrandr;
-procedure XRRSetOutputPrimary(dpy: PDisplay; window: TWindow; output: TRROutput); cdecl; external libXrandr;
-function XRRGetOutputPrimary(dpy: PDisplay; window: TWindow): TRROutput; cdecl; external libXrandr;
+function XRRGetPanning(dpy: PDisplay; resources: PXRRScreenResources; crtc: TRRCrtc): PXRRPanning; cdecl; external;
+procedure XRRFreePanning(panning: PXRRPanning); cdecl; external;
+function XRRSetPanning(dpy: PDisplay; resources: PXRRScreenResources; crtc: TRRCrtc; panning: PXRRPanning): TStatus; cdecl; external;
+procedure XRRSetOutputPrimary(dpy: PDisplay; window: TWindow; output: TRROutput); cdecl; external;
+function XRRGetOutputPrimary(dpy: PDisplay; window: TWindow): TRROutput; cdecl; external;
 
 type
   PXRRProviderResources = ^TXRRProviderResources;
@@ -450,8 +449,8 @@ type
     providers: PRRProvider;
   end;
 
-function XRRGetProviderResources(dpy: PDisplay; window: TWindow): PXRRProviderResources; cdecl; external libXrandr;
-procedure XRRFreeProviderResources(resources: PXRRProviderResources); cdecl; external libXrandr;
+function XRRGetProviderResources(dpy: PDisplay; window: TWindow): PXRRProviderResources; cdecl; external;
+procedure XRRFreeProviderResources(resources: PXRRProviderResources); cdecl; external;
 
 type
   PXRRProviderInfo = ^TXRRProviderInfo;
@@ -469,20 +468,20 @@ type
     nameLen: cint;
   end;
 
-function XRRGetProviderInfo(dpy: PDisplay; resources: PXRRScreenResources; provider: TRRProvider): PXRRProviderInfo; cdecl; external libXrandr;
-procedure XRRFreeProviderInfo(provider: PXRRProviderInfo); cdecl; external libXrandr;
-function XRRSetProviderOutputSource(dpy: PDisplay; provider: TXID; source_provider: TXID): cint; cdecl; external libXrandr;
-function XRRSetProviderOffloadSink(dpy: PDisplay; provider: TXID; sink_provider: TXID): cint; cdecl; external libXrandr;
-function XRRListProviderProperties(dpy: PDisplay; provider: TRRProvider; nprop: Pcint): PAtom; cdecl; external libXrandr;
-function XRRQueryProviderProperty(dpy: PDisplay; provider: TRRProvider; _property: TAtom): PXRRPropertyInfo; cdecl; external libXrandr;
+function XRRGetProviderInfo(dpy: PDisplay; resources: PXRRScreenResources; provider: TRRProvider): PXRRProviderInfo; cdecl; external;
+procedure XRRFreeProviderInfo(provider: PXRRProviderInfo); cdecl; external;
+function XRRSetProviderOutputSource(dpy: PDisplay; provider: TXID; source_provider: TXID): cint; cdecl; external;
+function XRRSetProviderOffloadSink(dpy: PDisplay; provider: TXID; sink_provider: TXID): cint; cdecl; external;
+function XRRListProviderProperties(dpy: PDisplay; provider: TRRProvider; nprop: Pcint): PAtom; cdecl; external;
+function XRRQueryProviderProperty(dpy: PDisplay; provider: TRRProvider; _property: TAtom): PXRRPropertyInfo; cdecl; external;
 procedure XRRConfigureProviderProperty(dpy: PDisplay; provider: TRRProvider; _property: TAtom; pending: TBool; range: TBool;
-  num_values: cint; values: Pcint); cdecl; external libXrandr;
+  num_values: cint; values: Pcint); cdecl; external;
 procedure XRRChangeProviderProperty(dpy: PDisplay; provider: TRRProvider; _property: TAtom; _type: TAtom; format: cint;
-  mode: cint; Data: pbyte; nelements: cint); cdecl; external libXrandr;
-procedure XRRDeleteProviderProperty(dpy: PDisplay; provider: TRRProvider; _property: TAtom); cdecl; external libXrandr;
+  mode: cint; Data: pbyte; nelements: cint); cdecl; external;
+procedure XRRDeleteProviderProperty(dpy: PDisplay; provider: TRRProvider; _property: TAtom); cdecl; external;
 function XRRGetProviderProperty(dpy: PDisplay; provider: TRRProvider; _property: TAtom; offset: clong; length: clong;
   _delete: TBool; pending: TBool; req_type: TAtom; actual_type: PAtom; actual_format: Pcint;
-  nitems: pculong; bytes_after: pculong; prop: PPbyte): cint; cdecl; external libXrandr;
+  nitems: pculong; bytes_after: pculong; prop: PPbyte): cint; cdecl; external;
 
 type
   PXRRMonitorInfo = ^TXRRMonitorInfo;
@@ -501,11 +500,11 @@ type
     outputs: PRROutput;
   end;
 
-function XRRAllocateMonitor(dpy: PDisplay; noutput: cint): PXRRMonitorInfo; cdecl; external libXrandr;
-function XRRGetMonitors(dpy: PDisplay; window: TWindow; get_active: TBool; nmonitors: Pcint): PXRRMonitorInfo; cdecl; external libXrandr;
-procedure XRRSetMonitor(dpy: PDisplay; window: TWindow; monitor: PXRRMonitorInfo); cdecl; external libXrandr;
-procedure XRRDeleteMonitor(dpy: PDisplay; window: TWindow; Name: TAtom); cdecl; external libXrandr;
-procedure XRRFreeMonitors(monitors: PXRRMonitorInfo); cdecl; external libXrandr;
+function XRRAllocateMonitor(dpy: PDisplay; noutput: cint): PXRRMonitorInfo; cdecl; external;
+function XRRGetMonitors(dpy: PDisplay; window: TWindow; get_active: TBool; nmonitors: Pcint): PXRRMonitorInfo; cdecl; external;
+procedure XRRSetMonitor(dpy: PDisplay; window: TWindow; monitor: PXRRMonitorInfo); cdecl; external;
+procedure XRRDeleteMonitor(dpy: PDisplay; window: TWindow; Name: TAtom); cdecl; external;
+procedure XRRFreeMonitors(monitors: PXRRMonitorInfo); cdecl; external;
 
 implementation
 
