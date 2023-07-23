@@ -8,8 +8,7 @@ uses
   keysym,
   x,
   shape,
-  shapeconst,
-  denied;
+  shapeconst;
 
 var
   dis: PDisplay;
@@ -27,25 +26,31 @@ const
   procedure Create_Bitmap_Shape;
   var
     pm: TPixmap;
+    gc: TGC;
   begin
-    pm := XCreateBitmapFromData(dis, BitmapWin, PChar(noname_bits), noname_width, noname_height);
+    pm := XCreatePixmap(dis, BitmapWin, 180, 100, 1);
+    gc := XCreateGC(dis, pm, 0, nil);
+    XSetForeground(dis, gc, $FFFFFF);
+    XFillRectangle(dis, pm, gc, 10, 60, 50, 50);
+    XFillRectangle(dis, pm, gc, 60, 10, 50, 50);
+
     XShapeCombineMask(dis, BitmapWin, ShapeBounding, 0, 0, pm, ShapeSet);
   end;
 
-procedure Create_Rectangle_Shape;
-const
-  rects: array of TXRectangle = (
-    (x: 10; y: 10; Width: 60; Height: 60),
-    (x: 50; y: 50; Width: 80; Height: 80));
-begin
-  XShapeCombineRectangles(dis, RectangleWin, ShapeBounding, 0, 0, PXRectangle(rects), Length(rects), ShapeSet, Unsorted);
-end;
+  procedure Create_Rectangle_Shape;
+  const
+    rects: array of TXRectangle = (
+      (x: 10; y: 10; Width: 60; Height: 60),
+      (x: 50; y: 50; Width: 80; Height: 80));
+  begin
+    XShapeCombineRectangles(dis, RectangleWin, ShapeBounding, 0, 0, PXRectangle(rects), Length(rects), ShapeSet, Unsorted);
+  end;
 
 
-procedure Create_Shape_Shape;
-begin
-  XShapeCombineShape(dis, ShapeWin, ShapeBounding, 0, 0, BitmapWin, ShapeSet, Unsorted);
-end;
+  procedure Create_Shape_Shape;
+  begin
+    XShapeCombineShape(dis, ShapeWin, ShapeBounding, 0, 0, BitmapWin, ShapeSet, Unsorted);
+  end;
 
 
   procedure Create_Region_Shape;
@@ -80,8 +85,8 @@ end;
   begin
     gc := XCreateGC(dis, rootWin, 0, nil);
     for i := 0 to SIZE do begin
-      XSetForeground(dis,gc, i*123);
-      XDrawRectangle(dis, ev.xexpose.window, gc, i, i, SIZE*2-i, SIZE*2-i);
+      XSetForeground(dis, gc, i * 123);
+      XDrawRectangle(dis, ev.xexpose.window, gc, i, i, SIZE * 2 - i, SIZE * 2 - i);
     end;
   end;
 
@@ -95,19 +100,19 @@ begin
   scr := DefaultScreen(dis);
   rootWin := RootWindow(dis, scr);
 
-  BitmapWin := XCreateSimpleWindow(dis, rootWin, 10, 10, noname_width, noname_height, 1, $000000, $FF00000);
+  BitmapWin := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 200, 0, $000000, $FF00000);
   XSelectInput(dis, BitmapWin, Mask);
   XStoreName(dis, BitmapWin, 'Bitmap Shapes');
 
-  RegionWin := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 200, 1, $000000, $00FF000);
+  RegionWin := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 200, 0, $000000, $00FF000);
   XSelectInput(dis, RegionWin, Mask);
   XStoreName(dis, RegionWin, 'Region Shapes');
 
-  RectangleWin := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 200, 1, $000000, $00FF000);
+  RectangleWin := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 200, 0, $000000, $00FF000);
   XSelectInput(dis, RectangleWin, Mask);
   XStoreName(dis, RectangleWin, 'Rectangle Shapes');
 
-  ShapeWin := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 200, 1, $000000, $00FF000);
+  ShapeWin := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 200, 0, $000000, $00FF000);
   XSelectInput(dis, ShapeWin, Mask);
   XStoreName(dis, ShapeWin, 'Shapes Shapes');
 
@@ -140,7 +145,7 @@ begin
   XDestroyWindow(dis, BitmapWin);
   XDestroyWindow(dis, RegionWin);
   XDestroyWindow(dis, RectangleWin);
-  XDestroyWindow(dis, ShapeWin );
+  XDestroyWindow(dis, ShapeWin);
 
   XCloseDisplay(dis);
 end.
