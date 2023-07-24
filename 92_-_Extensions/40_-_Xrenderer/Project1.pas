@@ -15,6 +15,11 @@ var
   Event: TXEvent;
   scr: cint;
   win, rootWin: TWindow;
+  gc: TGC;
+
+  picture: TPicture;
+  pixmap: TPixmap;
+
 
 const
   Mask = KeyPressMask or ExposureMask;
@@ -25,19 +30,21 @@ const
 
   procedure Init;
   var
-    pixmap: TPixmap;
-    gc: TGC;
     format: PXRenderPictFormat;
-    picture: TPicture;
     color: TXRenderColor;
+    cursor: TCursor;
   begin
     gc := XCreateGC(dis, win, 0, nil);
 
-    format := XRenderFindStandardFormat(dis, PictStandardRGB24);
-    pixmap := XCreatePixmap(dis, win, 512, 512, 24);
-    picture := XRenderCreatePicture(dis, win, format, 0, nil);
+    //format := XRenderFindStandardFormat(dis, PictStandardRGB24);
+    format := XRenderFindStandardFormat(dis, PictStandardARGB32);
+    //  pixmap := XCreatePixmap(dis, win, 512, 512, 24);
+    pixmap := XCreatePixmap(dis, win, 512, 512, 32);
 
-    XFreePixmap(dis, pixmap);
+
+    picture := XRenderCreatePicture(dis, pixmap, format, 0, nil);
+
+    //    XFreePixmap(dis, pixmap);
 
     color.red := 0;
     color.green := 0;
@@ -45,36 +52,30 @@ const
     color.alpha := $8000;
 
     XRenderFillRectangle(dis, PictOpSrc, picture, @color, 10, 10, 100, 100);
+
+    color.green := $8000;
+    color.alpha := $1000;
+
+    XRenderFillRectangle(dis, PictOpSrc, picture, @color, 50, 50, 100, 100);
+
+    cursor := XRenderCreateCursor(dis, picture, 0, 0);
+    XDefineCursor(dis, win, cursor);
+
   end;
 
   procedure Draw(ev: TXEvent);
-  var
-    pixmap: TPixmap;
-    gc: TGC;
-    format: PXRenderPictFormat;
-    picture: TPicture;
-    color: TXRenderColor;
   begin
     gc := XCreateGC(dis, win, 0, nil);
 
-    format := XRenderFindStandardFormat(dis, PictStandardRGB24);
-    pixmap := XCreatePixmap(dis, win, 512, 512, 24);
-    picture := XRenderCreatePicture(dis, win, format, 0, nil);
+    //    XCopyArea(dis, pixmap, win, gc, 0, 0, 512, 512, 10, 10);
+    //WriteLn('e-----------------');
 
-    XFreePixmap(dis, pixmap);
-
-    color.red := 0;
-    color.green := 0;
-    color.blue := $8000;
-    color.alpha := $0000;
-
-    XRenderFillRectangle(dis, PictOpSrc, picture, @color, 10, 10, 100, 100);
-
-    color.green := $8000;
-
-    XRenderFillRectangle(dis, PictOpSrc, picture, @color, 50, 50, 100, 100);
   end;
 
+  function newErrorHandle(para1: PDisplay; para2: PXErrorEvent): cint; cdecl;
+  begin
+    WriteLn('ERROR !');
+  end;
 
 begin
   dis := XOpenDisplay(nil);
@@ -88,6 +89,8 @@ begin
   win := XCreateSimpleWindow(dis, rootWin, 10, 10, 320, 200, 0, $000000, $FF00000);
   XSelectInput(dis, win, Mask);
   XStoreName(dis, win, 'Bitmap Shapes');
+
+  //  XSetErrorHandler(@newErrorHandle);
 
   Init;
 
@@ -108,6 +111,9 @@ begin
       end;
     end;
   end;
+
+  XRenderFreePicture(dis, picture);
+  XFreePixmap(dis, pixmap);
 
   XDestroyWindow(dis, win);
 
