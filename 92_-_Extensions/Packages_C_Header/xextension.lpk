@@ -26,6 +26,14 @@
         <Filename Value="shapeconst.pas"/>
         <UnitName Value="shapeconst"/>
       </Item>
+      <Item>
+        <Filename Value="Xrender.pas"/>
+        <UnitName Value="Xrender"/>
+      </Item>
+      <Item>
+        <Filename Value="render.pas"/>
+        <UnitName Value="render"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

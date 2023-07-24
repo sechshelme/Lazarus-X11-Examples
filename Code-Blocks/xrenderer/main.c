@@ -23,7 +23,7 @@ void init()
 
       Pixmap pixmap=XCreatePixmap(display,win,512,512,24);
 
-      Picture picture= XRenderCreatePicture(display,pixmap, format,0,NULL);
+      Picture picture= XRenderCreatePicture(display,win, format,0,NULL);
       printf("xxxxxxx\n");
 
       XFreePixmap(display,pixmap);
@@ -32,7 +32,7 @@ void init()
       //XDrawRectangle(display,win,gc,10,10,100,100);
 XRenderColor color={.red=0, .green=0, .blue=0x8000, .alpha=0x8000};
 //Picture picture=XRenderCreatePicture(display,tmp,);
-XRenderFillRectangle(display, PictOpSrc, picture, &color, 0, 0, 1, 1);
+XRenderFillRectangle(display, PictOpSrc, picture, &color, 10, 10, 100, 100);
 }
 
 static void eventloop (void) {
@@ -42,7 +42,22 @@ static void eventloop (void) {
   switch (xev.type) {
     case Expose:
       {
-      }
+       gc=XCreateGC(display,win,0,0);
+
+  XRenderPictFormat *format=    XRenderFindStandardFormat(display,1);
+
+
+
+      Picture picture= XRenderCreatePicture(display,win, format,0,NULL);
+      printf("xxxxxxx\n");
+
+//XFreePixmap(display,pixmap);
+
+
+      //XDrawRectangle(display,win,gc,10,10,100,100);
+XRenderColor color={.red=0, .green=0, .blue=0x8000, .alpha=0x000};
+//Picture picture=XRenderCreatePicture(display,tmp,);
+XRenderFillRectangle(display, PictOpSrc, picture, &color, 0, 0, 100, 100);     }
       break;
     case KeyPress:
       if (XLookupKeysym (&xev.xkey, 0) == XK_Escape)
@@ -65,14 +80,14 @@ int main (int argc, char **argv)
   display = XOpenDisplay (NULL);
   screen = XDefaultScreen (display);
   depth = XDefaultDepth (display, screen);
-  win = XCreateSimpleWindow ( display, RootWindow (display, screen), 100, 10, 400, 300, 5, 0x000000, 0xFFFFFF);
+  win = XCreateSimpleWindow ( display, RootWindow (display, screen), 100, 10, 400, 300, 5, 0x000000, 0xFFFF00);
   XSelectInput (display, win, ButtonPressMask | KeyPressMask |ExposureMask);
   XMapWindow (display, win);
 
   wm_delete_window = XInternAtom(display, "WM_DELETE_WINDOW", False);
   XSetWMProtocols(display, win, &wm_delete_window, 1);
 
-  init();
+ // init();
 
   while (!quit)
   {

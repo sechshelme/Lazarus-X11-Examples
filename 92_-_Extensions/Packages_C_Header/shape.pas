@@ -3,7 +3,7 @@ unit shape;
 interface
 
 uses
-  x, xlib, xutil;
+  x, xlib, xutil, render;
 
   {$LinkLib Xext}
 
