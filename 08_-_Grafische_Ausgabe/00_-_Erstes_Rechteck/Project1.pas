@@ -64,6 +64,7 @@ type
   procedure TMyWin.Run;
   var
     Event: TXEvent;
+    gc: TGC;
   begin
     // Ereignisschleife
     while (True) do begin
@@ -72,7 +73,8 @@ type
       case Event._type of
         Expose: begin
           // Das Rechteck wird gezeichnet
-          XFillRectangle(dis, win, DefaultGC(dis, scr), 20, 20, 200, 200);
+          gc := DefaultGC(dis, scr);
+          XFillRectangle(dis, win, gc, 20, 20, 200, 200);
         end;
         KeyPress: begin
           // Beendet das Programm bei [ESC]

@@ -88,7 +88,8 @@ int main(int argc, char *argv[])
     GlyphSet font = createGlyphSet(display);
     XMapWindow(display, window);
 
-    XRenderColor color_white={.red=0xffff, .green=0xff, .blue=0xffff, .alpha=0xffff};
+    XRenderColor color_red={.red=0xffff, .green=0x0000, .blue=0x0000, .alpha=0x4fff};
+    XRenderColor color_green={.red=0x0000, .green=0xffff, .blue=0x0000, .alpha=0x4fff};
 
     while(1) {
         XNextEvent(display, &event);
@@ -97,7 +98,10 @@ int main(int argc, char *argv[])
             case Expose:
                 /* no partial repaints */
                 XRenderFillRectangle(display, PictOpOver,
-                    picture, &color_white, 0, 0, 320, 240);
+                    picture, &color_red, 0, 0, 320, 240);
+
+                XRenderFillRectangle(display, PictOpOver,
+                    picture, &color_green, 50, 50, 320, 240);
 
                 XRenderCompositeString8(display, PictOpOver,
                     black, picture, 0,

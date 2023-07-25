@@ -65,10 +65,11 @@ const
 
   procedure Draw(ev: TXEvent);
   begin
-    gc := XCreateGC(dis, win, 0, nil);
+//    gc := XCreateGC(dis, win, 0, nil);
 
-    //    XCopyArea(dis, pixmap, win, gc, 0, 0, 512, 512, 10, 10);
-    //WriteLn('e-----------------');
+  //  XCopyArea(dis, pixmap, win, gc, 0, 0, 512, 512, 10, 10);
+
+
 
   end;
 
