@@ -15,10 +15,13 @@ var
   Event: TXEvent;
   scr: cint;
   win, rootWin: TWindow;
+  gc: TGC;
   bkColor: culong = $FFFFFF;
 
-  picture: TPicture;
+  picture, black: TPicture;
   fmt: PXRenderPictFormat;
+  pict_attr: TXRenderPictureAttributes;
+
 
 const
   Mask = KeyPressMask or ExposureMask;
@@ -34,6 +37,27 @@ const
     XRenderFillRectangle(dis, PictOpOver, picture, @color_blue, 150, 150, 320, 240);
   end;
 
+  function create_pen(red, green, blue, alpha: cint): TPicture;
+  var
+    fmt: PXRenderPictFormat;
+    pict_attr: TXRenderPictureAttributes;
+    picture: TPicture;
+    pm: TPixmap;
+    color: TXRenderColor;
+  begin
+    color.red := red;
+    color.green := green;
+    color.blue := blue;
+    color.alpha := alpha;
+
+    fmt := XRenderFindStandardFormat(dis, PictStandardARGB32);
+    pm := XCreatePixmap(dis, win, 1, 1, 32);
+    pict_attr._repeat := 1;
+    picture := XRenderCreatePicture(dis, pm, fmt, CPRepeat, @pict_attr);
+    XRenderFillRectangle(dis, PictOpOver, picture, @color, 0, 0, 1, 1);
+    Result := picture;
+  end;
+
 begin
   dis := XOpenDisplay(nil);
   if dis = nil then begin
@@ -43,13 +67,21 @@ begin
   scr := DefaultScreen(dis);
   rootWin := RootWindow(dis, scr);
 
+  fmt := XRenderFindVisualFormat(dis, XDefaultVisual(dis, scr));
+
   win := XCreateSimpleWindow(dis, rootWin, 10, 10, 640, 480, 0, $000000, $FFFFFF);
   XSelectInput(dis, win, Mask);
   XStoreName(dis, win, 'XRenderer');
-  XMapWindow(dis, win);
 
-  fmt := XRenderFindVisualFormat(dis, XDefaultVisual(dis, scr));
-  picture := XRenderCreatePicture(dis, win, fmt, 0, nil);
+  pict_attr.poly_edge := PolyEdgeSmooth;
+  pict_attr.poly_mode := PolyModeImprecise;
+
+  picture := XRenderCreatePicture(dis, win, fmt, CPPolyEdge or CPPolyMode, @pict_attr);
+//  picture := XRenderCreatePicture(dis, win, fmt, 0, nil);
+
+//  black := create_pen(0, 0, 0, $FFFF);
+
+  XMapWindow(dis, win);
 
   while (True) do begin
     XNextEvent(dis, @Event);
