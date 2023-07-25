@@ -19,7 +19,7 @@ uses
   const
     LineSize = 90;
     //    size: SizeInt = 1000 * 1000 * 10 - 10;
-    size: SizeInt = 1000 * 10 * 10 - 10;
+    size: SizeInt = 1000 * 1000 * 10 - 10;
   var
     i, j: integer;
     s: string[9];
@@ -59,8 +59,8 @@ type
     S_INCR_1 = 1,
     S_INCR_2 = 2);
 const
-  max_req = 43;
-  // max_req = 1000 * 1000;
+//  max_req = 43;
+   max_req = 1000 * 1000;
 
 type
   TIncrTrack = record

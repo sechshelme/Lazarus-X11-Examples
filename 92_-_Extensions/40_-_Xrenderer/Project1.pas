@@ -24,14 +24,21 @@ const
   Mask = KeyPressMask or ExposureMask;
 
   procedure Draw(ev: TXEvent);
+  const
+    w = 150;
+    h = 150;
   var
     color_red: TXRenderColor = (red: $FFFF; green: $0000; blue: $0000; alpha: $4000);
     color_green: TXRenderColor = (red: $0000; green: $FFFF; blue: $0000; alpha: $4000);
     color_blue: TXRenderColor = (red: $0000; green: $0000; blue: $FFFF; alpha: $4000);
   begin
-    XRenderFillRectangle(dis, PictOpOver, picture, @color_red, 50, 50, 320, 240);
-    XRenderFillRectangle(dis, PictOpOver, picture, @color_green, 100, 100, 320, 240);
-    XRenderFillRectangle(dis, PictOpOver, picture, @color_blue, 150, 150, 320, 240);
+    XRenderFillRectangle(dis, PictOpOver, picture, @color_red, 50, 50, w, h);
+    XRenderFillRectangle(dis, PictOpOver, picture, @color_green, 100, 100, w, h);
+    XRenderFillRectangle(dis, PictOpOver, picture, @color_blue, 150, 150, w, h);
+
+    XRenderFillRectangle(dis, PictOpOver, picture, @color_blue, 450, 150, w, h);
+    XRenderFillRectangle(dis, PictOpOver, picture, @color_green, 400, 100, w, h);
+    XRenderFillRectangle(dis, PictOpOver, picture, @color_red, 350, 50, w, h);
   end;
 
 begin
@@ -49,6 +56,7 @@ begin
   XMapWindow(dis, win);
 
   fmt := XRenderFindVisualFormat(dis, XDefaultVisual(dis, scr));
+  //  fmt := XRenderFindStandardFormat(dis, PictStandardRGB24);
   picture := XRenderCreatePicture(dis, win, fmt, 0, nil);
 
   while (True) do begin
@@ -69,7 +77,7 @@ begin
               bkColor := $000000;
             end;
             XSetWindowBackground(dis, win, bkColor);
-            XClearWindow(dis,win);
+            XClearWindow(dis, win);
             Draw(Event);
           end;
         end;
