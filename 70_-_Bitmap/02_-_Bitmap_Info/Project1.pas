@@ -174,8 +174,6 @@ type
   var
     Event: TXEvent;
     quit: boolean = False;
-  const
-    myEvent = 37;
   begin
     // Ereignisschleife
     while not quit do begin

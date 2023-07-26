@@ -19,8 +19,7 @@ const
     'Press Key to switch to Draw',
     '(1) Normal',
     '(2) Pixmap-Buffer',
-    '(3) Image-Buffer',
-    '(4) XDBE Double-Buffer');
+    '(3) XDBE Double-Buffer');
 
 var
   dis: PDisplay;
@@ -33,7 +32,7 @@ var
   Pixmap_back_buffer: TPixmap;
 
   Quit: boolean = False;
-  DrawStyle: (dsNormal, dsPixmap, dsImage, dsXdbe) = dsNormal;
+  DrawStyle: (dsNormal, dsPixmap, dsXdbe) = dsNormal;
 
   posX: integer = 0;
   posY: integer = 0;
@@ -70,23 +69,6 @@ const
     Draw(Pixmap_back_buffer, x, y);
 
     XCopyArea(dis, Pixmap_back_buffer, win, gc, 0, 0, Width, Height, 0, 0);
-  end;
-
-  procedure Draw_Image(x, y: cint);
-  var
-    TempPixmap: TPixmap;
-    Image: PXImage;
-
-  begin
-    TempPixmap := XCreatePixmap(dis, win, Width, Height, DefaultDepth(dis, 0));
-    Draw(TempPixmap, x, y);
-
-    Image := XGetImage(dis, TempPixmap, 0, 0, Width, Height, AllPlanes, ZPixmap);
-
-    XPutImage(dis, win, gc, Image, 0, 0, 0, 0, Width, Height);
-
-    XFreePixmap(dis, TempPixmap);
-    XDestroyImage(Image);
   end;
 
   procedure Draw_None(x, y: cint);
@@ -158,9 +140,6 @@ begin
               DrawStyle := dsPixmap;
             end;
             XK_3: begin
-              DrawStyle := dsImage;
-            end;
-            XK_4: begin
               DrawStyle := dsXdbe;
             end;
           end;
@@ -183,9 +162,6 @@ begin
       end;
       dsPixmap: begin
         Draw_Pixmap(posX, posY);
-      end;
-      dsImage: begin
-        Draw_Image(posX, posY);
       end;
       dsXdbe: begin
         Draw_DoubleBuffer(posX, posY);
