@@ -56,7 +56,7 @@ static Picture create_pen(int red, int green, int blue, int alpha)
 }
 
 int main(int argc, char *argv[])
-{
+{usleep(1200s3);
     display = XOpenDisplay(NULL);
 
     int render_event_base, render_error_base;
