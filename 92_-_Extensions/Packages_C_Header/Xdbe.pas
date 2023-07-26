@@ -11,7 +11,6 @@ uses
 {$PACKRECORDS C}
 {$ENDIF}
 
-
 {*****************************************************************************
  *
  * Copyright (c) 1994, 1995  Hewlett-Packard Company
@@ -84,27 +83,17 @@ type
       request_code : byte;
       minor_code : byte;
     end;
-{ dpy                   }{ major_version_return  }{ minor_version_return  }
 
 function XdbeQueryExtension(para1:PDisplay; para2:Plongint; para3:Plongint):TStatus;cdecl;external;
-{ dpy          }{ window       }{ swap_action  }
 function XdbeAllocateBackBufferName(para1:PDisplay; para2:TWindow; para3:TXdbeSwapAction):TXdbeBackBuffer;cdecl;external;
-{ dpy     }{ buffer  }
 function XdbeDeallocateBackBufferName(para1:PDisplay; para2:TXdbeBackBuffer):TStatus;cdecl;external;
-{ dpy          }{ swap_info    }{ num_windows  }
 function XdbeSwapBuffers(para1:PDisplay; para2:PXdbeSwapInfo; para3:longint):TStatus;cdecl;external;
-{ dpy  }
 function XdbeBeginIdiom(para1:PDisplay):TStatus;cdecl;external;
-{ dpy  }
 function XdbeEndIdiom(para1:PDisplay):TStatus;cdecl;external;
-{ dpy                }{ screen_specifiers  }{ num_screens        }
 function XdbeGetVisualInfo(para1:PDisplay; para2:PDrawable; para3:Plongint):PXdbeScreenVisualInfo;cdecl;external;
-{ visual_info  }
 procedure XdbeFreeVisualInfo(para1:PXdbeScreenVisualInfo);cdecl;external;
-{ dpy     }{ buffer  }
 function XdbeGetBackBufferAttributes(para1:PDisplay; para2:TXdbeBackBuffer):PXdbeBackBufferAttributes;cdecl;external;
 
 implementation
-
 
 end.

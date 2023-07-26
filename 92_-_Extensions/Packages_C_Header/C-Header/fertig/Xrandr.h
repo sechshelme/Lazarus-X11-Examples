@@ -34,7 +34,7 @@
 
 #include <X11/Xfuncproto.h>
 
-_XFUNCPROTOBEGIN
+//_XFUNCPROTOBEGIN
 
 typedef XID RROutput;
 typedef XID RRCrtc;
@@ -327,7 +327,7 @@ void
 XRRChangeOutputProperty (Display *dpy, RROutput output,
 			 Atom property, Atom type,
 			 int format, int mode,
-			 _Xconst unsigned char *data, int nelements);
+			 unsigned char *data, int nelements);
 
 void
 XRRDeleteOutputProperty (Display *dpy, RROutput output, Atom property);
@@ -341,7 +341,7 @@ XRRGetOutputProperty (Display *dpy, RROutput output,
 		      unsigned char **prop);
 
 XRRModeInfo *
-XRRAllocModeInfo (_Xconst char *name, int nameLength);
+XRRAllocModeInfo (char *name, int nameLength);
 
 RRMode
 XRRCreateMode (Display *dpy, Window window, XRRModeInfo *modeInfo);
@@ -419,7 +419,7 @@ void
 XRRSetCrtcTransform (Display	*dpy,
 		     RRCrtc	crtc,
 		     XTransform	*transform,
-		     _Xconst char *filter,
+		     char *filter,
 		     XFixed	*params,
 		     int	nparams);
 
@@ -539,7 +539,7 @@ void
 XRRChangeProviderProperty (Display *dpy, RRProvider provider,
 			 Atom property, Atom type,
 			 int format, int mode,
-			 _Xconst unsigned char *data, int nelements);
+			  unsigned char *data, int nelements);
 
 void
 XRRDeleteProviderProperty (Display *dpy, RRProvider provider, Atom property);
@@ -582,6 +582,6 @@ XRRDeleteMonitor(Display *dpy, Window window, Atom name);
 void
 XRRFreeMonitors(XRRMonitorInfo *monitors);
 
-_XFUNCPROTOEND
+//_XFUNCPROTOEND
 
 #endif /* _XRANDR_H_ */

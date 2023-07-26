@@ -98,7 +98,7 @@ typedef struct _XGlyphInfo {
 
 typedef struct _XGlyphElt8 {
     GlyphSet		    glyphset;
-    _Xconst char	    *chars;
+     char	    *chars;
     int			    nchars;
     int			    xOff;
     int			    yOff;
@@ -106,7 +106,7 @@ typedef struct _XGlyphElt8 {
 
 typedef struct _XGlyphElt16 {
     GlyphSet		    glyphset;
-    _Xconst unsigned short  *chars;
+     unsigned short  *chars;
     int			    nchars;
     int			    xOff;
     int			    yOff;
@@ -114,7 +114,7 @@ typedef struct _XGlyphElt16 {
 
 typedef struct _XGlyphElt32 {
     GlyphSet		    glyphset;
-    _Xconst unsigned int    *chars;
+     unsigned int    *chars;
     int			    nchars;
     int			    xOff;
     int			    yOff;
@@ -198,8 +198,6 @@ typedef struct _XConicalGradient {
     XFixed angle; /* in degrees */
 } XConicalGradient;
 
-_XFUNCPROTOBEGIN
-
 Bool XRenderQueryExtension (Display *dpy, int *event_basep, int *error_basep);
 
 Status XRenderQueryVersion (Display *dpy,
@@ -213,12 +211,12 @@ int XRenderQuerySubpixelOrder (Display *dpy, int screen);
 Bool XRenderSetSubpixelOrder (Display *dpy, int screen, int subpixel);
 
 XRenderPictFormat *
-XRenderFindVisualFormat (Display *dpy, _Xconst Visual *visual);
+XRenderFindVisualFormat (Display *dpy,  Visual *visual);
 
 XRenderPictFormat *
 XRenderFindFormat (Display			*dpy,
 		   unsigned long		mask,
-		   _Xconst XRenderPictFormat	*templ,
+		    XRenderPictFormat	*templ,
 		   int				count);
 
 #define PictStandardARGB32  0
@@ -234,28 +232,28 @@ XRenderFindStandardFormat (Display		*dpy,
 
 XIndexValue *
 XRenderQueryPictIndexValues(Display			*dpy,
-			    _Xconst XRenderPictFormat	*format,
+			     XRenderPictFormat	*format,
 			    int				*num);
 
 Picture
 XRenderCreatePicture (Display				*dpy,
 		      Drawable				drawable,
-		      _Xconst XRenderPictFormat		*format,
+		       XRenderPictFormat		*format,
 		      unsigned long			valuemask,
-		      _Xconst XRenderPictureAttributes	*attributes);
+		       XRenderPictureAttributes	*attributes);
 
 void
 XRenderChangePicture (Display				*dpy,
 		      Picture				picture,
 		      unsigned long			valuemask,
-		      _Xconst XRenderPictureAttributes  *attributes);
+		       XRenderPictureAttributes  *attributes);
 
 void
 XRenderSetPictureClipRectangles (Display	    *dpy,
 				 Picture	    picture,
 				 int		    xOrigin,
 				 int		    yOrigin,
-				 _Xconst XRectangle *rects,
+				  XRectangle *rects,
 				 int		    n);
 
 void
@@ -288,7 +286,7 @@ XRenderComposite (Display   *dpy,
 		  unsigned int	height);
 
 GlyphSet
-XRenderCreateGlyphSet (Display *dpy, _Xconst XRenderPictFormat *format);
+XRenderCreateGlyphSet (Display *dpy,  XRenderPictFormat *format);
 
 GlyphSet
 XRenderReferenceGlyphSet (Display *dpy, GlyphSet existing);
@@ -299,16 +297,16 @@ XRenderFreeGlyphSet (Display *dpy, GlyphSet glyphset);
 void
 XRenderAddGlyphs (Display		*dpy,
 		  GlyphSet		glyphset,
-		  _Xconst Glyph		*gids,
-		  _Xconst XGlyphInfo	*glyphs,
+		   Glyph		*gids,
+		   XGlyphInfo	*glyphs,
 		  int			nglyphs,
-		  _Xconst char		*images,
+		   char		*images,
 		  int			nbyte_images);
 
 void
 XRenderFreeGlyphs (Display	    *dpy,
 		   GlyphSet	    glyphset,
-		   _Xconst Glyph    *gids,
+		    Glyph    *gids,
 		   int		    nglyphs);
 
 void
@@ -316,13 +314,13 @@ XRenderCompositeString8 (Display		    *dpy,
 			 int			    op,
 			 Picture		    src,
 			 Picture		    dst,
-			 _Xconst XRenderPictFormat  *maskFormat,
+			  XRenderPictFormat  *maskFormat,
 			 GlyphSet		    glyphset,
 			 int			    xSrc,
 			 int			    ySrc,
 			 int			    xDst,
 			 int			    yDst,
-			 _Xconst char		    *string,
+			  char		    *string,
 			 int			    nchar);
 
 void
@@ -330,13 +328,13 @@ XRenderCompositeString16 (Display		    *dpy,
 			  int			    op,
 			  Picture		    src,
 			  Picture		    dst,
-			  _Xconst XRenderPictFormat *maskFormat,
+			   XRenderPictFormat *maskFormat,
 			  GlyphSet		    glyphset,
 			  int			    xSrc,
 			  int			    ySrc,
 			  int			    xDst,
 			  int			    yDst,
-			  _Xconst unsigned short    *string,
+			   unsigned short    *string,
 			  int			    nchar);
 
 void
@@ -344,13 +342,13 @@ XRenderCompositeString32 (Display		    *dpy,
 			  int			    op,
 			  Picture		    src,
 			  Picture		    dst,
-			  _Xconst XRenderPictFormat *maskFormat,
+			   XRenderPictFormat *maskFormat,
 			  GlyphSet		    glyphset,
 			  int			    xSrc,
 			  int			    ySrc,
 			  int			    xDst,
 			  int			    yDst,
-			  _Xconst unsigned int	    *string,
+			   unsigned int	    *string,
 			  int			    nchar);
 
 void
@@ -358,12 +356,12 @@ XRenderCompositeText8 (Display			    *dpy,
 		       int			    op,
 		       Picture			    src,
 		       Picture			    dst,
-		       _Xconst XRenderPictFormat    *maskFormat,
+		        XRenderPictFormat    *maskFormat,
 		       int			    xSrc,
 		       int			    ySrc,
 		       int			    xDst,
 		       int			    yDst,
-		       _Xconst XGlyphElt8	    *elts,
+		        XGlyphElt8	    *elts,
 		       int			    nelt);
 
 void
@@ -371,12 +369,12 @@ XRenderCompositeText16 (Display			    *dpy,
 			int			    op,
 			Picture			    src,
 			Picture			    dst,
-			_Xconst XRenderPictFormat   *maskFormat,
+			 XRenderPictFormat   *maskFormat,
 			int			    xSrc,
 			int			    ySrc,
 			int			    xDst,
 			int			    yDst,
-			_Xconst XGlyphElt16	    *elts,
+			 XGlyphElt16	    *elts,
 			int			    nelt);
 
 void
@@ -384,19 +382,19 @@ XRenderCompositeText32 (Display			    *dpy,
 			int			    op,
 			Picture			    src,
 			Picture			    dst,
-			_Xconst XRenderPictFormat   *maskFormat,
+			 XRenderPictFormat   *maskFormat,
 			int			    xSrc,
 			int			    ySrc,
 			int			    xDst,
 			int			    yDst,
-			_Xconst XGlyphElt32	    *elts,
+			 XGlyphElt32	    *elts,
 			int			    nelt);
 
 void
 XRenderFillRectangle (Display		    *dpy,
 		      int		    op,
 		      Picture		    dst,
-		      _Xconst XRenderColor  *color,
+		       XRenderColor  *color,
 		      int		    x,
 		      int		    y,
 		      unsigned int	    width,
@@ -406,8 +404,8 @@ void
 XRenderFillRectangles (Display		    *dpy,
 		       int		    op,
 		       Picture		    dst,
-		       _Xconst XRenderColor *color,
-		       _Xconst XRectangle   *rectangles,
+		        XRenderColor *color,
+		        XRectangle   *rectangles,
 		       int		    n_rects);
 
 void
@@ -415,10 +413,10 @@ XRenderCompositeTrapezoids (Display		*dpy,
 			    int			op,
 			    Picture		src,
 			    Picture		dst,
-			    _Xconst XRenderPictFormat	*maskFormat,
+			     XRenderPictFormat	*maskFormat,
 			    int			xSrc,
 			    int			ySrc,
-			    _Xconst XTrapezoid	*traps,
+			     XTrapezoid	*traps,
 			    int			ntrap);
 
 void
@@ -426,10 +424,10 @@ XRenderCompositeTriangles (Display		*dpy,
 			   int			op,
 			   Picture		src,
 			   Picture		dst,
-			    _Xconst XRenderPictFormat	*maskFormat,
+			     XRenderPictFormat	*maskFormat,
 			   int			xSrc,
 			   int			ySrc,
-			   _Xconst XTriangle	*triangles,
+			    XTriangle	*triangles,
 			   int			ntriangle);
 
 void
@@ -437,10 +435,10 @@ XRenderCompositeTriStrip (Display		*dpy,
 			  int			op,
 			  Picture		src,
 			  Picture		dst,
-			    _Xconst XRenderPictFormat	*maskFormat,
+			     XRenderPictFormat	*maskFormat,
 			  int			xSrc,
 			  int			ySrc,
-			  _Xconst XPointFixed	*points,
+			   XPointFixed	*points,
 			  int			npoint);
 
 void
@@ -448,10 +446,10 @@ XRenderCompositeTriFan (Display			*dpy,
 			int			op,
 			Picture			src,
 			Picture			dst,
-			_Xconst XRenderPictFormat	*maskFormat,
+			 XRenderPictFormat	*maskFormat,
 			int			xSrc,
 			int			ySrc,
-			_Xconst XPointFixed	*points,
+			 XPointFixed	*points,
 			int			npoint);
 
 void
@@ -459,12 +457,12 @@ XRenderCompositeDoublePoly (Display		    *dpy,
 			    int			    op,
 			    Picture		    src,
 			    Picture		    dst,
-			    _Xconst XRenderPictFormat	*maskFormat,
+			     XRenderPictFormat	*maskFormat,
 			    int			    xSrc,
 			    int			    ySrc,
 			    int			    xDst,
 			    int			    yDst,
-			    _Xconst XPointDouble    *fpoints,
+			     XPointDouble    *fpoints,
 			    int			    npoints,
 			    int			    winding);
 Status
@@ -499,7 +497,7 @@ XRenderAddTraps (Display	    *dpy,
 		 Picture	    picture,
 		 int		    xOff,
 		 int		    yOff,
-		 _Xconst XTrap	    *traps,
+		  XTrap	    *traps,
 		 int		    ntrap);
 
 Picture XRenderCreateSolidFill (Display *dpy,
@@ -523,6 +521,5 @@ Picture XRenderCreateConicalGradient (Display *dpy,
                                       const XRenderColor *colors,
                                       int nstops);
 
-_XFUNCPROTOEND
 
 #endif /* _XRENDER_H_ */

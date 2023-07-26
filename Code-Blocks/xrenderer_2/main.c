@@ -3,6 +3,7 @@
 
 #include <X11/Xlib.h>
 #include <X11/extensions/Xrender.h>
+#include <X11/extensions/randrproto.h>
 
 static const char glyph_data_H[12*16]={
     0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x00,
@@ -56,7 +57,7 @@ static Picture create_pen(int red, int green, int blue, int alpha)
 }
 
 int main(int argc, char *argv[])
-{usleep(1200s3);
+{
     display = XOpenDisplay(NULL);
 
     int render_event_base, render_error_base;
