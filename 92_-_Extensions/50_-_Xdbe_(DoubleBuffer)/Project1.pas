@@ -9,7 +9,7 @@ uses
   x,
   Xdbe;
 
-procedure usleep(i:cint);cdecl;external 'c';
+procedure usleep(i:culong);cdecl;external 'c';
 
 
 const
