@@ -7,7 +7,6 @@ program Project1;
 
 uses
   SysUtils,
-  heaptrc,
   BaseUnix,
   unixtype,
   ctypes,
@@ -18,9 +17,27 @@ uses
   x;
 
 const
-  TargetsString: array of PChar = ('TARGETS', 'UTF8_STRING', 'STRING', 'TEXT', 'text/plain');
+  TargetsString: array of PChar = (
+    'TARGETS',
+    'UTF8_STRING',
+    'STRING',
+    'COMPOUND_TEXT',
+    'text/uri-list',
+    'TEXT',
+//    'text/rtf',
+//    'text/richtext',
+    'text/html',
+    'text/plain;charset=utf-16',
+    'text/plain;charset=utf-8',
+    'text/plain;charset=UTF-16BE',
+    'text/plain;charset=UTF-16LE',
+    'text/plain;charset=ISO-8859-1',
+    'text/plain;charset=US-ASCII',
+    'text/plain;charset=unicode',
+    'text/plain');
 var
-  msgList: TStringArray = nil;
+  msgStringLeft: TStringArray = nil;
+  msgStringRight: TStringArray = nil;
   TargetList: array of record
     atom: TAtom;
     Checked: boolean;
@@ -43,47 +60,33 @@ type
     procedure Draw;
     procedure CreateMsgList;
     procedure WriteClipboard;
+    procedure InitClipboard;
+    procedure AddMsg(const s: string);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Run;
   end;
 
-const
-  clGreen = 32;
-  clCyan = 36;
-  clBrightRed = 91;
-
-  procedure SetFGColor(c: byte);
-  begin
-    Write(#27'[', Ord(c), 'm');
-  end;
-
-  procedure SetFGNormalColor;
-  begin
-    Write(#27'[0m');
-  end;
-
-var
-  ClipboardString: string;
-
   function MyErrorProc(para1: PDisplay; para2: PXErrorEvent): cint; cdecl;
   begin
-    SetFGColor(clBrightRed);
     WriteLn('Error Handle');
     Result := 0;
-    SetFGNormalColor;
   end;
 
   procedure TMyWin.Draw;
   var
     i: integer;
   begin
-    XClearWindow(dis,win);
-    //    XDrawRectangle(dis, win, gc, 20, 20, Event.xexpose.Width - 40, Event.xexpose.Height - 40);
+    XClearWindow(dis, win);
     XSetForeground(dis, gc, $FFFF00);
-    for i := 0 to Length(msgList) - 1 do begin
-      XDrawString(dis, win, gc, 10, 16 * i + 16, PChar(msgList[i]), Length(msgList[i]));
+    for i := 0 to Length(msgStringLeft) - 1 do begin
+      XDrawString(dis, win, gc, 10, 16 * i + 16, PChar(msgStringLeft[i]), Length(msgStringLeft[i]));
+    end;
+
+    XSetForeground(dis, gc, $FF00FF);
+    for i := 0 to Length(msgStringRight) - 1 do begin
+      XDrawString(dis, win, gc, 400 + 10, 16 * i + 16, PChar(msgStringRight[i]), Length(msgStringRight[i]));
     end;
   end;
 
@@ -91,18 +94,33 @@ var
   var
     s: string;
     i: integer;
-    ck: char;
+    ch, ck: char;
   begin
-    msgList:=nil;
+    msgStringLeft := nil;
+    Insert(['Selektiere die Auswahl mit [0-z]', ''], msgStringLeft, Length(msgStringLeft));
     for i := 0 to Length(TargetList) - 1 do begin
       if TargetList[i].Checked then begin
         ck := 'X';
       end else begin
         ck := ' ';
       end;
-      WriteStr(s, '(', char(i + 48), ') [', ck, '] ' + XGetAtomName(dis, TargetList[i].atom));
-      Insert(s, msgList, Length(msgList));
+      if i > 9 then begin
+        ch := char(i + 64 + 32 - 9);
+      end else begin
+        ch := char(i + 48);
+      end;
+      WriteStr(s, '(', ch, ') [', ck, '] ' + XGetAtomName(dis, TargetList[i].atom));
+      Insert(s, msgStringLeft, Length(msgStringLeft));
     end;
+  end;
+
+  procedure TMyWin.AddMsg(const s: string);
+  begin
+    Insert(s, msgStringRight, Length(msgStringRight));
+    if Length(msgStringRight) > 30 then begin
+      Delete(msgStringRight, 0, 1);
+    end;
+    Draw;
   end;
 
   procedure TMyWin.WriteClipboard;
@@ -112,18 +130,27 @@ var
     xsr: PXSelectionRequestEvent;
     R, i: cint;
     io: boolean = False;
+    tmpTargets: array of TAtom = nil;
 
-    procedure PrintName(const Titel: string; w: TWindow);
-    var
-      prop: TXTextProperty;
+    function CreateClipboardString(atom: TAtom): string;
     begin
-      XGetWMName(dis, w, @prop);
-      WriteLn('--- Schreibe: ', Titel, ' ---  Nr: 0x', IntToHex(w, 8), ' Name: ', PChar(prop.Value));
+      WriteStr(Result, #10,
+        '----------------------------------'#10,
+        'Target: ', XGetAtomName(dis, atom), #10,
+        'Generiert am: ', DateTimeToStr(Now), #10,
+        '----------------------------------'#10#10);
     end;
 
   begin
+
+    for i := 0 to Length(TargetList) - 1 do begin
+      if TargetList[i].Checked then begin
+        Insert(TargetList[i].atom, tmpTargets, Length(tmpTargets));
+      end;
+    end;
+
     if Event.xselectionrequest.selection = XA_CLIPBOARD then begin
-      WriteLn('Daten stehen im Clipboard bereit');
+      //      WriteLn('Daten stehen im Clipboard bereit');
       xsr := @Event.xselectionrequest;
       ev._type := SelectionNotify;
       ev.display := xsr^.display;
@@ -134,15 +161,16 @@ var
       ev._property := xsr^._property;
       ev.serial := 0;
       ev.send_event := 0;
-      if ev.target = TargetList[0].atom then begin
-        PrintName('--- Schreibe  TARGETS ---  ', ev.requestor);
-        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, pbyte(TargetList), Length(TargetList));
+
+
+      if ev.target = XInternAtom(dis, 'TARGETS', False) then begin
+        R := XChangeProperty(ev.display, ev.requestor, ev._property, XA_ATOM, 32, PropModeReplace, pbyte(tmpTargets), Length(tmpTargets));
       end else begin
+        AddMsg(XGetAtomName(dis, ev.target));
         i := 1;
         while (i < Length(TargetList)) and not io do begin
           if ev.target = TargetList[i].atom then begin
-            PrintName('--- Schreibe  ' + XGetAtomName(dis, ev.target) + ' ---  ', ev.requestor);
-            cs := '-- ' + XGetAtomName(dis, ev.target) + ' --'#10 + ClipboardString;
+            cs := CreateClipboardString(ev.target);
             R := XChangeProperty(ev.display, ev.requestor, ev._property, ev.target, 8, PropModeReplace, pbyte(cs), Length(cs));
             io := True;
           end;
@@ -159,6 +187,14 @@ var
       if (R and 2) = 0 then begin
         XSendEvent(dis, ev.requestor, False, 0, @ev);
       end;
+    end;
+  end;
+
+  procedure TMyWin.InitClipboard;
+  begin
+    XSetSelectionOwner(dis, XA_CLIPBOARD, win, CurrentTime);
+    if XGetSelectionOwner(dis, XA_CLIPBOARD) <> win then begin
+      WriteLn('Fehler: Falsches Window');
     end;
   end;
 
@@ -183,7 +219,7 @@ var
     end;
 
     scr := DefaultScreen(dis);
-    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, $FFFFFF, $000000);
+    win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 800, 600, 1, $FFFFFF, $000000);
     XStoreName(dis, win, 'Clipboard');
     gc := XCreateGC(dis, win, 0, nil);
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
@@ -205,7 +241,8 @@ var
   var
     key, p: TKeySym;
   begin
-    // Ereignisschleife
+    InitClipboard;
+
     while (True) do begin
       XNextEvent(dis, @Event);
       case Event._type of
@@ -218,46 +255,38 @@ var
             XK_Escape: begin
               Break;
             end;
-            XK_c: begin
-              Writeln('Daten ready für Clipboard');
-              // Ein Pseudoinhalt fürs Clipboard
-              WriteStr(ClipboardString, 'Hello World !'#10'Hallo Welt !'#10, DateTimeToStr(Now), #10#10);
-
-              XSetSelectionOwner(dis, XA_CLIPBOARD, win, CurrentTime);
-              if XGetSelectionOwner(dis, XA_CLIPBOARD) <> win then begin
-                WriteLn('Fehler: Falsches Window');
-              end;
-            end;
             XK_0..XK_9: begin
               p := key - xk_0;
               if p < Length(TargetList) then begin
                 TargetList[p].Checked := not TargetList[p].Checked;
+                CreateMsgList;
+                InitClipboard;
+                Draw;
               end;
-              CreateMsgList;
-              Draw;
+            end;
+            XK_a..XK_z: begin
+              p := key - xk_a + 10;
+              if p < Length(TargetList) then begin
+                TargetList[p].Checked := not TargetList[p].Checked;
+                CreateMsgList;
+                InitClipboard;
+                Draw;
+              end;
             end;
           end;
         end;
         // Wird ausgelöst, sobald Daten extern vom Clipboard verlangt werden.
         SelectionRequest: begin
-          SetFGColor(clGreen);
-          WriteLn('SelectionRequest');
-          SetFGNormalColor;
+          //          WriteLn('SelectionRequest');
           WriteClipboard;
         end;
         // Wird ausgelöst, sobald eine andere App Daten fürs Clipboard hat.
         SelectionClear: begin
-          SetFGColor(clGreen);
-          WriteLn('SelectionClear');
-          SetFGNormalColor;
-          WriteLn('Eine andere App hat Clipboard Daten');
-          ClipboardString := '';
+          //          WriteLn('SelectionClear');
         end;
         // Daten vom Clipboard stehen bereit zur Abholung
         SelectionNotify: begin
-          SetFGColor(clGreen);
-          WriteLn('SelectionNotify');
-          SetFGNormalColor;
+          //          WriteLn('SelectionNotify');
         end;
       end;
     end;
