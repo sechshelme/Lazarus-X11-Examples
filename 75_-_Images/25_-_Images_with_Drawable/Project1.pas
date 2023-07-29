@@ -20,12 +20,11 @@ var
   scr: cint;
   Image: PXImage = nil;
   gc: TGC;
+  pix: TPixmap;
 
-  procedure Draw;
+  function MyErrorHandler(para1: PDisplay; para2: PXErrorEvent): cint; cdecl;
   begin
-    if Image <> nil then begin
-      XPutImage(dis, win, gc, Image, 0, 0, 0, 0, 640, 480);
-    end;
+    WriteLn('======= Fehler ===========');
   end;
 
   function GrabPointer: TWindow;
@@ -47,10 +46,22 @@ var
     XFreeCursor(dis, cursor);
   end;
 
-function MyErrorHandler(para1: PDisplay; para2: PXErrorEvent): cint; cdecl;
-begin
-  WriteLn('======= Fehler ===========');
-end;
+  procedure Draw;
+  begin
+    if Image <> nil then begin
+      XPutImage(dis, win, gc, Image, 0, 0, 0, 0, 640, 480);
+    end;
+  end;
+
+  function CreatePixmap8: TPixmap;
+  var
+    gc: TGC;
+  begin
+    Result := XCreatePixmap(dis, rootWin, 256, 256, 24);
+    gc := XCreateGC(dis, Result, 0, nil);
+    XSetForeground(dis, gc, $FFFF00);
+    XFillRectangle(dis, Result, gc, 10, 10, 100, 100);
+  end;
 
 begin
   dis := XOpenDisplay(nil);
@@ -59,7 +70,7 @@ begin
     Halt(1);
   end;
 
-  XSetErrorHandler(@MyErrorHandler);
+  //  XSetErrorHandler(@MyErrorHandler);
 
   scr := DefaultScreen(dis);
 
@@ -87,7 +98,7 @@ begin
               XDestroyImage(Image);
             end;
             w := GrabPointer;
-//            w := XmuClientWindow(dis, w);
+            //            w := XmuClientWindow(dis, w);
             Image := XGetImage(dis, w, 0, 0, 640, 480, AllPlanes, ZPixmap);
             Draw;
           end;
@@ -97,6 +108,18 @@ begin
             end;
             Image := XGetImage(dis, rootWin, 0, 0, 640, 480, AllPlanes, ZPixmap);
             Draw;
+          end;
+          XK_3: begin
+            if Image <> nil then begin
+              XDestroyImage(Image);
+            end;
+            pix := CreatePixmap8;
+            //            XCopyArea(dis,pix,win,gc,0,0,500,500,10,10);
+            //       XCopyPlane(dis,pix,win,gc,0,0,100,100,10,10,1);
+
+            Image := XGetImage(dis, pix, 0, 0, 256, 256, AllPlanes, ZPixmap);
+            Draw;
+            XFreePixmap(dis, pix);
           end;
         end;
       end;
