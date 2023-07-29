@@ -24,7 +24,10 @@ type
     scr: cint;
     win: TWindow;
     gc: TGC;
-    PlaneMask: integer;
+    PlaneMask: packed record
+      r, g, b: byte;
+      end;
+    bgColor: culong;
     procedure Draw;
   public
     constructor Create;
@@ -39,7 +42,9 @@ type
   begin
     XClearWindow(dis, win);
 
-    XSetPlaneMask(dis, gc, PlaneMask);
+    with PlaneMask do begin
+      XSetPlaneMask(dis, gc, b + g shl 8 + r shl 16);
+    end;
 
     XSetForeground(dis, gc, $FF0000);
     XFillRectangle(dis, win, gc, 10, 10, w, h);
@@ -73,7 +78,6 @@ type
   begin
     inherited Create;
 
-    // Erstellt die Verbindung zum Server
     dis := XOpenDisplay(nil);
     if dis = nil then begin
       WriteLn('Kann nicht das Display öffnen');
@@ -83,19 +87,22 @@ type
     gc := DefaultGC(dis, scr);
 
     win := XCreateSimpleWindow(dis, RootWindow(dis, scr), 10, 10, 320, 240, 1, BlackPixel(dis, scr), WhitePixel(dis, scr));
-    XSetWindowBackground(dis, win, $FF8888);
+    //    XSetWindowBackground(dis, win, $FF8888);
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
 
-    // Fenster anzeigen
     XMapWindow(dis, win);
+
+    bgColor := $FFFFFF;
+    XSetWindowBackground(dis, win, bgColor);
+    PlaneMask.b := $FF;
+    PlaneMask.g := $FF;
+    PlaneMask.r := $FF;
   end;
 
   destructor TMyWin.Destroy;
   begin
-    // Schliesst das Fenster
     XDestroyWindow(dis, win);
 
-    // Schliesst Verbindung zum Server
     XCloseDisplay(dis);
     inherited Destroy;
   end;
@@ -104,8 +111,6 @@ type
   var
     Event: TXEvent;
   begin
-
-    // Ereignisschleife
     while (True) do begin
       XNextEvent(dis, @Event);
 
@@ -114,21 +119,29 @@ type
           Draw;
         end;
         KeyPress: begin
-          // Beendet das Programm bei [ESC]
           case XLookupKeysym(@Event.xkey, 0) of
             XK_Escape: begin
               Break;
             end;
+            XK_space: begin
+              if bgColor = $FFFFFF then begin
+                bgColor := $000000;
+              end else begin
+                bgColor := $FFFFFF;
+              end;
+              XSetWindowBackground(dis, win, bgColor);
+              Draw;
+            end;
             XK_1: begin
-              PlaneMask := $FF0000;
+              PlaneMask.r := not PlaneMask.r;
               Draw;
             end;
             XK_2: begin
-              PlaneMask := $00FF00;
+              PlaneMask.g := not PlaneMask.g;
               Draw;
             end;
             XK_3: begin
-              PlaneMask := $0000FF;
+              PlaneMask.b := not PlaneMask.b;
               Draw;
             end;
           end;
@@ -145,4 +158,3 @@ begin
   MyWindows.Run;
   MyWindows.Free;
 end.
-//code-

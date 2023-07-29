@@ -65,9 +65,8 @@ type
           Inc(p);
         end;
       end;
-//      Result := XCreateImage(dis, nil, DefaultDepth(dis, scr), ZPixmap, 0, Data, Width, Height, 32, 0);
-      Result := XCreateImage(dis, visual, 8, ZPixmap, 0, Data, Width, Height, XBitmapPad(dis), 0);
-      WriteLn('----------',XBitmapPad(dis));
+      Result := XCreateImage(dis, nil, DefaultDepth(dis, scr), ZPixmap, 0, Data, Width, Height, 32, 0);
+//      Result := XCreateImage(dis, visual, 8, ZPixmap, 0, Data, Width, Height, XBitmapPad(dis), 0);
     end;
   end;
 
