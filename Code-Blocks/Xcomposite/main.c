@@ -11,6 +11,8 @@
 #include <X11/extensions/Xrender.h>
 //Compile hint: gcc -shared -O3 -lX11 -fPIC -Wl,-soname,prtscn -o prtscn.so prtscn.c
 
+// https://stackoverflow.com/questions/47980608/xgetimage-is-mangled-for-chrome-firefox-electron-when-using-xcompositeredirec
+
 typedef int bool;
 #define true 1
 #define false 0
