@@ -1,4 +1,12 @@
-/*
+unit composite;
+
+interface
+
+{$IFDEF FPC}
+{$PACKRECORDS C}
+{$ENDIF}
+
+{
  * Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -19,8 +27,8 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
- */
-/*
+  }
+{
  * Copyright © 2003 Keith Packard
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
@@ -40,60 +48,26 @@
  * DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
- */
+  }
 
-#ifndef _XCOMPOSITE_H_
-#define _XCOMPOSITE_H_
+const
+  COMPOSITE_NAME = 'Composite';
+  COMPOSITE_MAJOR = 0;
+  COMPOSITE_MINOR = 4;
+  CompositeRedirectAutomatic = 0;
+  CompositeRedirectManual = 1;
+  X_CompositeQueryVersion = 0;
+  X_CompositeRedirectWindow = 1;
+  X_CompositeRedirectSubwindows = 2;
+  X_CompositeUnredirectWindow = 3;
+  X_CompositeUnredirectSubwindows = 4;
+  X_CompositeCreateRegionFromBorderClip = 5;
+  X_CompositeNameWindowPixmap = 6;
+  X_CompositeGetOverlayWindow = 7;
+  X_CompositeReleaseOverlayWindow = 8;
+  CompositeNumberRequests = X_CompositeReleaseOverlayWindow + 1;
+  CompositeNumberEvents = 0;
 
-#include <X11/extensions/composite.h>
-#include <X11/extensions/Xfixes.h>
-#include <X11/Xfuncproto.h>
+implementation
 
-/*
- * This revision number also appears in configure.ac, they have
- * to be manually synchronized
- */
-#define XCOMPOSITE_MAJOR	COMPOSITE_MAJOR
-#define XCOMPOSITE_MINOR	COMPOSITE_MINOR
-#define XCOMPOSITE_REVISION	2
-#define XCOMPOSITE_VERSION	((XCOMPOSITE_MAJOR * 10000) + (XCOMPOSITE_MINOR * 100) + (XCOMPOSITE_REVISION))
-
-_XFUNCPROTOBEGIN
-
-Bool XCompositeQueryExtension (Display *dpy,
-                               int *event_base_return,
-                               int *error_base_return);
-
-Status XCompositeQueryVersion (Display *dpy,
-                               int     *major_version_return,
-                               int     *minor_version_return);
-
-int XCompositeVersion (void);
-
-void
-XCompositeRedirectWindow (Display *dpy, Window window, int update);
-
-void
-XCompositeRedirectSubwindows (Display *dpy, Window window, int update);
-
-void
-XCompositeUnredirectWindow (Display *dpy, Window window, int update);
-
-void
-XCompositeUnredirectSubwindows (Display *dpy, Window window, int update);
-
-XserverRegion
-XCompositeCreateRegionFromBorderClip (Display *dpy, Window window);
-
-Pixmap
-XCompositeNameWindowPixmap (Display *dpy, Window window);
-
-Window
-XCompositeGetOverlayWindow (Display *dpy, Window window);
-
-void
-XCompositeReleaseOverlayWindow (Display *dpy, Window window);
-
-_XFUNCPROTOEND
-
-#endif /* _XCOMPOSITE_H_ */
+end.

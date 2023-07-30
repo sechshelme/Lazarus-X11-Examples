@@ -8,8 +8,8 @@ unit XExtension;
 interface
 
 uses
-  randr, Xrandr, shape, shapeconst, Xrender, render, Xdbe, dbe, 
-  LazarusPackageIntf;
+  randr, Xrandr, shape, shapeconst, Xrender, render, Xdbe, dbe, composite, 
+  Xcomposite, LazarusPackageIntf;
 
 implementation
 

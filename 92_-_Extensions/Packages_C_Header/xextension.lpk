@@ -40,6 +40,15 @@
       </Item>
       <Item>
         <Filename Value="dbe.pas"/>
+        <UnitName Value="dbe"/>
+      </Item>
+      <Item>
+        <Filename Value="composite.pas"/>
+        <UnitName Value="composite"/>
+      </Item>
+      <Item>
+        <Filename Value="Xcomposite.pas"/>
+        <UnitName Value="Xcomposite"/>
       </Item>
     </Files>
     <RequiredPkgs>

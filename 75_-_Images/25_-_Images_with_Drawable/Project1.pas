@@ -25,6 +25,7 @@ var
   function MyErrorHandler(para1: PDisplay; para2: PXErrorEvent): cint; cdecl;
   begin
     WriteLn('======= Fehler ===========');
+    Result := 0;
   end;
 
   function GrabPointer: TWindow;
@@ -53,12 +54,14 @@ var
     end;
   end;
 
-  function CreatePixmap8: TPixmap;
+  function CreatePixmap: TPixmap;
   var
     gc: TGC;
   begin
     Result := XCreatePixmap(dis, rootWin, 256, 256, 24);
     gc := XCreateGC(dis, Result, 0, nil);
+    XSetForeground(dis, gc, $00FF00);
+    XFillRectangle(dis, Result, gc, 0, 0, 256, 256);
     XSetForeground(dis, gc, $FFFF00);
     XFillRectangle(dis, Result, gc, 10, 10, 100, 100);
   end;
@@ -109,14 +112,11 @@ begin
             Image := XGetImage(dis, rootWin, 0, 0, 640, 480, AllPlanes, ZPixmap);
             Draw;
           end;
-          XK_3: begin
+          XK_p: begin
             if Image <> nil then begin
               XDestroyImage(Image);
             end;
-            pix := CreatePixmap8;
-            //            XCopyArea(dis,pix,win,gc,0,0,500,500,10,10);
-            //       XCopyPlane(dis,pix,win,gc,0,0,100,100,10,10,1);
-
+            pix := CreatePixmap;
             Image := XGetImage(dis, pix, 0, 0, 256, 256, AllPlanes, ZPixmap);
             Draw;
             XFreePixmap(dis, pix);
