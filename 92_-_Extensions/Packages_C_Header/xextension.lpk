@@ -50,6 +50,13 @@
         <Filename Value="Xcomposite.pas"/>
         <UnitName Value="Xcomposite"/>
       </Item>
+      <Item>
+        <Filename Value="Xfixes.pas"/>
+      </Item>
+      <Item>
+        <Filename Value="xfixeswire.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

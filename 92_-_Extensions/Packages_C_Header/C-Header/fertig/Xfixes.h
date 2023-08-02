@@ -56,7 +56,7 @@
  * to be manually synchronized
  */
 #define XFIXES_REVISION	1
-#define XFIXES_VERSION	((XFIXES_MAJOR * 10000) + (XFIXES_MINOR * 100) + (XFIXES_REVISION))
+#define XFIXES_VERSION	((6 * 10000) + (0 * 100) + (1))
 
 typedef struct {
     int type;			/* event base */
@@ -112,7 +112,6 @@ typedef struct {
 
 #endif
 
-_XFUNCPROTOBEGIN
 
 Bool XFixesQueryExtension (Display *dpy,
 			    int *event_base_return,
@@ -274,6 +273,5 @@ XFixesGetClientDisconnectMode(Display *dpy);
 
 #endif /* XFIXES_MAJOR >= 6 */
 
-_XFUNCPROTOEND
 
 #endif /* _XFIXES_H_ */

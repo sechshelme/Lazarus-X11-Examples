@@ -9,7 +9,7 @@ interface
 
 uses
   randr, Xrandr, shape, shapeconst, Xrender, render, Xdbe, dbe, composite, 
-  Xcomposite, LazarusPackageIntf;
+  Xcomposite, Xfixes, LazarusPackageIntf;
 
 implementation
 

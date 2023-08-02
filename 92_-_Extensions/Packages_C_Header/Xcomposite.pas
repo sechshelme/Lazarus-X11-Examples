@@ -3,7 +3,7 @@ unit Xcomposite;
 interface
 
 uses
-  ctypes, x, xlib, xutil, composite;
+  x, xlib, Xfixes;
 
   {$LinkLib Xcomposite}
 
@@ -75,7 +75,7 @@ procedure XCompositeRedirectWindow(dpy: PDisplay; window: TWindow; update: longi
 procedure XCompositeRedirectSubwindows(dpy: PDisplay; window: TWindow; update: longint); cdecl; external;
 procedure XCompositeUnredirectWindow(dpy: PDisplay; window: TWindow; update: longint); cdecl; external;
 procedure XCompositeUnredirectSubwindows(dpy: PDisplay; window: TWindow; update: longint); cdecl; external;
-//function XCompositeCreateRegionFromBorderClip(dpy: PDisplay; window: TWindow): TXserverRegion; cdecl; external;
+function XCompositeCreateRegionFromBorderClip(dpy: PDisplay; window: TWindow): TXserverRegion; cdecl; external;
 function XCompositeNameWindowPixmap(dpy: PDisplay; window: TWindow): TPixmap; cdecl; external;
 function XCompositeGetOverlayWindow(dpy: PDisplay; window: TWindow): TWindow; cdecl; external;
 procedure XCompositeReleaseOverlayWindow(dpy: PDisplay; window: TWindow); cdecl; external;

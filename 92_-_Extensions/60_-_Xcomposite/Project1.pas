@@ -17,6 +17,9 @@ uses
   cursorfont,
   Xcomposite,
   composite,
+
+  Xfixes,
+
   x;
 
 type
