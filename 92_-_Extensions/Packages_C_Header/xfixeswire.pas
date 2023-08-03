@@ -52,86 +52,86 @@ interface
   }
 
 const
-  XFIXES_NAME = 'XFIXES';  
-  XFIXES_MAJOR = 6;  
-  XFIXES_MINOR = 0;  
-{************** Version 1 ***************** }
-  X_XFixesQueryVersion = 0;  
-  X_XFixesChangeSaveSet = 1;  
-  X_XFixesSelectSelectionInput = 2;  
-  X_XFixesSelectCursorInput = 3;  
-  X_XFixesGetCursorImage = 4;  
-{************** Version 2 ***************** }
-  X_XFixesCreateRegion = 5;  
-  X_XFixesCreateRegionFromBitmap = 6;  
-  X_XFixesCreateRegionFromWindow = 7;  
-  X_XFixesCreateRegionFromGC = 8;  
-  X_XFixesCreateRegionFromPicture = 9;  
-  X_XFixesDestroyRegion = 10;  
-  X_XFixesSetRegion = 11;  
-  X_XFixesCopyRegion = 12;  
-  X_XFixesUnionRegion = 13;  
-  X_XFixesIntersectRegion = 14;  
-  X_XFixesSubtractRegion = 15;  
-  X_XFixesInvertRegion = 16;  
-  X_XFixesTranslateRegion = 17;  
-  X_XFixesRegionExtents = 18;  
-  X_XFixesFetchRegion = 19;  
-  X_XFixesSetGCClipRegion = 20;  
-  X_XFixesSetWindowShapeRegion = 21;  
-  X_XFixesSetPictureClipRegion = 22;  
-  X_XFixesSetCursorName = 23;  
-  X_XFixesGetCursorName = 24;  
-  X_XFixesGetCursorImageAndName = 25;  
-  X_XFixesChangeCursor = 26;  
-  X_XFixesChangeCursorByName = 27;  
-{************** Version 3 ***************** }
-  X_XFixesExpandRegion = 28;  
-{************** Version 4 ***************** }
-  X_XFixesHideCursor = 29;  
-  X_XFixesShowCursor = 30;  
-{************** Version 5 ***************** }
-  X_XFixesCreatePointerBarrier = 31;  
-  X_XFixesDestroyPointerBarrier = 32;  
-{************** Version 6 ***************** }
-  X_XFixesSetClientDisconnectMode = 33;  
-  X_XFixesGetClientDisconnectMode = 34;  
-  XFixesNumberRequests = X_XFixesGetClientDisconnectMode+1;  
-{ Selection events share one event number  }
-  XFixesSelectionNotify = 0;  
-{ Within the selection, the 'subtype' field distinguishes  }
-  XFixesSetSelectionOwnerNotify = 0;  
-  XFixesSelectionWindowDestroyNotify = 1;  
-  XFixesSelectionClientCloseNotify = 2;  
-  XFixesSetSelectionOwnerNotifyMask = 1 shl 0;  
-  XFixesSelectionWindowDestroyNotifyMask = 1 shl 1;  
-  XFixesSelectionClientCloseNotifyMask = 1 shl 2;  
-{ There's only one cursor event so far  }
-  XFixesCursorNotify = 1;  
-  XFixesDisplayCursorNotify = 0;  
-  XFixesDisplayCursorNotifyMask = 1 shl 0;  
-  XFixesNumberEvents = 2;  
-{ errors  }
-  BadRegion = 0;  
-  BadBarrier = 1;  
-  XFixesNumberErrors = BadBarrier+1;  
-  SaveSetNearest = 0;  
-  SaveSetRoot = 1;  
-  SaveSetMap = 0;  
-  SaveSetUnmap = 1;  
-{************** Version 2 ***************** }
-  WindowRegionBounding = 0;  
-  WindowRegionClip = 1;  
-{************** Version 5 ***************** }
-  BarrierPositiveX = 1 shl 0;  
-  BarrierPositiveY = 1 shl 1;  
-  BarrierNegativeX = 1 shl 2;  
-  BarrierNegativeY = 1 shl 3;  
-{************** Version 6 ***************** }
-{ The default server behaviour  }
-  XFixesClientDisconnectFlagDefault = 0;  
-{ The server may disconnect this client to shut down  }
-  XFixesClientDisconnectFlagTerminate = 1 shl 0;  
+  XFIXES_NAME = 'XFIXES';
+  XFIXES_MAJOR = 6;
+  XFIXES_MINOR = 0;
+  {************** Version 1 ***************** }
+  X_XFixesQueryVersion = 0;
+  X_XFixesChangeSaveSet = 1;
+  X_XFixesSelectSelectionInput = 2;
+  X_XFixesSelectCursorInput = 3;
+  X_XFixesGetCursorImage = 4;
+  {************** Version 2 ***************** }
+  X_XFixesCreateRegion = 5;
+  X_XFixesCreateRegionFromBitmap = 6;
+  X_XFixesCreateRegionFromWindow = 7;
+  X_XFixesCreateRegionFromGC = 8;
+  X_XFixesCreateRegionFromPicture = 9;
+  X_XFixesDestroyRegion = 10;
+  X_XFixesSetRegion = 11;
+  X_XFixesCopyRegion = 12;
+  X_XFixesUnionRegion = 13;
+  X_XFixesIntersectRegion = 14;
+  X_XFixesSubtractRegion = 15;
+  X_XFixesInvertRegion = 16;
+  X_XFixesTranslateRegion = 17;
+  X_XFixesRegionExtents = 18;
+  X_XFixesFetchRegion = 19;
+  X_XFixesSetGCClipRegion = 20;
+  X_XFixesSetWindowShapeRegion = 21;
+  X_XFixesSetPictureClipRegion = 22;
+  X_XFixesSetCursorName = 23;
+  X_XFixesGetCursorName = 24;
+  X_XFixesGetCursorImageAndName = 25;
+  X_XFixesChangeCursor = 26;
+  X_XFixesChangeCursorByName = 27;
+  {************** Version 3 ***************** }
+  X_XFixesExpandRegion = 28;
+  {************** Version 4 ***************** }
+  X_XFixesHideCursor = 29;
+  X_XFixesShowCursor = 30;
+  {************** Version 5 ***************** }
+  X_XFixesCreatePointerBarrier = 31;
+  X_XFixesDestroyPointerBarrier = 32;
+  {************** Version 6 ***************** }
+  X_XFixesSetClientDisconnectMode = 33;
+  X_XFixesGetClientDisconnectMode = 34;
+  XFixesNumberRequests = X_XFixesGetClientDisconnectMode + 1;
+  { Selection events share one event number  }
+  XFixesSelectionNotify = 0;
+  { Within the selection, the 'subtype' field distinguishes  }
+  XFixesSetSelectionOwnerNotify = 0;
+  XFixesSelectionWindowDestroyNotify = 1;
+  XFixesSelectionClientCloseNotify = 2;
+  XFixesSetSelectionOwnerNotifyMask = 1 shl 0;
+  XFixesSelectionWindowDestroyNotifyMask = 1 shl 1;
+  XFixesSelectionClientCloseNotifyMask = 1 shl 2;
+  { There's only one cursor event so far  }
+  XFixesCursorNotify = 1;
+  XFixesDisplayCursorNotify = 0;
+  XFixesDisplayCursorNotifyMask = 1 shl 0;
+  XFixesNumberEvents = 2;
+  { errors  }
+  BadRegion = 0;
+  BadBarrier = 1;
+  XFixesNumberErrors = BadBarrier + 1;
+  SaveSetNearest = 0;
+  SaveSetRoot = 1;
+  SaveSetMap = 0;
+  SaveSetUnmap = 1;
+  {************** Version 2 ***************** }
+  WindowRegionBounding = 0;
+  WindowRegionClip = 1;
+  {************** Version 5 ***************** }
+  BarrierPositiveX = 1 shl 0;
+  BarrierPositiveY = 1 shl 1;
+  BarrierNegativeX = 1 shl 2;
+  BarrierNegativeY = 1 shl 3;
+  {************** Version 6 ***************** }
+  { The default server behaviour  }
+  XFixesClientDisconnectFlagDefault = 0;
+  { The server may disconnect this client to shut down  }
+  XFixesClientDisconnectFlagTerminate = 1 shl 0;
 
 implementation
 

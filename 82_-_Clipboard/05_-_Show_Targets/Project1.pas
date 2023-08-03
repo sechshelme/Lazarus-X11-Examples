@@ -307,6 +307,9 @@ var
     if pos('text/', XGetAtomName(dis, ret_type)) = 1 then begin
       Result := True;
     end;
+    if pos('x-special/', XGetAtomName(dis, ret_type)) = 1 then begin
+      Result := True;
+    end;
   end;
 
   function Read_Property(w: TWindow; targetAtom: TAtom): string;

@@ -59,6 +59,7 @@ uses
 const
   XFIXES_REVISION = 1;
   XFIXES_VERSION = ((XFIXES_MAJOR * 10000) + (XFIXES_MINOR * 100)) + XFIXES_REVISION;
+
 type
   PXFixesSelectionNotifyEvent = ^TXFixesSelectionNotifyEvent;
 

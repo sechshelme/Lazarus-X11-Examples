@@ -54,19 +54,12 @@ uses
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
   }
-  //{$include <X11/extensions/composite.h>}
-  //{$include <X11/extensions/Xfixes.h>}
-  //{$include <X11/Xfuncproto.h>}
-{
- * This revision number also appears in configure.ac, they have
- * to be manually synchronized
-  }
 
 const
   XCOMPOSITE_MAJOR = 0;
   XCOMPOSITE_MINOR = 4;
   XCOMPOSITE_REVISION = 2;
-  XCOMPOSITE_VERSION = ((0 * 10000) + (4 * 100)) + 2;
+  XCOMPOSITE_VERSION = ((XCOMPOSITE_MAJOR * 10000) + (XCOMPOSITE_MINOR * 100)) + XCOMPOSITE_REVISION;
 
 function XCompositeQueryExtension(dpy: PDisplay; event_base_return: Plongint; error_base_return: Plongint): TBool; cdecl; external;
 function XCompositeQueryVersion(dpy: PDisplay; major_version_return: Plongint; minor_version_return: Plongint): TStatus; cdecl; external;

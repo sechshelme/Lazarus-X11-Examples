@@ -32,14 +32,12 @@ type
     scr: cint;
     grabWin, rootWin, win: TWindow;
     gc: TGC;
-    Pitmap: TPixmap;
     function GrabPointer: TWindow;
     procedure Draw;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Run;
-    procedure CrateImage;
   end;
 
   function NewErrorHandle(para1: PDisplay; para2: PXErrorEvent): cint; cdecl;
@@ -87,14 +85,12 @@ type
 
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
     XMapWindow(dis, win);
-    CrateImage;
   end;
 
   destructor TMyWin.Destroy;
   begin
     XDestroyWindow(dis, win);
 
-    XFreePixmap(dis, Pitmap);
     XCloseDisplay(dis);
     inherited Destroy;
   end;
@@ -143,25 +139,6 @@ type
         end;
       end;
     end;
-  end;
-
-  procedure TMyWin.CrateImage;
-  const
-    Width = 128;
-    Height = 128;
-  var
-    i: integer;
-  begin
-    Pitmap := XCreatePixmap(dis, win, Width, Height, DefaultDepth(dis, scr));
-
-    XSetForeground(dis, gc, $88FFFF);
-    XFillRectangle(dis, Pitmap, gc, 0, 0, Width, Height);
-    for i := 0 to 16 do begin
-      XSetLineAttributes(dis, gc, i, LineSolid, CapButt, JoinBevel);
-      XSetForeground(dis, gc, random($FFFFFF));
-      XDrawRectangle(dis, Pitmap, gc, i * 10, i * 10, 100, 100);
-    end;
-
   end;
 
 var
