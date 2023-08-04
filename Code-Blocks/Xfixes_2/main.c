@@ -1,5 +1,3 @@
-/* for corrent exit on termination */
-#include <signal.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -39,14 +37,10 @@ void XInit()
     attr.border_pixel = 0;
     attr.background_pixel = 0;
 
-    w = XCreateWindow(dpy, DefaultRootWindow(dpy), 0, 0,  winWidth, winHeight, 10, vinfo.depth, NoEventMask, vinfo.visual, CWColormap | CWBorderPixel | CWBackPixel, &attr);
-
-//  Window win = XCreateSimpleWindow ( dpy, w, 100, 10, 100, 100, 5, 0x88000000, 0x88FF00FF);
-  Window win = XCreateSimpleWindow ( dpy, w, 100, 10, 100, 100, 5, 0xFF000000, 0xFFFF00FF);
-    XMapWindow(dpy, win);
+    w = XCreateWindow(dpy, DefaultRootWindow(dpy), 0, 0,  winWidth, winHeight, 10, vinfo.depth, CopyFromParent, vinfo.visual, CWColormap | CWBorderPixel | CWBackPixel, &attr);
 
 
-    // Ignore any input for passing events to other windows >>>>>
+      // Ignore any input for passing events to other windows >>>>>
     region = XFixesCreateRegion (dpy, NULL, 0);
     XFixesSetWindowShapeRegion (dpy, w, ShapeBounding, 0, 0, 0);
     XFixesSetWindowShapeRegion (dpy, w, ShapeInput, 0, 0, region);
