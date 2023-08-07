@@ -32,7 +32,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Run;
-    procedure CrateImage;
+    procedure CreateImage;
   end;
 
 
@@ -52,7 +52,7 @@ type
 
     XSelectInput(dis, win, KeyPressMask or ExposureMask);
     XMapWindow(dis, win);
-    CrateImage;
+    CreateImage;
   end;
 
   destructor TMyWin.Destroy;
@@ -106,7 +106,7 @@ type
     end;
   end;
 
-  procedure TMyWin.CrateImage;
+  procedure TMyWin.CreateImage;
   const
     Width = 128;
     Height = 128;

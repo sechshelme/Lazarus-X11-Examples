@@ -52,6 +52,7 @@ type
   TSprites = array of TSprite;
 var
   Sprite: TSprites = nil;
+  ColorPixmap: TPixmap;
 
 const
   EventMask = KeyPressMask or ExposureMask or PointerMotionMask or ButtonPressMask;
@@ -60,7 +61,7 @@ const
   var
     rem, Req: timespec;
   begin
-    Req.tv_nsec := 3000000;
+    Req.tv_nsec := 30000000;
     Req.tv_sec := 0;
     fpNanoSleep(@Req, @rem);
   end;
@@ -85,6 +86,24 @@ const
     Result := XCreateBitmapFromData(dis, win, PChar(xmb.bits), xmb.Width, xmb.Height);
   end;
 
+  function CreateImage: TPixmap;
+  const
+    Width = 128;
+    Height = 128;
+  var
+    i: integer;
+  begin
+    Result := XCreatePixmap(dis, win, Width, Height, 32);
+
+    XSetForeground(dis, gc, 0);
+    XFillRectangle(dis, Result, gc, 0, 0, Width, Height);
+    for i := 0 to 6 do begin
+      XSetLineAttributes(dis, gc, i * 2, LineSolid, CapButt, JoinBevel);
+      XSetForeground(dis, gc, random($FFFFFF) or $FF000000);
+      XDrawRectangle(dis, Result, gc, i * 10, i * 10, Width - i * 20 - 1, Height - i * 20 - 1);
+    end;
+  end;
+
   procedure DrawBitmap(x, y: integer; bit: TPixmap);
   var
     root: TWindow;
@@ -94,7 +113,17 @@ const
     XSetForeground(dis, gc, $FF0000FF);
     XGetGeometry(dis, bit, @root, @x1, @y1, @Width, @Height, @border_width, @depth);
     XCopyPlane(dis, bit, win, gc, 0, 0, Width, Height, x, y, 1);
+  end;
 
+  procedure DrawColorBitmap(x, y: integer; bit: TPixmap);
+  var
+    root: TWindow;
+    x1, y1: cint;
+    Width, Height, border_width, depth: cuint;
+  begin
+    XSetForeground(dis, gc, $FF0000FF);
+    XGetGeometry(dis, bit, @root, @x1, @y1, @Width, @Height, @border_width, @depth);
+    XCopyArea(dis, bit, win, gc, 0, 0, Width, Height, x, y);
   end;
 
   procedure drawSprites;
@@ -112,24 +141,24 @@ const
         if stepx > 0 then begin
           Inc(x);
           if x > Width - cup.Width then begin
-            stepx:=-1;
+            stepx := -1;
           end;
         end else begin
           Dec(x);
           if x < 0 then begin
-            stepx:=1;
+            stepx := 1;
           end;
         end;
 
         if stepy > 0 then begin
           Inc(y);
           if y > Height - cup.Height then begin
-            stepy:=-1;
+            stepy := -1;
           end;
         end else begin
           Dec(y);
           if y < 0 then begin
-            stepy:=1;
+            stepy := 1;
           end;
         end;
       end;
@@ -146,14 +175,23 @@ begin
   rootWin := RootWindow(dis, scr);
 
   Create_MainWin;
-  bit_cub := CreatePixmap(cup);
-
   gc := XCreateGC(dis, win, 0, nil);
+
+  bit_cub := CreatePixmap(cup);
+  ColorPixmap := CreateImage;
 
   SetLength(Sprite, 50);
   for i := 0 to Length(Sprite) - 1 do begin
-      if Random(1)= 1 then  Sprite[i].stepx := 1 else   Sprite[i].stepx := -1;
-      if Random(1)= 1 then  Sprite[i].stepy := 1 else   Sprite[i].stepy := -1;
+    if Random(1) = 1 then  begin
+      Sprite[i].stepx := 1;
+    end else begin
+      Sprite[i].stepx := -1;
+    end;
+    if Random(1) = 1 then  begin
+      Sprite[i].stepy := 1;
+    end else begin
+      Sprite[i].stepy := -1;
+    end;
     Sprite[i].x := Random(640);
     Sprite[i].y := Random(480);
   end;
@@ -182,6 +220,8 @@ begin
     end else begin
       wait;
       drawSprites;
+      DrawColorBitmap(100, 100, ColorPixmap);
+      XCopyArea(dis, ColorPixmap, win, gc, 0, 0, 128, 128, 100, 100);
       XFlush(dis);
     end;
 
