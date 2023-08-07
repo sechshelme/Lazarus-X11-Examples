@@ -42,7 +42,7 @@ type
     dblBuf: array of integer = (GLX_RGBA, GLX_DEPTH_SIZE, 16, GLX_DOUBLEBUFFER, None);
     vi: PXVisualInfo;
     cx: GLXContext;
-    OpenGLRootWin: TWindow;
+    rootWin: TWindow;
   begin
     inherited Create;
 
@@ -73,8 +73,8 @@ type
     end;
 
     // Erstellt das Fenster
-    OpenGLRootWin := RootWindow(dis, vi^.screen);
-    win := XCreateSimpleWindow(dis, OpenGLRootWin, 0, 0, 300, 300, 0, $FFFFFF, $000000);
+    rootWin := RootWindow(dis, vi^.screen);
+    win := XCreateSimpleWindow(dis, rootWin, 0, 0, 300, 300, 0, $FFFFFF, $000000);
     XSelectInput(dis, win, KeyPressMask or ExposureMask or ButtonPressMask or StructureNotifyMask);
     XStoreName(dis, win, 'GLX-Demo');
     XMapWindow(dis, win);

@@ -19,7 +19,7 @@ uses
   keysym,
   x,
   pango,
-  pangocairo,
+//  pangocairo,
   CairoXlib,
   Cairo;
 
