@@ -71,7 +71,7 @@ type
         Halt(1);
       end;
 
-      SetLength(Data, Height * Height);
+      SetLength(Data, Width * Height);
       for y := 0 to Height - 1 do begin
         for x := 0 to Width - 1 do begin
           Data[y * Width + x].b := x * y;
@@ -93,7 +93,7 @@ type
     XDestroyWindow(dis, win);
 
     // Schliesst Verbindung zum Server
-//    XDestroyImage(image);
+   XDestroyImage(image);
     XCloseDisplay(dis);
     inherited Destroy;
   end;

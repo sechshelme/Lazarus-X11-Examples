@@ -21,6 +21,9 @@ function fprintf(stream:cFILE; str:PChar):cint;varargs cdecl;external lib_stdio;
 function fflush(stream:cFILE):cint; cdecl;external lib_stdio;
 function sprintf(desr,src:PChar):cint;varargs cdecl;external lib_stdio;
 
+procedure memcpy(dest, src: Pointer; size: SizeInt); cdecl; external lib_stdio;
+
+
 implementation
 
 end.
