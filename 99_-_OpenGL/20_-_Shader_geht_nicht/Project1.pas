@@ -64,6 +64,8 @@ type
     Halt;
   end;
 
+  // https://github.com/datenwolf/codesamples/blob/master/samples/OpenGL/x11argb_opengl_glsl/x11argb_opengl_glsl.c
+
   constructor TMyWin.Create;
   var
     dummy: integer;
@@ -72,6 +74,16 @@ type
     vi: PXVisualInfo;
     cx: GLXContext;
     OpenGLRootWin: TWindow;
+    fpconfig: TGLXFBConfig = nil;
+    fpconfigs: PGLXFBConfig = nil;
+    scr: cint;
+    nitems:cint;
+  const
+    context_attribs: array of cint = (
+      GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+      GLX_CONTEXT_MINOR_VERSION_ARB, 3,
+      GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB, 0);
+
   begin
     inherited Create;
 
@@ -109,6 +121,12 @@ type
     XMapWindow(dis, win);
 
     // Context erzeugen
+    scr:=DefaultScreen(dis);
+fpconfigs:=    glXChooseFBConfig(dis,scr,nil,nitems);
+
+    glXCreateContextAttribsARB(dis, fpconfig, nil, True, pcint(context_attribs));
+
+
     cx := glXCreateContext(dis, vi, nil, True);
     if cx = nil then begin
       fatalError('could not create rendering context');
@@ -116,9 +134,10 @@ type
     glXMakeCurrent(dis, win, cx);
     glClearColor(0.5, 0.1, 0.1, 0.0);
 
+
     // Vertex laden
-//    ProgramID := InitShader(VertexShader, FragmetShader);
-//    glUseProgram(programID);
+    ProgramID := InitShader(VertexShader, FragmetShader);
+    glUseProgram(programID);
     //code-
     glGenVertexArrays(1, @VBQuad.VAO);
     glGenBuffers(1, @VBQuad.VBO);
@@ -144,8 +163,8 @@ type
     ProgramObject: GLuint;
 
   begin
-    ProgramObject := glCreateProgram();
     halt;
+    ProgramObject := glCreateProgram();
 
     // Vertex - Shader
 

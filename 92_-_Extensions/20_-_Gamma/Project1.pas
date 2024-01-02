@@ -55,8 +55,9 @@ var
         crtc_gamma^.blue[i] := g div size * i;
       end;
       XRRSetCrtcGamma(dis, crtcxid, crtc_gamma);
+      XRRFreeGamma(crtc_gamma);
     end;
-    XRRFreeGamma(crtc_gamma);
+    XRRFreeScreenResources(res);
   end;
 
   procedure PrintGamma;
@@ -79,8 +80,9 @@ var
       for i := 0 to size - 1 do begin
         WriteLn(i: 5, '  red: ', crtc_gamma^.red[i], '  green: ', crtc_gamma^.green[i], '  blue: ', crtc_gamma^.blue[i]);
       end;
+      XRRFreeGamma(crtc_gamma);
     end;
-    XRRFreeGamma(crtc_gamma);
+    XRRFreeScreenResources(res);
   end;
 
 begin

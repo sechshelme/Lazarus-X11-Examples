@@ -24,6 +24,12 @@ var
   Resolution: TStringArray = nil;
   gc: TGC;
 
+  mat: TXTransform;
+
+const
+  IndentyMatrix: TXTransform = (matrix: ((1, 0, 0), (0, 1, 0), (0, 0, 1)));
+
+
   procedure Paint;
   var
     i: integer;
@@ -68,8 +74,8 @@ var
     end;
     Insert([''], Resolution, Length(Resolution));
 
-//    xrrs := XRRSizes(dis, 0, @num_sizes);
-    xrrs := XRRSizes(dis, XRRRootToScreen(dis,root_win), @num_sizes);
+    //    xrrs := XRRSizes(dis, 0, @num_sizes);
+    xrrs := XRRSizes(dis, XRRRootToScreen(dis, root_win), @num_sizes);
     WriteStr(s, 'Modus Count: ', num_sizes);
     Insert([s], Resolution, Length(Resolution));
 
@@ -90,6 +96,40 @@ var
     XRRFreeScreenConfigInfo(si);
 
     Paint;
+  end;
+
+  procedure Transform(mat: TXTransform);
+  // https://sprocketfox.io/xssfox/2021/12/02/xrandr/
+  var
+    crtcxid: TRRCrtc;
+    res: PXRRScreenResources;
+    c: integer;
+    ci: PXRRCrtcInfo;
+  begin
+    res := XRRGetScreenResourcesCurrent(dis, root_win);
+    WriteLn('ncrtc: ',  res^.ncrtc);
+    for c := 0 to res^.ncrtc - 1 do begin
+      crtcxid := res^.crtcs[0];
+      WriteLn(crtcxid);
+
+      ci := XRRGetCrtcInfo(dis, res, crtcxid);
+      WriteLn('crtcxid:  ', crtcxid);
+      WriteLn('timestap: ', ci^.timestamp);
+      WriteLn('x:        ', ci^.x);
+      WriteLn('y:        ', ci^.y);
+      WriteLn('mode:     ', ci^.mode);
+      WriteLn('rotation: ', ci^.rotation);
+      WriteLn('outputs:  ', PtrUInt(ci^.outputs));
+      WriteLn('noutput:  ', ci^.noutput);
+      WriteLn();
+
+//      XRRSetCrtcTransform(dis, crtcxid, @mat, 'nearest', nil, 0);
+      XRRSetCrtcTransform(dis, crtcxid, @mat, 'bilinear', nil, 0);
+      XRRSetCrtcConfig(dis, res, crtcxid, ci^.timestamp, ci^.x, ci^.y, ci^.mode, ci^.rotation, ci^.outputs, ci^.noutput);
+
+      XRRFreeCrtcInfo(ci);
+    end;
+    XRRFreeScreenResources(res);
   end;
 
 begin
@@ -124,14 +164,27 @@ begin
       KeyPress: begin
         // Beendet das Programm bei [ESC]
         case XLookupKeysym(@Event.xkey, 0) of
-          XK_Escape: begin
-            Break;
-          end;
           xk_s: begin
             XRRSetScreenConfigAndRate(dis, conf, root_win, 1, RR_Rotate_0, 60, CurrentTime);
           end;
-          XK_space: begin
+          xk_t: begin
+            mat.matrix[0, 0] := 2;
+            mat.matrix[0, 1] := 0;
+            mat.matrix[0, 2] := 0;
+
+            mat.matrix[1, 0] := 0;
+            mat.matrix[1, 1] := 1;
+            mat.matrix[1, 2] := 0;
+
+            mat.matrix[2, 0] := 0;
+            mat.matrix[2, 1] := 0;
+            mat.matrix[2, 2] := 1;
+
+            Transform(mat);
+          end;
+          XK_Escape, XK_space: begin
             XRRSetScreenConfigAndRate(dis, conf, root_win, original_size_id, original_rotation, original_rate, CurrentTime);
+            Transform(IndentyMatrix);
           end;
         end;
       end;
