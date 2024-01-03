@@ -1,5 +1,7 @@
 program Project1;
 
+{$modeswitch typehelpers}
+
 uses
   SysUtils,
   unixtype,
@@ -11,7 +13,24 @@ uses
   randr,
   Xrandr;
 
-  // https://gitlab.freedesktop.org/xorg/lib/libxrandr/-/blob/master/src/XrrCrtc.c
+type
+
+  Tmat3x3 = array[0..2, 0..2] of single;
+
+
+  { Tmat3x3Helper }
+
+  Tmat3x3Helper = type Helper for Tmat3x3
+  private
+    procedure WriteMatrix;
+  public
+    procedure Identity;
+    procedure Scale(x, y: single);
+    procedure TranslateLocalspace(x, y: single);
+    procedure Rotate(w: single);
+    function ToTXTransform: TXTransform;
+  end;
+
 
 var
   dis: PDisplay;
@@ -24,10 +43,76 @@ var
   Resolution: TStringArray = nil;
   gc: TGC;
 
-  mat: TXTransform;
+  mat: Tmat3x3;
 
-const
-  IndentyMatrix: TXTransform = (matrix: ((1, 0, 0), (0, 1, 0), (0, 0, 1)));
+
+  { Tmat3x3Helper }
+
+  procedure Tmat3x3Helper.Identity;
+  const
+    IndentyMatrix: Tmat3x3 = ((1, 0, 0), (0, 1, 0), (0, 0, 1));
+  begin
+    Self := IndentyMatrix;
+  end;
+
+  procedure Tmat3x3Helper.Scale(x, y: single);
+  var
+    i: integer;
+  begin
+    for i := 0 to 1 do begin
+      Self[i, 0] *= x;
+      Self[i, 1] *= y;
+    end;
+  end;
+
+  procedure Tmat3x3Helper.TranslateLocalspace(x, y: single);
+  var
+    i: integer;
+  begin
+    for i := 0 to 2 do begin
+      Self[2, i] += Self[0, i] * x + Self[1, i] * y;
+    end;
+
+    //Self[2, 0] += x;
+    //Self[2, 1] += y;
+
+  end;
+
+  procedure Tmat3x3Helper.Rotate(w: single);
+  var
+    i: integer;
+    x, y: single;
+  begin
+    for i := 0 to 1 do begin
+      x := Self[i, 0];
+      y := Self[i, 1];
+      Self[i, 0] := x * cos(w) - y * sin(w);
+      Self[i, 1] := x * sin(w) + y * cos(w);
+    end;
+  end;
+
+  function Tmat3x3Helper.ToTXTransform: TXTransform;
+  var
+    i, j: integer;
+  begin
+    for i := 0 to 2 do begin
+      for j := 0 to 2 do begin
+        Result.matrix[j, i] := Round(Self[i, j]);
+      end;
+    end;
+  end;
+
+  procedure Tmat3x3Helper.WriteMatrix;
+  var
+    x, y: integer;
+  begin
+    for y := 0 to 2 do begin
+      for x := 0 to 2 do begin
+        Write(Self[x, y]: 8: 4, ' ');
+      end;
+      Writeln;
+    end;
+  end;
 
 
   procedure Paint;
@@ -99,6 +184,7 @@ const
   end;
 
   procedure Transform(mat: TXTransform);
+  // https://gitlab.freedesktop.org/xorg/lib/libxrandr/-/blob/master/src/XrrCrtc.c
   // https://sprocketfox.io/xssfox/2021/12/02/xrandr/
   var
     crtcxid: TRRCrtc;
@@ -107,7 +193,7 @@ const
     ci: PXRRCrtcInfo;
   begin
     res := XRRGetScreenResourcesCurrent(dis, root_win);
-    WriteLn('ncrtc: ',  res^.ncrtc);
+    WriteLn('ncrtc: ', res^.ncrtc);
     for c := 0 to res^.ncrtc - 1 do begin
       crtcxid := res^.crtcs[0];
       WriteLn(crtcxid);
@@ -123,7 +209,7 @@ const
       WriteLn('noutput:  ', ci^.noutput);
       WriteLn();
 
-//      XRRSetCrtcTransform(dis, crtcxid, @mat, 'nearest', nil, 0);
+      //      XRRSetCrtcTransform(dis, crtcxid, @mat, 'nearest', nil, 0);
       XRRSetCrtcTransform(dis, crtcxid, @mat, 'bilinear', nil, 0);
       XRRSetCrtcConfig(dis, res, crtcxid, ci^.timestamp, ci^.x, ci^.y, ci^.mode, ci^.rotation, ci^.outputs, ci^.noutput);
 
@@ -154,7 +240,6 @@ begin
   original_rate := XRRConfigCurrentRate(conf);
   original_size_id := XRRConfigCurrentConfiguration(conf, @original_rotation);
 
-  // Ereignisschleife
   while (True) do begin
     XNextEvent(dis, @Event);
     case Event._type of
@@ -168,23 +253,18 @@ begin
             XRRSetScreenConfigAndRate(dis, conf, root_win, 1, RR_Rotate_0, 60, CurrentTime);
           end;
           xk_t: begin
-            mat.matrix[0, 0] := 2;
-            mat.matrix[0, 1] := 0;
-            mat.matrix[0, 2] := 0;
+            mat.Identity;
+            mat.Rotate(pi / 4);
+            mat.TranslateLocalspace(-3000, -2000);
+            mat.Scale(3, 3);
+            mat.WriteMatrix;
 
-            mat.matrix[1, 0] := 0;
-            mat.matrix[1, 1] := 1;
-            mat.matrix[1, 2] := 0;
-
-            mat.matrix[2, 0] := 0;
-            mat.matrix[2, 1] := 0;
-            mat.matrix[2, 2] := 1;
-
-            Transform(mat);
+            Transform(mat.ToTXTransform);
           end;
           XK_Escape, XK_space: begin
             XRRSetScreenConfigAndRate(dis, conf, root_win, original_size_id, original_rotation, original_rate, CurrentTime);
-            Transform(IndentyMatrix);
+            mat.Identity;
+            Transform(mat.ToTXTransform);
           end;
         end;
       end;
