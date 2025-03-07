@@ -34,6 +34,7 @@ var
       end;
     end;
     WriteLn();
+    XFree(pf);
   end;
 
   procedure PrintDepths;
@@ -48,6 +49,7 @@ var
       WriteLn(i: 3, ' | ', depths[i]: 4);
     end;
     WriteLn();
+    XFree(depths);
   end;
 
   procedure PrintExtensions;
@@ -65,6 +67,7 @@ var
     end;
     WriteLn();
     WriteLn();
+    XFree(ext);
   end;
 
   procedure PrintFonts;
@@ -78,6 +81,7 @@ var
       WriteLn(i: 5, ' | ', fnt[i]);
     end;
     WriteLn();
+    XFree(fnt);
   end;
 
   procedure PrintFontWithInfo;
@@ -94,6 +98,7 @@ var
       end;
     end;
     WriteLn();
+    XFree(fnt);
   end;
 
   procedure PrintHosts;
@@ -107,6 +112,7 @@ var
     for i := 0 to cnt - 1 do begin
       WriteLn(hosts[i].address);
     end;
+    XFree(hosts);
   end;
 
   procedure PrintColorMaps;
@@ -120,6 +126,7 @@ var
       WriteLn('ID: ', colmaps[i]);
     end;
     WriteLn();
+    XFree(colmaps);
   end;
 
   procedure PrintPropertys(w:TWindow);
@@ -133,6 +140,7 @@ var
       WriteLn('ID: ', atoms[i], '   ', XGetAtomName(dis, atoms[i]));
     end;
     WriteLn();
+    XFree(atoms);
   end;
 
   procedure PrintIcon;
@@ -150,6 +158,7 @@ var
           WriteLn(i: 4, ' |', min_width: 6, ' |', min_height: 6, ' |', max_width: 6, ' |', max_height: 6, ' |', width_inc: 6, ' |', height_inc: 6);
         end;
       end;
+      XFree(size_list);
     end;
   end;
 

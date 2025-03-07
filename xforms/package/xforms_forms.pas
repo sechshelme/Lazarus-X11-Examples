@@ -4913,7 +4913,7 @@ end;
 { return type might be wrong }
 function fl_get_dpi: cdouble;
 begin
-  fl_get_dpi := fl_dpi;
+//  fl_get_dpi := fl_dpi;
 end;
 
 { was #define dname(params) para_def_expr }

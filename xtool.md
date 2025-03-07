@@ -62,10 +62,15 @@ editres
 ```
 xlsatoms
 ```
-
-## Auflösungen listen:
+## Monitor Tool (xrandr)
+### Auflösungen listen:
 ```
 xrandr
+```
+### Bild drehen:
+ - [Ideal monitor rotation for programmers](https://sprocketfox.io/xssfox/2021/12/02/xrandr/)
+```
+xrandr --output HDMI-1 --transform 0.98481,-0.17365,0,0.17365,0.98481,0,0,0,1
 ```
 
 

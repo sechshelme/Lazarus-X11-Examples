@@ -73,8 +73,8 @@ type
       flags := PAllHints ;
       Width := FWidth;
       Height := FHeight;
-//      x := 300;
-  //    y := 200;
+  //    x := 300;
+//      y := 200;
       min_width := 100;
       min_height := 100;
       max_width := 640;

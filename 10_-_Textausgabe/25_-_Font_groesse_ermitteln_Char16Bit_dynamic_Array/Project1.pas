@@ -86,7 +86,7 @@ const
   procedure TMyWin.Paint;
   const
 //    Hello = 'Hello World !, ich habe "äüö ÄÜÖ ÿŸäüö   ggg" !äöü';
-    Hello = 'ŸŸŸ';
+    Hello = 'ŸŸŸÄÖÜ';
   var
     fontStructure: PXFontStruct;
     direction, ascent, descent: cint;

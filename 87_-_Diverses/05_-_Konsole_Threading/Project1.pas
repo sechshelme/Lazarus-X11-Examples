@@ -1,10 +1,3 @@
-//image image.png
-(*
-Besser man macht es objektorientiert mit Klassen.
-Dies macht es übersichtlicher und ausbaufähiger.
-*)
-//lineal
-//code+
 program Project1;
 
 uses
@@ -12,14 +5,17 @@ uses
   pthreads;
 
 type
-  PThread = ^TThread;
-
   TThread = record
     Thread: pthread_t;
     index: integer;
   end;
+  PThread = ^TThread;
+
+const
+  count=100000;
+
 var
-  Thread: array[0..1000000] of TThread;
+  Thread: array[0..count-1] of TThread;
   mutex: pthread_mutex_t;
   Ende: boolean = False;
   i: integer;
@@ -41,9 +37,9 @@ var
     repeat
       pthread_mutex_lock(@mutex);
       Write(Thread.index, ' ');
-//            wait;
+      //            wait;
       pthread_mutex_unlock(@mutex);
-  //        wait;
+      //          wait;
     until Ende;
     Result := nil;
   end;

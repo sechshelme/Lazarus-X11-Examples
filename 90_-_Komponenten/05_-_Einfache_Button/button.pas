@@ -92,7 +92,6 @@ begin
     Color := $BBBBBB;
     ColRightBottom := $EEEEEE;
     ColLeftTop := $333333;
-    IsButtonDown := True;
   end else begin
     Color := $BBBBBB;
     ColRightBottom := $333333;

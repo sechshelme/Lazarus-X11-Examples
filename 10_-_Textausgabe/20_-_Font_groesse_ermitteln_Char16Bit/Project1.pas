@@ -4,6 +4,7 @@ Schriftgrösse ermitteln, ZB. um den Text zu zentrieren.
 *)
 //lineal
 //code+
+
 program Project1;
 
 uses
@@ -17,9 +18,6 @@ uses
   x;
 
 type
-
-  { TMyWin }
-
   TMyWin = class(TObject)
   private
     dis: PDisplay;
@@ -31,6 +29,8 @@ type
     procedure Paint;
     function utf8toXChar2b_old(output: PXChar2b; const input: string): integer;
     function utf8toXChar2b(output: PXChar2b; const s: string): uIntPtr;
+
+
   public
     constructor Create;
     destructor Destroy; override;
