@@ -45,13 +45,15 @@ var
   var
     i: integer;
     sa: TStringArray = nil;
+    s: String;
   const
     Titel = 'Pfade:';
   begin
     XClearWindow(dis, win);
     XDrawString(dis, win, gc, 10, 16, Titel, Length(Titel));
 
-    sa := TextList.Split(#10);
+    s:=StringReplace(TextList, #13, '',[rfReplaceAll]);
+    sa := s.Split([#10, #13]);
 
     for i := 0 to Length(sa) - 1 do begin
       XDrawString(dis, win, gc, 10, i * 16 + 16 + 20, PChar(sa[i]), Length(sa[i]));
@@ -78,7 +80,8 @@ begin
   XdndFinished := XInternAtom(dis, 'XdndFinished', False);
   XdndSelection := XInternAtom(dis, 'XdndSelection', False); // Auswahl für Drag-and-Drop
   XdndActionCopy := XInternAtom(dis, 'XdndActionCopy', False);
-  text_uri_list := XInternAtom(dis, 'text/uri-list', False);
+//  text_uri_list := XInternAtom(dis, 'text/uri-list', False);
+  text_uri_list := XInternAtom(dis, 'TEXT', False);
 
   // Fenster als XDND-fähig markieren
   version := 5;
