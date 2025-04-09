@@ -29,34 +29,62 @@ var
   win: TWindow;
   gc: TGC;
   Event, notify_event, reply: TXEvent;
-  scr, actualFormat, status: cint;
+  scr, actualFormat, status, actual_format: cint;
   XdndAware, XdndEnter, XdndPosition, XdndDrop, XdndFinished,
   XdndSelection, text_uri_list, selection_target, actualType,
-  XdndActionCopy: TAtom;
+  XdndActionCopy, XdndTypeList, actual_type: TAtom;
   version: uint64;
   source_window: TWindow;
-  selection_notify_received: integer;
-  nitems, bytesAfter: culong;
+  selection_notify_received, i: integer;
+  nitems, bytesAfter, bytes_after: culong;
   Data: Pcuchar;
 
+  TargetList: TStringArray = nil;
   TextList: string = '';
+  targets: PAtom;
 
-  procedure Ausgabe;
+
+  procedure Ausgabe(const TargetList: TStringArray; const StringData: string);
   var
     i: integer;
     sa: TStringArray = nil;
-    s: String;
+    s: string;
+    attr: TXWindowAttributes;
+    w, h: cint;
+    fontbold: PXFontStruct;
+    bold_gc: TGC;
   const
-    Titel = 'Pfade:';
+    TitleData = 'String Data:';
+    TitleTargets = 'Targets:';
+    left = 260;
   begin
     XClearWindow(dis, win);
-    XDrawString(dis, win, gc, 10, 16, Titel, Length(Titel));
+    XGetWindowAttributes(dis, win, @attr);
+    w := attr.Width;
+    h := attr.Height;
 
-    s:=StringReplace(TextList, #13, '',[rfReplaceAll]);
+    // Titel
+    bold_gc := XCreateGC(dis, win, 0, nil);
+    fontbold := XLoadQueryFont(dis, '-*-helvetica-bold-r-normal--14-*-*-*-*-*-iso8859-1');
+    if fontbold <> nil then  begin
+      XSetFont(dis, bold_gc, fontbold^.fid);
+    end;
+
+    XDrawString(dis, win, bold_gc, 10, 16, TitleTargets, Length(TitleTargets));
+    XDrawString(dis, win, bold_gc, left, 16, TitleData, Length(TitleData));
+    XDrawLine(dis, win, gc, 0, 20, w, 20);
+    XDrawLine(dis, win, gc, left - 4, 0, left - 4, h);
+    XFreeGC(dis, bold_gc);
+
+    // Daten
+    for i := 0 to Length(TargetList) - 1 do begin
+      XDrawString(dis, win, gc, 10, i * 16 + 16 + 20, PChar(TargetList[i]), Length(TargetList[i]));
+    end;
+
+    s := StringReplace(StringData, #13, '', [rfReplaceAll]);
     sa := s.Split([#10, #13]);
-
     for i := 0 to Length(sa) - 1 do begin
-      XDrawString(dis, win, gc, 10, i * 16 + 16 + 20, PChar(sa[i]), Length(sa[i]));
+      XDrawString(dis, win, gc, left, i * 16 + 16 + 20, PChar(sa[i]), Length(sa[i]));
     end;
   end;
 
@@ -78,9 +106,11 @@ begin
   XdndPosition := XInternAtom(dis, 'XdndPosition', False);
   XdndDrop := XInternAtom(dis, 'XdndDrop', False);
   XdndFinished := XInternAtom(dis, 'XdndFinished', False);
-  XdndSelection := XInternAtom(dis, 'XdndSelection', False); // Auswahl für Drag-and-Drop
+  XdndSelection := XInternAtom(dis, 'XdndSelection', False);
   XdndActionCopy := XInternAtom(dis, 'XdndActionCopy', False);
-//  text_uri_list := XInternAtom(dis, 'text/uri-list', False);
+  XdndTypeList := XInternAtom(dis, 'XdndTypeList', False);
+
+  //  text_uri_list := XInternAtom(dis, 'text/uri-list', False);
   text_uri_list := XInternAtom(dis, 'TEXT', False);
 
   // Fenster als XDND-fähig markieren
@@ -105,7 +135,7 @@ begin
         end;
       end;
       Expose: begin
-        Ausgabe;
+        Ausgabe(TargetList, TextList);
       end;
       ClientMessage: begin
         WriteLn('ClientMessage');
@@ -133,10 +163,24 @@ begin
 
           // Datenanforderung stellen
           source_window := event.xclient.Data.l[0]; // Quellfenster
-          selection_target := text_uri_list;
+
+          // Target Liste auswerten
+          XGetWindowProperty(dis, source_window, XdndTypeList, 0, LONG_MAX, False,
+            XA_ATOM, @actual_type, @actual_format, @nitems, @bytes_after, @Data);
+
+          if Data <> nil then begin
+            targets := PAtom(Data);
+            //              printf("Unterstützte Formate:\n");
+            SetLength(TargetList, nitems);
+            for  i := 0 to nitems - 1 do begin
+              TargetList[i] := PChar(XGetAtomName(dis, targets[i]));
+            end;
+            XFree(Data);
+          end;
 
           // Auswahl anfordern
           WriteLn('Datenanforderung an Quellfenster...');
+          selection_target := text_uri_list;
           XConvertSelection(dis, XdndSelection, selection_target, selection_target, win, CurrentTime);
 
           // Warten auf SelectionNotify-Ereignis
@@ -167,7 +211,7 @@ begin
               end;
             end;
           end;
-          Ausgabe;
+          Ausgabe(TargetList, TextList);
 
           // Rückmeldung an das Quellfenster senden
           WriteLn('Rückmeldung an Quellfenster senden...');
@@ -188,6 +232,7 @@ begin
     end;
   end;
 
+  XFreeGC(dis, gc);
   XDestroyWindow(dis, win);
   XCloseDisplay(dis);
 end.
