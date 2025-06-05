@@ -100,6 +100,8 @@ xdotool
 ## Diverses
 xinput
 
+## Pixelformat abfragen
+xdpyinfo
 
 
 Mehr: (https://www.oreilly.com/library/view/x-window-system/9780937175149/Chapter07.html)

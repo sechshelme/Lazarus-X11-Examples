@@ -220,9 +220,9 @@ begin
           reply.xclient.display := dis;
           reply.xclient.window := source_window;
           reply.xclient.format := 32;
-          reply.xclient.Data.l[0] := win; // Ziel-Fenster
-          reply.xclient.Data.l[1] := 1;  // Erfolg melden
-          reply.xclient.Data.l[2] := XdndActionCopy;  // Erfolg melden
+          reply.xclient.Data.l[0] := win;             // Ziel-Fenster
+          reply.xclient.Data.l[1] := 1;               // Erfolg melden
+        //  reply.xclient.Data.l[2] := XdndActionCopy;  // Erfolg melden
 
           XSendEvent(dis, source_window, False, NoEventMask, @reply);
         end else begin
