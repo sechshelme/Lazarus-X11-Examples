@@ -1,14 +1,3 @@
-//image image.png
-(*
-Erstes Fenster mit <b>X11</b> wird erstellt.
-Es wird nur ein einziges Eregniss gebraucht.
-Ein Tastatur-Event, welches <b>[ESC]</b> abfängt und das Programm beendet.
-
-
-https://literateprograms.org/hello_world__c__cairo_.html
-*)
-//lineal
-//code+
 program Project1;
 
 uses
@@ -18,8 +7,6 @@ uses
   xutil,
   keysym,
   x,
-  pango,
-//  pangocairo,
   CairoXlib,
   Cairo;
 

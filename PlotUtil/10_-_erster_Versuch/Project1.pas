@@ -1,14 +1,7 @@
-//image image.png
-(*
-Besser man macht es objektorientiert mit Klassen.
-Dies macht es übersichtlicher und ausbaufähiger.
-*)
-//lineal
-//code+
+program Project1;
 
 // https://ftp.gnu.org/old-gnu/Manuals/plotutils-2.2/html_chapter/plotutils_9.html
 // https://www.gnu.org/software/plotutils/manual/en/html_node/X-Programming.html
-program Project1;
 
 uses
   Plot,
@@ -122,7 +115,6 @@ type
           Draw(Event);
         end;
         KeyPress: begin
-          // Beendet das Programm bei [ESC]
           if XLookupKeysym(@Event.xkey, 0) = XK_Escape then begin
             Break;
           end;
@@ -136,13 +128,8 @@ var
   MyWindows: TMyWin;
 
 begin
-  // Programm inizialisieren
   MyWindows := TMyWin.Create;
-
-  // Programm ablaufen lassen
   MyWindows.Run;
-
-  // Alles aufräumen und beenden
   MyWindows.Free;
 end.
-//code-
+

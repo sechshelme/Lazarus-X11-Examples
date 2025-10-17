@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit XForms;
+unit xforms_package;
 
 {$warn 5023 off : no warning about unused units}
 interface
@@ -17,5 +17,5 @@ begin
 end;
 
 initialization
-  RegisterPackage('XForms', @Register);
+  RegisterPackage('xforms_package', @Register);
 end.

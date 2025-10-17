@@ -24,14 +24,21 @@
       <Version Value="2"/>
     </PublishOptions>
     <RunParams>
+      <local>
+        <LaunchingApplication Use="True"/>
+      </local>
       <FormatVersion Value="2"/>
       <Modes Count="1">
-        <Mode0 Name="default"/>
+        <Mode0 Name="default">
+          <local>
+            <LaunchingApplication Use="True"/>
+          </local>
+        </Mode0>
       </Modes>
     </RunParams>
     <RequiredPackages Count="1">
       <Item1>
-        <PackageName Value="XForms"/>
+        <PackageName Value="xforms_package"/>
       </Item1>
     </RequiredPackages>
     <Units Count="1">

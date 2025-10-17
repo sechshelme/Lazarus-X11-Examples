@@ -2,7 +2,6 @@ program Project1;
 
 uses
   ctypes,
-//  xforms;
   xforms_forms;
 
   procedure yes_callback(obj: PFL_OBJECT; user_data: clong); cdecl;
