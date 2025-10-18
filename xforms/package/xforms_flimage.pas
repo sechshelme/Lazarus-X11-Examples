@@ -2,10 +2,6 @@ unit xforms_flimage;
 
 interface
 
-//{$linklib forms}
-//{$linklib c}
-//{$linklib m}
-
 uses
   ctypes,
   x, xlib,
@@ -14,31 +10,6 @@ uses
   {$IFDEF FPC}
   {$PACKRECORDS C}
   {$ENDIF}
-
-{
- *  This file is part of the XForms library package.
- *
- *  XForms is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation; either version 2.1, or
- *  (at your option) any later version.
- *
- *  XForms is distributed in the hope that it will be useful, but
- *  WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with XForms.  If not, see <http://www.gnu.org/licenses/>.
-  }
-  {********************* crop here for forms.h ********************* }
-  { Image related routines  }
-  {#endif }
-  {#ifndef extern }
-  {#define extern extern }
-  {#endif }
-  { was #define dname(params) para_def_expr }
-  { argument types are unknown }
 
 function FL_RGB2GRAY(r, g, b: cint): dword;
 
@@ -69,10 +40,6 @@ type
 const
   FL_PCBITS = 8;
   FL_PCMAX = (1 shl FL_PCBITS) - 1;
-
-  { was #define dname(params) para_def_expr }
-  { argument types are unknown }
-  { return type might be wrong }
 
 function FL_PCCLAMP(a: cint): cint;
 
@@ -105,8 +72,6 @@ procedure FL_UNPACK(p: cint; r, g, b: pcint);
 procedure FL_UNPACK3(p: cint; r, g, b: pcint);
 procedure FL_UNPACK4(p: cint; r, g, b: pcint; a: pcint);
 
-{ max colormap bits. 4096 entries  }
-
 const
   FL_LUTBITS = 12;
 
@@ -118,10 +83,8 @@ type
   PFL_WINDOW = ^TFL_WINDOW;
   TFL_WINDOW = TWindow;
 
-  Pflimage_text_ = ^Tflimage_text_;
-
   Tflimage_text_ = record
-    str: PChar;
+    str: pchar;
     len: cint;
     x: cint;
     y: cint;
@@ -133,14 +96,13 @@ type
     angle: cint;
     align: cint;
   end;
+  Pflimage_text_ = ^Tflimage_text_;
 
   TFLIMAGE_TEXT = Tflimage_text_;
   PFLIMAGE_TEXT = ^TFLIMAGE_TEXT;
 
-  Pflimage_marker_ = ^Tflimage_marker_;
-
   Tflimage_marker_ = record
-    Name: PChar;
+    Name: pchar;
     w: cint;
     h: cint;
     x: cint;
@@ -154,17 +116,17 @@ type
     display: pointer;
     gc: pointer;
     win: TFL_WINDOW;
-    psdraw: PChar;
+    psdraw: pchar;
   end;
+  Pflimage_marker_ = ^Tflimage_marker_;
+
   TFLIMAGE_MARKER = Tflimage_marker_;
   PFLIMAGE_MARKER = ^TFLIMAGE_MARKER;
 
 const
   FLIMAGE_REPFREQ = $1f;
-  //{$ifndef FL_RGB2PIXEL}
-type
-  PFL_RGB2PIXEL_ = ^TFL_RGB2PIXEL_;
 
+type
   TFL_RGB2PIXEL_ = record
     rshift: cuint;
     rmask: cuint;
@@ -178,15 +140,15 @@ type
     bits_per_rgb: cint;
     colormap_size: cint;
   end;
+  PFL_RGB2PIXEL_ = ^TFL_RGB2PIXEL_;
 
   TFL_RGB2PIXEL = TFL_RGB2PIXEL_;
-  //{$endif}
+
 type
   PFLIMAGESETUP = ^TFLIMAGESETUP;
   TFLIMAGESETUP = ^Tflimage_setup;
 
   Pflimage = ^Tflimage;
-
   Tflimage = record
     _type: cint;
     w: cint;
@@ -222,7 +184,7 @@ type
     wlut: Pword;
     wlut_len: cint;
     app_background: cint;
-    comments: PChar;
+    comments: pchar;
     comments_len: cint;
     available_type: cint;
     Next: Pflimage;
@@ -241,7 +203,7 @@ type
     shd: cint;
     wxd: cint;
     wyd: cint;
-    fmt_name: PChar;
+    fmt_name: pchar;
     Text: PFLIMAGE_TEXT;
     ntext: cint;
     max_text: cint;
@@ -262,8 +224,8 @@ type
     xdist_scale: cdouble;
     ydist_offset: cdouble;
     ydist_scale: cdouble;
-    infile: PChar;
-    outfile: PChar;
+    infile: pchar;
+    outfile: pchar;
     foffset: clong;
     original_type: cint;
     pre_write: function(para1: Pflimage): cint; cdecl;
@@ -280,8 +242,8 @@ type
     hist: array[0..3] of Pcuint;
     total: cint;
     completed: cint;
-    visual_cue: function(para1: Pflimage; para2: PChar): cint; cdecl;
-    error_message: procedure(para1: Pflimage; para2: PChar); cdecl;
+    visual_cue: function(para1: Pflimage; para2: pchar): cint; cdecl;
+    error_message: procedure(para1: Pflimage; para2: pchar); cdecl;
     error_code: cint;
     display_type: cint;
     pixels: ^Pword;
@@ -323,20 +285,20 @@ type
     pixmap_depth: cint;
     isPixmap: cint;
     setup: TFLIMAGESETUP;
-    info: PChar;
+    info: pchar;
   end;
+
   TFL_IMAGE = Tflimage;
   PFL_IMAGE = ^TFL_IMAGE;
-
 
   PFLIMAGE_SETUP = ^TFLIMAGE_SETUP;
 
   Tflimage_setup = record
     app_data: pointer;
-    visual_cue: function(para1: PFL_IMAGE; para2: PChar): cint; cdecl;
-    error_message: procedure(para1: PFL_IMAGE; para2: PChar); cdecl;
+    visual_cue: function(para1: PFL_IMAGE; para2: pchar): cint; cdecl;
+    error_message: procedure(para1: PFL_IMAGE; para2: pchar); cdecl;
     display: function(para1: PFL_IMAGE; para2: cuint): cint; cdecl;
-    rgbfile: PChar;
+    rgbfile: pchar;
     do_not_clear: cint;
     xdisplay: pointer;
     max_frames: cint;
@@ -363,132 +325,89 @@ const
   FLIMAGE_ERR_UNKNOWN = (-(50)) + 5;
 
 type
-
   TFLIMAGE_Identify = function(para1: PFILE): cint; cdecl;
-
   TFLIMAGE_Description = function(para1: PFL_IMAGE): cint; cdecl;
-
   TFLIMAGE_Read_Pixels = function(para1: PFL_IMAGE): cint; cdecl;
-
   TFLIMAGE_Write_Image = function(para1: PFL_IMAGE): cint; cdecl;
 
-  { Basic IO routines  }
-  (* Const before type ignored *)
-
-function flimage_load(file_: PChar): PFL_IMAGE; cdecl; external;
+function flimage_load(file_: pchar): PFL_IMAGE; cdecl; external;
 function flimage_read(im: PFL_IMAGE): PFL_IMAGE; cdecl; external;
-(* Const before type ignored *)
-(* Const before type ignored *)
-function flimage_dump(para1: PFL_IMAGE; para2: PChar; para3: PChar): cint; cdecl; external;
+function flimage_dump(para1: PFL_IMAGE; para2: pchar; para3: pchar): cint; cdecl; external;
 function flimage_close(para1: PFL_IMAGE): cint; cdecl; external;
 function flimage_alloc: PFL_IMAGE; cdecl; external;
 function flimage_getmem(para1: PFL_IMAGE): cint; cdecl; external;
-(* Const before type ignored *)
-function flimage_is_supported(para1: PChar): cint; cdecl; external;
-(* Const before abstract_declarator ignored *)
-(* Const before type ignored *)
-function flimage_description_via_filter(para1: PFL_IMAGE; para2: PPchar; para3: PChar; para4: cint): cint; cdecl; external;
-(* Const before abstract_declarator ignored *)
-(* Const before abstract_declarator ignored *)
+function flimage_is_supported(para1: pchar): cint; cdecl; external;
+function flimage_description_via_filter(para1: PFL_IMAGE; para2: PPchar; para3: pchar; para4: cint): cint; cdecl; external;
 function flimage_write_via_filter(para1: PFL_IMAGE; para2: PPchar; para3: PPchar; para4: cint): cint; cdecl; external;
-//function flimage_alloc:PFL_IMAGE;cdecl;external;
 procedure flimage_free(para1: PFL_IMAGE); cdecl; external;
 function flimage_display(para1: PFL_IMAGE; para2: TWindow): cint; cdecl; external;
 function flimage_sdisplay(para1: PFL_IMAGE; para2: TWindow): cint; cdecl; external;
 function flimage_convert(para1: PFL_IMAGE; para2: cint; para3: cint): cint; cdecl; external;
-(* Const before type ignored *)
-function flimage_type_name(_type: cint): PChar; cdecl; external;
-(* Const before type ignored *)
-function flimage_add_text(para1: PFL_IMAGE; para2: PChar; para3: cint; para4: cint; para5: cint;
+function flimage_type_name(_type: cint): pchar; cdecl; external;
+function flimage_add_text(para1: PFL_IMAGE; para2: pchar; para3: cint; para4: cint; para5: cint;
   para6: cuint; para7: cuint; para8: cint; para9: cdouble; para10: cdouble;
   para11: cint): cint; cdecl; external;
-(* Const before type ignored *)
 function flimage_add_text_struct(para1: PFL_IMAGE; para2: PFLIMAGE_TEXT): cint; cdecl; external;
 procedure flimage_delete_all_text(para1: PFL_IMAGE); cdecl; external;
-(* Const before type ignored *)
-function flimage_add_marker(para1: PFL_IMAGE; para2: PChar; para3: cdouble; para4: cdouble; para5: cdouble;
+function flimage_add_marker(para1: PFL_IMAGE; para2: pchar; para3: cdouble; para4: cdouble; para5: cdouble;
   para6: cdouble; para7: cint; para8: cint; para9: cint; para10: cuint;
   para11: cuint): cint; cdecl; external;
-(* Const before type ignored *)
 function flimage_add_marker_struct(para1: PFL_IMAGE; para2: PFLIMAGE_MARKER): cint; cdecl; external;
-(* Const before type ignored *)
-(* Const before type ignored *)
 
 type
   proc1 = procedure(para1: PFLIMAGE_MARKER);
 
-function flimage_define_marker(para1: PChar; para2: proc1; para3: PChar): cint; cdecl; external;
+function flimage_define_marker(para1: pchar; para2: proc1; para3: pchar): cint; cdecl; external;
 procedure flimage_delete_all_markers(para1: PFL_IMAGE); cdecl; external;
 function flimage_render_annotation(para1: PFL_IMAGE; para2: TFL_WINDOW): cint; cdecl; external;
-(* Const before type ignored *)
-procedure flimage_error(para1: PFL_IMAGE; para2: PChar; args: array of const); cdecl; external;
-procedure flimage_error(para1: PFL_IMAGE; para2: PChar); cdecl; external;
-{ Built-in format supports  }
+procedure flimage_error(para1: PFL_IMAGE; para2: pchar; args: array of const); cdecl; external;
+procedure flimage_error(para1: PFL_IMAGE; para2: pchar); cdecl; external;
 procedure flimage_enable_pnm; cdecl; external;
 function flimage_set_fits_bits(para1: cint): cint; cdecl; external;
-{ Output options  }
-type
-  PFLIMAGE_JPEG_OPTION = ^TFLIMAGE_JPEG_OPTION;
 
+type
   TFLIMAGE_JPEG_OPTION = record
     quality: cint;
     smoothing: cint;
   end;
+  PFLIMAGE_JPEG_OPTION = ^TFLIMAGE_JPEG_OPTION;
 
 procedure flimage_jpeg_output_options(para1: PFLIMAGE_JPEG_OPTION); cdecl; external;
 procedure flimage_pnm_output_options(para1: cint); cdecl; external;
 procedure flimage_gif_output_options(para1: cint); cdecl; external;
 function flimage_ps_options: PFLPS_CONTROL; cdecl; external;
-//const
-//  flimage_jpeg_options = flimage_jpeg_output_options;  
-//  flimage_pnm_options = flimage_pnm_output_options;  
-//  flimage_gif_options = flimage_gif_output_options;  
-procedure flimage_jpeg_options(para1: PFLIMAGE_JPEG_OPTION); cdecl; external Name 'flimage_jpeg_output_options';
-procedure flimage_pnm_options(para1: cint); cdecl; external Name 'flimage_pnm_output_options';
-procedure flimage_gif_options(para1: cint); cdecl; external Name 'flimage_gif_output_options';
+procedure flimage_jpeg_options(para1: PFLIMAGE_JPEG_OPTION); cdecl; external name 'flimage_jpeg_output_options';
+procedure flimage_pnm_options(para1: cint); cdecl; external name 'flimage_pnm_output_options';
+procedure flimage_gif_options(para1: cint); cdecl; external name 'flimage_gif_output_options';
 
 const
   FLIMAGE_WRITABLE = FL_WRITE;
   FLIMAGE_READABLE = FL_READ;
 
-  (* Const before type ignored *)
-  (* Const before type ignored *)
-  (* Const before type ignored *)
 type
-  PFLIMAGE_FORMAT_INFO = ^TFLIMAGE_FORMAT_INFO;
-
   TFLIMAGE_FORMAT_INFO = record
-    formal_name: PChar;
-    short_name: PChar;
-    extension: PChar;
+    formal_name: pchar;
+    short_name: pchar;
+    extension: pchar;
     _type: cint;
     read_write: cint;
     annotation: cint;
   end;
+  PFLIMAGE_FORMAT_INFO = ^TFLIMAGE_FORMAT_INFO;
 
 function flimage_get_number_of_formats: cint; cdecl; external;
-(* Const before type ignored *)
 function flimage_get_format_info(para1: cint): PFLIMAGE_FORMAT_INFO; cdecl; external;
 function fl_get_matrix(para1: cint; para2: cint; para3: cuint): pointer; cdecl; external;
 function fl_make_matrix(para1: cint; para2: cint; para3: cuint; para4: pointer): pointer; cdecl; external;
 procedure fl_free_matrix(para1: pointer); cdecl; external;
-{ This function is retained for compatibility reasons only.
-   It returns 1 always.  }
-(* Const before type ignored *)
-function fl_init_RGBdatabase(para1: PChar): cint; cdecl; external;
-(* Const before type ignored *)
-function fl_lookup_RGBcolor(para1: PChar; para2: Pcint; para3: Pcint; para4: Pcint): cint; cdecl; external;
-(* Const before type ignored *)
-(* Const before type ignored *)
-(* Const before type ignored *)
-function flimage_add_format(para1: PChar; para2: PChar; para3: PChar; para4: cint; para5: TFLIMAGE_Identify;
+function fl_init_RGBdatabase(para1: pchar): cint; cdecl; external;
+function fl_lookup_RGBcolor(para1: pchar; para2: Pcint; para3: Pcint; para4: Pcint): cint; cdecl; external;
+function flimage_add_format(para1: pchar; para2: pchar; para3: pchar; para4: cint; para5: TFLIMAGE_Identify;
   para6: TFLIMAGE_Description; para7: TFLIMAGE_Read_Pixels; para8: TFLIMAGE_Write_Image): cint; cdecl; external;
 procedure flimage_set_annotation_support(para1: cint; para2: cint); cdecl; external;
 function flimage_getcolormap(para1: PFL_IMAGE): cint; cdecl; external;
 procedure fl_select_mediancut_quantizer; cdecl; external;
-{ Simple image processing routines  }
-//#define FLIMAGE_SHARPEN        ( ( int** )( -1 ) )
-//#define FLIMAGE_SMOOTH         ( ( int** )( -2 ) )
+
 const
   FLIMAGE_SHARPEN = PPcint(-1);
   FLIMAGE_SMOOTH = PPcint(-2);
@@ -496,11 +415,7 @@ const
 const
   FL_SMOOTH = FLIMAGE_SMOOTH;
   FL_SHARPEN = FLIMAGE_SHARPEN;
-  { scale with no subpixel sampling  }
-  { scale with  subpixel sampling  }
-  { center warped image. default   }
-  { flush right the warped image   }
-  { fit the size  }
+
 const
   FLIMAGE_NOSUBPIXEL = 0;
   FLIMAGE_SUBPIXEL = 1;
@@ -508,7 +423,6 @@ const
   FLIMAGE_RIGHT = 8;
   FLIMAGE_ASPECT = 32;
   FLIMAGE_NOCENTER = FL_ALIGN_LEFT_TOP;
-
 
 function flimage_convolve(para1: PFL_IMAGE; para2: PPcint; para3: cint; para4: cint): cint; cdecl; external;
 function flimage_convolvea(para1: PFL_IMAGE; para2: Pcint; para3: cint; para4: cint): cint; cdecl; external;
@@ -522,8 +436,7 @@ type
 
 function flimage_warp(para1: PFL_IMAGE; para2: TPCfloats; para3: cint; para4: cint; para5: cint): cint; cdecl; external;
 function flimage_autocrop(para1: PFL_IMAGE; para2: cuint): cint; cdecl; external;
-function flimage_get_autocrop(para1: PFL_IMAGE; para2: cuint; para3: Pcint; para4: Pcint; para5: Pcint;
-  para6: Pcint): cint; cdecl; external;
+function flimage_get_autocrop(para1: PFL_IMAGE; para2: cuint; para3: Pcint; para4: Pcint; para5: Pcint; para6: Pcint): cint; cdecl; external;
 function flimage_crop(para1: PFL_IMAGE; para2: cint; para3: cint; para4: cint; para5: cint): cint; cdecl; external;
 function flimage_replace_pixel(para1: PFL_IMAGE; para2: cuint; para3: cuint): cint; cdecl; external;
 function flimage_transform_pixels(para1: PFL_IMAGE; para2: Pcint; para3: Pcint; para4: Pcint): cint; cdecl; external;
@@ -532,20 +445,15 @@ function flimage_enhance(para1: PFL_IMAGE; para2: cint): cint; cdecl; external;
 function flimage_from_pixmap(para1: PFL_IMAGE; para2: TPixmap): cint; cdecl; external;
 function flimage_to_pixmap(para1: PFL_IMAGE; para2: TFL_WINDOW): TPixmap; cdecl; external;
 function flimage_dup(para1: PFL_IMAGE): PFL_IMAGE; cdecl; external;
-{ Miscellaneous prototypes  }
-(* Const before type ignored *)
-function fl_object_ps_dump(para1: PFL_OBJECT; para2: PChar): cint; cdecl; external;
-(* Const before type ignored *)
-procedure flimage_add_comments(para1: PFL_IMAGE; para2: PChar; para3: cint); cdecl; external;
+function fl_object_ps_dump(para1: PFL_OBJECT; para2: pchar): cint; cdecl; external;
+procedure flimage_add_comments(para1: PFL_IMAGE; para2: pchar; para3: cint); cdecl; external;
 function flimage_color_to_pixel(para1: PFL_IMAGE; para2: cint; para3: cint; para4: cint; para5: Pcint): cuint; cdecl; external;
 function flimage_combine(para1: PFL_IMAGE; para2: PFL_IMAGE; para3: cdouble): PFL_IMAGE; cdecl; external;
-(* Const before type ignored *)
-(* Const before type ignored *)
 
 type
   proc2 = procedure(para1: PFLIMAGE_MARKER);
 
-function flimage_define_marker(para1: PChar; para2: proc2; para3: PChar): cint; cdecl; external;
+function flimage_define_marker(para1: pchar; para2: proc2; para3: pchar): cint; cdecl; external;
 procedure flimage_display_markers(para1: PFL_IMAGE); cdecl; external;
 function flimage_dup_(para1: PFL_IMAGE; para2: cint): PFL_IMAGE; cdecl; external;
 procedure flimage_enable_bmp; cdecl; external;
@@ -569,45 +477,29 @@ procedure flimage_freemem(para1: PFL_IMAGE); cdecl; external;
 function flimage_get_closest_color_from_map(para1: PFL_IMAGE; para2: cuint): cint; cdecl; external;
 function flimage_get_linearlut(para1: PFL_IMAGE): cint; cdecl; external;
 procedure flimage_invalidate_pixels(para1: PFL_IMAGE); cdecl; external;
-(* Const before type ignored *)
-function flimage_open(para1: PChar): PFL_IMAGE; cdecl; external;
+function flimage_open(para1: pchar): PFL_IMAGE; cdecl; external;
 function flimage_read_annotation(para1: PFL_IMAGE): cint; cdecl; external;
-procedure flimage_replace_image(para1: PFL_IMAGE; para2: cint; para3: cint; para4: pointer; para5: pointer;
-  para6: pointer); cdecl; external;
+procedure flimage_replace_image(para1: PFL_IMAGE; para2: cint; para3: cint; para4: pointer; para5: pointer; para6: pointer); cdecl; external;
 function flimage_swapbuffer(para1: PFL_IMAGE): cint; cdecl; external;
 function flimage_to_ximage(para1: PFL_IMAGE; para2: TFL_WINDOW; para3: PXWindowAttributes): cint; cdecl; external;
 function flimage_write_annotation(para1: PFL_IMAGE): cint; cdecl; external;
 procedure flps_apply_gamma(para1: cfloat); cdecl; external;
-procedure flps_arc(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint;
-  para6: cint; para7: TFL_COLOR); cdecl; external;
+procedure flps_arc(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint; para6: cint; para7: TFL_COLOR); cdecl; external;
 procedure flps_circ(para1: cint; para2: cint; para3: cint; para4: cint; para5: TFL_COLOR); cdecl; external;
 procedure flps_color(col: TFL_COLOR); cdecl; external;
-procedure flps_draw_box(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint;
-  para6: TFL_COLOR; para7: cint); cdecl; external;
-procedure flps_draw_checkbox(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint;
-  para6: TFL_COLOR; para7: cint); cdecl; external;
-procedure flps_draw_frame(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint;
-  para6: TFL_COLOR; para7: cint); cdecl; external;
-(* Const before type ignored *)
-function flps_draw_symbol(para1: PChar; para2: cint; para3: cint; para4: cint; para5: cint;
-  para6: TFL_COLOR): cint; cdecl; external;
-procedure flps_draw_tbox(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint;
-  para6: TFL_COLOR; para7: cint); cdecl; external;
-(* Const before type ignored *)
-procedure flps_draw_text(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint;
-  para6: TFL_COLOR; para7: cint; para8: cint; para9: PChar); cdecl; external;
-(* Const before type ignored *)
-procedure flps_draw_text_beside(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint;
-  para6: TFL_COLOR; para7: cint; para8: cint; para9: PChar); cdecl; external;
-(* Const before type ignored *)
-procedure flps_emit_header(para1: PChar; para2: cint; para3: cint; para4: cint; para5: cint;
-  para6: cint); cdecl; external;
+procedure flps_draw_box(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint; para6: TFL_COLOR; para7: cint); cdecl; external;
+procedure flps_draw_checkbox(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint; para6: TFL_COLOR; para7: cint); cdecl; external;
+procedure flps_draw_frame(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint; para6: TFL_COLOR; para7: cint); cdecl; external;
+function flps_draw_symbol(para1: pchar; para2: cint; para3: cint; para4: cint; para5: cint; para6: TFL_COLOR): cint; cdecl; external;
+procedure flps_draw_tbox(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint; para6: TFL_COLOR; para7: cint); cdecl; external;
+procedure flps_draw_text(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint; para6: TFL_COLOR; para7: cint; para8: cint; para9: pchar); cdecl; external;
+procedure flps_draw_text_beside(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint; para6: TFL_COLOR; para7: cint; para8: cint; para9: pchar); cdecl; external;
+procedure flps_emit_header(para1: pchar; para2: cint; para3: cint; para4: cint; para5: cint; para6: cint); cdecl; external;
 procedure flps_emit_prolog; cdecl; external;
 function flps_get_gray255(para1: TFL_COLOR): cint; cdecl; external;
 function flps_get_linestyle: cint; cdecl; external;
 function flps_get_linewidth: cint; cdecl; external;
-(* Const before type ignored *)
-function flps_get_namedcolor(para1: PChar): TFL_COLOR; cdecl; external;
+function flps_get_namedcolor(para1: pchar): TFL_COLOR; cdecl; external;
 function flps_init: PFLPS_CONTROL; cdecl; external;
 procedure flps_invalidate_color_cache; cdecl; external;
 procedure flps_invalidate_font_cache; cdecl; external;
@@ -617,44 +509,30 @@ procedure flps_line(para1: cint; para2: cint; para3: cint; para4: cint; para5: T
 procedure flps_lines(para1: PFL_POINT; para2: cint; para3: TFL_COLOR); cdecl; external;
 procedure flps_linestyle(para1: cint); cdecl; external;
 procedure flps_linewidth(para1: cint); cdecl; external;
-(* Const before type ignored *)
-procedure flps_log(para1: PChar); cdecl; external;
-(* Const before type ignored *)
-procedure flps_output(para1: PChar; args: array of const); cdecl; external;
-procedure flps_output(para1: PChar); cdecl; external;
-procedure flps_oval(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint;
-  para6: TFL_COLOR); cdecl; external;
-procedure flps_pieslice(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint;
-  para6: cint; para7: cint; para8: TFL_COLOR); cdecl; external;
+procedure flps_log(para1: pchar); cdecl; external;
+procedure flps_output(para1: pchar); cdecl; varargs; external;
+procedure flps_oval(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint; para6: TFL_COLOR); cdecl; external;
+procedure flps_pieslice(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint; para6: cint; para7: cint; para8: TFL_COLOR); cdecl; external;
 procedure flps_poly(para1: cint; para2: PFL_POINT; para3: cint; para4: TFL_COLOR); cdecl; external;
-procedure flps_rectangle(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint;
-  para6: TFL_COLOR); cdecl; external;
+procedure flps_rectangle(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint; para6: TFL_COLOR); cdecl; external;
 procedure flps_reset_cache; cdecl; external;
 procedure flps_reset_linewidth; cdecl; external;
 procedure flps_restore_flps; cdecl; external;
 procedure flps_rgbcolor(para1: cint; para2: cint; para3: cint); cdecl; external;
-procedure flps_roundrectangle(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint;
-  para6: TFL_COLOR); cdecl; external;
+procedure flps_roundrectangle(para1: cint; para2: cint; para3: cint; para4: cint; para5: cint; para6: TFL_COLOR); cdecl; external;
 procedure flps_set_clipping(para1: cint; para2: cint; para3: cint; para4: cint); cdecl; external;
 procedure flps_set_font(para1: cint; para2: cint); cdecl; external;
 procedure flps_unset_clipping; cdecl; external;
 
 implementation
 
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
 function FL_RGB2GRAY(r, g, b: cint): cuint;
 begin
   Result := ((78 * (r) + 150 * (g) + 28 * (b)) shr 8);
-  //  FL_RGB2GRAY:=cuint((((78*(Tr(+(150))))*(Tg(+(28))))*b) shr 8);
 end;
 
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }
 function FL_PCCLAMP(a: cint): cint;
 begin
-  //  #define FL_PCCLAMP( a )   ( ( a ) > ( FL_PCMAX ) ? ( FL_PCMAX ) : ( ( a ) < 0 ? 0 : ( a ) ) )
   if a > FL_PCMAX then begin
     Result := FL_PCMAX;
   end else if a < 0 then begin
@@ -664,40 +542,26 @@ begin
   end;
 end;
 
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
 function FL_GETR(pack: cint): cint;
 begin
   FL_GETR := pack and FL_RMASK;
 end;
 
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }
 function FL_GETG(pack: cint): cint;
 begin
   FL_GETG := (pack shr FL_GSHIFT) and FL_PCMAX;
 end;
 
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }
 function FL_GETB(pack: cint): cint;
 begin
   FL_GETB := (pack shr FL_BSHIFT) and FL_PCMAX;
 end;
 
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }
 function FL_GETA(pack: cint): cint;
 begin
   FL_GETA := (pack shr FL_ASHIFT) and FL_PCMAX;
 end;
 
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }
 function FL_PACK3(r, g, b: cint): cint;
 begin
   FL_PACK3 := ((r shl FL_RSHIFT) or (g shl FL_GSHIFT)) or (b shl FL_BSHIFT);
@@ -708,25 +572,10 @@ begin
   FL_PACK := ((r shl FL_RSHIFT) or (g shl FL_GSHIFT)) or (b shl FL_BSHIFT);
 end;
 
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }
 function FL_PACK4(r, g, b, a: cint): cint;
 begin
   FL_PACK4 := (FL_PACK3(r, g, b)) or (a shl FL_ASHIFT);
 end;
-
-{#define FL_UNPACK( p, r, g, b )  \ }
-{    do  r = FL_GETR( p );       \ }
-{         g = FL_GETG( p );       \ }
-{         b = FL_GETB( p );       \ }
-{     while ( 0 ) }
-{#define FL_UNPACK4( p, r, g, b, a )  \ }
-{    do  FL_UNPACK3( p, r, g, b );   \ }
-{         a = FL_GETA( p );           \ }
-{     while ( 0 ) }
-//{$endif}
-
 
 procedure FL_UNPACK(p: cint; r, g, b: pcint);
 begin
@@ -746,17 +595,11 @@ begin
   a^ := FL_GETA(p);
 end;
 
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }
 function FL_IsRGB(im: Pflimage): boolean;
 begin
   FL_IsRGB := (im^._type) = FL_IMAGE_RGB;
 end;
 
-{ was #define dname(params) para_def_expr }
-{ argument types are unknown }
-{ return type might be wrong }
 function FL_IsPacked(im: Pflimage): boolean;
 begin
   FL_IsPacked := (im^._type) = FL_IMAGE_PACKED;

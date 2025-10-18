@@ -16,12 +16,9 @@ type
   PGLXContext = ^TGLXContext;
 
 function fl_create_glcanvas(_type: longint; x: TFL_Coord; y: TFL_Coord; w: TFL_Coord; h: TFL_Coord; _label: PChar): PFL_OBJECT; cdecl; external;
-(* Const before type ignored *)
 function fl_add_glcanvas(_type: longint; x: TFL_Coord; y: TFL_Coord; w: TFL_Coord; h: TFL_Coord; _label: PChar): PFL_OBJECT; cdecl; external;
-(* Const before type ignored *)
 procedure fl_set_glcanvas_defaults(config: Plongint); cdecl; external;
 procedure fl_get_glcanvas_defaults(cconfig: Plongint); cdecl; external;
-(* Const before type ignored *)
 procedure fl_set_glcanvas_attributes(ob: PFL_OBJECT; config: Plongint); cdecl; external;
 procedure fl_get_glcanvas_attributes(ob: PFL_OBJECT; attributes: Plongint); cdecl; external;
 procedure fl_set_glcanvas_direct(ob: PFL_OBJECT; direct: longint); cdecl; external;
