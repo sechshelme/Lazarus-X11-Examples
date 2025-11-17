@@ -92,6 +92,13 @@ Lazarus fpc pascal XToolkit Toolkit libx x11 xserver linux Athena Widget Modif M
 ## Vector Games
 - (https://github.com/ivanmarcin/MultiplayerMazewar/tree/master)
 
+# Interessante X11 Kommandos
+`xprop`
+`xwininfo -tree`
+
+
+
+
 
 
 
