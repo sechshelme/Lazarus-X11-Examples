@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <Name Value="fp_xcb_package"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Files>
+      <Item>
+        <Filename Value="fp_xcb.pas"/>
+        <UnitName Value="fp_xcb"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_composite.pas"/>
+        <UnitName Value="fp_composite"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_damage.pas"/>
+        <UnitName Value="fp_damage"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_dpms.pas"/>
+        <UnitName Value="fp_dpms"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_dri2.pas"/>
+        <UnitName Value="fp_dri2"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_dri3.pas"/>
+        <UnitName Value="fp_dri3"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_glx.pas"/>
+        <UnitName Value="fp_glx"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_present.pas"/>
+        <UnitName Value="fp_present"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_randr.pas"/>
+        <UnitName Value="fp_randr"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_record.pas"/>
+        <UnitName Value="fp_record"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_render.pas"/>
+        <UnitName Value="fp_render"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_res.pas"/>
+        <UnitName Value="fp_res"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_screensaver.pas"/>
+        <UnitName Value="fp_screensaver"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_shape.pas"/>
+        <UnitName Value="fp_shape"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_shm.pas"/>
+        <UnitName Value="fp_shm"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_sync.pas"/>
+        <UnitName Value="fp_sync"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xcb_bitops.pas"/>
+        <UnitName Value="fp_xcb_bitops"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xcb_cursor.pas"/>
+        <UnitName Value="fp_xcb_cursor"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xcb_ewmh.pas"/>
+        <UnitName Value="fp_xcb_ewmh"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xcb_icccm.pas"/>
+        <UnitName Value="fp_xcb_icccm"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xcb_image.pas"/>
+        <UnitName Value="fp_xcb_image"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xcb_keysyms.pas"/>
+        <UnitName Value="fp_xcb_keysyms"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xcb_pixel.pas"/>
+        <UnitName Value="fp_xcb_pixel"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xcb_renderutil.pas"/>
+        <UnitName Value="fp_xcb_renderutil"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xcb_util.pas"/>
+        <UnitName Value="fp_xcb_util"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xcb_xrm.pas"/>
+        <UnitName Value="fp_xcb_xrm"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xf86dri.pas"/>
+        <UnitName Value="fp_xf86dri"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xfixes.pas"/>
+        <UnitName Value="fp_xfixes"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xinerama.pas"/>
+        <UnitName Value="fp_xinerama"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xinput.pas"/>
+        <UnitName Value="fp_xinput"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xkb.pas"/>
+        <UnitName Value="fp_xkb"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xtest.pas"/>
+        <UnitName Value="fp_xtest"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xv.pas"/>
+        <UnitName Value="fp_xv"/>
+      </Item>
+      <Item>
+        <Filename Value="fp_xvmc.pas"/>
+        <UnitName Value="fp_xvmc"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
